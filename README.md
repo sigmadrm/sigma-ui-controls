@@ -1,2 +1,3 @@
 # sigma-ui-controls
-UI for video element to control
+
+This is ui controls plugin for video player
