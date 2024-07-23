@@ -28,6 +28,12 @@
         "preset": "angular"
       }
     },
+    "hooks": {
+      "after:bump": [
+        "yarn build",
+        "git add ."
+      ]
+    },
     "git": {
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}",
