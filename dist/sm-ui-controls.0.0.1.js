@@ -2382,26 +2382,189 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/components/TestCSS.ts":
-/*!***********************************!*\
-  !*** ./src/components/TestCSS.ts ***!
-  \***********************************/
+/***/ "./src/constants.ts":
+/*!**************************!*\
+  !*** ./src/constants.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = exports.ids = void 0;
+exports.ids = {
+    smControllerContainer: 'sm-controller-container',
+    smControllerContent: 'sm-controller-content',
+    smLoading: 'sm-loading',
+    smError: 'sm-error',
+    smContentHead: 'sm-content-head',
+    smContentBody: 'sm-content-body',
+    smContentBodyBtnPlay: 'sm-content-body-btn-play',
+    smContentFooter: 'sm-content-footer',
+};
+exports.versionDef = '4.10.0';
+var ETypePlayer;
+(function (ETypePlayer) {
+    ETypePlayer["SHAKA"] = "SHAKA";
+    ETypePlayer["VIDEOSJS"] = "VIDEOSJS";
+})(ETypePlayer || (exports.ETypePlayer = ETypePlayer = {}));
+exports.typePlayerDef = ETypePlayer.SHAKA;
+exports.primaryColorDef = '#2196f3';
+
+
+/***/ }),
+
+/***/ "./src/icons.ts":
+/*!**********************!*\
+  !*** ./src/icons.ts ***!
+  \**********************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadingIcon = exports.playIcon = void 0;
+exports.playIcon = `<svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
+      </svg>`;
+exports.loadingIcon = `
+    <div class="ss-loading ss-medium">
+      <div class="ss-container">
+        <div class="ss-top">
+          <div class="ss-circle"></div>
+        </div>
+      </div>
+      <div class="ss-container">
+        <div class="ss-bottom">
+          <div class="ss-circle"></div>
+        </div>
+      </div>
+    </div>
+`;
+
+
+/***/ }),
+
+/***/ "./src/style.ts":
+/*!**********************!*\
+  !*** ./src/style.ts ***!
+  \**********************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const css_1 = __webpack_require__(/*! @emotion/css */ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js");
-const style = (0, css_1.css) `
-  color: hotpink;
-  font-size: 24px;
-`;
-document.addEventListener("DOMContentLoaded", () => {
-    // Then use the style in your component
-    const element = document.createElement('div');
-    element.className = style;
-    element.innerText = 'Hello, Emotion!';
-    document.body.appendChild(element);
-});
+const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+const generateStyles = (props) => {
+    const { primaryColor = constants_1.primaryColorDef, logo } = props || {};
+    return {
+        container: (0, css_1.css) `
+      background: transparent;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 9999;
+      overflow: hidden;
+    `,
+        //
+        controllerContent: (0, css_1.css) `
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background: transparent;
+      display: none;
+    `,
+        controllerContentActive: (0, css_1.css) `
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `,
+        contentHead: (0, css_1.css) `
+      background: transparent;
+      width: 100%;
+      height: 5%;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      padding: 8px;
+      overflow: hidden;
+    `,
+        contentHeadTitle: (0, css_1.css) `
+      width: 80%;
+      font-size: 1.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    `,
+        contentBody: (0, css_1.css) `
+      width: 100%;
+      flex: 1;
+      background: transparent;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `,
+        contentBodyBtnPlay: (0, css_1.css) `
+      box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(25px);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+    `,
+        contentFooter: (0, css_1.css) `
+      width: 100%;
+      height: 5%;
+      min-height: 50px;
+      background: green;
+      box-sizing: border-box;
+    `,
+        loading: (0, css_1.css) `
+      background: rgb(119 119 119 / 50%);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 9999;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    `,
+        loadingDisable: (0, css_1.css) `
+      // display: none;
+    `,
+        error: (0, css_1.css) `
+      background: transparent;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 9999;
+      overflow: hidden;
+      display: none;
+    `,
+    };
+};
+exports["default"] = generateStyles;
 
 
 /***/ })
@@ -2471,19 +2634,93 @@ var exports = __webpack_exports__;
   \**********************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__webpack_require__(/*! ./components/TestCSS */ "./src/components/TestCSS.ts");
+const icons_1 = __webpack_require__(/*! ./icons */ "./src/icons.ts");
+const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
 __webpack_require__(/*! ./index.css */ "./src/index.css");
+const generateApiPlayer = (player, video, typePlayer, version) => {
+    const apiPlayer = {
+        play: () => video?.play(),
+        pause: () => video?.pause(),
+    };
+    if (typePlayer === constants_1.ETypePlayer.SHAKA) {
+        apiPlayer.play = () => video?.play();
+        if (version) {
+            //check version
+        }
+    }
+    return apiPlayer;
+};
+const classes = (0, style_1.default)();
+const generateHtmlContentString = (props) => {
+    const { videoName } = props || {};
+    return `
+  <div class=${classes.controllerContent}>
+    <div class=${classes.contentHead} id=${constants_1.ids.smContentHead}>
+    ${videoName &&
+        `<p class=${classes.contentHeadTitle}>${videoName}
+      </p>`}
+      </div>
+    <div class=${classes.contentBody} id=${constants_1.ids.smContentBody}>
+      <div class=${classes.contentBodyBtnPlay} id=${constants_1.ids.smContentBodyBtnPlay}>${icons_1.playIcon}</div>
+    </div>
+    <div class=${classes.contentFooter} id=${constants_1.ids.smContentFooter}>footer</div>
+  </div>
+  <div class=${classes.loading} id=${constants_1.ids.smLoading}>
+    ${icons_1.loadingIcon}
+  </div>
+  <div class=${classes.error} id=${constants_1.ids.smError}>
+    error
+  </div>
+  `;
+};
 class SmUIControls {
-    name;
+    apiPlayer = {
+        play: () => (Promise) || undefined,
+        pause: () => (Promise) || undefined,
+    };
+    isLoaded = false;
     constructor(props) {
-        this.name = "SmUIControls";
+        const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo, style, } = props;
+        const htmlContentString = generateHtmlContentString({
+            videoName: videoInfo?.name,
+        });
+        const apiPlayer = generateApiPlayer(player, video, typePlayer, version);
+        this.apiPlayer = apiPlayer;
+        const VideoContainerElement = document.getElementById(idVideoContainer);
+        if (!this.isLoaded) {
+            this.isLoaded = true;
+            if (VideoContainerElement) {
+                VideoContainerElement.style.position = 'relative';
+                const smControllerContainerEle = document.createElement('div');
+                smControllerContainerEle.className = classes.container;
+                smControllerContainerEle.id = constants_1.ids.smControllerContainer;
+                smControllerContainerEle.innerHTML = htmlContentString;
+                VideoContainerElement.appendChild(smControllerContainerEle);
+                // xử lý head
+                // const headEle = document.getElementById(ids.smHead);
+                // xử lý body
+                const bodyBtnPlayEle = document.getElementById(constants_1.ids.smContentBodyBtnPlay);
+                bodyBtnPlayEle?.addEventListener('click', () => {
+                    apiPlayer.play();
+                });
+                player.addEventListener('loaded', (event) => {
+                    const loadingContainerEle = document.getElementById(constants_1.ids.smLoading);
+                    console.log('run', loadingContainerEle);
+                    const contentControllerEle = document.getElementById(constants_1.ids.smControllerContent);
+                    loadingContainerEle?.classList.add(classes.loadingDisable);
+                    contentControllerEle?.classList.add(classes.controllerContentActive);
+                });
+            }
+        }
     }
     static get version() {
         // @ts-ignore
         return "0.0.1";
     }
     destroy() {
-        this.name = "";
+        this.apiPlayer = {};
+        this.isLoaded = false;
     }
 }
 exports["default"] = SmUIControls;

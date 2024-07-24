@@ -1,24 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<!--
+  <!--
   Copyright 2014 The Chromium Authors. All rights reserved.
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
   -->
 
-<head>
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="-1">
-  <title>SmUIControls</title>
-  <script type="text/javascript" src="env-config.js"></script>
-  <link rel="stylesheet" href="sm-ui-controls.0.0.1.css">
-</head>
+  <head>
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
+    <title>SmUIControls</title>
+    <script type="text/javascript" src="env-config.js"></script>
+    <link rel="stylesheet" href="sm-ui-controls.0.0.1.css" />
+  </head>
 
-<body>
-  <div>This is ui controls plugin for video player</div>
+  <body>
+    <div>This is ui controls plugin for video player</div>
+    <div id="video-container">
+      <video id="video" width="1080"></video>
+    </div>
 
-  <script type="text/javascript" src="sm-ui-controls.0.0.1.js"></script>
-  <script type="text/javascript" src="main.js"></script>
-</body>
-
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.10.8/shaka-player.compiled.js"
+    ></script>
+    <script type="text/javascript" src="sm-ui-controls.0.0.1.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
 </html>
