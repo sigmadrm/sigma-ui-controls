@@ -1,4 +1,4 @@
-import { ETypePlayer } from "./constants";
+import { ETypePlayer } from './constants';
 export interface IConfigureUIPlayerProps {
     player: any;
     video: HTMLVideoElement | null | undefined;
@@ -13,7 +13,7 @@ export interface IConfigureUIPlayerProps {
         logo?: string;
     };
 }
-export type TGenerateStylesProps = IConfigureUIPlayerProps["style"];
+export type TGenerateStylesProps = IConfigureUIPlayerProps['style'];
 export interface IGenerateHtmlContentStringPros {
     videoName?: string;
 }

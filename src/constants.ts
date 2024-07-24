@@ -3,10 +3,12 @@ export const ids = {
   smControllerContent: 'sm-controller-content',
   smLoading: 'sm-loading',
   smError: 'sm-error',
-  smContentHead: 'sm-content-head',
-  smContentBody: 'sm-content-body',
-  smContentBodyBtnPlay: 'sm-content-body-btn-play',
-  smContentFooter: 'sm-content-footer',
+  smHeadController: 'sm-head-controller',
+  smBodyController: 'sm-body-controller',
+  smBodyControllerButtonPrimary: 'sm-body-controller-button-primary',
+  smFooterController: 'sm-footer-controller',
+  smTaskbarController: 'sm-taskbar-controller',
+  smSeekBarController: 'sm-seek-bar-controller',
 };
 export const versionDef = '4.10.0';
 

@@ -2,7 +2,7 @@ import { TGenerateStylesProps } from './type';
 declare const generateStyles: (props?: TGenerateStylesProps) => {
     container: string;
     controllerContent: string;
-    controllerContentActive: string;
+    controllerContentEnable: string;
     contentHead: string;
     contentHeadTitle: string;
     contentBody: string;
@@ -11,6 +11,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     loading: string;
     loadingDisable: string;
     error: string;
+    errorEnable: string;
 };
 export default generateStyles;
 //# sourceMappingURL=style.d.ts.map

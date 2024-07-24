@@ -2430,6 +2430,7 @@ exports.playIcon = `<svg
         <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
       </svg>`;
 exports.loadingIcon = `
+  <div  class="loading-ss">
     <div class="ss-loading ss-medium">
       <div class="ss-container">
         <div class="ss-top">
@@ -2442,6 +2443,7 @@ exports.loadingIcon = `
         </div>
       </div>
     </div>
+  </div>  
 `;
 
 
@@ -2480,7 +2482,7 @@ const generateStyles = (props) => {
       background: transparent;
       display: none;
     `,
-        controllerContentActive: (0, css_1.css) `
+        controllerContentEnable: (0, css_1.css) `
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2497,6 +2499,7 @@ const generateStyles = (props) => {
       box-sizing: border-box;
       padding: 8px;
       overflow: hidden;
+      animation-name: fadeInDown;
     `,
         contentHeadTitle: (0, css_1.css) `
       width: 80%;
@@ -2516,7 +2519,7 @@ const generateStyles = (props) => {
       justify-content: center;
     `,
         contentBodyBtnPlay: (0, css_1.css) `
-      box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.16);
+      box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(25px);
       border-radius: 50%;
       width: 50px;
@@ -2549,10 +2552,10 @@ const generateStyles = (props) => {
       justify-content: center;
     `,
         loadingDisable: (0, css_1.css) `
-      // display: none;
+      display: none;
     `,
         error: (0, css_1.css) `
-      background: transparent;
+      background: rgb(119 119 119 / 50%);
       position: absolute;
       top: 0;
       bottom: 0;
@@ -2561,6 +2564,12 @@ const generateStyles = (props) => {
       z-index: 9999;
       overflow: hidden;
       display: none;
+    `,
+        errorEnable: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
     `,
     };
 };
@@ -2655,7 +2664,7 @@ const classes = (0, style_1.default)();
 const generateHtmlContentString = (props) => {
     const { videoName } = props || {};
     return `
-  <div class=${classes.controllerContent}>
+  <div class=${classes.controllerContent}  id=${constants_1.ids.smControllerContent}>
     <div class=${classes.contentHead} id=${constants_1.ids.smContentHead}>
     ${videoName &&
         `<p class=${classes.contentHeadTitle}>${videoName}
@@ -2679,7 +2688,7 @@ class SmUIControls {
         play: () => (Promise) || undefined,
         pause: () => (Promise) || undefined,
     };
-    isLoaded = false;
+    isInit = false;
     constructor(props) {
         const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo, style, } = props;
         const htmlContentString = generateHtmlContentString({
@@ -2688,8 +2697,8 @@ class SmUIControls {
         const apiPlayer = generateApiPlayer(player, video, typePlayer, version);
         this.apiPlayer = apiPlayer;
         const VideoContainerElement = document.getElementById(idVideoContainer);
-        if (!this.isLoaded) {
-            this.isLoaded = true;
+        if (!this.isInit) {
+            this.isInit = true;
             if (VideoContainerElement) {
                 VideoContainerElement.style.position = 'relative';
                 const smControllerContainerEle = document.createElement('div');
@@ -2697,19 +2706,25 @@ class SmUIControls {
                 smControllerContainerEle.id = constants_1.ids.smControllerContainer;
                 smControllerContainerEle.innerHTML = htmlContentString;
                 VideoContainerElement.appendChild(smControllerContainerEle);
-                // xử lý head
-                // const headEle = document.getElementById(ids.smHead);
-                // xử lý body
                 const bodyBtnPlayEle = document.getElementById(constants_1.ids.smContentBodyBtnPlay);
                 bodyBtnPlayEle?.addEventListener('click', () => {
                     apiPlayer.play();
                 });
+                const loadingContainerEle = document.getElementById(constants_1.ids.smLoading);
+                const contentControllerEle = document.getElementById(constants_1.ids.smControllerContent);
+                const errorEle = document.getElementById(constants_1.ids.smError);
+                //xử lý khi loaded sãn sàng play
                 player.addEventListener('loaded', (event) => {
-                    const loadingContainerEle = document.getElementById(constants_1.ids.smLoading);
-                    console.log('run', loadingContainerEle);
-                    const contentControllerEle = document.getElementById(constants_1.ids.smControllerContent);
+                    console.log('loaded', classes.controllerContentEnable);
                     loadingContainerEle?.classList.add(classes.loadingDisable);
-                    contentControllerEle?.classList.add(classes.controllerContentActive);
+                    contentControllerEle?.classList.add(classes.controllerContentEnable);
+                });
+                // xử lý khi có lỗi
+                player.addEventListener('error', (event) => {
+                    console.log('error', classes.controllerContentEnable, event);
+                    loadingContainerEle?.classList.add(classes.loadingDisable);
+                    contentControllerEle?.classList.remove(classes.controllerContentEnable);
+                    errorEle?.classList.add(classes.errorEnable);
                 });
             }
         }
@@ -2720,7 +2735,7 @@ class SmUIControls {
     }
     destroy() {
         this.apiPlayer = {};
-        this.isLoaded = false;
+        this.isInit = false;
     }
 }
 exports["default"] = SmUIControls;

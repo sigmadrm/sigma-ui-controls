@@ -2,7 +2,7 @@ import { IConfigureUIPlayerProps } from './type';
 import './index.css';
 declare class SmUIControls {
     private apiPlayer;
-    private isLoaded;
+    private isInit;
     constructor(props: IConfigureUIPlayerProps);
     static get version(): string;
     destroy(): void;

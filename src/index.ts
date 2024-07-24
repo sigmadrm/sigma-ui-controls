@@ -1,61 +1,26 @@
-import { loadingIcon, playIcon } from './icons';
-import { ETypePlayer, ids, typePlayerDef, versionDef } from './constants';
+import { ids, typePlayerDef, versionDef } from './constants';
+import { EEVentName, IApiPlayer, IConfigureUIPlayerProps } from './type';
+
+import ControllerContainer from './class/ControllerContainer';
+import ErrorContainer from './class/ErrorContainer';
+import LoadingContainer from './class/LoadingContainer';
+
+import { generateApiPlayer, generateHtmlContentContainerString } from './services';
+
 import generateStyles from './style';
-import { IConfigureUIPlayerProps, IGenerateHtmlContentStringPros } from './type';
 import './index.css';
-
-const generateApiPlayer = (
-  player: any,
-  video: HTMLVideoElement | null | undefined,
-  typePlayer: ETypePlayer,
-  version?: string,
-) => {
-  const apiPlayer: { [key: string]: any } = {
-    play: () => video?.play(),
-    pause: () => video?.pause(),
-  };
-  if (typePlayer === ETypePlayer.SHAKA) {
-    apiPlayer.play = () => video?.play();
-
-    if (version) {
-      //check version
-    }
-  }
-  return apiPlayer;
-};
 
 const classes = generateStyles();
 
-const generateHtmlContentString = (props?: IGenerateHtmlContentStringPros) => {
-  const { videoName } = props || {};
-  return `
-  <div class=${classes.controllerContent}  id=${ids.smControllerContent}>
-    <div class=${classes.contentHead} id=${ids.smContentHead}>
-    ${
-      videoName &&
-      `<p class=${classes.contentHeadTitle}>${videoName}
-      </p>`
-    }
-      </div>
-    <div class=${classes.contentBody} id=${ids.smContentBody}>
-      <div class=${classes.contentBodyBtnPlay} id=${ids.smContentBodyBtnPlay}>${playIcon}</div>
-    </div>
-    <div class=${classes.contentFooter} id=${ids.smContentFooter}>footer</div>
-  </div>
-  <div class=${classes.loading} id=${ids.smLoading}>
-    ${loadingIcon}
-  </div>
-  <div class=${classes.error} id=${ids.smError}>
-    error
-  </div>
-  `;
-};
 class SmUIControls {
-  private apiPlayer: { [key: string]: any } = {
+  private apiPlayer: IApiPlayer = {
     play: () => Promise<void> || undefined,
     pause: () => Promise<void> || undefined,
   };
   private isInit: boolean = false;
+  private controllerContainer: ControllerContainer | undefined;
+  private errorContainer: ErrorContainer | undefined;
+  private loadingContainer: LoadingContainer | undefined;
 
   constructor(props: IConfigureUIPlayerProps) {
     const {
@@ -68,9 +33,7 @@ class SmUIControls {
       style,
     } = props;
 
-    const htmlContentString = generateHtmlContentString({
-      videoName: videoInfo?.name,
-    });
+    const htmlContentString = generateHtmlContentContainerString(classes);
     const apiPlayer = generateApiPlayer(player, video, typePlayer, version);
     this.apiPlayer = apiPlayer;
     const VideoContainerElement = document.getElementById(idVideoContainer);
@@ -84,34 +47,51 @@ class SmUIControls {
         smControllerContainerEle.id = ids.smControllerContainer;
         smControllerContainerEle.innerHTML = htmlContentString;
         VideoContainerElement.appendChild(smControllerContainerEle);
-        const bodyBtnPlayEle = document.getElementById(ids.smContentBodyBtnPlay);
-        bodyBtnPlayEle?.addEventListener('click', () => {
-          apiPlayer.play();
+
+        this.controllerContainer = new ControllerContainer({
+          id: ids.smControllerContent,
+          classes,
+          videoInfo,
+          apiPlayer,
         });
-        const loadingContainerEle = document.getElementById(ids.smLoading);
-        const contentControllerEle = document.getElementById(ids.smControllerContent);
-        const errorEle = document.getElementById(ids.smError);
-        //xử lý khi loaded sãn sàng play
-        player.addEventListener('loaded', (event: any) => {
-          console.log('loaded', classes.controllerContentEnable);
-          loadingContainerEle?.classList.add(classes.loadingDisable);
-          contentControllerEle?.classList.add(classes.controllerContentEnable);
+        this.errorContainer = new ErrorContainer({ id: ids.smError, classes, apiPlayer });
+        this.loadingContainer = new LoadingContainer({ id: ids.smLoading, classes, apiPlayer });
+
+        apiPlayer.addEventListener(EEVentName.LOADED, (data: any) => {
+          this.handleEventLoaded(data);
         });
-        // xử lý khi có lỗi
-        player.addEventListener('error', (event: any) => {
-          console.log('error', classes.controllerContentEnable, event);
-          loadingContainerEle?.classList.add(classes.loadingDisable);
-          contentControllerEle?.classList.remove(classes.controllerContentEnable);
-          errorEle?.classList.add(classes.errorEnable);
+        apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
+          this.handleEventError(data);
+        });
+        apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
+          this.handleEventPlay(data);
+        });
+        apiPlayer.addEventListener(EEVentName.PAUSE, (data: any) => {
+          this.handleEventPause(data);
         });
       }
     }
   }
-
-  static get version(): string {
-    // @ts-ignore
-    return __VERSION__;
-  }
+  handleEventLoaded = (data: any) => {
+    console.log('loaded', { data });
+    this.loadingContainer && this.loadingContainer.hide();
+    this.errorContainer && this.errorContainer.hide();
+    this.controllerContainer && this.controllerContainer.show();
+  };
+  handleEventError = (data: any) => {
+    console.log('error', { data });
+    this.loadingContainer && this.loadingContainer.hide();
+    this.controllerContainer && this.controllerContainer.hide();
+    this.errorContainer && this.errorContainer.show(data);
+  };
+  handleEventPlay = (data: any) => {
+    console.log('play', { data });
+    this.controllerContainer?.hideButtonPlay();
+  };
+  handleEventPause = (data: any) => {
+    console.log('pause', { data });
+    this.controllerContainer?.showButtonPlay();
+  };
 
   destroy() {
     this.apiPlayer = {};
