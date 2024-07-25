@@ -1,9 +1,16 @@
-import "./components/TestCSS";
-import "./index.css";
+import { IConfigureUIPlayerProps } from './type';
+import './index.css';
 declare class SmUIControls {
-    private name;
-    constructor(props: any);
-    static get version(): string;
+    private apiPlayer;
+    private isInit;
+    private controllerContainer;
+    private errorContainer;
+    private loadingContainer;
+    constructor(props: IConfigureUIPlayerProps);
+    handleEventLoaded: (data: any) => void;
+    handleEventError: (data: any) => void;
+    handleEventPlay: (data: any) => void;
+    handleEventPause: (data: any) => void;
     destroy(): void;
 }
 export default SmUIControls;
