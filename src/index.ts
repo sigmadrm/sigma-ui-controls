@@ -75,6 +75,7 @@ class SmUIControls {
       }
     }
   }
+
   handleEventLoaded = (data: any) => {
     this.loadingContainer && this.loadingContainer.handleEventLoaded();
     this.controllerContainer && this.controllerContainer.handleEventLoaded();

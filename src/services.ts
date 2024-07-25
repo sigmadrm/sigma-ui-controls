@@ -155,10 +155,4 @@ export const generateHtmlContentContainerString = (classes: ReturnType<typeof ge
     </div>
     `;
 };
-export const generateHtmlContentControllerString = (classes: ReturnType<typeof generateStyles>) => {
-  return `
-   <div class=${classes.headController} id=${ids.smHeadController}></div>
-    <div class=${classes.bodyController} id=${ids.smBodyController}></div>
-    <div class=${classes.footerController} id=${ids.smFooterController}></div>
-    `;
-};
+export const generateHtmlContentControllerString = (classes: ReturnType<typeof generateStyles>) => {};

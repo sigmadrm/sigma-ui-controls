@@ -2,7 +2,6 @@ import HeadController from './HeadController';
 import BodyController from './BodyController';
 import FooterController from './FooterController';
 
-import { generateHtmlContentControllerString } from '../../../services';
 import { ids } from '../../../constants';
 import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
@@ -26,25 +25,21 @@ class ControllerContainer extends BaseComponent {
 
   render() {
     const { classes } = this;
-    const htmlContentString = generateHtmlContentControllerString(classes);
+    const htmlContentString = `
+      <div class=${classes.headController} id=${ids.smHeadController}></div>
+      <div class=${classes.bodyController} id=${ids.smBodyController}></div>
+      <div class=${classes.footerController} id=${ids.smFooterController}></div>
+     `;
     if (this.containerElement) {
       this.containerElement.innerHTML = htmlContentString;
     }
   }
 
   registerListener() {
-    const { containerElement } = this;
-
-    containerElement?.addEventListener('click', (event) => {
-      this.handleClickContainer(event);
-    });
+    this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
   }
 
-  unregisterListener() {
-    this.containerElement?.removeEventListener('click', (event) => {
-      this.handleClickContainer(event);
-    });
-  }
+  unregisterListener() {}
 
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;

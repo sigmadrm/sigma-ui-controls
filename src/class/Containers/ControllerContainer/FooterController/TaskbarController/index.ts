@@ -1,6 +1,4 @@
 import { IConstructorBaseProps } from '../../../../../type';
-import { generateHtmlTaskbarControllerString } from '../../services';
-
 import ButtonFullScreen from '../../../../Components/ButtonFullScreen';
 import { ids } from '../../../../../constants';
 import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
@@ -50,7 +48,17 @@ class TaskbarController extends BaseComponent {
 
   render() {
     if (this.containerElement) {
-      const htmlString = generateHtmlTaskbarControllerString(this.classes);
+      const { classes } = this;
+      const htmlString = `<div class=${classes.taskbarGroup}>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPlaySecondary}></div>
+     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
+     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonVolume}></div>
+     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonMute}></div>
+  </div>
+  <div class=${classes.taskbarGroup}>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonExitFullScreen}></div>
+  </div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }

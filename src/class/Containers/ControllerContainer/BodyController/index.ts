@@ -23,7 +23,9 @@ class BodyController extends BaseComponent {
   render() {
     if (this.containerElement) {
       const { classes } = this;
-      const htmlString = `<div class=${classes.buttonPlayPrimary} id=${ids.smButtonPlayPrimary}>${playIcon}</div>`;
+      const htmlString = `<div class=${classes.buttonPlayPrimary} id=${ids.smButtonPlayPrimary}>
+        ${playIcon}
+      </div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }
