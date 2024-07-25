@@ -25,11 +25,17 @@ class BodyController {
       ele.innerHTML = htmlString;
     }
     this.buttonPrimary = new ButtonPlayPrimary({
-      id: ids.smBodyControllerButtonPrimary,
+      id: ids.smButtonPlayPrimary,
       classes,
       apiPlayer,
     });
   }
+  handleEventPlay = () => {
+    this.hideButtonPlay();
+  };
+  handleEventPause = () => {
+    this.showButtonPlay();
+  };
   hideButtonPlay = () => {
     if (this.buttonPrimary) {
       this.buttonPrimary.hide();

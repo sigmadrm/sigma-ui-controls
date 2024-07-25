@@ -1,17 +1,19 @@
 import { IConstructorBaseProps } from '../../../../../type';
 import { generateHtmlTaskbarControllerString } from '../../services';
 
-import FullScreenButton from '../../../../Components/FullScreenButton';
+import ButtonFullScreen from '../../../../Components/ButtonFullScreen';
 
 import generateStyles from '../../../../../style';
 import { ids } from '../../../../../constants';
+import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
 class TaskbarController {
   private id: string;
   private classes: ReturnType<typeof generateStyles>;
-  private fullScreenButton: FullScreenButton | undefined;
+  private buttonFullScreen: ButtonFullScreen | undefined;
+  private buttonPlaySecondary: ButtonPlaySecondary | undefined;
 
   containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
@@ -26,12 +28,27 @@ class TaskbarController {
       ele.innerHTML = htmlString;
     }
 
-    this.fullScreenButton = new FullScreenButton({
-      id: ids.smFullScreenButton,
+    this.buttonFullScreen = new ButtonFullScreen({
+      id: ids.smButtonFullScreen,
+      classes,
+      apiPlayer,
+    });
+    this.buttonPlaySecondary = new ButtonPlaySecondary({
+      id: ids.smButtonPlaySecondary,
       classes,
       apiPlayer,
     });
   }
+  handleEventPlay = () => {
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.hide();
+    }
+  };
+  handleEventPause = () => {
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.show();
+    }
+  };
 }
 
 export default TaskbarController;

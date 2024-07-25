@@ -38,6 +38,12 @@ class FooterController {
       apiPlayer,
     });
   }
+  handleEventPlay = () => {
+    this.taskbarController?.handleEventPlay();
+  };
+  handleEventPause = () => {
+    this.taskbarController?.handleEventPause();
+  };
 }
 
 export default FooterController;

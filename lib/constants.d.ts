@@ -3,10 +3,13 @@ export declare const ids: {
     smControllerContent: string;
     smLoading: string;
     smError: string;
-    smContentHead: string;
-    smContentBody: string;
-    smContentBodyBtnPlay: string;
-    smContentFooter: string;
+    smHeadController: string;
+    smBodyController: string;
+    smBodyControllerButtonPrimary: string;
+    smFooterController: string;
+    smTaskbarController: string;
+    smSeekBarController: string;
+    smFullScreenButton: string;
 };
 export declare const versionDef = "4.10.0";
 export declare enum ETypePlayer {

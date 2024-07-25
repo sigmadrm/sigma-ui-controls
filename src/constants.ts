@@ -5,11 +5,12 @@ export const ids = {
   smError: 'sm-error',
   smHeadController: 'sm-head-controller',
   smBodyController: 'sm-body-controller',
-  smBodyControllerButtonPrimary: 'sm-body-controller-button-primary',
+  smButtonPlayPrimary: 'sm-button-play-primary',
   smFooterController: 'sm-footer-controller',
   smTaskbarController: 'sm-taskbar-controller',
   smSeekBarController: 'sm-seek-bar-controller',
-  smFullScreenButton: 'sm-full-screen-button',
+  smButtonFullScreen: 'sm-button-full-screen',
+  smButtonPlaySecondary: 'sm-button-play-secondary',
 };
 export const versionDef = '4.10.0';
 

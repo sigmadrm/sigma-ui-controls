@@ -54,11 +54,13 @@ class ControllerContainer {
       this.containerEle.classList.add(this.classes.controllerContentEnable);
     }
   };
-  hideButtonPlay = () => {
-    this.bodyController && this.bodyController.hideButtonPlay();
+  handleEventPlay = () => {
+    this.bodyController && this.bodyController.handleEventPlay();
+    this.footerController && this.footerController.handleEventPlay();
   };
-  showButtonPlay = () => {
-    this.bodyController && this.bodyController.showButtonPlay();
+  handleEventPause = () => {
+    this.bodyController && this.bodyController.handleEventPause();
+    this.footerController && this.footerController.handleEventPause();
   };
 }
 export default ControllerContainer;

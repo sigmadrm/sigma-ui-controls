@@ -3,8 +3,14 @@ import './index.css';
 declare class SmUIControls {
     private apiPlayer;
     private isInit;
+    private controllerContainer;
+    private errorContainer;
+    private loadingContainer;
     constructor(props: IConfigureUIPlayerProps);
-    static get version(): string;
+    handleEventLoaded: (data: any) => void;
+    handleEventError: (data: any) => void;
+    handleEventPlay: (data: any) => void;
+    handleEventPause: (data: any) => void;
     destroy(): void;
 }
 export default SmUIControls;

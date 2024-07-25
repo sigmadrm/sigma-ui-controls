@@ -86,11 +86,11 @@ class SmUIControls {
   };
   handleEventPlay = (data: any) => {
     console.log('play', { data });
-    this.controllerContainer?.hideButtonPlay();
+    this.controllerContainer?.handleEventPlay();
   };
   handleEventPause = (data: any) => {
     console.log('pause', { data });
-    this.controllerContainer?.showButtonPlay();
+    this.controllerContainer?.handleEventPlay();
   };
 
   destroy() {

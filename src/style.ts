@@ -15,7 +15,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       z-index: 9999;
       overflow: hidden;
     `,
-
     controllerContent: css`
       position: absolute;
       top: 0;
@@ -76,6 +75,9 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      &:hover {
+        box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
+      }
     `,
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
@@ -88,7 +90,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 16px;
       overflow: hidden;
     `,
     seekBarController: css`
@@ -108,20 +110,23 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 16px;
     `,
     taskbarGroupBtn: css`
       width: 30px;
       height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      display: none;
       border-radius: 50%;
       &:hover {
         box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
         background: rgba(255, 255, 255, 0.1);
       }
+    `,
+    taskbarGroupBtnEnable: css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     `,
     loadingContainer: css`
       background: rgb(119 119 119 / 50%);

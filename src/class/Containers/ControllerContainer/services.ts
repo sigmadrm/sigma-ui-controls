@@ -10,7 +10,7 @@ export const generateHtmlHeadControllerString = (classes: ReturnType<typeof gene
   }`;
 };
 export const generateHtmlBodyControllerString = (classes: ReturnType<typeof generateStyles>) => {
-  return `<div class=${classes.buttonPlayPrimary} id=${ids.smBodyControllerButtonPrimary}>${playIcon}</div>`;
+  return `<div class=${classes.buttonPlayPrimary} id=${ids.smButtonPlayPrimary}>${playIcon}</div>`;
 };
 export const generateHtmlFooterControllerString = (classes: ReturnType<typeof generateStyles>) => {
   return `<div class=${classes.seekBarController} id=${ids.smSeekBarController}></div>
@@ -19,7 +19,7 @@ export const generateHtmlFooterControllerString = (classes: ReturnType<typeof ge
 
 export const generateHtmlTaskbarControllerString = (classes: ReturnType<typeof generateStyles>) => {
   return `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn}>${playIcon}</div>
+      <div class=${classes.taskbarGroupBtn}  id=${ids.smButtonPlaySecondary}>${playIcon}</div>
      <div class=${classes.taskbarGroupBtn}>${pausedIcon}</div>
      <div class=${classes.taskbarGroupBtn}>${replyIcon}</div>
      <div class=${classes.taskbarGroupBtn}>${forwardIcon}</div>
@@ -27,6 +27,6 @@ export const generateHtmlTaskbarControllerString = (classes: ReturnType<typeof g
      <div class=${classes.taskbarGroupBtn}>${muteIcon}</div>
   </div>
   <div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smFullScreenButton}></div>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonFullScreen}></div>
   </div>`;
 };
