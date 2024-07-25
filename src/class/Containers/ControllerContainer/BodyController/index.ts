@@ -2,7 +2,7 @@ import { ids } from '../../../../constants';
 import { IConstructorBaseProps } from '../../../../type';
 import { generateHtmlBodyControllerString } from '../services';
 
-import ButtonPrimary from '../../../Components/ButtonPrimary';
+import ButtonPlayPrimary from '../../../Components/ButtonPlayPrimary';
 
 import generateStyles from '../../../../style';
 
@@ -11,7 +11,7 @@ interface IConstructorProps extends IConstructorBaseProps {}
 class BodyController {
   private id: string;
   private classes: ReturnType<typeof generateStyles>;
-  private buttonPrimary: ButtonPrimary | undefined;
+  private buttonPrimary: ButtonPlayPrimary | undefined;
 
   containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
@@ -24,7 +24,7 @@ class BodyController {
     if (ele) {
       ele.innerHTML = htmlString;
     }
-    this.buttonPrimary = new ButtonPrimary({
+    this.buttonPrimary = new ButtonPlayPrimary({
       id: ids.smBodyControllerButtonPrimary,
       classes,
       apiPlayer,

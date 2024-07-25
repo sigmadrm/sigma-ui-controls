@@ -2,7 +2,7 @@ import { IConstructorBaseProps } from '../../../type';
 import generateStyles from '../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonPrimary {
+class ButtonPlayPrimary {
   private id: string;
   private classes: ReturnType<typeof generateStyles>;
 
@@ -15,7 +15,7 @@ class ButtonPrimary {
     this.containerEle = ele;
 
     if (ele) {
-      ele.classList.add(this.classes.bodyControllerButtonPrimaryEnable);
+      ele.classList.add(this.classes.buttonPlayPrimaryEnable);
     }
     ele?.addEventListener('click', (event: MouseEvent) => {
       event.preventDefault();
@@ -27,14 +27,14 @@ class ButtonPrimary {
   }
   hide = () => {
     if (this.containerEle) {
-      this.containerEle.className = this.classes.bodyControllerButtonPrimary;
+      this.containerEle.className = this.classes.buttonPlayPrimary;
     }
   };
   show = () => {
     if (this.containerEle) {
-      this.containerEle.classList.add(this.classes.bodyControllerButtonPrimaryEnable);
+      this.containerEle.classList.add(this.classes.buttonPlayPrimaryEnable);
     }
   };
 }
 
-export default ButtonPrimary;
+export default ButtonPlayPrimary;

@@ -1,5 +1,5 @@
 import { ids } from '../../../constants';
-import { forwardIcon, fullScreenIcon, muteIcon, pausedIcon, playIcon, replyIcon, volumeIcon } from '../../../icons';
+import { forwardIcon, muteIcon, pausedIcon, playIcon, replyIcon, volumeIcon } from '../../../icons';
 import generateStyles from '../../../style';
 
 export const generateHtmlHeadControllerString = (classes: ReturnType<typeof generateStyles>, videoName?: string) => {
@@ -10,7 +10,7 @@ export const generateHtmlHeadControllerString = (classes: ReturnType<typeof gene
   }`;
 };
 export const generateHtmlBodyControllerString = (classes: ReturnType<typeof generateStyles>) => {
-  return `<div class=${classes.bodyControllerButtonPrimary} id=${ids.smBodyControllerButtonPrimary}>${playIcon}</div>`;
+  return `<div class=${classes.buttonPlayPrimary} id=${ids.smBodyControllerButtonPrimary}>${playIcon}</div>`;
 };
 export const generateHtmlFooterControllerString = (classes: ReturnType<typeof generateStyles>) => {
   return `<div class=${classes.seekBarController} id=${ids.smSeekBarController}></div>

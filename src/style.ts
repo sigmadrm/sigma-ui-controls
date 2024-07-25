@@ -32,7 +32,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
     `,
     headController: css`
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
       height: 16%;
       min-height: 50px;
@@ -61,7 +61,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
     `,
-    bodyControllerButtonPrimary: css`
+    buttonPlayPrimary: css`
       box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(25px);
       border-radius: 50%;
@@ -71,14 +71,14 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       color: white;
       display: none;
     `,
-    bodyControllerButtonPrimaryEnable: css`
+    buttonPlayPrimaryEnable: css`
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
     `,
     footerController: css`
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+      background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
       height: 20%;
       min-height: 50px;
