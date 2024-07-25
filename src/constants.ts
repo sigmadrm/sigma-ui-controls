@@ -6,6 +6,7 @@ export const ids = {
   smHeadController: 'sm-head-controller',
   smBodyController: 'sm-body-controller',
   smButtonPlayPrimary: 'sm-button-play-primary',
+  smSettingsContainer: 'sm-settings-container',
   smFooterController: 'sm-footer-controller',
   smTaskbarController: 'sm-taskbar-controller',
   smSeekBarController: 'sm-seek-bar-controller',
@@ -17,6 +18,8 @@ export const ids = {
   smButtonExitFullScreen: 'sm-button-exit-full-screen',
   smButtonVolume: 'sm-button-volume',
   smButtonMute: 'sm-button-mute',
+  smPlaybackSpeed: 'sm-playback-rate-controller',
+  smQuality: 'sm-quality-controller',
 };
 export const versionDef = '4.10.0';
 
