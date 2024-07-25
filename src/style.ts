@@ -82,20 +82,21 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 20%;
-      min-height: 50px;
-      padding: 8px 32px;
+      // height: 20%;
+      // min-height: 50px;
+      padding: 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 8px;
       overflow: hidden;
     `,
     seekBarController: css`
       background: green;
       width: 100%;
+      height: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -110,17 +111,14 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 12px;
     `,
     taskbarGroupBtn: css`
-      width: 30px;
-      height: 30px;
+      box-sizing: border-box;
+      width: 40px;
+      height: 40px;
       display: none;
-      border-radius: 50%;
-      &:hover {
-        box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.1);
-      }
+      padding: 4px;
     `,
     taskbarGroupBtnEnable: css`
       display: flex;

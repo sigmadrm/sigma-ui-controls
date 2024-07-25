@@ -11,6 +11,8 @@ export const ids = {
   smSeekBarController: 'sm-seek-bar-controller',
   smButtonFullScreen: 'sm-button-full-screen',
   smButtonPlaySecondary: 'sm-button-play-secondary',
+  smButtonSetting: 'sm-button-setting',
+  smButtonSubtitle: 'sm-button-subtitle',
 };
 export const versionDef = '4.10.0';
 
