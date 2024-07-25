@@ -25,7 +25,6 @@ export default class BaseComponent {
   }
 
   render() {
-    console.log('Render componet cha');
     // Ex:
     // if (this.containerElement) {
     //   this.containerElement.innerHTML = `<div></div>`;

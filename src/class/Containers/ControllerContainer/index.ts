@@ -25,23 +25,22 @@ class ControllerContainer extends BaseComponent {
   }
 
   render() {
-    console.log('Render componet con');
-
     const { classes } = this;
-    const htmlContentString = generateHtmlContentControllerString(classes);
+    const htmlContentString = `
+      <div class=${classes.headController} id=${ids.smHeadController}></div>
+      <div class=${classes.bodyController} id=${ids.smBodyController}></div>
+      <div class=${classes.footerController} id=${ids.smFooterController}></div>
+     `;
     if (this.containerElement) {
       this.containerElement.innerHTML = htmlContentString;
     }
   }
 
   registerListener() {
-    const { containerElement } = this;
-    containerElement?.addEventListener('click', this.handleClickContainer);
+    this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
   }
 
-  unregisterListener() {
-    this.containerElement?.removeEventListener('click', this.handleClickContainer);
-  }
+  unregisterListener() {}
 
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;

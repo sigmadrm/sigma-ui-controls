@@ -72,6 +72,7 @@ class SmUIControls {
       }
     }
   }
+
   handleEventLoaded = (data: any) => {
     console.log('loaded', { data });
     this.loadingContainer && this.loadingContainer.hide();

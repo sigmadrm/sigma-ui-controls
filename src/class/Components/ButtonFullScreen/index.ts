@@ -19,10 +19,7 @@ class ButtonFullScreen extends BaseComponent {
     this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
   }
 
-  unregisterListener() {
-    // FIXME: this function not working
-    // this.containerElement?.removeEventListener('click', this.handleContainerClick);
-  }
+  unregisterListener() {}
 
   handleContainerClick = (event: MouseEvent) => {
     const { apiPlayer } = this;
