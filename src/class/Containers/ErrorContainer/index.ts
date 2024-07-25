@@ -1,7 +1,8 @@
-import { convertDataEventError } from '../../services';
-import { infoIcon } from '../../icons';
-import generateStyles from '../../style';
-import { IConstructorBaseProps } from '../../type';
+import { convertDataEventError } from '../../../services';
+import { infoIcon } from '../../../icons';
+import { IConstructorBaseProps } from '../../../type';
+
+import generateStyles from '../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 

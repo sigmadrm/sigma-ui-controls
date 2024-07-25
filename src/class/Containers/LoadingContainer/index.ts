@@ -1,6 +1,6 @@
-import { loadingIcon } from '../../icons';
-import generateStyles from '../../style';
-import { IConstructorBaseProps } from '../../type';
+import { loadingIcon } from '../../../icons';
+import generateStyles from '../../../style';
+import { IConstructorBaseProps } from '../../../type';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 class LoadingContainer {

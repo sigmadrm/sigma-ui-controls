@@ -9,6 +9,7 @@ export const ids = {
   smFooterController: 'sm-footer-controller',
   smTaskbarController: 'sm-taskbar-controller',
   smSeekBarController: 'sm-seek-bar-controller',
+  smFullScreenButton: 'sm-full-screen-button',
 };
 export const versionDef = '4.10.0';
 

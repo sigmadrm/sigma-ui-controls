@@ -1,6 +1,6 @@
-import { ids } from '../../constants';
-import { forwardIcon, fullScreenIcon, muteIcon, pausedIcon, playIcon, replyIcon, volumeIcon } from '../../icons';
-import generateStyles from '../../style';
+import { ids } from '../../../constants';
+import { forwardIcon, fullScreenIcon, muteIcon, pausedIcon, playIcon, replyIcon, volumeIcon } from '../../../icons';
+import generateStyles from '../../../style';
 
 export const generateHtmlHeadControllerString = (classes: ReturnType<typeof generateStyles>, videoName?: string) => {
   return `${
@@ -27,6 +27,6 @@ export const generateHtmlTaskbarControllerString = (classes: ReturnType<typeof g
      <div class=${classes.taskbarGroupBtn}>${muteIcon}</div>
   </div>
   <div>
-      <div class=${classes.taskbarGroupBtn}>${fullScreenIcon}</div>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smFullScreenButton}></div>
   </div>`;
 };

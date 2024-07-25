@@ -1,8 +1,10 @@
-import { ids } from '../../../constants';
-import generateStyles from '../../../style';
-import { IConstructorBaseProps } from '../../../type';
+import { ids } from '../../../../constants';
+import { IConstructorBaseProps } from '../../../../type';
 import { generateHtmlBodyControllerString } from '../services';
-import ButtonPrimary from './ButtonPrimary';
+
+import ButtonPrimary from '../../../Components/ButtonPrimary';
+
+import generateStyles from '../../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 

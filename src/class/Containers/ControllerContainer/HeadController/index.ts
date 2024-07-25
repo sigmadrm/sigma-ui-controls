@@ -1,6 +1,7 @@
-import generateStyles from '../../../style';
-import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
+import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
 import { generateHtmlHeadControllerString } from '../services';
+
+import generateStyles from '../../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];

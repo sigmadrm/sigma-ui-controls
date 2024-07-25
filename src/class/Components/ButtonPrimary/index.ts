@@ -1,5 +1,5 @@
-import generateStyles from '../../../../style';
-import { IConstructorBaseProps } from '../../../../type';
+import { IConstructorBaseProps } from '../../../type';
+import generateStyles from '../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 class ButtonPrimary {

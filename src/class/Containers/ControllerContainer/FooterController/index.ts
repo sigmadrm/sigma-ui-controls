@@ -1,6 +1,6 @@
-import { ids } from '../../../constants';
-import generateStyles from '../../../style';
-import { IApiPlayer, IConstructorBaseProps } from '../../../type';
+import { ids } from '../../../../constants';
+import generateStyles from '../../../../style';
+import { IApiPlayer, IConstructorBaseProps } from '../../../../type';
 import { generateHtmlFooterControllerString } from '../services';
 import SeekBarController from './SeekBarController';
 import TaskbarController from './TaskbarController';

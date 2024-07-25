@@ -7,16 +7,16 @@ export const playIcon = `<svg
       </svg>`;
 
 export const loadingIcon = `
-  <div  class="loading-ss">
-    <div class="ss-loading ss-medium">
-      <div class="ss-container">
-        <div class="ss-top">
-          <div class="ss-circle"></div>
+  <div  class="sm-loading-ss">
+    <div class="sm-ss-loading sm-ss-medium">
+      <div class="sm-ss-container">
+        <div class="sm-ss-top">
+          <div class="sm-ss-circle"></div>
         </div>
       </div>
-      <div class="ss-container">
-        <div class="ss-bottom">
-          <div class="ss-circle"></div>
+      <div class="sm-ss-container">
+        <div class="sm-ss-bottom">
+          <div class="sm-ss-circle"></div>
         </div>
       </div>
     </div>

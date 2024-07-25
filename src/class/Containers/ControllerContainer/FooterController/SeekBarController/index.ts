@@ -1,5 +1,5 @@
-import generateStyles from '../../../../style';
-import { IConstructorBaseProps } from '../../../../type';
+import generateStyles from '../../../../../style';
+import { IConstructorBaseProps } from '../../../../../type';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 

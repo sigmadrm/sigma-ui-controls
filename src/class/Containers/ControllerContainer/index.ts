@@ -1,11 +1,12 @@
-import { generateHtmlContentControllerString } from '../../services';
 import HeadController from './HeadController';
-
-import generateStyles from '../../style';
 import BodyController from './BodyController';
 import FooterController from './FooterController';
-import { ids } from '../../constants';
-import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../type';
+
+import { generateHtmlContentControllerString } from '../../../services';
+import { ids } from '../../../constants';
+import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
+
+import generateStyles from '../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];

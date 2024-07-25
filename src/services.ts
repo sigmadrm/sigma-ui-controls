@@ -43,6 +43,38 @@ export const generateApiPlayer = (
       }
       return false;
     },
+    isFullScreen: () => {
+      const isFullscreen = document.fullscreenElement;
+      if (isFullscreen) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    enterFullScreen: () => {
+      if (video) {
+        const videoContainer = video.parentElement as any;
+        if (videoContainer) {
+          if (videoContainer.requestFullscreen) {
+            videoContainer.requestFullscreen();
+          } else if (videoContainer.mozRequestFullScreen) {
+            // Firefox
+            videoContainer.mozRequestFullScreen();
+          } else if (videoContainer.webkitRequestFullscreen) {
+            // Chrome, Safari and Opera
+            videoContainer.webkitRequestFullscreen();
+          } else if (videoContainer.msRequestFullscreen) {
+            // IE/Edge
+            videoContainer.msRequestFullscreen();
+          }
+        }
+      }
+    },
+    exitFullScreen: () => {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    },
   };
 
   if (typePlayer === ETypePlayer.SHAKA) {

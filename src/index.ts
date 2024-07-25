@@ -1,9 +1,9 @@
 import { ids, typePlayerDef, versionDef } from './constants';
 import { EEVentName, IApiPlayer, IConfigureUIPlayerProps } from './type';
 
-import ControllerContainer from './class/ControllerContainer';
-import ErrorContainer from './class/ErrorContainer';
-import LoadingContainer from './class/LoadingContainer';
+import ControllerContainer from './class/Containers/ControllerContainer';
+import ErrorContainer from './class/Containers/ErrorContainer';
+import LoadingContainer from './class/Containers/LoadingContainer';
 
 import { generateApiPlayer, generateHtmlContentContainerString } from './services';
 

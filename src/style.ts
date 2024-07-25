@@ -117,6 +117,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      border-radius: 50%;
+      &:hover {
+        box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+      }
     `,
     loadingContainer: css`
       background: rgb(119 119 119 / 50%);
