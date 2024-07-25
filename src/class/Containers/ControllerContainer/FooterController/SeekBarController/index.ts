@@ -1,23 +1,17 @@
-import generateStyles from '../../../../../style';
+import BaseComponent from '../../../../BaseComponent';
 import { IConstructorBaseProps } from '../../../../../type';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
-class SeekBarController {
-  private id: string;
-  private classes: ReturnType<typeof generateStyles>;
-
-  containerEle: HTMLElement | undefined | null;
+class SeekBarController extends BaseComponent {
   constructor(props: IConstructorProps) {
-    const { id, classes } = props;
-    this.id = id;
-    this.classes = classes;
+    super(props);
+  }
 
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
-    const htmlString = `<div>SeekBarController</div>`;
-    if (ele) {
-      ele.innerHTML = htmlString;
+  render() {
+    if (this.containerElement) {
+      const htmlString = `<div>SeekBarController</div>`;
+      this.containerElement.innerHTML = htmlString;
     }
   }
 }

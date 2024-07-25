@@ -27,8 +27,10 @@ export enum EEVentName {
 export interface IApiPlayer {
   [key: string]: any;
 }
+
+export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
   id: string;
-  classes: ReturnType<typeof generateStyles>;
+  classes: TClasses;
   apiPlayer: IApiPlayer;
 }

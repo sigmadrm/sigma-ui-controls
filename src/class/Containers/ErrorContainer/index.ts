@@ -1,33 +1,24 @@
 import { convertDataEventError } from '../../../services';
 import { infoIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
-
-import generateStyles from '../../../style';
+import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
-class ErrorContainer {
-  private id: string;
-  private classes: ReturnType<typeof generateStyles>;
-
-  containerEle: HTMLElement | undefined | null;
+class ErrorContainer extends BaseComponent {
   constructor(props: IConstructorProps) {
-    const { id, classes } = props;
-    this.id = id;
-    this.classes = classes;
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
+    super(props);
   }
   hide = () => {
-    if (this.containerEle) {
-      this.containerEle.className = this.classes.errorContainer;
+    if (this.containerElement) {
+      this.containerElement.className = this.classes.errorContainer;
     }
   };
   show = (data: ReturnType<typeof convertDataEventError>) => {
-    if (this.containerEle) {
-      this.containerEle.classList.add(this.classes.loadingContainerEnable);
+    if (this.containerElement) {
+      this.containerElement.classList.add(this.classes.loadingContainerEnable);
       const htmlString = this.generateHtml(data);
-      this.containerEle.innerHTML = htmlString;
+      this.containerElement.innerHTML = htmlString;
     }
   };
   generateHtml = (data: ReturnType<typeof convertDataEventError>) => {

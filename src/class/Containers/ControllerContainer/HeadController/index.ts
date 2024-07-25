@@ -1,28 +1,25 @@
+import BaseComponent from '../../../BaseComponent';
 import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
-import { generateHtmlHeadControllerString } from '../services';
-
-import generateStyles from '../../../../style';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];
 }
 
-class HeadController {
-  private id: string;
-  private classes: ReturnType<typeof generateStyles>;
+class HeadController extends BaseComponent {
   private videoInfo: IConfigureUIPlayerProps['videoInfo'];
 
-  containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
-    const { id, classes, videoInfo } = props;
-    this.id = id;
-    this.classes = classes;
+    const { videoInfo, ...baseProps } = props;
+    super(baseProps as IConstructorBaseProps);
     this.videoInfo = videoInfo;
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
-    const htmlString = generateHtmlHeadControllerString(classes, videoInfo?.name);
-    if (ele) {
-      ele.innerHTML = htmlString;
+  }
+
+  render() {
+    if (this.containerElement) {
+      const videoName = this.videoInfo?.name ?? '';
+      const { classes } = this;
+      const htmlString = `${videoName && `<p class=${classes.headControllerTitle}>${videoName}</p>`}`;
+      this.containerElement.innerHTML = htmlString;
     }
   }
 }

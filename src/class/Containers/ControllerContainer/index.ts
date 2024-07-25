@@ -5,53 +5,63 @@ import FooterController from './FooterController';
 import { generateHtmlContentControllerString } from '../../../services';
 import { ids } from '../../../constants';
 import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
-
-import generateStyles from '../../../style';
+import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];
 }
-class ControllerContainer {
-  private id: string;
+class ControllerContainer extends BaseComponent {
   private headController: HeadController | undefined;
   private bodyController: BodyController | undefined;
   private footerController: FooterController | undefined;
-  private classes: ReturnType<typeof generateStyles>;
 
-  containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
-    const { id, classes, videoInfo, apiPlayer } = props;
-    this.id = id;
-    this.classes = classes;
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
-    const htmlContentString = generateHtmlContentControllerString(classes);
-    if (ele) {
-      ele.innerHTML = htmlContentString;
-      ele.addEventListener('click', (event: MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (apiPlayer.isPlay()) {
-          apiPlayer.pause();
-        } else {
-          apiPlayer.play();
-        }
-      });
-    }
+    const { classes, videoInfo, apiPlayer } = props;
+    super(props);
 
     this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
   }
 
+  render() {
+    console.log('Render componet con');
+
+    const { classes } = this;
+    const htmlContentString = generateHtmlContentControllerString(classes);
+    if (this.containerElement) {
+      this.containerElement.innerHTML = htmlContentString;
+    }
+  }
+
+  registerListener() {
+    const { containerElement } = this;
+    containerElement?.addEventListener('click', this.handleClickContainer);
+  }
+
+  unregisterListener() {
+    this.containerElement?.removeEventListener('click', this.handleClickContainer);
+  }
+
+  handleClickContainer = (event: MouseEvent) => {
+    const { apiPlayer } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    if (apiPlayer.isPlay()) {
+      apiPlayer.pause();
+    } else {
+      apiPlayer.play();
+    }
+  };
+
   hide = () => {
-    if (this.containerEle) {
-      this.containerEle.className = this.classes.controllerContent;
+    if (this.containerElement) {
+      this.containerElement.className = this.classes.controllerContent;
     }
   };
   show = () => {
-    if (this.containerEle) {
-      this.containerEle.classList.add(this.classes.controllerContentEnable);
+    if (this.containerElement) {
+      this.containerElement.classList.add(this.classes.controllerContentEnable);
     }
   };
   handleEventPlay = () => {

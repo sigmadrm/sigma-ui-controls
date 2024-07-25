@@ -1,34 +1,31 @@
+import BaseComponent from '../../../BaseComponent';
 import { ids } from '../../../../constants';
+import { playIcon } from '../../../../icons';
 import { IConstructorBaseProps } from '../../../../type';
-import { generateHtmlBodyControllerString } from '../services';
 
 import ButtonPlayPrimary from '../../../Components/ButtonPlayPrimary';
 
-import generateStyles from '../../../../style';
-
 interface IConstructorProps extends IConstructorBaseProps {}
 
-class BodyController {
-  private id: string;
-  private classes: ReturnType<typeof generateStyles>;
+class BodyController extends BaseComponent {
   private buttonPrimary: ButtonPlayPrimary | undefined;
 
-  containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
-    const { id, classes, apiPlayer } = props;
-    this.id = id;
-    this.classes = classes;
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
-    const htmlString = generateHtmlBodyControllerString(classes);
-    if (ele) {
-      ele.innerHTML = htmlString;
-    }
+    const { classes, apiPlayer } = props;
+    super(props);
+
     this.buttonPrimary = new ButtonPlayPrimary({
       id: ids.smButtonPlayPrimary,
       classes,
       apiPlayer,
     });
+  }
+  render() {
+    if (this.containerElement) {
+      const { classes } = this;
+      const htmlString = `<div class=${classes.buttonPlayPrimary} id=${ids.smButtonPlayPrimary}>${playIcon}</div>`;
+      this.containerElement.innerHTML = htmlString;
+    }
   }
   handleEventPlay = () => {
     this.hideButtonPlay();

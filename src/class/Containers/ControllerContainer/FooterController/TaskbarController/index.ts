@@ -2,31 +2,19 @@ import { IConstructorBaseProps } from '../../../../../type';
 import { generateHtmlTaskbarControllerString } from '../../services';
 
 import ButtonFullScreen from '../../../../Components/ButtonFullScreen';
-
-import generateStyles from '../../../../../style';
 import { ids } from '../../../../../constants';
 import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
+import BaseComponent from '../../../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
-class TaskbarController {
-  private id: string;
-  private classes: ReturnType<typeof generateStyles>;
+class TaskbarController extends BaseComponent {
   private buttonFullScreen: ButtonFullScreen | undefined;
   private buttonPlaySecondary: ButtonPlaySecondary | undefined;
 
-  containerEle: HTMLElement | undefined | null;
   constructor(props: IConstructorProps) {
-    const { id, classes, apiPlayer } = props;
-    this.id = id;
-    this.classes = classes;
-
-    const ele = document.getElementById(id);
-    this.containerEle = ele;
-    const htmlString = generateHtmlTaskbarControllerString(classes);
-    if (ele) {
-      ele.innerHTML = htmlString;
-    }
+    const { classes, apiPlayer } = props;
+    super(props);
 
     this.buttonFullScreen = new ButtonFullScreen({
       id: ids.smButtonFullScreen,
@@ -39,6 +27,14 @@ class TaskbarController {
       apiPlayer,
     });
   }
+
+  render() {
+    if (this.containerElement) {
+      const htmlString = generateHtmlTaskbarControllerString(this.classes);
+      this.containerElement.innerHTML = htmlString;
+    }
+  }
+
   handleEventPlay = () => {
     if (this.buttonPlaySecondary) {
       this.buttonPlaySecondary.hide();
