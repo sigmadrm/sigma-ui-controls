@@ -33,6 +33,10 @@ class BodyController extends BaseComponent {
   handleEventPause = () => {
     this.showButtonPlay();
   };
+  handleEventLoaded = () => {
+    this.showButtonPlay();
+  };
+
   hideButtonPlay = () => {
     if (this.buttonPrimary) {
       this.buttonPrimary.hide();

@@ -25,8 +25,6 @@ class ControllerContainer extends BaseComponent {
   }
 
   render() {
-    console.log('Render componet con');
-
     const { classes } = this;
     const htmlContentString = generateHtmlContentControllerString(classes);
     if (this.containerElement) {
@@ -36,11 +34,16 @@ class ControllerContainer extends BaseComponent {
 
   registerListener() {
     const { containerElement } = this;
-    containerElement?.addEventListener('click', this.handleClickContainer);
+
+    containerElement?.addEventListener('click', (event) => {
+      this.handleClickContainer(event);
+    });
   }
 
   unregisterListener() {
-    this.containerElement?.removeEventListener('click', this.handleClickContainer);
+    this.containerElement?.removeEventListener('click', (event) => {
+      this.handleClickContainer(event);
+    });
   }
 
   handleClickContainer = (event: MouseEvent) => {
@@ -71,6 +74,14 @@ class ControllerContainer extends BaseComponent {
   handleEventPause = () => {
     this.bodyController && this.bodyController.handleEventPause();
     this.footerController && this.footerController.handleEventPause();
+  };
+  handleEventLoaded = () => {
+    this.show();
+    this.bodyController && this.bodyController.handleEventLoaded();
+    this.footerController && this.footerController.handleEventLoaded();
+  };
+  handleEventFullScreenChange = () => {
+    this.footerController && this.footerController.handleEventFullScreenChange();
   };
 }
 export default ControllerContainer;

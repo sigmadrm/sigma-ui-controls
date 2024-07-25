@@ -69,6 +69,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       cursor: pointer;
       color: white;
       display: none;
+      padding: 8px;
+      box-sizing: border-box;s
     `,
     buttonPlayPrimaryEnable: css`
       display: flex;
@@ -113,8 +115,10 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       gap: 16px;
     `,
     taskbarGroupBtn: css`
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
+      padding: 2px;
+      box-sizing: border-box;
       display: none;
       border-radius: 50%;
       &:hover {

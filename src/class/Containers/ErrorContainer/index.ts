@@ -32,5 +32,8 @@ class ErrorContainer extends BaseComponent {
     `;
     return htmlString;
   };
+  handleEventLoaded = () => {
+    this.hide();
+  };
 }
 export default ErrorContainer;

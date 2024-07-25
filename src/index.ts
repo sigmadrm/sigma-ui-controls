@@ -69,14 +69,16 @@ class SmUIControls {
         apiPlayer.addEventListener(EEVentName.PAUSE, (data: any) => {
           this.handleEventPause(data);
         });
+        apiPlayer.addEventListener(EEVentName.FULLSCREENCHANGE, (data: any) => {
+          this.handleEventFullScreenChange(data);
+        });
       }
     }
   }
   handleEventLoaded = (data: any) => {
-    console.log('loaded', { data });
-    this.loadingContainer && this.loadingContainer.hide();
-    this.errorContainer && this.errorContainer.hide();
-    this.controllerContainer && this.controllerContainer.show();
+    this.loadingContainer && this.loadingContainer.handleEventLoaded();
+    this.controllerContainer && this.controllerContainer.handleEventLoaded();
+    this.errorContainer && this.errorContainer.handleEventLoaded();
   };
   handleEventError = (data: any) => {
     console.log('error', { data });
@@ -90,9 +92,12 @@ class SmUIControls {
   };
   handleEventPause = (data: any) => {
     console.log('pause', { data });
-    this.controllerContainer?.handleEventPlay();
+    this.controllerContainer?.handleEventPause();
   };
-
+  handleEventFullScreenChange = (data: any) => {
+    console.log('fullscreen change', { data });
+    this.controllerContainer?.handleEventFullScreenChange();
+  };
   destroy() {
     this.apiPlayer = {};
     this.isInit = false;

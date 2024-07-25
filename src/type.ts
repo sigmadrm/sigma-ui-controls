@@ -23,6 +23,7 @@ export enum EEVentName {
   ERROR = 'error',
   PLAY = 'play',
   PAUSE = 'pause',
+  FULLSCREENCHANGE = 'fullscreenchange',
 }
 export interface IApiPlayer {
   [key: string]: any;

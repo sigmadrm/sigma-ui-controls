@@ -17,6 +17,9 @@ export const convertDataEventPlay = (data: any) => {
 export const convertDataEventPause = (data: any) => {
   return data;
 };
+export const convertDataEventFullScreenChange = (data: any) => {
+  return data;
+};
 
 export const createElementFromHTML = (htmlString: string) => {
   const tempDiv = document.createElement('div');
@@ -103,6 +106,12 @@ export const generateApiPlayer = (
         case EEVentName.ERROR:
           player.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventError(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.FULLSCREENCHANGE:
+          document.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventFullScreenChange(data);
             clb(dataConvert);
           });
           break;

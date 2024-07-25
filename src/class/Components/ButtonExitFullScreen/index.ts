@@ -1,28 +1,34 @@
-import { fullScreenIcon } from '../../../icons';
+import { exitFullScreenIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonFullScreen extends BaseComponent {
+class ButtonExitFullScreen extends BaseComponent {
   constructor(props: IConstructorProps) {
     super(props);
   }
 
   render() {
     if (this.containerElement) {
-      this.containerElement.innerHTML = fullScreenIcon;
-      this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+      this.containerElement.innerHTML = exitFullScreenIcon;
     }
   }
-
   registerListener() {
     this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
   }
-
   unregisterListener() {
-    // FIXME: this function not working
+    // FIXME: this function not working?
     // this.containerElement?.removeEventListener('click', this.handleContainerClick);
   }
+  handleContainerClick(event: MouseEvent) {
+    const { apiPlayer } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    if (apiPlayer.isFullScreen()) {
+      apiPlayer.exitFullScreen();
+    }
+  }
+
   hide = () => {
     if (this.containerElement) {
       this.containerElement.className = this.classes.taskbarGroupBtn;
@@ -33,16 +39,6 @@ class ButtonFullScreen extends BaseComponent {
       this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
     }
   };
-  handleContainerClick = (event: MouseEvent) => {
-    const { apiPlayer } = this;
-    event.preventDefault();
-    event.stopPropagation();
-    if (apiPlayer.isFullScreen()) {
-      apiPlayer.exitFullScreen();
-    } else {
-      apiPlayer.enterFullScreen();
-    }
-  };
 }
 
-export default ButtonFullScreen;
+export default ButtonExitFullScreen;

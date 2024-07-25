@@ -1,5 +1,6 @@
 import { IConstructorBaseProps } from '../../../type';
 import generateStyles from '../../../style';
+import { playIcon } from '../../../icons';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 class ButtonPlaySecondary {
@@ -15,6 +16,7 @@ class ButtonPlaySecondary {
     this.containerEle = ele;
 
     if (ele) {
+      ele.innerHTML = playIcon;
       ele.classList.add(this.classes.taskbarGroupBtnEnable);
       ele?.addEventListener('click', (event: MouseEvent) => {
         event.preventDefault();

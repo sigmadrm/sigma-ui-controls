@@ -41,6 +41,14 @@ class FooterController extends BaseComponent {
   handleEventPause = () => {
     this.taskbarController?.handleEventPause();
   };
+  handleEventLoaded = () => {
+    // this.seekBarController?.handleEventLoaded();
+    this.taskbarController?.handleEventLoaded();
+  };
+  handleEventFullScreenChange = () => {
+    // this.seekBarController?.handleEventLoaded();
+    this.taskbarController?.handleEventFullScreenChange();
+  };
 }
 
 export default FooterController;

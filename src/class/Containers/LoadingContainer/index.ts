@@ -14,6 +14,9 @@ class LoadingContainer extends BaseComponent {
       this.containerElement.innerHTML = loadingIcon;
     }
   }
+  handleEventLoaded = () => {
+    this.hide();
+  };
   hide = () => {
     if (this.containerElement) {
       this.containerElement.className = this.classes.errorContainer;

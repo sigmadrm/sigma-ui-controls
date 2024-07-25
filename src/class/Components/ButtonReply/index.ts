@@ -1,28 +1,35 @@
-import { fullScreenIcon } from '../../../icons';
+import { replyIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonFullScreen extends BaseComponent {
+class ButtonReply extends BaseComponent {
   constructor(props: IConstructorProps) {
     super(props);
   }
 
   render() {
     if (this.containerElement) {
-      this.containerElement.innerHTML = fullScreenIcon;
-      this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+      this.containerElement.innerHTML = replyIcon;
+      this.containerElement.classList.add([this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtn].join(' '));
+    }
+  }
+  registerListener() {
+    // this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+  }
+  unregisterListener() {
+    // FIXME: this function not working?
+    // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+  }
+  handleContainerClick(event: MouseEvent) {
+    const { apiPlayer } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    if (!apiPlayer.isPlay()) {
+      apiPlayer.play();
     }
   }
 
-  registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
-  }
-
-  unregisterListener() {
-    // FIXME: this function not working
-    // this.containerElement?.removeEventListener('click', this.handleContainerClick);
-  }
   hide = () => {
     if (this.containerElement) {
       this.containerElement.className = this.classes.taskbarGroupBtn;
@@ -33,16 +40,6 @@ class ButtonFullScreen extends BaseComponent {
       this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
     }
   };
-  handleContainerClick = (event: MouseEvent) => {
-    const { apiPlayer } = this;
-    event.preventDefault();
-    event.stopPropagation();
-    if (apiPlayer.isFullScreen()) {
-      apiPlayer.exitFullScreen();
-    } else {
-      apiPlayer.enterFullScreen();
-    }
-  };
 }
 
-export default ButtonFullScreen;
+export default ButtonReply;
