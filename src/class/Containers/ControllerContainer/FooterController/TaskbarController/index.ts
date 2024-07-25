@@ -7,6 +7,8 @@ import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
 import BaseComponent from '../../../../BaseComponent';
 import ButtonPauseSecondary from '../../../../Components/ButtonPauseSecondary';
 import ButtonExitFullScreen from '../../../../Components/ButtonExitFullScreen';
+import ButtonVolume from '../../../../Components/ButtonVolume';
+import ButtonMute from '../../../../Components/ButtonMute';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
@@ -14,6 +16,8 @@ class TaskbarController extends BaseComponent {
   private buttonFullScreen: ButtonFullScreen | undefined;
   private buttonPlaySecondary: ButtonPlaySecondary | undefined;
   private buttonPauseSecondary: ButtonPauseSecondary | undefined;
+  private buttonVolume: ButtonVolume | undefined;
+  private buttonMute: ButtonMute | undefined;
   private buttonExitFullScreen: ButtonExitFullScreen | undefined;
 
   constructor(props: IConstructorProps) {
@@ -35,6 +39,8 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
+    this.buttonVolume = new ButtonVolume({ id: ids.smButtonVolume, classes, apiPlayer });
+    this.buttonMute = new ButtonMute({ id: ids.smButtonMute, classes, apiPlayer });
     this.buttonExitFullScreen = new ButtonExitFullScreen({
       id: ids.smButtonExitFullScreen,
       classes,

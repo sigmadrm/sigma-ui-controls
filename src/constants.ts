@@ -15,6 +15,8 @@ export const ids = {
   smButtonForward: 'sm-button-forward',
   smButtonReply: 'sm-button-reply',
   smButtonExitFullScreen: 'sm-button-exit-full-screen',
+  smButtonVolume: 'sm-button-volume',
+  smButtonMute: 'sm-button-mute',
 };
 export const versionDef = '4.10.0';
 

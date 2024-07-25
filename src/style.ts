@@ -61,25 +61,26 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
     `,
     buttonPlayPrimary: css`
-      box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.48);
       backdrop-filter: blur(25px);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 56px;
+      height: 56px;
       cursor: pointer;
       color: white;
       display: none;
       padding: 8px;
-      box-sizing: border-box;s
+      box-sizing: border-box;
+      cursor: pointer;
     `,
     buttonPlayPrimaryEnable: css`
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      &:hover {
-        box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
-      }
+      // &:hover {
+      //   box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
+      // }
     `,
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
@@ -115,8 +116,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       gap: 16px;
     `,
     taskbarGroupBtn: css`
-      width: 24px;
-      height: 24px;
+      width: 40px;
+      height: 40px;
       padding: 2px;
       box-sizing: border-box;
       display: none;
