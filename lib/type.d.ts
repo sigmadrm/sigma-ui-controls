@@ -19,14 +19,16 @@ export declare enum EEVentName {
     LOADED = "loaded",
     ERROR = "error",
     PLAY = "play",
-    PAUSE = "pause"
+    PAUSE = "pause",
+    FULLSCREENCHANGE = "fullscreenchange"
 }
 export interface IApiPlayer {
     [key: string]: any;
 }
+export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
     id: string;
-    classes: ReturnType<typeof generateStyles>;
+    classes: TClasses;
     apiPlayer: IApiPlayer;
 }
 //# sourceMappingURL=type.d.ts.map

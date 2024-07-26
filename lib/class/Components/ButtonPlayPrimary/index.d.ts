@@ -1,11 +1,13 @@
 import { IConstructorBaseProps } from '../../../type';
+import BaseComponent from '../../BaseComponent';
 interface IConstructorProps extends IConstructorBaseProps {
 }
-declare class ButtonPlayPrimary {
-    private id;
-    private classes;
-    containerEle: HTMLElement | undefined | null;
+declare class ButtonPlayPrimary extends BaseComponent {
     constructor(props: IConstructorProps);
+    render(): void;
+    registerListener(): void;
+    unregisterListener(): void;
+    handleContainerClick(event: MouseEvent): void;
     hide: () => void;
     show: () => void;
 }

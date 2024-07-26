@@ -5,11 +5,25 @@ export declare const ids: {
     smError: string;
     smHeadController: string;
     smBodyController: string;
-    smBodyControllerButtonPrimary: string;
+    smButtonPlayPrimary: string;
+    smSettingsContainer: string;
+    smSettingDetailTitle: string;
+    smSettingDetailGoBackIcon: string;
+    smSettingPlaybackSpeedItemPrefix: string;
+    smSettingQualityItemPrefix: string;
     smFooterController: string;
     smTaskbarController: string;
     smSeekBarController: string;
-    smFullScreenButton: string;
+    smButtonFullScreen: string;
+    smButtonPlaySecondary: string;
+    smButtonPauseSecondary: string;
+    smButtonForward: string;
+    smButtonReply: string;
+    smButtonExitFullScreen: string;
+    smButtonVolume: string;
+    smButtonMute: string;
+    smPlaybackSpeed: string;
+    smQuality: string;
 };
 export declare const versionDef = "4.10.0";
 export declare enum ETypePlayer {

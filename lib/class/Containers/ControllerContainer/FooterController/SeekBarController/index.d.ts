@@ -1,11 +1,10 @@
+import BaseComponent from '../../../../BaseComponent';
 import { IConstructorBaseProps } from '../../../../../type';
 interface IConstructorProps extends IConstructorBaseProps {
 }
-declare class SeekBarController {
-    private id;
-    private classes;
-    containerEle: HTMLElement | undefined | null;
+declare class SeekBarController extends BaseComponent {
     constructor(props: IConstructorProps);
+    render(): void;
 }
 export default SeekBarController;
 //# sourceMappingURL=index.d.ts.map
