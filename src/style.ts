@@ -103,6 +103,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       flex-direction: column;
       gap: 0px;
       max-height: 100%;
+      overflow: hidden;
     `,
     settingsContent: css`
       min-width: 280px;

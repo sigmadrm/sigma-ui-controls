@@ -26,6 +26,11 @@ export enum EEVentName {
   PLAY = 'play',
   PAUSE = 'pause',
   FULLSCREENCHANGE = 'fullscreenchange',
+  LOADING = 'loading',
+  ADAPTATION = 'adaptation',
+  TRACKS_CHANGED = 'trackschanged',
+  VARIANT_CHANGED = 'variantchanged',
+  ABR_STATUS_CHANGED = 'abrstatuschanged',
 }
 
 export type TClasses = ReturnType<typeof generateStyles>;

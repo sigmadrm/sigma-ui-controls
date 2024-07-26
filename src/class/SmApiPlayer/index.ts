@@ -84,20 +84,27 @@ export default class SmApiPlayer {
       document.exitFullscreen();
     }
   }
-  addEventListener(evtName: EEVentName, clb: (data: any) => any) {
+
+  getVariantTracks() {
+    const tracks = this.player.getVariantTracks();
+    // TODO: convert tracks
+    return tracks;
+  }
+
+  addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
     const { typePlayer, video, player, version } = this;
     if (typePlayer === ETypePlayer.SHAKA) {
       switch (evtName) {
         case EEVentName.PLAY:
           video?.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventPlay(data);
-            clb(dataConvert);
+            clb.call(context, dataConvert);
           });
           break;
         case EEVentName.PAUSE:
           video?.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventPause(data);
-            clb(dataConvert);
+            clb.call(context, dataConvert);
           });
           break;
         case EEVentName.LOADED:
@@ -107,19 +114,27 @@ export default class SmApiPlayer {
           }
           player.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventLoaded(data);
-            clb(dataConvert);
+            clb.call(context, dataConvert);
           });
           break;
         case EEVentName.ERROR:
           player.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventError(data);
-            clb(dataConvert);
+            clb.call(context, dataConvert);
           });
           break;
         case EEVentName.FULLSCREENCHANGE:
           document.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventFullScreenChange(data);
-            clb(dataConvert);
+            clb.call(context, dataConvert);
+          });
+          break;
+        case EEVentName.ADAPTATION:
+        case EEVentName.TRACKS_CHANGED:
+        case EEVentName.ABR_STATUS_CHANGED:
+        case EEVentName.VARIANT_CHANGED:
+          player.addEventListener(evtName, (data: any) => {
+            clb.call(context, data);
           });
           break;
         default:
@@ -127,23 +142,18 @@ export default class SmApiPlayer {
       }
     }
   }
-  removeEventListener(evtName: EEVentName, clb: (data: any) => any) {
+  removeEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
     const { player, typePlayer } = this;
     if (typePlayer === ETypePlayer.SHAKA) {
       switch (evtName) {
         case EEVentName.LOADED:
-          player.removeEventListener(evtName, (data: any) => {
-            const dataConvert = convertDataEventLoaded(data);
-            clb(dataConvert);
-          });
+          player.removeEventListener(evtName, clb, context);
           break;
         case EEVentName.ERROR:
-          player.removeEventListener(evtName, (data: any) => {
-            const dataConvert = convertDataEventError(data);
-            clb(dataConvert);
-          });
+          player.removeEventListener(evtName, clb, context);
           break;
         default:
+          player.removeEventListener(evtName, clb, context);
           break;
       }
     }
