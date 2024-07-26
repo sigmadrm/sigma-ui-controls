@@ -1,7 +1,7 @@
 import BaseComponent from '../../../BaseComponent';
 import { ids } from '../../../../constants';
 import { playIcon } from '../../../../icons';
-import { IConstructorBaseProps } from '../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../type';
 
 import ButtonPlayPrimary from '../../../Components/ButtonPlayPrimary';
 
@@ -19,6 +19,16 @@ class BodyController extends BaseComponent {
       classes,
       apiPlayer,
     });
+    apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
+      if (this.buttonPrimary) {
+        this.buttonPrimary.hide();
+      }
+    });
+    apiPlayer.eventemitter.on(EEVentName.PAUSE, () => {
+      if (this.buttonPrimary) {
+        this.buttonPrimary.show();
+      }
+    });
   }
   render() {
     if (this.containerElement) {
@@ -29,26 +39,6 @@ class BodyController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
-  handleEventPlay = () => {
-    this.hideButtonPlay();
-  };
-  handleEventPause = () => {
-    this.showButtonPlay();
-  };
-  handleEventLoaded = () => {
-    this.showButtonPlay();
-  };
-
-  hideButtonPlay = () => {
-    if (this.buttonPrimary) {
-      this.buttonPrimary.hide();
-    }
-  };
-  showButtonPlay = () => {
-    if (this.buttonPrimary) {
-      this.buttonPrimary.show();
-    }
-  };
 }
 
 export default BodyController;

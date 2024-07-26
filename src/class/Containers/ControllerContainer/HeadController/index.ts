@@ -1,5 +1,5 @@
 import BaseComponent from '../../../BaseComponent';
-import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
+import { EEVentName, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];
@@ -12,6 +12,9 @@ class HeadController extends BaseComponent {
     const { videoInfo, ...baseProps } = props;
     super(baseProps as IConstructorBaseProps);
     this.videoInfo = videoInfo;
+    baseProps.apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
+      this.render();
+    });
   }
 
   render() {

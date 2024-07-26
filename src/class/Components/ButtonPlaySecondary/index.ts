@@ -15,8 +15,8 @@ class ButtonPlaySecondary extends BaseComponent {
       this.containerElement.addEventListener('click', (event: MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
-        if (!this.apiPlayer.isPlay()) {
-          this.apiPlayer.play();
+        if (!this.apiPlayer.method.isPlay()) {
+          this.apiPlayer.method.play();
         }
       });
     }
@@ -27,8 +27,8 @@ class ButtonPlaySecondary extends BaseComponent {
     this.containerElement?.addEventListener('click', (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
-      if (!apiPlayer.isPlay()) {
-        apiPlayer.play();
+      if (!apiPlayer.method.isPlay()) {
+        apiPlayer.method.play();
       }
     });
   }

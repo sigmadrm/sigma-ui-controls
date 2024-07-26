@@ -1,4 +1,4 @@
-import { IConstructorBaseProps } from '../../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../../type';
 import ButtonFullScreen from '../../../../Components/ButtonFullScreen';
 import { ids } from '../../../../../constants';
 import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
@@ -44,6 +44,48 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
+    apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
+      if (this.buttonPauseSecondary) {
+        this.buttonPauseSecondary.show();
+      }
+      if (this.buttonPlaySecondary) {
+        this.buttonPlaySecondary.hide();
+      }
+    });
+    apiPlayer.eventemitter.on(EEVentName.PAUSE, () => {
+      if (this.buttonPauseSecondary) {
+        this.buttonPauseSecondary.hide();
+      }
+      if (this.buttonPlaySecondary) {
+        this.buttonPlaySecondary.show();
+      }
+    });
+    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
+      // this.show();
+      if (this.buttonPlaySecondary) {
+        this.buttonPlaySecondary.show();
+      }
+      if (this.buttonPauseSecondary) {
+        this.buttonPauseSecondary.hide();
+      }
+    });
+    apiPlayer.eventemitter.on(EEVentName.FULLSCREENCHANGE, () => {
+      if (this.apiPlayer.method.isFullScreen()) {
+        if (this.buttonExitFullScreen) {
+          this.buttonExitFullScreen.show();
+        }
+        if (this.buttonFullScreen) {
+          this.buttonFullScreen.hide();
+        }
+      } else {
+        if (this.buttonExitFullScreen) {
+          this.buttonExitFullScreen.hide();
+        }
+        if (this.buttonFullScreen) {
+          this.buttonFullScreen.show();
+        }
+      }
+    });
   }
 
   render() {
@@ -62,48 +104,6 @@ class TaskbarController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
-
-  handleEventPlay = () => {
-    if (this.buttonPlaySecondary) {
-      this.buttonPlaySecondary.hide();
-    }
-    if (this.buttonPauseSecondary) {
-      this.buttonPauseSecondary.show();
-    }
-  };
-  handleEventPause = () => {
-    if (this.buttonPlaySecondary) {
-      this.buttonPlaySecondary.show();
-    }
-    if (this.buttonPauseSecondary) {
-      this.buttonPauseSecondary.hide();
-    }
-  };
-  handleEventLoaded = () => {
-    if (this.buttonPlaySecondary) {
-      this.buttonPlaySecondary.show();
-    }
-    if (this.buttonPauseSecondary) {
-      this.buttonPauseSecondary.hide();
-    }
-  };
-  handleEventFullScreenChange = () => {
-    if (this.apiPlayer.isFullScreen()) {
-      if (this.buttonFullScreen) {
-        this.buttonFullScreen.hide();
-      }
-      if (this.buttonExitFullScreen) {
-        this.buttonExitFullScreen.show();
-      }
-    } else {
-      if (this.buttonFullScreen) {
-        this.buttonFullScreen.show();
-      }
-      if (this.buttonExitFullScreen) {
-        this.buttonExitFullScreen.hide();
-      }
-    }
-  };
 }
 
 export default TaskbarController;

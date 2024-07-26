@@ -1,11 +1,11 @@
+import BaseComponent from '../../BaseComponent';
 import { IConstructorBaseProps } from '../../../type';
 interface IConstructorProps extends IConstructorBaseProps {
 }
-declare class LoadingContainer {
-    private id;
-    private classes;
-    containerEle: HTMLElement | undefined | null;
+declare class LoadingContainer extends BaseComponent {
     constructor(props: IConstructorProps);
+    render(): void;
+    handleEventLoaded: () => void;
     hide: () => void;
     show: () => void;
 }

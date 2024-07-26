@@ -1,3 +1,4 @@
+import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 import { ETypePlayer } from './constants';
 import generateStyles from './style';
 export interface IConfigureUIPlayerProps {
@@ -19,14 +20,48 @@ export declare enum EEVentName {
     LOADED = "loaded",
     ERROR = "error",
     PLAY = "play",
-    PAUSE = "pause"
+    PAUSE = "pause",
+    FULLSCREENCHANGE = "fullscreenchange"
 }
 export interface IApiPlayer {
-    [key: string]: any;
+    method: {
+        play: () => void;
+        pause: () => void;
+        isPlay: () => boolean;
+        isFullScreen: () => boolean;
+        enterFullScreen: () => void;
+        exitFullScreen: () => void;
+    };
+    eventemitter: SmEventEmitter;
+    addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
+    removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
 }
+export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
     id: string;
-    classes: ReturnType<typeof generateStyles>;
+    classes: TClasses;
     apiPlayer: IApiPlayer;
+}
+export interface smListeners {
+    [EEVentName.LOADED]: {
+        event: EEVentName.LOADED;
+        data: any;
+    };
+    [EEVentName.PAUSE]: {
+        event: EEVentName.PAUSE;
+        data: any;
+    };
+    [EEVentName.PLAY]: {
+        event: EEVentName.PLAY;
+        data: any;
+    };
+    [EEVentName.ERROR]: {
+        event: EEVentName.ERROR;
+        data: any;
+    };
+    [EEVentName.FULLSCREENCHANGE]: {
+        event: EEVentName.FULLSCREENCHANGE;
+        data: any;
+    };
 }
 //# sourceMappingURL=type.d.ts.map

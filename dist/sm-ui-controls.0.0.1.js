@@ -2370,6 +2370,352 @@ var _createEmotion = createEmotion({
 
 /***/ }),
 
+/***/ "./node_modules/eventemitter3/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/eventemitter3/index.js ***!
+  \*********************************************/
+/***/ ((module) => {
+
+
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if (true) {
+  module.exports = EventEmitter;
+}
+
+
+/***/ }),
+
 /***/ "./src/index.css":
 /*!***********************!*\
   !*** ./src/index.css ***!
@@ -2382,43 +2728,290 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/class/Components/ButtonPlayPrimary/index.ts":
-/*!*********************************************************!*\
-  !*** ./src/class/Components/ButtonPlayPrimary/index.ts ***!
-  \*********************************************************/
+/***/ "./src/class/BaseComponent/index.ts":
+/*!******************************************!*\
+  !*** ./src/class/BaseComponent/index.ts ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-class ButtonPlayPrimary {
+class BaseComponent {
     id;
+    apiPlayer;
     classes;
-    containerEle;
+    containerElement = null;
     constructor(props) {
         const { id, classes, apiPlayer } = props;
         this.id = id;
+        this.apiPlayer = apiPlayer;
         this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        if (ele) {
-            ele.classList.add(this.classes.buttonPlayPrimaryEnable);
+        this.containerElement = document.getElementById(id);
+        this.render();
+        this.registerListener();
+    }
+    registerListener() {
+        // Ex: this.apiPlayer.addEventListener("loaded", (data: any) => { });
+    }
+    unregisterListener() {
+        // Ex: this.apiPlayer.removeEventListener("loaded");
+    }
+    render() {
+        // Ex:
+        // if (this.containerElement) {
+        //   this.containerElement.innerHTML = `<div></div>`;
+        // }
+    }
+    destroy() {
+        this.unregisterListener();
+        this.containerElement = null;
+    }
+}
+exports["default"] = BaseComponent;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonExitFullScreen/index.ts":
+/*!************************************************************!*\
+  !*** ./src/class/Components/ButtonExitFullScreen/index.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonExitFullScreen extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.exitFullScreenIcon;
         }
-        ele?.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            if (!apiPlayer.isPlay()) {
-                apiPlayer.play();
-            }
-        });
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    unregisterListener() {
+        // FIXME: this function not working?
+        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
+        }
     }
     hide = () => {
-        if (this.containerEle) {
-            this.containerEle.className = this.classes.buttonPlayPrimary;
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
         }
     };
     show = () => {
-        if (this.containerEle) {
-            this.containerEle.classList.add(this.classes.buttonPlayPrimaryEnable);
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
+}
+exports["default"] = ButtonExitFullScreen;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonFullScreen/index.ts":
+/*!********************************************************!*\
+  !*** ./src/class/Components/ButtonFullScreen/index.ts ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonFullScreen extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.fullScreenIcon;
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
+    unregisterListener() { }
+    handleContainerClick = (event) => {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
+        }
+        else {
+            apiPlayer.method.enterFullScreen();
+        }
+    };
+}
+exports["default"] = ButtonFullScreen;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonMute/index.ts":
+/*!**************************************************!*\
+  !*** ./src/class/Components/ButtonMute/index.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonMute extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.muteIcon;
+            // this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    unregisterListener() {
+        // FIXME: this function not working?
+        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
+        }
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
+}
+exports["default"] = ButtonMute;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonPauseSecondary/index.ts":
+/*!************************************************************!*\
+  !*** ./src/class/Components/ButtonPauseSecondary/index.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+class ButtonPauseSecondary extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.pausedIcon;
+        }
+    }
+    registerListener() {
+        // this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    unregisterListener() {
+        // FIXME: this function not working?
+        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (!apiPlayer.method.isPlay()) {
+            apiPlayer.method.play();
+        }
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
+}
+exports["default"] = ButtonPauseSecondary;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonPlayPrimary/index.ts":
+/*!*********************************************************!*\
+  !*** ./src/class/Components/ButtonPlayPrimary/index.ts ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonPlayPrimary extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.buttonPlayPrimaryEnable);
+        }
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    unregisterListener() { }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (!apiPlayer.method.isPlay()) {
+            apiPlayer.method.play();
+        }
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.buttonPlayPrimary;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.buttonPlayPrimaryEnable);
         }
     };
 }
@@ -2427,41 +3020,106 @@ exports["default"] = ButtonPlayPrimary;
 
 /***/ }),
 
-/***/ "./src/class/Components/FullScreenButton/index.ts":
-/*!********************************************************!*\
-  !*** ./src/class/Components/FullScreenButton/index.ts ***!
-  \********************************************************/
+/***/ "./src/class/Components/ButtonPlaySecondary/index.ts":
+/*!***********************************************************!*\
+  !*** ./src/class/Components/ButtonPlaySecondary/index.ts ***!
+  \***********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-class FullScreenButton {
-    id;
-    classes;
-    containerEle;
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonPlaySecondary extends BaseComponent_1.default {
     constructor(props) {
-        const { id, classes, apiPlayer } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        if (ele) {
-            ele.innerHTML = icons_1.fullScreenIcon;
-            ele.addEventListener('click', (event) => {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.playIcon;
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            this.containerElement.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                if (apiPlayer.isFullScreen()) {
-                    apiPlayer.exitFullScreen();
-                }
-                else {
-                    apiPlayer.enterFullScreen();
+                if (!this.apiPlayer.method.isPlay()) {
+                    this.apiPlayer.method.play();
                 }
             });
         }
     }
+    registerListener() {
+        const { apiPlayer } = this;
+        this.containerElement?.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (!apiPlayer.method.isPlay()) {
+                apiPlayer.method.play();
+            }
+        });
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
 }
-exports["default"] = FullScreenButton;
+exports["default"] = ButtonPlaySecondary;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ButtonVolume/index.ts":
+/*!****************************************************!*\
+  !*** ./src/class/Components/ButtonVolume/index.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ButtonVolume extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.volumeIcon;
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    }
+    unregisterListener() {
+        // FIXME: this function not working?
+        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
+        }
+    }
+    hide = () => {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.taskbarGroupBtn;
+        }
+    };
+    show = () => {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+        }
+    };
+}
+exports["default"] = ButtonVolume;
 
 
 /***/ }),
@@ -2474,40 +3132,30 @@ exports["default"] = FullScreenButton;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/constants.ts");
-const services_1 = __webpack_require__(/*! ../services */ "./src/class/Containers/ControllerContainer/services.ts");
+const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
 const ButtonPlayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts");
-class BodyController {
-    id;
-    classes;
+class BodyController extends BaseComponent_1.default {
     buttonPrimary;
-    containerEle;
     constructor(props) {
-        const { id, classes, apiPlayer } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlString = (0, services_1.generateHtmlBodyControllerString)(classes);
-        if (ele) {
-            ele.innerHTML = htmlString;
-        }
+        const { classes, apiPlayer } = props;
+        super(props);
         this.buttonPrimary = new ButtonPlayPrimary_1.default({
-            id: constants_1.ids.smBodyControllerButtonPrimary,
+            id: constants_1.ids.smButtonPlayPrimary,
             classes,
             apiPlayer,
         });
     }
-    hideButtonPlay = () => {
-        if (this.buttonPrimary) {
-            this.buttonPrimary.hide();
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class=${classes.buttonPlayPrimary} id=${constants_1.ids.smButtonPlayPrimary}>
+        ${icons_1.playIcon}
+      </div>`;
+            this.containerElement.innerHTML = htmlString;
         }
-    };
-    showButtonPlay = () => {
-        if (this.buttonPrimary) {
-            this.buttonPrimary.show();
-        }
-    };
+    }
 }
 exports["default"] = BodyController;
 
@@ -2518,23 +3166,19 @@ exports["default"] = BodyController;
 /*!**********************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts ***!
   \**********************************************************************************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-class SeekBarController {
-    id;
-    classes;
-    containerEle;
+const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class SeekBarController extends BaseComponent_1.default {
     constructor(props) {
-        const { id, classes } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlString = `<div>SeekBarController</div>`;
-        if (ele) {
-            ele.innerHTML = htmlString;
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            const htmlString = `<div>SeekBarController</div>`;
+            this.containerElement.innerHTML = htmlString;
         }
     }
 }
@@ -2551,30 +3195,105 @@ exports["default"] = SeekBarController;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const services_1 = __webpack_require__(/*! ../../services */ "./src/class/Containers/ControllerContainer/services.ts");
-const FullScreenButton_1 = __webpack_require__(/*! ../../../../Components/FullScreenButton */ "./src/class/Components/FullScreenButton/index.ts");
+const ButtonFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonFullScreen */ "./src/class/Components/ButtonFullScreen/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
-class TaskbarController {
-    id;
-    classes;
-    fullScreenButton;
-    containerEle;
+const ButtonPlaySecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPlaySecondary */ "./src/class/Components/ButtonPlaySecondary/index.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const ButtonPauseSecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPauseSecondary */ "./src/class/Components/ButtonPauseSecondary/index.ts");
+const ButtonExitFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonExitFullScreen */ "./src/class/Components/ButtonExitFullScreen/index.ts");
+const ButtonVolume_1 = __webpack_require__(/*! ../../../../Components/ButtonVolume */ "./src/class/Components/ButtonVolume/index.ts");
+const ButtonMute_1 = __webpack_require__(/*! ../../../../Components/ButtonMute */ "./src/class/Components/ButtonMute/index.ts");
+class TaskbarController extends BaseComponent_1.default {
+    buttonFullScreen;
+    buttonPlaySecondary;
+    buttonPauseSecondary;
+    buttonVolume;
+    buttonMute;
+    buttonExitFullScreen;
     constructor(props) {
-        const { id, classes, apiPlayer } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlString = (0, services_1.generateHtmlTaskbarControllerString)(classes);
-        if (ele) {
-            ele.innerHTML = htmlString;
-        }
-        this.fullScreenButton = new FullScreenButton_1.default({
-            id: constants_1.ids.smFullScreenButton,
+        const { classes, apiPlayer } = props;
+        super(props);
+        this.buttonFullScreen = new ButtonFullScreen_1.default({
+            id: constants_1.ids.smButtonFullScreen,
+            classes,
+            apiPlayer,
+        });
+        this.buttonPlaySecondary = new ButtonPlaySecondary_1.default({
+            id: constants_1.ids.smButtonPlaySecondary,
+            classes,
+            apiPlayer,
+        });
+        this.buttonPauseSecondary = new ButtonPauseSecondary_1.default({
+            id: constants_1.ids.smButtonPauseSecondary,
+            classes,
+            apiPlayer,
+        });
+        this.buttonVolume = new ButtonVolume_1.default({ id: constants_1.ids.smButtonVolume, classes, apiPlayer });
+        this.buttonMute = new ButtonMute_1.default({ id: constants_1.ids.smButtonMute, classes, apiPlayer });
+        this.buttonExitFullScreen = new ButtonExitFullScreen_1.default({
+            id: constants_1.ids.smButtonExitFullScreen,
             classes,
             apiPlayer,
         });
     }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class=${classes.taskbarGroup}>
+      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonPlaySecondary}></div>
+     <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonPauseSecondary}></div>
+     <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonVolume}></div>
+     <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonMute}></div>
+  </div>
+  <div class=${classes.taskbarGroup}>
+      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonExitFullScreen}></div>
+  </div>`;
+            this.containerElement.innerHTML = htmlString;
+        }
+    }
+    handleEventPlay = () => {
+        if (this.buttonPlaySecondary) {
+            this.buttonPlaySecondary.hide();
+        }
+        if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.show();
+        }
+    };
+    handleEventPause = () => {
+        if (this.buttonPlaySecondary) {
+            this.buttonPlaySecondary.show();
+        }
+        if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.hide();
+        }
+    };
+    handleEventLoaded = () => {
+        if (this.buttonPlaySecondary) {
+            this.buttonPlaySecondary.show();
+        }
+        if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.hide();
+        }
+    };
+    handleEventFullScreenChange = () => {
+        if (this.apiPlayer.method.isFullScreen()) {
+            if (this.buttonFullScreen) {
+                this.buttonFullScreen.hide();
+            }
+            if (this.buttonExitFullScreen) {
+                this.buttonExitFullScreen.show();
+            }
+        }
+        else {
+            if (this.buttonFullScreen) {
+                this.buttonFullScreen.show();
+            }
+            if (this.buttonExitFullScreen) {
+                this.buttonExitFullScreen.hide();
+            }
+        }
+    };
 }
 exports["default"] = TaskbarController;
 
@@ -2589,26 +3308,16 @@ exports["default"] = TaskbarController;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/constants.ts");
-const services_1 = __webpack_require__(/*! ../services */ "./src/class/Containers/ControllerContainer/services.ts");
 const SeekBarController_1 = __webpack_require__(/*! ./SeekBarController */ "./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts");
 const TaskbarController_1 = __webpack_require__(/*! ./TaskbarController */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts");
-class FooterController {
-    id;
-    classes;
+class FooterController extends BaseComponent_1.default {
     seekBarController;
     taskbarController;
-    containerEle;
     constructor(props) {
-        const { id, classes, apiPlayer } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlString = (0, services_1.generateHtmlFooterControllerString)(classes);
-        if (ele) {
-            ele.innerHTML = htmlString;
-        }
+        const { classes, apiPlayer } = props;
+        super(props);
         this.seekBarController = new SeekBarController_1.default({
             id: constants_1.ids.smSeekBarController,
             classes,
@@ -2619,6 +3328,14 @@ class FooterController {
             classes,
             apiPlayer,
         });
+    }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class=${classes.seekBarController} id=${constants_1.ids.smSeekBarController}></div>
+      <div class=${classes.taskbarController} id=${constants_1.ids.smTaskbarController}></div>`;
+            this.containerElement.innerHTML = htmlString;
+        }
     }
 }
 exports["default"] = FooterController;
@@ -2634,22 +3351,20 @@ exports["default"] = FooterController;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const services_1 = __webpack_require__(/*! ../services */ "./src/class/Containers/ControllerContainer/services.ts");
-class HeadController {
-    id;
-    classes;
+const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class HeadController extends BaseComponent_1.default {
     videoInfo;
-    containerEle;
     constructor(props) {
-        const { id, classes, videoInfo } = props;
-        this.id = id;
-        this.classes = classes;
+        const { videoInfo, ...baseProps } = props;
+        super(baseProps);
         this.videoInfo = videoInfo;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlString = (0, services_1.generateHtmlHeadControllerString)(classes, videoInfo?.name);
-        if (ele) {
-            ele.innerHTML = htmlString;
+    }
+    render() {
+        if (this.containerElement) {
+            const videoName = this.videoInfo?.name ?? '';
+            const { classes } = this;
+            const htmlString = `${videoName && `<p class=${classes.headControllerTitle}>${videoName}</p>`}`;
+            this.containerElement.innerHTML = htmlString;
         }
     }
 }
@@ -2669,101 +3384,57 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const HeadController_1 = __webpack_require__(/*! ./HeadController */ "./src/class/Containers/ControllerContainer/HeadController/index.ts");
 const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
-const services_1 = __webpack_require__(/*! ../../../services */ "./src/services.ts");
 const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
-class ControllerContainer {
-    id;
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ControllerContainer extends BaseComponent_1.default {
     headController;
     bodyController;
     footerController;
-    classes;
-    containerEle;
     constructor(props) {
-        const { id, classes, videoInfo, apiPlayer } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
-        const htmlContentString = (0, services_1.generateHtmlContentControllerString)(classes);
-        if (ele) {
-            ele.innerHTML = htmlContentString;
-            ele.addEventListener('click', (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (apiPlayer.isPlay()) {
-                    apiPlayer.pause();
-                }
-                else {
-                    apiPlayer.play();
-                }
-            });
-        }
+        const { classes, videoInfo, apiPlayer } = props;
+        super(props);
         this.headController = new HeadController_1.default({ id: constants_1.ids.smHeadController, classes, videoInfo, apiPlayer });
         this.bodyController = new BodyController_1.default({ id: constants_1.ids.smBodyController, classes, apiPlayer });
         this.footerController = new FooterController_1.default({ id: constants_1.ids.smFooterController, classes, apiPlayer });
     }
+    render() {
+        const { classes } = this;
+        const htmlContentString = `
+      <div class=${classes.headController} id=${constants_1.ids.smHeadController}></div>
+      <div class=${classes.bodyController} id=${constants_1.ids.smBodyController}></div>
+      <div class=${classes.footerController} id=${constants_1.ids.smFooterController}></div>
+     `;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = htmlContentString;
+        }
+    }
+    registerListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+    }
+    unregisterListener() { }
+    handleClickContainer = (event) => {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        if (apiPlayer.method.isPlay()) {
+            apiPlayer.method.pause();
+        }
+        else {
+            apiPlayer.method.play();
+        }
+    };
     hide = () => {
-        if (this.containerEle) {
-            this.containerEle.className = this.classes.controllerContent;
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.controllerContent;
         }
     };
     show = () => {
-        if (this.containerEle) {
-            this.containerEle.classList.add(this.classes.controllerContentEnable);
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.controllerContentEnable);
         }
-    };
-    hideButtonPlay = () => {
-        this.bodyController && this.bodyController.hideButtonPlay();
-    };
-    showButtonPlay = () => {
-        this.bodyController && this.bodyController.showButtonPlay();
     };
 }
 exports["default"] = ControllerContainer;
-
-
-/***/ }),
-
-/***/ "./src/class/Containers/ControllerContainer/services.ts":
-/*!**************************************************************!*\
-  !*** ./src/class/Containers/ControllerContainer/services.ts ***!
-  \**************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateHtmlTaskbarControllerString = exports.generateHtmlFooterControllerString = exports.generateHtmlBodyControllerString = exports.generateHtmlHeadControllerString = void 0;
-const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
-const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const generateHtmlHeadControllerString = (classes, videoName) => {
-    return `${videoName &&
-        `<p class=${classes.headControllerTitle}>${videoName}
-    </p>`}`;
-};
-exports.generateHtmlHeadControllerString = generateHtmlHeadControllerString;
-const generateHtmlBodyControllerString = (classes) => {
-    return `<div class=${classes.buttonPlayPrimary} id=${constants_1.ids.smBodyControllerButtonPrimary}>${icons_1.playIcon}</div>`;
-};
-exports.generateHtmlBodyControllerString = generateHtmlBodyControllerString;
-const generateHtmlFooterControllerString = (classes) => {
-    return `<div class=${classes.seekBarController} id=${constants_1.ids.smSeekBarController}></div>
-  <div class=${classes.taskbarController} id=${constants_1.ids.smTaskbarController}></div>`;
-};
-exports.generateHtmlFooterControllerString = generateHtmlFooterControllerString;
-const generateHtmlTaskbarControllerString = (classes) => {
-    return `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn}>${icons_1.playIcon}</div>
-     <div class=${classes.taskbarGroupBtn}>${icons_1.pausedIcon}</div>
-     <div class=${classes.taskbarGroupBtn}>${icons_1.replyIcon}</div>
-     <div class=${classes.taskbarGroupBtn}>${icons_1.forwardIcon}</div>
-     <div class=${classes.taskbarGroupBtn}>${icons_1.volumeIcon}</div>
-     <div class=${classes.taskbarGroupBtn}>${icons_1.muteIcon}</div>
-  </div>
-  <div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smFullScreenButton}></div>
-  </div>`;
-};
-exports.generateHtmlTaskbarControllerString = generateHtmlTaskbarControllerString;
 
 
 /***/ }),
@@ -2777,39 +3448,46 @@ exports.generateHtmlTaskbarControllerString = generateHtmlTaskbarControllerStrin
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-class ErrorContainer {
-    id;
-    classes;
-    containerEle;
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class ErrorContainer extends BaseComponent_1.default {
     constructor(props) {
-        const { id, classes } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        this.containerEle = ele;
+        const { apiPlayer } = props;
+        super(props);
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
+            this.hide();
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, (dataEvent) => {
+            if (dataEvent?.data) {
+                this.show(dataEvent);
+            }
+        });
     }
     hide = () => {
-        if (this.containerEle) {
-            this.containerEle.className = this.classes.errorContainer;
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.errorContainer;
         }
     };
     show = (data) => {
-        if (this.containerEle) {
-            this.containerEle.classList.add(this.classes.loadingContainerEnable);
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.loadingContainerEnable);
             const htmlString = this.generateHtml(data);
-            this.containerEle.innerHTML = htmlString;
+            this.containerElement.innerHTML = htmlString;
         }
     };
-    generateHtml = (data) => {
+    generateHtml = (dataEvent) => {
         const htmlString = `<div class="${this.classes.errorIconWrap}">
         ${icons_1.infoIcon}
     </div>
     <div class="${this.classes.flexColumnStartCenter}">
-      <h2 style="margin:0px">${data.errorCode}</h2>
-      <h3 style="margin:0px">${data.message}</h3>
+      <h2 style="margin:0px">${dataEvent.data.errorCode}</h2>
+      <h3 style="margin:0px">${dataEvent.data.message}</h3>
     </div>
     `;
         return htmlString;
+    };
+    handleEventLoaded = () => {
+        this.hide();
     };
 }
 exports["default"] = ErrorContainer;
@@ -2825,34 +3503,61 @@ exports["default"] = ErrorContainer;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-class LoadingContainer {
-    id;
-    classes;
-    containerEle;
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
+class LoadingContainer extends BaseComponent_1.default {
     constructor(props) {
-        const { id, classes } = props;
-        this.id = id;
-        this.classes = classes;
-        const ele = document.getElementById(id);
-        ele?.classList.add(this.classes.loadingContainerEnable);
-        this.containerEle = ele;
-        if (ele) {
-            ele.innerHTML = icons_1.loadingIcon;
+        const { apiPlayer } = props;
+        super(props);
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => this.hide());
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, () => this.hide());
+    }
+    render() {
+        this.containerElement?.classList.add(this.classes.loadingContainerEnable);
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.loadingIcon;
         }
     }
+    handleEventLoaded = () => {
+        this.hide();
+    };
     hide = () => {
-        if (this.containerEle) {
-            this.containerEle.className = this.classes.errorContainer;
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.errorContainer;
         }
     };
     show = () => {
-        if (this.containerEle) {
-            this.containerEle.classList.add(this.classes.loadingContainerEnable);
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.loadingContainerEnable);
         }
     };
 }
 exports["default"] = LoadingContainer;
+
+
+/***/ }),
+
+/***/ "./src/class/SmEventEmitter/SmEventEmitter.ts":
+/*!****************************************************!*\
+  !*** ./src/class/SmEventEmitter/SmEventEmitter.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const eventemitter3_1 = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
+class SmEventEmitter {
+    eventEmitter = new eventemitter3_1.default();
+    constructor() { }
+    emit(eventName, data) {
+        this.eventEmitter.emit(eventName, data);
+    }
+    on(event, callback) {
+        this.eventEmitter.on(event, callback);
+    }
+}
+exports["default"] = SmEventEmitter;
 
 
 /***/ }),
@@ -2873,11 +3578,18 @@ exports.ids = {
     smError: 'sm-error',
     smHeadController: 'sm-head-controller',
     smBodyController: 'sm-body-controller',
-    smBodyControllerButtonPrimary: 'sm-body-controller-button-primary',
+    smButtonPlayPrimary: 'sm-button-play-primary',
     smFooterController: 'sm-footer-controller',
     smTaskbarController: 'sm-taskbar-controller',
     smSeekBarController: 'sm-seek-bar-controller',
-    smFullScreenButton: 'sm-full-screen-button',
+    smButtonFullScreen: 'sm-button-full-screen',
+    smButtonPlaySecondary: 'sm-button-play-secondary',
+    smButtonPauseSecondary: 'sm-button-pause-secondary',
+    smButtonForward: 'sm-button-forward',
+    smButtonReply: 'sm-button-reply',
+    smButtonExitFullScreen: 'sm-button-exit-full-screen',
+    smButtonVolume: 'sm-button-volume',
+    smButtonMute: 'sm-button-mute',
 };
 exports.versionDef = '4.10.0';
 var ETypePlayer;
@@ -2899,14 +3611,15 @@ exports.primaryColorDef = '#2196f3';
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.fullScreenIcon = exports.muteIcon = exports.volumeIcon = exports.pausedIcon = exports.forwardIcon = exports.replyIcon = exports.infoIcon = exports.loadingIcon = exports.playIcon = void 0;
-exports.playIcon = `<svg
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
-      </svg>`;
+exports.chevronRightIcon = exports.qualityIcon = exports.exitFullScreenIcon = exports.settingIcon = exports.subtitleIcon = exports.speedIcon = exports.fullScreenIcon = exports.muteIcon = exports.volumeIcon = exports.pausedIcon = exports.forwardIcon = exports.replyIcon = exports.infoIcon = exports.loadingIcon = exports.playIcon = void 0;
+exports.playIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
+  </svg>`;
 exports.loadingIcon = `
   <div  class="sm-loading-ss">
     <div class="sm-ss-loading sm-ss-medium">
@@ -2921,8 +3634,7 @@ exports.loadingIcon = `
         </div>
       </div>
     </div>
-  </div>  
-`;
+  </div> `;
 exports.infoIcon = `
   <svg
     viewBox="0 0 24 24"
@@ -2930,8 +3642,7 @@ exports.infoIcon = `
     fill="currentColor"
   >
     <path d="M12 4C13.5 4.02083 14.8438 4.38542 16.0312 5.09375C17.2396 5.80208 18.1979 6.76042 18.9062 7.96875C19.6146 9.15625 19.9792 10.5 20 12C19.9792 13.5 19.6146 14.8438 18.9062 16.0312C18.1979 17.2396 17.2396 18.1979 16.0312 18.9062C14.8438 19.6146 13.5 19.9792 12 20C10.5 19.9792 9.15625 19.6146 7.96875 18.9062C6.76042 18.1979 5.80208 17.2396 5.09375 16.0312C4.38542 14.8438 4.02083 13.5 4 12C4.02083 10.5 4.38542 9.15625 5.09375 7.96875C5.80208 6.76042 6.76042 5.80208 7.96875 5.09375C9.15625 4.38542 10.5 4.02083 12 4ZM12 8C11.7083 8 11.4688 8.09375 11.2812 8.28125C11.0938 8.46875 11 8.70833 11 9C11 9.29167 11.0938 9.53125 11.2812 9.71875C11.4688 9.90625 11.7083 10 12 10C12.2917 10 12.5312 9.90625 12.7188 9.71875C12.9062 9.53125 13 9.29167 13 9C13 8.70833 12.9062 8.46875 12.7188 8.28125C12.5312 8.09375 12.2917 8 12 8ZM13.25 16C13.7083 15.9583 13.9583 15.7083 14 15.25C13.9583 14.7917 13.7083 14.5417 13.25 14.5H12.75V11.75C12.7083 11.2917 12.4583 11.0417 12 11H11C10.5417 11.0417 10.2917 11.2917 10.25 11.75C10.2917 12.2083 10.5417 12.4583 11 12.5H11.25V14.5H10.75C10.2917 14.5417 10.0417 14.7917 10 15.25C10.0417 15.7083 10.2917 15.9583 10.75 16H13.25Z" />
-  </svg>
-`;
+  </svg>`;
 exports.replyIcon = `
   <svg 
     viewBox="0 0 24 24"
@@ -2971,14 +3682,62 @@ exports.muteIcon = `
     xmlns="http://www.w3.org/2000/svg"
     >
    <path d="M3.1875 4.1875L8.15625 8.0625L11.3125 5.28125C11.625 5 12.0312 4.9375 12.4062 5.09375C12.75 5.25 13 5.625 13 6V11.8438L14.8125 13.2812C14.8438 13.25 14.9062 13.2188 14.9375 13.1875C15.2812 12.9062 15.5 12.4688 15.5 12C15.5 11.5312 15.2812 11.125 14.9375 10.8438C14.625 10.5938 14.5625 10.125 14.8125 9.78125C15.0938 9.46875 15.5625 9.4375 15.875 9.6875C16.5625 10.25 17 11.0625 17 12C17 12.875 16.625 13.6875 16.0312 14.2188L17.2188 15.1562C18 14.3438 18.5 13.25 18.5 12C18.5 10.5938 17.8438 9.34375 16.8125 8.53125C16.5 8.25 16.4375 7.78125 16.7188 7.46875C16.9688 7.15625 17.4375 7.09375 17.7812 7.34375C19.125 8.46875 20 10.125 20 12C20 13.5938 19.375 15 18.4062 16.0938L21.6875 18.6875C22.0312 18.9375 22.0938 19.4062 21.8125 19.7188C21.5625 20.0625 21.0938 20.125 20.7812 19.8438L2.28125 5.34375C1.9375 5.09375 1.875 4.625 2.15625 4.3125C2.40625 3.96875 2.875 3.90625 3.1875 4.1875ZM13 15.6875V18C13 18.4062 12.75 18.7812 12.4062 18.9375C12.0312 19.0938 11.625 19.0312 11.3125 18.75L7.09375 15H5C3.875 15 3 14.125 3 13V11C3 10.0625 3.65625 9.25 4.5625 9.0625L13 15.6875Z"/>
-  </svg>`;
+   </svg>`;
 exports.fullScreenIcon = `
-  <svg 
+ <svg 
     viewBox="0 0 24 24" 
     fill="currentColor" 
     xmlns="http://www.w3.org/2000/svg"
     >
-   <path d="M2.5 1.75H6.25C6.91406 1.75 7.5 2.33594 7.5 3C7.5 3.70312 6.91406 4.25 6.25 4.25H3.75V6.75C3.75 7.45312 3.16406 8 2.5 8C1.79688 8 1.25 7.45312 1.25 6.75V3C1.25 2.33594 1.79688 1.75 2.5 1.75ZM3.75 14.25V16.75H6.25C6.91406 16.75 7.5 17.3359 7.5 18C7.5 18.7031 6.91406 19.25 6.25 19.25H2.5C1.79688 19.25 1.25 18.7031 1.25 18V14.25C1.25 13.5859 1.79688 13 2.5 13C3.16406 13 3.75 13.5859 3.75 14.25ZM13.75 1.75H17.5C18.1641 1.75 18.75 2.33594 18.75 3V6.75C18.75 7.45312 18.1641 8 17.5 8C16.7969 8 16.25 7.45312 16.25 6.75V4.25H13.75C13.0469 4.25 12.5 3.70312 12.5 3C12.5 2.33594 13.0469 1.75 13.75 1.75ZM18.75 14.25V18C18.75 18.7031 18.1641 19.25 17.5 19.25H13.75C13.0469 19.25 12.5 18.7031 12.5 18C12.5 17.3359 13.0469 16.75 13.75 16.75H16.25V14.25C16.25 13.5859 16.7969 13 17.5 13C18.1641 13 18.75 13.5859 18.75 14.25Z"/>
+      <path d="M9.25 5C9.65625 5 10 5.34375 10 5.75C10 6.1875 9.65625 6.5 9.25 6.5H6.5V9.25C6.5 9.6875 6.15625 10 5.75 10C5.3125 10 5 9.6875 5 9.25V5.75C5 5.34375 5.3125 5 5.75 5H9.25ZM5 14.75C5 14.3438 5.3125 14 5.75 14C6.15625 14 6.5 14.3438 6.5 14.75V17.5H9.25C9.65625 17.5 10 17.8438 10 18.25C10 18.6875 9.65625 19 9.25 19H5.75C5.3125 19 5 18.6875 5 18.25V14.75ZM18.25 5C18.6562 5 19 5.34375 19 5.75V9.25C19 9.6875 18.6562 10 18.25 10C17.8125 10 17.5 9.6875 17.5 9.25V6.5H14.75C14.3125 6.5 14 6.1875 14 5.75C14 5.34375 14.3125 5 14.75 5H18.25ZM17.5 14.75C17.5 14.3438 17.8125 14 18.25 14C18.6562 14 19 14.3438 19 14.75V18.25C19 18.6875 18.6562 19 18.25 19H14.75C14.3125 19 14 18.6875 14 18.25C14 17.8438 14.3125 17.5 14.75 17.5H17.5V14.75Z"/>
+  </svg>`;
+exports.speedIcon = `
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
+  </svg>`;
+exports.subtitleIcon = `
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+  <path d="M5 6.5C4.71875 6.5 4.5 6.75 4.5 7V17C4.5 17.2812 4.71875 17.5 5 17.5H19C19.25 17.5 19.5 17.2812 19.5 17V7C19.5 6.75 19.25 6.5 19 6.5H5ZM3 7C3 5.90625 3.875 5 5 5H19C20.0938 5 21 5.90625 21 7V17C21 18.125 20.0938 19 19 19H5C3.875 19 3 18.125 3 17V7ZM6.75 11.5H12.25C12.6562 11.5 13 11.8438 13 12.25C13 12.6875 12.6562 13 12.25 13H6.75C6.3125 13 6 12.6875 6 12.25C6 11.8438 6.3125 11.5 6.75 11.5ZM14.75 11.5H17.25C17.6562 11.5 18 11.8438 18 12.25C18 12.6875 17.6562 13 17.25 13H14.75C14.3125 13 14 12.6875 14 12.25C14 11.8438 14.3125 11.5 14.75 11.5ZM6.75 14.5H9.25C9.65625 14.5 10 14.8438 10 15.25C10 15.6875 9.65625 16 9.25 16H6.75C6.3125 16 6 15.6875 6 15.25C6 14.8438 6.3125 14.5 6.75 14.5ZM11.75 14.5H17.25C17.6562 14.5 18 14.8438 18 15.25C18 15.6875 17.6562 16 17.25 16H11.75C11.3125 16 11 15.6875 11 15.25C11 14.8438 11.3125 14.5 11.75 14.5Z"/>
+  </svg>`;
+exports.settingIcon = `
+   <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 4C12.5312 4 13.0312 4.0625 13.5312 4.15625C13.7812 4.21875 14.2188 4.34375 14.4688 4.78125C14.5312 4.90625 14.5625 5.03125 14.5938 5.15625L14.9062 6.375C14.9375 6.53125 15.25 6.71875 15.4375 6.65625L16.625 6.3125C16.75 6.28125 16.875 6.25 17 6.25C17.5 6.25 17.8438 6.5625 18 6.75C18.6875 7.53125 19.2188 8.4375 19.5625 9.4375C19.6562 9.6875 19.75 10.125 19.4688 10.5312C19.4062 10.6562 19.3125 10.75 19.2188 10.8438L18.3438 11.7188C18.1875 11.8438 18.1875 12.1875 18.3438 12.3125L19.2188 13.1875C19.3125 13.2812 19.4062 13.375 19.4688 13.5C19.7188 13.9062 19.625 14.3438 19.5625 14.5938C19.2188 15.5938 18.6875 16.5 18 17.2812C17.8438 17.4688 17.5 17.7812 17 17.7812C16.875 17.7812 16.75 17.75 16.625 17.7188L15.4375 17.3438C15.25 17.3125 14.9375 17.4688 14.9062 17.6562L14.5938 18.875C14.5625 19 14.5312 19.125 14.4688 19.25C14.2188 19.6875 13.7812 19.8125 13.5312 19.875C13.0312 19.9688 12.5312 20 12 20C11.4688 20 10.9375 19.9688 10.4375 19.875C10.1875 19.8125 9.75 19.6875 9.5 19.25C9.4375 19.125 9.40625 19 9.375 18.875L9.0625 17.6562C9.03125 17.4688 8.71875 17.3125 8.5625 17.3438L7.375 17.7188C7.25 17.75 7.09375 17.75 6.96875 17.7812C6.46875 17.7812 6.125 17.4688 5.96875 17.2812C5.28125 16.5 4.75 15.5938 4.40625 14.5938C4.34375 14.3438 4.25 13.9062 4.5 13.4688C4.5625 13.375 4.65625 13.25 4.75 13.1562L5.65625 12.3125C5.78125 12.1875 5.78125 11.8438 5.65625 11.7188L4.75 10.8438C4.65625 10.75 4.5625 10.6562 4.5 10.5312C4.25 10.125 4.34375 9.6875 4.40625 9.4375C4.75 8.4375 5.28125 7.53125 5.96875 6.75C6.125 6.5625 6.46875 6.25 6.96875 6.25C7.09375 6.25 7.25 6.28125 7.375 6.3125L8.5625 6.65625C8.71875 6.71875 9.03125 6.53125 9.0625 6.375L9.375 5.15625C9.40625 5.03125 9.4375 4.90625 9.5 4.78125C9.75 4.34375 10.1875 4.21875 10.4375 4.15625C10.9375 4.0625 11.4688 4 12 4ZM10.8125 5.625L10.5312 6.71875C10.2812 7.71875 9.125 8.40625 8.125 8.125L7.03125 7.78125C6.53125 8.40625 6.125 9.09375 5.84375 9.84375L6.6875 10.625C7.4375 11.3438 7.4375 12.6875 6.6875 13.4062L5.84375 14.1875C6.125 14.9375 6.53125 15.625 7.03125 16.25L8.125 15.9062C9.125 15.625 10.2812 16.3125 10.5312 17.3125L10.8125 18.4062C11.5625 18.5625 12.4062 18.5625 13.1875 18.4062L13.4375 17.3125C13.6875 16.3125 14.8438 15.625 15.8438 15.9062L16.9375 16.25C17.4375 15.625 17.8438 14.9375 18.125 14.1875L17.3125 13.4062C16.5625 12.6875 16.5625 11.3438 17.3125 10.625L18.125 9.84375C17.8438 9.09375 17.4375 8.40625 16.9375 7.78125L15.8438 8.125C14.875 8.40625 13.6875 7.71875 13.4375 6.71875L13.1875 5.625C12.4062 5.46875 11.5625 5.46875 10.8125 5.625ZM10.5 12C10.5 12.5625 10.7812 13.0312 11.25 13.3125C11.6875 13.5938 12.2812 13.5938 12.75 13.3125C13.1875 13.0312 13.5 12.5625 13.5 12C13.5 11.4688 13.1875 11 12.75 10.7188C12.2812 10.4375 11.6875 10.4375 11.25 10.7188C10.7812 11 10.5 11.4688 10.5 12ZM12 15C10.9062 15 9.9375 14.4375 9.375 13.5C8.84375 12.5938 8.84375 11.4375 9.375 10.5C9.9375 9.59375 10.9062 9 12 9C13.0625 9 14.0312 9.59375 14.5938 10.5C15.125 11.4375 15.125 12.5938 14.5938 13.5C14.0312 14.4375 13.0625 15 12 15Z"/>
+  </svg>`;
+exports.exitFullScreenIcon = `
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10 5.75V9.25C10 9.6875 9.65625 10 9.25 10H5.75C5.3125 10 5 9.6875 5 9.25C5 8.84375 5.3125 8.5 5.75 8.5H8.5V5.75C8.5 5.34375 8.8125 5 9.25 5C9.65625 5 10 5.34375 10 5.75ZM5.75 14H9.25C9.65625 14 10 14.3438 10 14.75V18.25C10 18.6875 9.65625 19 9.25 19C8.8125 19 8.5 18.6875 8.5 18.25V15.5H5.75C5.3125 15.5 5 15.1875 5 14.75C5 14.3438 5.3125 14 5.75 14ZM15.5 5.75V8.5H18.25C18.6562 8.5 19 8.84375 19 9.25C19 9.6875 18.6562 10 18.25 10H14.75C14.3125 10 14 9.6875 14 9.25V5.75C14 5.34375 14.3125 5 14.75 5C15.1562 5 15.5 5.34375 15.5 5.75ZM14.75 14H18.25C18.6562 14 19 14.3438 19 14.75C19 15.1875 18.6562 15.5 18.25 15.5H15.5V18.25C15.5 18.6875 15.1562 19 14.75 19C14.3125 19 14 18.6875 14 18.25V14.75C14 14.3438 14.3125 14 14.75 14Z"/>
+  </svg>`;
+exports.qualityIcon = `
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M6.5 14.5C5.9375 14.5 5.5 14.9688 5.5 15.5C5.5 16.0625 5.9375 16.5 6.5 16.5C7.03125 16.5 7.5 16.0625 7.5 15.5C7.5 14.9688 7.03125 14.5 6.5 14.5ZM8.875 14.75H19.25C19.6562 14.75 20 15.0938 20 15.5C20 15.9375 19.6562 16.25 19.25 16.25H8.875C8.5625 17.2812 7.59375 18 6.5 18C5.09375 18 4 16.9062 4 15.5C4 14.125 5.09375 13 6.5 13C7.59375 13 8.5625 13.75 8.875 14.75ZM16.5 8.5C16.5 9.0625 16.9375 9.5 17.5 9.5C18.0312 9.5 18.5 9.0625 18.5 8.5C18.5 7.96875 18.0312 7.5 17.5 7.5C16.9375 7.5 16.5 7.96875 16.5 8.5ZM15.0938 7.75C15.4062 6.75 16.375 6 17.5 6C18.875 6 20 7.125 20 8.5C20 9.90625 18.875 11 17.5 11C16.375 11 15.4062 10.2812 15.0938 9.25H4.75C4.3125 9.25 4 8.9375 4 8.5C4 8.09375 4.3125 7.75 4.75 7.75H15.0938Z"/>
+  </svg>`;
+exports.chevronRightIcon = `
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M16.5312 11.4688C16.8125 11.7812 16.8125 12.25 16.5312 12.5312L10.5312 18.5312C10.2188 18.8438 9.75 18.8438 9.46875 18.5312C9.15625 18.25 9.15625 17.7812 9.46875 17.5L14.9375 12.0312L9.46875 6.53125C9.15625 6.25 9.15625 5.78125 9.46875 5.5C9.75 5.1875 10.2188 5.1875 10.5 5.5L16.5312 11.4688Z"/>
   </svg>`;
 
 
@@ -2992,25 +3751,56 @@ exports.fullScreenIcon = `
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateHtmlContentControllerString = exports.generateHtmlContentContainerString = exports.generateApiPlayer = exports.createElementFromHTML = exports.convertDataEventPause = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
+exports.generateHtmlContentControllerString = exports.generateHtmlContentContainerString = exports.generateApiPlayer = exports.createElementFromHTML = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
+const SmEventEmitter_1 = __webpack_require__(/*! ./class/SmEventEmitter/SmEventEmitter */ "./src/class/SmEventEmitter/SmEventEmitter.ts");
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const convertDataEventLoaded = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.LOADED,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventLoaded = convertDataEventLoaded;
 const convertDataEventError = (data) => {
-    return { errorCode: data.detail.code, message: data.detail.message };
+    return {
+        event: type_1.EEVentName.ERROR,
+        data: {
+            errorCode: data.detail.code,
+            message: data.detail.message,
+        },
+    };
 };
 exports.convertDataEventError = convertDataEventError;
 const convertDataEventPlay = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.PLAY,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventPlay = convertDataEventPlay;
 const convertDataEventPause = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.PAUSE,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventPause = convertDataEventPause;
+const convertDataEventFullScreenChange = (data) => {
+    return {
+        event: type_1.EEVentName.FULLSCREENCHANGE,
+        data: {
+            ...data,
+        },
+    };
+};
+exports.convertDataEventFullScreenChange = convertDataEventFullScreenChange;
 const createElementFromHTML = (htmlString) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString.trim();
@@ -3019,54 +3809,59 @@ const createElementFromHTML = (htmlString) => {
 exports.createElementFromHTML = createElementFromHTML;
 const generateApiPlayer = (player, video, typePlayer, version) => {
     const apiPlayer = {
-        play: () => {
-            return video?.play();
-        },
-        pause: () => {
-            video?.pause();
-        },
-        isPlay: () => {
-            if (video) {
-                return !video.paused;
-            }
-            return false;
-        },
-        isFullScreen: () => {
-            const isFullscreen = document.fullscreenElement;
-            if (isFullscreen) {
-                return true;
-            }
-            else {
+        method: {
+            play: () => {
+                return video?.play();
+            },
+            pause: () => {
+                video?.pause();
+            },
+            isPlay: () => {
+                if (video) {
+                    return !video.paused;
+                }
                 return false;
-            }
-        },
-        enterFullScreen: () => {
-            if (video) {
-                const videoContainer = video.parentElement;
-                if (videoContainer) {
-                    if (videoContainer.requestFullscreen) {
-                        videoContainer.requestFullscreen();
-                    }
-                    else if (videoContainer.mozRequestFullScreen) {
-                        // Firefox
-                        videoContainer.mozRequestFullScreen();
-                    }
-                    else if (videoContainer.webkitRequestFullscreen) {
-                        // Chrome, Safari and Opera
-                        videoContainer.webkitRequestFullscreen();
-                    }
-                    else if (videoContainer.msRequestFullscreen) {
-                        // IE/Edge
-                        videoContainer.msRequestFullscreen();
+            },
+            isFullScreen: () => {
+                const isFullscreen = document.fullscreenElement;
+                if (isFullscreen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+            enterFullScreen: () => {
+                if (video) {
+                    const videoContainer = video.parentElement;
+                    if (videoContainer) {
+                        if (videoContainer.requestFullscreen) {
+                            videoContainer.requestFullscreen();
+                        }
+                        else if (videoContainer.mozRequestFullScreen) {
+                            // Firefox
+                            videoContainer.mozRequestFullScreen();
+                        }
+                        else if (videoContainer.webkitRequestFullscreen) {
+                            // Chrome, Safari and Opera
+                            videoContainer.webkitRequestFullscreen();
+                        }
+                        else if (videoContainer.msRequestFullscreen) {
+                            // IE/Edge
+                            videoContainer.msRequestFullscreen();
+                        }
                     }
                 }
-            }
+            },
+            exitFullScreen: () => {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            },
         },
-        exitFullScreen: () => {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        },
+        eventemitter: new SmEventEmitter_1.default(),
+        addEventListener: () => { },
+        removeEventListener: () => { },
     };
     if (typePlayer === constants_1.ETypePlayer.SHAKA) {
         apiPlayer.addEventListener = (evtName, clb) => {
@@ -3094,6 +3889,12 @@ const generateApiPlayer = (player, video, typePlayer, version) => {
                 case type_1.EEVentName.ERROR:
                     player.addEventListener(evtName, (data) => {
                         const dataConvert = (0, exports.convertDataEventError)(data);
+                        clb(dataConvert);
+                    });
+                    break;
+                case type_1.EEVentName.FULLSCREENCHANGE:
+                    document.addEventListener(evtName, (data) => {
+                        const dataConvert = (0, exports.convertDataEventFullScreenChange)(data);
                         clb(dataConvert);
                     });
                     break;
@@ -3137,13 +3938,7 @@ const generateHtmlContentContainerString = (classes) => {
     `;
 };
 exports.generateHtmlContentContainerString = generateHtmlContentContainerString;
-const generateHtmlContentControllerString = (classes) => {
-    return `
-   <div class=${classes.headController} id=${constants_1.ids.smHeadController}></div>
-    <div class=${classes.bodyController} id=${constants_1.ids.smBodyController}></div>
-    <div class=${classes.footerController} id=${constants_1.ids.smFooterController}></div>
-    `;
-};
+const generateHtmlContentControllerString = (classes) => { };
 exports.generateHtmlContentControllerString = generateHtmlContentControllerString;
 
 
@@ -3219,23 +4014,26 @@ const generateStyles = (props) => {
       justify-content: center;
     `,
         buttonPlayPrimary: (0, css_1.css) `
-      box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.48);
       backdrop-filter: blur(25px);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 56px;
+      height: 56px;
       cursor: pointer;
       color: white;
       display: none;
+      padding: 8px;
+      box-sizing: border-box;
+      cursor: pointer;
     `,
         buttonPlayPrimaryEnable: (0, css_1.css) `
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      &:hover {
-        box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
-      }
+      // &:hover {
+      //   box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
+      // }
     `,
         footerController: (0, css_1.css) `
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
@@ -3271,17 +4069,22 @@ const generateStyles = (props) => {
       gap: 16px;
     `,
         taskbarGroupBtn: (0, css_1.css) `
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      padding: 2px;
+      box-sizing: border-box;
+      display: none;
       border-radius: 50%;
       &:hover {
         box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
         background: rgba(255, 255, 255, 0.1);
       }
+    `,
+        taskbarGroupBtnEnable: (0, css_1.css) `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     `,
         loadingContainer: (0, css_1.css) `
       background: rgb(119 119 119 / 50%);
@@ -3353,6 +4156,7 @@ var EEVentName;
     EEVentName["ERROR"] = "error";
     EEVentName["PLAY"] = "play";
     EEVentName["PAUSE"] = "pause";
+    EEVentName["FULLSCREENCHANGE"] = "fullscreenchange";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 
 
@@ -3433,10 +4237,7 @@ const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
 __webpack_require__(/*! ./index.css */ "./src/index.css");
 const classes = (0, style_1.default)();
 class SmUIControls {
-    apiPlayer = {
-        play: () => (Promise) || undefined,
-        pause: () => (Promise) || undefined,
-    };
+    apiPlayer;
     isInit = false;
     controllerContainer;
     errorContainer;
@@ -3465,42 +4266,30 @@ class SmUIControls {
                 this.errorContainer = new ErrorContainer_1.default({ id: constants_1.ids.smError, classes, apiPlayer });
                 this.loadingContainer = new LoadingContainer_1.default({ id: constants_1.ids.smLoading, classes, apiPlayer });
                 apiPlayer.addEventListener(type_1.EEVentName.LOADED, (data) => {
-                    this.handleEventLoaded(data);
+                    console.log('addEventListener', type_1.EEVentName.LOADED, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.LOADED, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
-                    this.handleEventError(data);
+                    console.log('addEventListener', type_1.EEVentName.ERROR, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.ERROR, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
-                    this.handleEventPlay(data);
+                    console.log('addEventListener', type_1.EEVentName.PLAY, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.PLAY, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PAUSE, (data) => {
-                    this.handleEventPause(data);
+                    console.log('addEventListener', type_1.EEVentName.PAUSE, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.PAUSE, data);
+                });
+                apiPlayer.addEventListener(type_1.EEVentName.FULLSCREENCHANGE, (data) => {
+                    console.log('addEventListener', type_1.EEVentName.FULLSCREENCHANGE, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.FULLSCREENCHANGE, data);
                 });
             }
         }
     }
-    handleEventLoaded = (data) => {
-        console.log('loaded', { data });
-        this.loadingContainer && this.loadingContainer.hide();
-        this.errorContainer && this.errorContainer.hide();
-        this.controllerContainer && this.controllerContainer.show();
-    };
-    handleEventError = (data) => {
-        console.log('error', { data });
-        this.loadingContainer && this.loadingContainer.hide();
-        this.controllerContainer && this.controllerContainer.hide();
-        this.errorContainer && this.errorContainer.show(data);
-    };
-    handleEventPlay = (data) => {
-        console.log('play', { data });
-        this.controllerContainer?.hideButtonPlay();
-    };
-    handleEventPause = (data) => {
-        console.log('pause', { data });
-        this.controllerContainer?.showButtonPlay();
-    };
     destroy() {
-        this.apiPlayer = {};
+        this.apiPlayer = undefined;
         this.isInit = false;
     }
 }

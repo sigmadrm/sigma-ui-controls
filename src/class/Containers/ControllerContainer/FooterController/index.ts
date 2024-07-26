@@ -35,20 +35,6 @@ class FooterController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
-  handleEventPlay = () => {
-    this.taskbarController?.handleEventPlay();
-  };
-  handleEventPause = () => {
-    this.taskbarController?.handleEventPause();
-  };
-  handleEventLoaded = () => {
-    // this.seekBarController?.handleEventLoaded();
-    this.taskbarController?.handleEventLoaded();
-  };
-  handleEventFullScreenChange = () => {
-    // this.seekBarController?.handleEventLoaded();
-    this.taskbarController?.handleEventFullScreenChange();
-  };
 }
 
 export default FooterController;

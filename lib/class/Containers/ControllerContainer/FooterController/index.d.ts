@@ -1,14 +1,13 @@
+import BaseComponent from '../../../BaseComponent';
 import { IApiPlayer, IConstructorBaseProps } from '../../../../type';
 interface IConstructorProps extends IConstructorBaseProps {
     apiPlayer: IApiPlayer;
 }
-declare class FooterController {
-    private id;
-    private classes;
+declare class FooterController extends BaseComponent {
     private seekBarController;
     private taskbarController;
-    containerEle: HTMLElement | undefined | null;
     constructor(props: IConstructorProps);
+    render(): void;
 }
 export default FooterController;
 //# sourceMappingURL=index.d.ts.map

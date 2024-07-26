@@ -13,6 +13,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     taskbarController: string;
     taskbarGroup: string;
     taskbarGroupBtn: string;
+    taskbarGroupBtnEnable: string;
     loadingContainer: string;
     loadingContainerEnable: string;
     errorContainer: string;

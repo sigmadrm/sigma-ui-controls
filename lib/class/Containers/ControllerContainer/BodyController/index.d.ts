@@ -1,14 +1,11 @@
+import BaseComponent from '../../../BaseComponent';
 import { IConstructorBaseProps } from '../../../../type';
 interface IConstructorProps extends IConstructorBaseProps {
 }
-declare class BodyController {
-    private id;
-    private classes;
+declare class BodyController extends BaseComponent {
     private buttonPrimary;
-    containerEle: HTMLElement | undefined | null;
     constructor(props: IConstructorProps);
-    hideButtonPlay: () => void;
-    showButtonPlay: () => void;
+    render(): void;
 }
 export default BodyController;
 //# sourceMappingURL=index.d.ts.map
