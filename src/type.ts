@@ -27,19 +27,6 @@ export enum EEVentName {
   PAUSE = 'pause',
   FULLSCREENCHANGE = 'fullscreenchange',
 }
-export interface IApiPlayer {
-  method: {
-    play: () => void;
-    pause: () => void;
-    isPlay: () => boolean;
-    isFullScreen: () => boolean;
-    enterFullScreen: () => void;
-    exitFullScreen: () => void;
-  };
-  eventemitter: SmEventEmitter;
-  addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-  removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-}
 
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
