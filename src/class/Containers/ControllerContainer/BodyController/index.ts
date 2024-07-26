@@ -10,7 +10,7 @@ interface IConstructorProps extends IConstructorBaseProps {}
 
 class BodyController extends BaseComponent {
   private buttonPrimary: ButtonPlayPrimary | undefined;
-  // private settingsController: SettingsController;
+  private settingsController: SettingsController;
 
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer } = props;
@@ -18,6 +18,11 @@ class BodyController extends BaseComponent {
 
     this.buttonPrimary = new ButtonPlayPrimary({
       id: ids.smButtonPlayPrimary,
+      classes,
+      apiPlayer,
+    });
+    this.settingsController = new SettingsController({
+      id: ids.smSettingsContainer,
       classes,
       apiPlayer,
     });
