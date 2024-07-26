@@ -1,11 +1,12 @@
 import BaseComponent from '../../../BaseComponent';
 import { ids } from '../../../../constants';
-import { IApiPlayer, IConstructorBaseProps } from '../../../../type';
+import { IConstructorBaseProps } from '../../../../type';
 import SeekBarController from './SeekBarController';
 import TaskbarController from './TaskbarController';
+import SmApiPlayer from '../../../SmApiPlayer';
 
 interface IConstructorProps extends IConstructorBaseProps {
-  apiPlayer: IApiPlayer;
+  apiPlayer: SmApiPlayer;
 }
 
 class FooterController extends BaseComponent {

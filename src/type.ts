@@ -1,3 +1,4 @@
+import SmApiPlayer from './class/SmApiPlayer';
 import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 import { ETypePlayer } from './constants';
 import generateStyles from './style';
@@ -26,25 +27,12 @@ export enum EEVentName {
   PAUSE = 'pause',
   FULLSCREENCHANGE = 'fullscreenchange',
 }
-export interface IApiPlayer {
-  method: {
-    play: () => void;
-    pause: () => void;
-    isPlay: () => boolean;
-    isFullScreen: () => boolean;
-    enterFullScreen: () => void;
-    exitFullScreen: () => void;
-  };
-  eventemitter: SmEventEmitter;
-  addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-  removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-}
 
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
   id: string;
   classes: TClasses;
-  apiPlayer: IApiPlayer;
+  apiPlayer: SmApiPlayer;
 }
 export interface SmListeners {
   [EEVentName.LOADED]: (event: EEVentName.LOADED, data: { [key: string]: any }) => void;

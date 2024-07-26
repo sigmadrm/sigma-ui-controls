@@ -1,5 +1,5 @@
 import { ids, typePlayerDef, versionDef } from './constants';
-import { EEVentName, IApiPlayer, IConfigureUIPlayerProps, SmListeners } from './type';
+import { EEVentName, IConfigureUIPlayerProps, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
@@ -9,11 +9,12 @@ import { generateApiPlayer, generateHtmlContentContainerString } from './service
 
 import generateStyles from './style';
 import './index.css';
+import SmApiPlayer from './class/SmApiPlayer';
 
 const classes = generateStyles();
 
 class SmUIControls {
-  private apiPlayer: IApiPlayer | undefined;
+  private apiPlayer: SmApiPlayer | undefined;
   private isInit: boolean = false;
   private controllerContainer: ControllerContainer | undefined;
   private errorContainer: ErrorContainer | undefined;

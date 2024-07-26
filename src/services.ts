@@ -1,7 +1,8 @@
+import SmApiPlayer from './class/SmApiPlayer';
 import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 import { ETypePlayer, ids } from './constants';
 import generateStyles from './style';
-import { EEVentName, IApiPlayer } from './type';
+import { EEVentName } from './type';
 
 export const convertDataEventLoaded = (data: any) => {
   return {
@@ -61,7 +62,7 @@ export const generateApiPlayer = (
   typePlayer: ETypePlayer,
   version?: string,
 ) => {
-  const apiPlayer: IApiPlayer = {
+  const apiPlayer: SmApiPlayer = {
     method: {
       play: () => {
         return video?.play();
@@ -105,6 +106,11 @@ export const generateApiPlayer = (
       exitFullScreen: () => {
         if (document.exitFullscreen) {
           document.exitFullscreen();
+        }
+      },
+      updateVolume: (value: number) => {
+        if (video) {
+          video.volume = value;
         }
       },
     },
