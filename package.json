@@ -10,7 +10,7 @@
     "dev": "webpack serve --live-reload --open --config-name debug --port 8089",
     "prepare": "husky",
     "release": "release-it",
-    "lint:fix": "eslint --cache src/ --fix",
+    "lint:fix": "eslint src/ --fix",
     "prettier": "prettier 'src/**/*.{js,ts,css,html}' --write"
   },
   "repository": {

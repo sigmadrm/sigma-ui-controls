@@ -1,19 +1,29 @@
 import { IApiPlayer, IConstructorBaseProps, TClasses } from '../../type';
 
-export default class BaseComponent {
+export default class BaseComponent<T = {}> {
   protected id: string;
   protected apiPlayer: IApiPlayer;
   protected classes: TClasses;
   protected containerElement: HTMLElement | null = null;
+  private _state?: T;
 
-  constructor(props: IConstructorBaseProps) {
+  protected get state(): T {
+    return this._state as T;
+  }
+  protected set state(value: T | undefined) {
+    this._state = value;
+    this.unregisterListener();
+    this.render();
+    this.registerListener();
+  }
+
+  constructor(props: IConstructorBaseProps, initState?: T) {
     const { id, classes, apiPlayer } = props;
     this.id = id;
     this.apiPlayer = apiPlayer;
     this.classes = classes;
     this.containerElement = document.getElementById(id);
-    this.render();
-    this.registerListener();
+    this.state = initState;
   }
 
   registerListener() {

@@ -84,6 +84,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
+      max-height: 100%;
     `,
     settingsContent: css`
       min-width: 280px;
@@ -91,28 +92,60 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       overflow-y: auto;
     `,
     settingHeader: css`
+      box-sizing: border-box;
+      height: 48px;
       display: flex;
-      padding: 8px 12px 8px 12px;
+      padding: 8px 12px;
       align-items: center;
       gap: 12px;
       align-self: stretch;
     `,
     settingItem: css`
+      height: 48px;
+      box-sizing: border-box;
       display: flex;
-      padding: 8px 6px 8px 12px;
+      padding: 8px 12px;
       align-items: center;
       gap: 12px;
-      align-self: stretch;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.08);
         cursor: pointer;
       }
     `,
+    settingDetailItem: css`
+      height: 40px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+      }
+    `,
+    settingItemDivider: css`
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    `,
+    settingTitleActive: css`
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+    `,
+    settingTitleNormal: css`
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    `,
     settingItemIcon: css`
       width: 24px;
       height: 24px;
       padding: 4px 0px;
+      cursor: pointer;
     `,
     settingItemIconSecondary: css`
       width: 20px;
@@ -126,6 +159,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       font-style: normal;
       font-weight: 600;
       line-height: 20px;
+      cursor: pointer;
     `,
     settingItemValue: css`
       display: flex;

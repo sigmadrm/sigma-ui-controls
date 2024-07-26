@@ -35,6 +35,12 @@ class BodyController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
+  registerListener(): void {
+    document.getElementById(ids.smSettingsContainer)?.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
   handleEventPlay = () => {
     this.hideButtonPlay();
   };
