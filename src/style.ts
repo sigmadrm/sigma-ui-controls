@@ -51,6 +51,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       text-overflow: ellipsis;
     `,
     bodyController: css`
+      position: relative;
       background: transparent;
       width: 100%;
       flex: 1;
@@ -72,6 +73,105 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       padding: 8px;
       box-sizing: border-box;
       cursor: pointer;
+    `,
+    settingsContainer: css`
+      position: absolute;
+      bottom: 0;
+      right: 12px;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.64);
+      backdrop-filter: blur(25px);
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+      max-height: 100%;
+    `,
+    settingsContent: css`
+      min-width: 280px;
+      max-width: 300px;
+      overflow-y: auto;
+    `,
+    settingHeader: css`
+      box-sizing: border-box;
+      height: 48px;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+      align-self: stretch;
+    `,
+    settingItem: css`
+      height: 48px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+      }
+    `,
+    settingDetailItem: css`
+      height: 40px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+      }
+    `,
+    settingItemDivider: css`
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    `,
+    settingTitleActive: css`
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+    `,
+    settingTitleNormal: css`
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    `,
+    settingItemIcon: css`
+      width: 24px;
+      height: 24px;
+      padding: 4px 0px;
+      cursor: pointer;
+    `,
+    settingItemIconSecondary: css`
+      width: 20px;
+      height: 20px;
+      padding: 4px 0px;
+      color: rgba(255, 255, 255, 0.64);
+    `,
+    settingItemTitle: css`
+      flex: 1;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+      cursor: pointer;
+    `,
+    settingItemValue: css`
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      word-wrap: normal;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
     `,
     buttonPlayPrimaryEnable: css`
       display: flex;
