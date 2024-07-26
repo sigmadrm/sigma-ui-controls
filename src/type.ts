@@ -33,6 +33,16 @@ export enum EEVentName {
   ABR_STATUS_CHANGED = 'abrstatuschanged',
 }
 
+export const RESOLUTION_LABEL = {
+  AUTO: 'Auto',
+  SD: 'SD',
+  HD: 'HD',
+  FullHD: 'FullHD',
+  '2K': '2K',
+  '4K': '4K',
+  '8K': '8K',
+};
+
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
   id: string;

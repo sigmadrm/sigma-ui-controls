@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-properties */
+import { version } from 'webpack';
 import { ETypePlayer } from '../../constants';
 import { EEVentName } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
@@ -87,8 +89,30 @@ export default class SmApiPlayer {
 
   getVariantTracks() {
     const tracks = this.player.getVariantTracks();
-    // TODO: convert tracks
-    return tracks;
+    const selectedTrack = tracks.find((track) => track.active);
+    let filteredTracks = tracks;
+
+    if (selectedTrack) {
+      filteredTracks = tracks.filter(
+        (track) => track.language === selectedTrack.language && track.channelsCount === selectedTrack.channelsCount,
+      );
+    }
+    filteredTracks = filteredTracks.filter((track, idx) => {
+      const otherIdx = this.player.isAudioOnly()
+        ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
+        : filteredTracks.findIndex((t) => t.height === track.height);
+      return otherIdx === idx;
+    });
+
+    if (this.player.isAudioOnly()) {
+      filteredTracks.sort((t1, t2) => t1.bandwidth - t2.bandwidth);
+    } else {
+      filteredTracks.sort((t1, t2) => t1.height - t2.height);
+    }
+
+    const activeTrack = filteredTracks.find((track) => track.active);
+
+    return { tracks: filteredTracks, activeTrack };
   }
 
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
