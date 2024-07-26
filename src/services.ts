@@ -1,24 +1,52 @@
+import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 import { ETypePlayer, ids } from './constants';
 import generateStyles from './style';
-import { EEVentName } from './type';
+import { EEVentName, IApiPlayer } from './type';
 
 export const convertDataEventLoaded = (data: any) => {
-  return data;
+  return {
+    event: EEVentName.LOADED,
+    data: {
+      ...data,
+    },
+  };
 };
 
 export const convertDataEventError = (data: any) => {
-  return { errorCode: data.detail.code, message: data.detail.message };
+  return {
+    event: EEVentName.ERROR,
+    data: {
+      errorCode: data.detail.code,
+      message: data.detail.message,
+    },
+  };
 };
 
 export const convertDataEventPlay = (data: any) => {
-  return data;
+  return {
+    event: EEVentName.PLAY,
+    data: {
+      ...data,
+    },
+  };
 };
 
 export const convertDataEventPause = (data: any) => {
-  return data;
+  return {
+    event: EEVentName.PAUSE,
+    data: {
+      ...data,
+    },
+  };
 };
+
 export const convertDataEventFullScreenChange = (data: any) => {
-  return data;
+  return {
+    event: EEVentName.FULLSCREENCHANGE,
+    data: {
+      ...data,
+    },
+  };
 };
 
 export const createElementFromHTML = (htmlString: string) => {
@@ -33,53 +61,57 @@ export const generateApiPlayer = (
   typePlayer: ETypePlayer,
   version?: string,
 ) => {
-  const apiPlayer: { [key: string]: any } = {
-    play: () => {
-      return video?.play();
-    },
-    pause: () => {
-      video?.pause();
-    },
-    isPlay: () => {
-      if (video) {
-        return !video.paused;
-      }
-      return false;
-    },
-    isFullScreen: () => {
-      const isFullscreen = document.fullscreenElement;
-      if (isFullscreen) {
-        return true;
-      } else {
+  const apiPlayer: IApiPlayer = {
+    method: {
+      play: () => {
+        return video?.play();
+      },
+      pause: () => {
+        video?.pause();
+      },
+      isPlay: () => {
+        if (video) {
+          return !video.paused;
+        }
         return false;
-      }
-    },
-    enterFullScreen: () => {
-      if (video) {
-        const videoContainer = video.parentElement as any;
-        if (videoContainer) {
-          if (videoContainer.requestFullscreen) {
-            videoContainer.requestFullscreen();
-          } else if (videoContainer.mozRequestFullScreen) {
-            // Firefox
-            videoContainer.mozRequestFullScreen();
-          } else if (videoContainer.webkitRequestFullscreen) {
-            // Chrome, Safari and Opera
-            videoContainer.webkitRequestFullscreen();
-          } else if (videoContainer.msRequestFullscreen) {
-            // IE/Edge
-            videoContainer.msRequestFullscreen();
+      },
+      isFullScreen: () => {
+        const isFullscreen = document.fullscreenElement;
+        if (isFullscreen) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      enterFullScreen: () => {
+        if (video) {
+          const videoContainer = video.parentElement as any;
+          if (videoContainer) {
+            if (videoContainer.requestFullscreen) {
+              videoContainer.requestFullscreen();
+            } else if (videoContainer.mozRequestFullScreen) {
+              // Firefox
+              videoContainer.mozRequestFullScreen();
+            } else if (videoContainer.webkitRequestFullscreen) {
+              // Chrome, Safari and Opera
+              videoContainer.webkitRequestFullscreen();
+            } else if (videoContainer.msRequestFullscreen) {
+              // IE/Edge
+              videoContainer.msRequestFullscreen();
+            }
           }
         }
-      }
+      },
+      exitFullScreen: () => {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      },
     },
-    exitFullScreen: () => {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    },
+    eventemitter: new SmEventEmitter(),
+    addEventListener: () => {},
+    removeEventListener: () => {},
   };
-
   if (typePlayer === ETypePlayer.SHAKA) {
     apiPlayer.addEventListener = (evtName: EEVentName, clb: (data: any) => any) => {
       switch (evtName) {

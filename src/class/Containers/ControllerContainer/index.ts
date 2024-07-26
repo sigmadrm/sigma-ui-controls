@@ -3,7 +3,7 @@ import BodyController from './BodyController';
 import FooterController from './FooterController';
 
 import { ids } from '../../../constants';
-import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
+import { EEVentName, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {
@@ -21,6 +21,12 @@ class ControllerContainer extends BaseComponent {
     this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
+    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
+      this.show();
+    });
+    apiPlayer.eventemitter.on(EEVentName.ERROR, () => {
+      this.hide();
+    });
   }
 
   render() {
@@ -45,10 +51,10 @@ class ControllerContainer extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (apiPlayer.isPlay()) {
-      apiPlayer.pause();
+    if (apiPlayer.method.isPlay()) {
+      apiPlayer.method.pause();
     } else {
-      apiPlayer.play();
+      apiPlayer.method.play();
     }
   };
 
@@ -61,22 +67,6 @@ class ControllerContainer extends BaseComponent {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.controllerContentEnable);
     }
-  };
-  handleEventPlay = () => {
-    this.bodyController && this.bodyController.handleEventPlay();
-    this.footerController && this.footerController.handleEventPlay();
-  };
-  handleEventPause = () => {
-    this.bodyController && this.bodyController.handleEventPause();
-    this.footerController && this.footerController.handleEventPause();
-  };
-  handleEventLoaded = () => {
-    this.show();
-    this.bodyController && this.bodyController.handleEventLoaded();
-    this.footerController && this.footerController.handleEventLoaded();
-  };
-  handleEventFullScreenChange = () => {
-    this.footerController && this.footerController.handleEventFullScreenChange();
   };
 }
 export default ControllerContainer;

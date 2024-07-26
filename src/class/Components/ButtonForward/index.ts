@@ -23,8 +23,8 @@ class ButtonForward extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (!apiPlayer.isPlay()) {
-      apiPlayer.play();
+    if (!apiPlayer.method.isPlay()) {
+      apiPlayer.method.play();
     }
   }
 

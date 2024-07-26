@@ -8,10 +8,6 @@ declare class FooterController extends BaseComponent {
     private taskbarController;
     constructor(props: IConstructorProps);
     render(): void;
-    handleEventPlay: () => void;
-    handleEventPause: () => void;
-    handleEventLoaded: () => void;
-    handleEventFullScreenChange: () => void;
 }
 export default FooterController;
 //# sourceMappingURL=index.d.ts.map

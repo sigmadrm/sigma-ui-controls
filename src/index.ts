@@ -13,10 +13,7 @@ import './index.css';
 const classes = generateStyles();
 
 class SmUIControls {
-  private apiPlayer: IApiPlayer = {
-    play: () => Promise<void> || undefined,
-    pause: () => Promise<void> || undefined,
-  };
+  private apiPlayer: IApiPlayer | undefined;
   private isInit: boolean = false;
   private controllerContainer: ControllerContainer | undefined;
   private errorContainer: ErrorContainer | undefined;
@@ -58,49 +55,30 @@ class SmUIControls {
         this.loadingContainer = new LoadingContainer({ id: ids.smLoading, classes, apiPlayer });
 
         apiPlayer.addEventListener(EEVentName.LOADED, (data: any) => {
-          this.handleEventLoaded(data);
+          console.log('addEventListener', EEVentName.LOADED, data);
+          apiPlayer.eventemitter.emit(EEVentName.LOADED, data);
         });
         apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
-          this.handleEventError(data);
+          console.log('addEventListener', EEVentName.ERROR, data);
+          apiPlayer.eventemitter.emit(EEVentName.ERROR, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
-          this.handleEventPlay(data);
+          console.log('addEventListener', EEVentName.PLAY, data);
+          apiPlayer.eventemitter.emit(EEVentName.PLAY, data);
         });
         apiPlayer.addEventListener(EEVentName.PAUSE, (data: any) => {
-          this.handleEventPause(data);
+          console.log('addEventListener', EEVentName.PAUSE, data);
+          apiPlayer.eventemitter.emit(EEVentName.PAUSE, data);
         });
         apiPlayer.addEventListener(EEVentName.FULLSCREENCHANGE, (data: any) => {
-          this.handleEventFullScreenChange(data);
+          console.log('addEventListener', EEVentName.FULLSCREENCHANGE, data);
+          apiPlayer.eventemitter.emit(EEVentName.FULLSCREENCHANGE, data);
         });
       }
     }
   }
-
-  handleEventLoaded = (data: any) => {
-    this.loadingContainer?.handleEventLoaded();
-    this.controllerContainer && this.controllerContainer.handleEventLoaded();
-    this.errorContainer?.handleEventLoaded();
-  };
-  handleEventError = (data: any) => {
-    console.log('error', { data });
-    this.loadingContainer && this.loadingContainer.hide();
-    this.controllerContainer && this.controllerContainer.hide();
-    this.errorContainer && this.errorContainer.show(data);
-  };
-  handleEventPlay = (data: any) => {
-    console.log('play', { data });
-    this.controllerContainer?.handleEventPlay();
-  };
-  handleEventPause = (data: any) => {
-    console.log('pause', { data });
-    this.controllerContainer?.handleEventPause();
-  };
-  handleEventFullScreenChange = (data: any) => {
-    console.log('fullscreen change', { data });
-    this.controllerContainer?.handleEventFullScreenChange();
-  };
   destroy() {
-    this.apiPlayer = {};
+    this.apiPlayer = undefined;
     this.isInit = false;
   }
 }

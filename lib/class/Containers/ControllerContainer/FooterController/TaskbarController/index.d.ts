@@ -11,10 +11,6 @@ declare class TaskbarController extends BaseComponent {
     private buttonExitFullScreen;
     constructor(props: IConstructorProps);
     render(): void;
-    handleEventPlay: () => void;
-    handleEventPause: () => void;
-    handleEventLoaded: () => void;
-    handleEventFullScreenChange: () => void;
 }
 export default TaskbarController;
 //# sourceMappingURL=index.d.ts.map

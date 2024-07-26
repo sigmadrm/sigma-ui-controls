@@ -1,7 +1,8 @@
 import BaseComponent from '../../../BaseComponent';
 import { ids } from '../../../../constants';
 import { playIcon } from '../../../../icons';
-import { IConstructorBaseProps } from '../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../type';
+
 import ButtonPlayPrimary from '../../../Components/ButtonPlayPrimary';
 import SettingsController from './SettingsController';
 
@@ -9,7 +10,7 @@ interface IConstructorProps extends IConstructorBaseProps {}
 
 class BodyController extends BaseComponent {
   private buttonPrimary: ButtonPlayPrimary | undefined;
-  private settingsController: SettingsController;
+  // private settingsController: SettingsController;
 
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer } = props;
@@ -20,7 +21,16 @@ class BodyController extends BaseComponent {
       classes,
       apiPlayer,
     });
-    this.settingsController = new SettingsController({ id: ids.smSettingsContainer, classes, apiPlayer });
+    apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
+      if (this.buttonPrimary) {
+        this.buttonPrimary.hide();
+      }
+    });
+    apiPlayer.eventemitter.on(EEVentName.PAUSE, () => {
+      if (this.buttonPrimary) {
+        this.buttonPrimary.show();
+      }
+    });
   }
   render() {
     if (this.containerElement) {
@@ -35,32 +45,13 @@ class BodyController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
+
   registerListener(): void {
     document.getElementById(ids.smSettingsContainer)?.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
     });
   }
-  handleEventPlay = () => {
-    this.hideButtonPlay();
-  };
-  handleEventPause = () => {
-    this.showButtonPlay();
-  };
-  handleEventLoaded = () => {
-    this.showButtonPlay();
-  };
-
-  hideButtonPlay = () => {
-    if (this.buttonPrimary) {
-      this.buttonPrimary.hide();
-    }
-  };
-  showButtonPlay = () => {
-    if (this.buttonPrimary) {
-      this.buttonPrimary.show();
-    }
-  };
 }
 
 export default BodyController;

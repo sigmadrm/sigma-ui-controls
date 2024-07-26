@@ -7,11 +7,6 @@ declare class SmUIControls {
     private errorContainer;
     private loadingContainer;
     constructor(props: IConfigureUIPlayerProps);
-    handleEventLoaded: (data: any) => void;
-    handleEventError: (data: any) => void;
-    handleEventPlay: (data: any) => void;
-    handleEventPause: (data: any) => void;
-    handleEventFullScreenChange: (data: any) => void;
     destroy(): void;
 }
 export default SmUIControls;

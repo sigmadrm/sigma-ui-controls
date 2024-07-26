@@ -14,10 +14,6 @@ declare class ControllerContainer extends BaseComponent {
     handleClickContainer: (event: MouseEvent) => void;
     hide: () => void;
     show: () => void;
-    handleEventPlay: () => void;
-    handleEventPause: () => void;
-    handleEventLoaded: () => void;
-    handleEventFullScreenChange: () => void;
 }
 export default ControllerContainer;
 //# sourceMappingURL=index.d.ts.map

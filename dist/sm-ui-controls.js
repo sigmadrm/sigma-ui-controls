@@ -2370,6 +2370,352 @@ var _createEmotion = createEmotion({
 
 /***/ }),
 
+/***/ "./node_modules/eventemitter3/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/eventemitter3/index.js ***!
+  \*********************************************/
+/***/ ((module) => {
+
+
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if (true) {
+  module.exports = EventEmitter;
+}
+
+
+/***/ }),
+
 /***/ "./src/index.css":
 /*!***********************!*\
   !*** ./src/index.css ***!
@@ -2465,8 +2811,8 @@ class ButtonExitFullScreen extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (apiPlayer.isFullScreen()) {
-            apiPlayer.exitFullScreen();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
         }
     }
     hide = () => {
@@ -2523,11 +2869,11 @@ class ButtonFullScreen extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (apiPlayer.isFullScreen()) {
-            apiPlayer.exitFullScreen();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
         }
         else {
-            apiPlayer.enterFullScreen();
+            apiPlayer.method.enterFullScreen();
         }
     };
 }
@@ -2567,8 +2913,8 @@ class ButtonMute extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (apiPlayer.isFullScreen()) {
-            apiPlayer.exitFullScreen();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
         }
     }
     hide = () => {
@@ -2617,8 +2963,8 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (!apiPlayer.isPlay()) {
-            apiPlayer.play();
+        if (!apiPlayer.method.isPlay()) {
+            apiPlayer.method.play();
         }
     }
     hide = () => {
@@ -2663,8 +3009,8 @@ class ButtonPlayPrimary extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (!apiPlayer.isPlay()) {
-            apiPlayer.play();
+        if (!apiPlayer.method.isPlay()) {
+            apiPlayer.method.play();
         }
     }
     hide = () => {
@@ -2704,8 +3050,8 @@ class ButtonPlaySecondary extends BaseComponent_1.default {
             this.containerElement.addEventListener('click', (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                if (!this.apiPlayer.isPlay()) {
-                    this.apiPlayer.play();
+                if (!this.apiPlayer.method.isPlay()) {
+                    this.apiPlayer.method.play();
                 }
             });
         }
@@ -2715,8 +3061,8 @@ class ButtonPlaySecondary extends BaseComponent_1.default {
         this.containerElement?.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
-            if (!apiPlayer.isPlay()) {
-                apiPlayer.play();
+            if (!apiPlayer.method.isPlay()) {
+                apiPlayer.method.play();
             }
         });
     }
@@ -2767,8 +3113,8 @@ class ButtonVolume extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (apiPlayer.isFullScreen()) {
-            apiPlayer.exitFullScreen();
+        if (apiPlayer.method.isFullScreen()) {
+            apiPlayer.method.exitFullScreen();
         }
     }
     hide = () => {
@@ -2787,181 +3133,6 @@ exports["default"] = ButtonVolume;
 
 /***/ }),
 
-/***/ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts":
-/*!*********************************************************************************************!*\
-  !*** ./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts ***!
-  \*********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const icons_1 = __webpack_require__(/*! ./../../../../../icons */ "./src/icons.ts");
-const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-const initState = {
-    playbackSpeed: 1,
-    quality: 'Auto',
-    currentTab: 'default',
-    previousTab: 'default',
-    qualities: ['Auto', 'SD', 'HD', 'FHD'],
-};
-class SettingsController extends BaseComponent_1.default {
-    constructor(props) {
-        super(props, initState);
-    }
-    generatePlaybackItemId(index) {
-        return `${constants_1.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
-    }
-    generateQualityItemId(index) {
-        return `${constants_1.ids.smSettingQualityItemPrefix}-${index}`;
-    }
-    registerListener() {
-        const smPlaybackSpeedElement = document.getElementById(constants_1.ids.smPlaybackSpeed);
-        const smQualityElement = document.getElementById(constants_1.ids.smQuality);
-        const smSettingDetailGoBackIconElement = document.getElementById(constants_1.ids.smSettingDetailGoBackIcon);
-        const smSettingDetailTitleElement = document.getElementById(constants_1.ids.smSettingDetailTitle);
-        if (smPlaybackSpeedElement) {
-            smPlaybackSpeedElement.onclick = (event) => this.goToPlaybackSpeedTab(event);
-        }
-        if (smQualityElement) {
-            smQualityElement.onclick = (event) => this.goToQualityTab(event);
-        }
-        if (smSettingDetailGoBackIconElement) {
-            smSettingDetailGoBackIconElement.onclick = (event) => this.goToTab('default');
-        }
-        if (smSettingDetailTitleElement) {
-            smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
-        }
-        // TODO: listener playback speed change
-        PLAYBACK_SPEEDS.forEach((pbsValue, index) => {
-            const id = this.generatePlaybackItemId(index);
-            const playbackSpeedValueElement = document.getElementById(id);
-            if (playbackSpeedValueElement) {
-                playbackSpeedValueElement.onclick = (event) => this.changePlaybackSpeed(pbsValue);
-            }
-        });
-        // TODO: listener quality change
-        this.state?.qualities?.forEach((rValue, index) => {
-            const id = this.generateQualityItemId(index);
-            const qualitiesValueElement = document.getElementById(id);
-            if (qualitiesValueElement) {
-                qualitiesValueElement.onclick = (event) => this.changeQuality(rValue);
-            }
-        });
-    }
-    unregisterListener() { }
-    goToPlaybackSpeedTab(event) {
-        this.state = { ...this.state, currentTab: 'playbackSpeed' };
-    }
-    goToQualityTab(event) {
-        this.state = { ...this.state, currentTab: 'quality' };
-    }
-    goToTab(tabName) {
-        this.state = { ...this.state, currentTab: tabName };
-    }
-    changePlaybackSpeed(value) {
-        this.state = { ...this.state, playbackSpeed: value };
-        // TODO: handle change playbackSpeed
-        // this.apiPlayer.
-    }
-    changeQuality(value) {
-        this.state = { ...this.state, quality: value };
-        // TODO: handle change playbackSpeed
-        // this.apiPlayer.
-    }
-    renderDefaultTab() {
-        const { classes, state = initState } = this;
-        const settingItems = [
-            {
-                title: 'Tốc độ phát',
-                id: constants_1.ids.smPlaybackSpeed,
-                icon: icons_1.playbackSpeedIcon,
-                value: `<div class=${classes.settingItemValue}>
-          <div>${state.playbackSpeed === 1 ? 'Bình thường' : state.playbackSpeed}</div>
-          <div class=${classes.settingItemIconSecondary}>${icons_1.chevronRightIcon}</div>
-        </div>`,
-            },
-            {
-                title: 'Chất lượng',
-                id: constants_1.ids.smQuality,
-                icon: icons_1.qualityIcon,
-                value: `<div class=${classes.settingItemValue}>
-          <div>${state.quality}</div>
-          <div class=${classes.settingItemIconSecondary}>${icons_1.chevronRightIcon}</div>
-        </div>`,
-            },
-        ];
-        return settingItems
-            .map(({ title, id, icon, value }) => {
-            return `<div class=${classes.settingItem} id=${id}>
-        <div class=${classes.settingItemIcon}>${icon}</div>
-        <div class=${classes.settingItemTitle}>${title}</div>
-        <div class=${classes.settingItemValue}>${value}</div>
-      </div>`;
-        })
-            .join('');
-    }
-    renderPlaybackSpeedTab() {
-        const { classes, state } = this;
-        const header = `
-    <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Tốc độ phát</div>
-    </div>`;
-        const body = PLAYBACK_SPEEDS.map((pbsValue, index) => {
-            const id = this.generatePlaybackItemId(index);
-            const isActive = state.playbackSpeed === pbsValue;
-            return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
-        <div class=${classes.settingItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
-        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${pbsValue === 1 ? 'Bình thường' : `${pbsValue}x`}</div>
-      </div>`;
-        }).join('');
-        return header + body;
-    }
-    renderQualityTab() {
-        const { classes, state } = this;
-        const header = `
-    <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Chất lượng</div>
-    </div>`;
-        const body = state.qualities
-            .map((rValue, index) => {
-            const id = this.generateQualityItemId(index);
-            const isActive = state.quality === rValue;
-            return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
-        <div class=${classes.settingItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
-        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${rValue}</div>
-      </div>`;
-        })
-            .join('');
-        return header + body;
-    }
-    renderSettingContent() {
-        switch (this.state?.currentTab) {
-            case 'playbackSpeed':
-                return this.renderPlaybackSpeedTab();
-            case 'quality':
-                return this.renderQualityTab();
-            default:
-                return this.renderDefaultTab();
-        }
-    }
-    render() {
-        const { classes } = this;
-        if (this.containerElement) {
-            this.containerElement.innerHTML = `<div class=${classes.settingsContent}>
-        ${this.renderSettingContent()}
-      </div>`;
-        }
-    }
-}
-exports["default"] = SettingsController;
-
-
-/***/ }),
-
 /***/ "./src/class/Containers/ControllerContainer/BodyController/index.ts":
 /*!**************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/BodyController/index.ts ***!
@@ -2973,11 +3144,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/constants.ts");
 const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const ButtonPlayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts");
-const SettingsController_1 = __webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts");
 class BodyController extends BaseComponent_1.default {
     buttonPrimary;
-    settingsController;
+    // private settingsController: SettingsController;
     constructor(props) {
         const { classes, apiPlayer } = props;
         super(props);
@@ -2986,7 +3157,16 @@ class BodyController extends BaseComponent_1.default {
             classes,
             apiPlayer,
         });
-        this.settingsController = new SettingsController_1.default({ id: constants_1.ids.smSettingsContainer, classes, apiPlayer });
+        apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, () => {
+            if (this.buttonPrimary) {
+                this.buttonPrimary.hide();
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, () => {
+            if (this.buttonPrimary) {
+                this.buttonPrimary.show();
+            }
+        });
     }
     render() {
         if (this.containerElement) {
@@ -3007,25 +3187,6 @@ class BodyController extends BaseComponent_1.default {
             event.stopPropagation();
         });
     }
-    handleEventPlay = () => {
-        this.hideButtonPlay();
-    };
-    handleEventPause = () => {
-        this.showButtonPlay();
-    };
-    handleEventLoaded = () => {
-        this.showButtonPlay();
-    };
-    hideButtonPlay = () => {
-        if (this.buttonPrimary) {
-            this.buttonPrimary.hide();
-        }
-    };
-    showButtonPlay = () => {
-        if (this.buttonPrimary) {
-            this.buttonPrimary.show();
-        }
-    };
 }
 exports["default"] = BodyController;
 
@@ -3065,6 +3226,7 @@ exports["default"] = SeekBarController;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const ButtonFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonFullScreen */ "./src/class/Components/ButtonFullScreen/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
 const ButtonPlaySecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPlaySecondary */ "./src/class/Components/ButtonPlaySecondary/index.ts");
@@ -3105,6 +3267,49 @@ class TaskbarController extends BaseComponent_1.default {
             classes,
             apiPlayer,
         });
+        apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, () => {
+            if (this.buttonPauseSecondary) {
+                this.buttonPauseSecondary.show();
+            }
+            if (this.buttonPlaySecondary) {
+                this.buttonPlaySecondary.hide();
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, () => {
+            if (this.buttonPauseSecondary) {
+                this.buttonPauseSecondary.hide();
+            }
+            if (this.buttonPlaySecondary) {
+                this.buttonPlaySecondary.show();
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
+            // this.show();
+            if (this.buttonPlaySecondary) {
+                this.buttonPlaySecondary.show();
+            }
+            if (this.buttonPauseSecondary) {
+                this.buttonPauseSecondary.hide();
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.FULLSCREENCHANGE, () => {
+            if (this.apiPlayer.method.isFullScreen()) {
+                if (this.buttonExitFullScreen) {
+                    this.buttonExitFullScreen.show();
+                }
+                if (this.buttonFullScreen) {
+                    this.buttonFullScreen.hide();
+                }
+            }
+            else {
+                if (this.buttonExitFullScreen) {
+                    this.buttonExitFullScreen.hide();
+                }
+                if (this.buttonFullScreen) {
+                    this.buttonFullScreen.show();
+                }
+            }
+        });
     }
     render() {
         if (this.containerElement) {
@@ -3122,48 +3327,6 @@ class TaskbarController extends BaseComponent_1.default {
             this.containerElement.innerHTML = htmlString;
         }
     }
-    handleEventPlay = () => {
-        if (this.buttonPlaySecondary) {
-            this.buttonPlaySecondary.hide();
-        }
-        if (this.buttonPauseSecondary) {
-            this.buttonPauseSecondary.show();
-        }
-    };
-    handleEventPause = () => {
-        if (this.buttonPlaySecondary) {
-            this.buttonPlaySecondary.show();
-        }
-        if (this.buttonPauseSecondary) {
-            this.buttonPauseSecondary.hide();
-        }
-    };
-    handleEventLoaded = () => {
-        if (this.buttonPlaySecondary) {
-            this.buttonPlaySecondary.show();
-        }
-        if (this.buttonPauseSecondary) {
-            this.buttonPauseSecondary.hide();
-        }
-    };
-    handleEventFullScreenChange = () => {
-        if (this.apiPlayer.isFullScreen()) {
-            if (this.buttonFullScreen) {
-                this.buttonFullScreen.hide();
-            }
-            if (this.buttonExitFullScreen) {
-                this.buttonExitFullScreen.show();
-            }
-        }
-        else {
-            if (this.buttonFullScreen) {
-                this.buttonFullScreen.show();
-            }
-            if (this.buttonExitFullScreen) {
-                this.buttonExitFullScreen.hide();
-            }
-        }
-    };
 }
 exports["default"] = TaskbarController;
 
@@ -3207,20 +3370,6 @@ class FooterController extends BaseComponent_1.default {
             this.containerElement.innerHTML = htmlString;
         }
     }
-    handleEventPlay = () => {
-        this.taskbarController?.handleEventPlay();
-    };
-    handleEventPause = () => {
-        this.taskbarController?.handleEventPause();
-    };
-    handleEventLoaded = () => {
-        // this.seekBarController?.handleEventLoaded();
-        this.taskbarController?.handleEventLoaded();
-    };
-    handleEventFullScreenChange = () => {
-        // this.seekBarController?.handleEventLoaded();
-        this.taskbarController?.handleEventFullScreenChange();
-    };
 }
 exports["default"] = FooterController;
 
@@ -3236,12 +3385,16 @@ exports["default"] = FooterController;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 class HeadController extends BaseComponent_1.default {
     videoInfo;
     constructor(props) {
         const { videoInfo, ...baseProps } = props;
         super(baseProps);
         this.videoInfo = videoInfo;
+        baseProps.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
+            this.render();
+        });
     }
     render() {
         if (this.containerElement) {
@@ -3269,6 +3422,7 @@ const HeadController_1 = __webpack_require__(/*! ./HeadController */ "./src/clas
 const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class ControllerContainer extends BaseComponent_1.default {
     headController;
@@ -3280,6 +3434,12 @@ class ControllerContainer extends BaseComponent_1.default {
         this.headController = new HeadController_1.default({ id: constants_1.ids.smHeadController, classes, videoInfo, apiPlayer });
         this.bodyController = new BodyController_1.default({ id: constants_1.ids.smBodyController, classes, apiPlayer });
         this.footerController = new FooterController_1.default({ id: constants_1.ids.smFooterController, classes, apiPlayer });
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
+            this.show();
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, () => {
+            this.hide();
+        });
     }
     render() {
         const { classes } = this;
@@ -3300,11 +3460,11 @@ class ControllerContainer extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (apiPlayer.isPlay()) {
-            apiPlayer.pause();
+        if (apiPlayer.method.isPlay()) {
+            apiPlayer.method.pause();
         }
         else {
-            apiPlayer.play();
+            apiPlayer.method.play();
         }
     };
     hide = () => {
@@ -3316,22 +3476,6 @@ class ControllerContainer extends BaseComponent_1.default {
         if (this.containerElement) {
             this.containerElement.classList.add(this.classes.controllerContentEnable);
         }
-    };
-    handleEventPlay = () => {
-        this.bodyController && this.bodyController.handleEventPlay();
-        this.footerController && this.footerController.handleEventPlay();
-    };
-    handleEventPause = () => {
-        this.bodyController && this.bodyController.handleEventPause();
-        this.footerController && this.footerController.handleEventPause();
-    };
-    handleEventLoaded = () => {
-        this.show();
-        this.bodyController && this.bodyController.handleEventLoaded();
-        this.footerController && this.footerController.handleEventLoaded();
-    };
-    handleEventFullScreenChange = () => {
-        this.footerController && this.footerController.handleEventFullScreenChange();
     };
 }
 exports["default"] = ControllerContainer;
@@ -3348,10 +3492,20 @@ exports["default"] = ControllerContainer;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class ErrorContainer extends BaseComponent_1.default {
     constructor(props) {
+        const { apiPlayer } = props;
         super(props);
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
+            this.hide();
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, (dataEvent) => {
+            if (dataEvent?.data) {
+                this.show(dataEvent);
+            }
+        });
     }
     hide = () => {
         if (this.containerElement) {
@@ -3365,19 +3519,16 @@ class ErrorContainer extends BaseComponent_1.default {
             this.containerElement.innerHTML = htmlString;
         }
     };
-    generateHtml = (data) => {
+    generateHtml = (dataEvent) => {
         const htmlString = `<div class="${this.classes.errorIconWrap}">
         ${icons_1.infoIcon}
     </div>
     <div class="${this.classes.flexColumnStartCenter}">
-      <h2 style="margin:0px">${data.errorCode}</h2>
-      <h3 style="margin:0px">${data.message}</h3>
+      <h2 style="margin:0px">${dataEvent.data.errorCode}</h2>
+      <h3 style="margin:0px">${dataEvent.data.message}</h3>
     </div>
     `;
         return htmlString;
-    };
-    handleEventLoaded = () => {
-        this.hide();
     };
 }
 exports["default"] = ErrorContainer;
@@ -3395,9 +3546,13 @@ exports["default"] = ErrorContainer;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 class LoadingContainer extends BaseComponent_1.default {
     constructor(props) {
+        const { apiPlayer } = props;
         super(props);
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => this.hide());
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, () => this.hide());
     }
     render() {
         this.containerElement?.classList.add(this.classes.loadingContainerEnable);
@@ -3405,9 +3560,6 @@ class LoadingContainer extends BaseComponent_1.default {
             this.containerElement.innerHTML = icons_1.loadingIcon;
         }
     }
-    handleEventLoaded = () => {
-        this.hide();
-    };
     hide = () => {
         if (this.containerElement) {
             this.containerElement.className = this.classes.errorContainer;
@@ -3420,6 +3572,44 @@ class LoadingContainer extends BaseComponent_1.default {
     };
 }
 exports["default"] = LoadingContainer;
+
+
+/***/ }),
+
+/***/ "./src/class/SmEventEmitter/SmEventEmitter.ts":
+/*!****************************************************!*\
+  !*** ./src/class/SmEventEmitter/SmEventEmitter.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const eventemitter3_1 = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
+class SmEventEmitter {
+    eventEmitter = new eventemitter3_1.EventEmitter();
+    emit(eventName, data) {
+        return this.eventEmitter.emit(eventName, data);
+    }
+    on(event, callback) {
+        this.eventEmitter.on(event, callback);
+    }
+    once(event, callback) {
+        this.eventEmitter.once(event, callback);
+    }
+    off(event, callback) {
+        this.eventEmitter.off(event, callback);
+    }
+    removeAllListeners(event) {
+        this.eventEmitter.removeAllListeners(event);
+    }
+    listeners(event) {
+        return this.eventEmitter.listeners(event);
+    }
+    listenerCount(event) {
+        return this.eventEmitter.listenerCount(event);
+    }
+}
+exports["default"] = SmEventEmitter;
 
 
 /***/ }),
@@ -3648,26 +3838,53 @@ exports.playbackSpeedIcon = `
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateHtmlContentControllerString = exports.generateHtmlContentContainerString = exports.generateApiPlayer = exports.createElementFromHTML = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
+const SmEventEmitter_1 = __webpack_require__(/*! ./class/SmEventEmitter/SmEventEmitter */ "./src/class/SmEventEmitter/SmEventEmitter.ts");
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const convertDataEventLoaded = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.LOADED,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventLoaded = convertDataEventLoaded;
 const convertDataEventError = (data) => {
-    return { errorCode: data.detail.code, message: data.detail.message };
+    return {
+        event: type_1.EEVentName.ERROR,
+        data: {
+            errorCode: data.detail.code,
+            message: data.detail.message,
+        },
+    };
 };
 exports.convertDataEventError = convertDataEventError;
 const convertDataEventPlay = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.PLAY,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventPlay = convertDataEventPlay;
 const convertDataEventPause = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.PAUSE,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventPause = convertDataEventPause;
 const convertDataEventFullScreenChange = (data) => {
-    return data;
+    return {
+        event: type_1.EEVentName.FULLSCREENCHANGE,
+        data: {
+            ...data,
+        },
+    };
 };
 exports.convertDataEventFullScreenChange = convertDataEventFullScreenChange;
 const createElementFromHTML = (htmlString) => {
@@ -3678,54 +3895,59 @@ const createElementFromHTML = (htmlString) => {
 exports.createElementFromHTML = createElementFromHTML;
 const generateApiPlayer = (player, video, typePlayer, version) => {
     const apiPlayer = {
-        play: () => {
-            return video?.play();
-        },
-        pause: () => {
-            video?.pause();
-        },
-        isPlay: () => {
-            if (video) {
-                return !video.paused;
-            }
-            return false;
-        },
-        isFullScreen: () => {
-            const isFullscreen = document.fullscreenElement;
-            if (isFullscreen) {
-                return true;
-            }
-            else {
+        method: {
+            play: () => {
+                return video?.play();
+            },
+            pause: () => {
+                video?.pause();
+            },
+            isPlay: () => {
+                if (video) {
+                    return !video.paused;
+                }
                 return false;
-            }
-        },
-        enterFullScreen: () => {
-            if (video) {
-                const videoContainer = video.parentElement;
-                if (videoContainer) {
-                    if (videoContainer.requestFullscreen) {
-                        videoContainer.requestFullscreen();
-                    }
-                    else if (videoContainer.mozRequestFullScreen) {
-                        // Firefox
-                        videoContainer.mozRequestFullScreen();
-                    }
-                    else if (videoContainer.webkitRequestFullscreen) {
-                        // Chrome, Safari and Opera
-                        videoContainer.webkitRequestFullscreen();
-                    }
-                    else if (videoContainer.msRequestFullscreen) {
-                        // IE/Edge
-                        videoContainer.msRequestFullscreen();
+            },
+            isFullScreen: () => {
+                const isFullscreen = document.fullscreenElement;
+                if (isFullscreen) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+            enterFullScreen: () => {
+                if (video) {
+                    const videoContainer = video.parentElement;
+                    if (videoContainer) {
+                        if (videoContainer.requestFullscreen) {
+                            videoContainer.requestFullscreen();
+                        }
+                        else if (videoContainer.mozRequestFullScreen) {
+                            // Firefox
+                            videoContainer.mozRequestFullScreen();
+                        }
+                        else if (videoContainer.webkitRequestFullscreen) {
+                            // Chrome, Safari and Opera
+                            videoContainer.webkitRequestFullscreen();
+                        }
+                        else if (videoContainer.msRequestFullscreen) {
+                            // IE/Edge
+                            videoContainer.msRequestFullscreen();
+                        }
                     }
                 }
-            }
+            },
+            exitFullScreen: () => {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            },
         },
-        exitFullScreen: () => {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        },
+        eventemitter: new SmEventEmitter_1.default(),
+        addEventListener: () => { },
+        removeEventListener: () => { },
     };
     if (typePlayer === constants_1.ETypePlayer.SHAKA) {
         apiPlayer.addEventListener = (evtName, clb) => {
@@ -4201,10 +4423,7 @@ const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
 __webpack_require__(/*! ./index.css */ "./src/index.css");
 const classes = (0, style_1.default)();
 class SmUIControls {
-    apiPlayer = {
-        play: () => (Promise) || undefined,
-        pause: () => (Promise) || undefined,
-    };
+    apiPlayer;
     isInit = false;
     controllerContainer;
     errorContainer;
@@ -4233,48 +4452,30 @@ class SmUIControls {
                 this.errorContainer = new ErrorContainer_1.default({ id: constants_1.ids.smError, classes, apiPlayer });
                 this.loadingContainer = new LoadingContainer_1.default({ id: constants_1.ids.smLoading, classes, apiPlayer });
                 apiPlayer.addEventListener(type_1.EEVentName.LOADED, (data) => {
-                    this.handleEventLoaded(data);
+                    console.log('addEventListener', type_1.EEVentName.LOADED, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.LOADED, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
-                    this.handleEventError(data);
+                    console.log('addEventListener', type_1.EEVentName.ERROR, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.ERROR, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
-                    this.handleEventPlay(data);
+                    console.log('addEventListener', type_1.EEVentName.PLAY, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.PLAY, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PAUSE, (data) => {
-                    this.handleEventPause(data);
+                    console.log('addEventListener', type_1.EEVentName.PAUSE, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.PAUSE, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.FULLSCREENCHANGE, (data) => {
-                    this.handleEventFullScreenChange(data);
+                    console.log('addEventListener', type_1.EEVentName.FULLSCREENCHANGE, data);
+                    apiPlayer.eventemitter.emit(type_1.EEVentName.FULLSCREENCHANGE, data);
                 });
             }
         }
     }
-    handleEventLoaded = (data) => {
-        this.loadingContainer?.handleEventLoaded();
-        this.controllerContainer && this.controllerContainer.handleEventLoaded();
-        this.errorContainer?.handleEventLoaded();
-    };
-    handleEventError = (data) => {
-        console.log('error', { data });
-        this.loadingContainer && this.loadingContainer.hide();
-        this.controllerContainer && this.controllerContainer.hide();
-        this.errorContainer && this.errorContainer.show(data);
-    };
-    handleEventPlay = (data) => {
-        console.log('play', { data });
-        this.controllerContainer?.handleEventPlay();
-    };
-    handleEventPause = (data) => {
-        console.log('pause', { data });
-        this.controllerContainer?.handleEventPause();
-    };
-    handleEventFullScreenChange = (data) => {
-        console.log('fullscreen change', { data });
-        this.controllerContainer?.handleEventFullScreenChange();
-    };
     destroy() {
-        this.apiPlayer = {};
+        this.apiPlayer = undefined;
         this.isInit = false;
     }
 }
