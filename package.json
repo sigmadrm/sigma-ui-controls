@@ -2,6 +2,11 @@
   "name": "sigma-ui-controls",
   "version": "0.0.1",
   "description": "**This is ui controls plugin for video players**",
+  "exports": {
+    ".": "./dist/sm-ui-controls.min.js"
+  },
+  "main": "dist/sm-ui-controls.min.js",
+  "types": "lib/index.d.ts",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,7 +45,7 @@
       "push": true
     },
     "github": {
-      "release": false,
+      "release": true,
       "releaseName": "Release ${version}"
     },
     "npm": {

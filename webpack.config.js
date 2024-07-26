@@ -98,8 +98,8 @@ function getPluginsForConfig(type, minify = false) {
     new webpack.ProgressPlugin(),
     new webpack.DefinePlugin(defineConstants),
     new MiniCssExtractPlugin({
-      filename: minify ? `${sdkName}.${version}.min.css` : `${sdkName}.${version}.css`,
-      chunkFilename: minify ? `[id].${version}.min.css` : `[id].${version}.css`,
+      filename: minify ? `${sdkName}.min.css` : `${sdkName}.css`,
+      chunkFilename: minify ? `[id].min.css` : `[id].css`,
     }),
   ];
 
@@ -130,7 +130,7 @@ const multiConfig = [
     name: 'debug',
     mode: 'development',
     output: {
-      filename: `${sdkName}.${version}.js`,
+      filename: `${sdkName}.js`,
       chunkFilename: '[name].js',
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/dist/',
@@ -148,7 +148,7 @@ const multiConfig = [
     name: 'dist',
     mode: 'production',
     output: {
-      filename: `${sdkName}.${version}.min.js`,
+      filename: `${sdkName}.min.js`,
       chunkFilename: '[name].js',
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/dist/',
