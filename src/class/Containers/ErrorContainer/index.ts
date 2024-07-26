@@ -1,7 +1,7 @@
-import { convertDataEventError } from '../../../services';
 import { infoIcon } from '../../../icons';
 import { EEVentName, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
+import { convertDataEventError } from '../../SmApiPlayer';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 

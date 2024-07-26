@@ -22,8 +22,8 @@ class ButtonPlayPrimary extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (!apiPlayer.method.isPlay()) {
-      apiPlayer.method.play();
+    if (!apiPlayer.isPlay()) {
+      apiPlayer.play();
     }
   }
 

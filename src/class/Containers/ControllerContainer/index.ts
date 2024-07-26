@@ -50,10 +50,10 @@ class ControllerContainer extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (apiPlayer.method.isPlay()) {
-      apiPlayer.method.pause();
+    if (apiPlayer.isPlay()) {
+      apiPlayer.pause();
     } else {
-      apiPlayer.method.play();
+      apiPlayer.play();
     }
   };
 

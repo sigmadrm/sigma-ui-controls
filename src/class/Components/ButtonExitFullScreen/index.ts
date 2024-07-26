@@ -24,8 +24,8 @@ class ButtonExitFullScreen extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (apiPlayer.method.isFullScreen()) {
-      apiPlayer.method.exitFullScreen();
+    if (apiPlayer.isFullScreen()) {
+      apiPlayer.exitFullScreen();
     }
   }
 

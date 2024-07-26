@@ -1,8 +1,9 @@
-import { IApiPlayer, IConstructorBaseProps, TClasses } from '../../type';
+import { IConstructorBaseProps, TClasses } from '../../type';
+import SmApiPlayer from '../SmApiPlayer';
 
 export default class BaseComponent<T = {}> {
   protected id: string;
-  protected apiPlayer: IApiPlayer;
+  protected apiPlayer: SmApiPlayer;
   protected classes: TClasses;
   protected containerElement: HTMLElement | null = null;
   private _state?: T;

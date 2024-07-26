@@ -1,37 +1,30 @@
 import { ids, typePlayerDef, versionDef } from './constants';
-import { EEVentName, IApiPlayer, IConfigureUIPlayerProps, SmListeners } from './type';
+import { EEVentName, IConfigureUIPlayerProps, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
 
-import { generateApiPlayer, generateHtmlContentContainerString } from './services';
+import { generateHtmlContentContainerString } from './services';
 
 import generateStyles from './style';
 import './index.css';
+import SmApiPlayer from './class/SmApiPlayer';
 
 const classes = generateStyles();
 
 class SmUIControls {
-  private apiPlayer: IApiPlayer | undefined;
+  private apiPlayer: SmApiPlayer | null;
   private isInit: boolean = false;
   private controllerContainer: ControllerContainer | undefined;
   private errorContainer: ErrorContainer | undefined;
   private loadingContainer: LoadingContainer | undefined;
 
   constructor(props: IConfigureUIPlayerProps) {
-    const {
-      player,
-      video,
-      idVideoContainer,
-      typePlayer = typePlayerDef,
-      version = versionDef,
-      videoInfo,
-      style,
-    } = props;
+    const { player, video, idVideoContainer, typePlayer = typePlayerDef, version = versionDef, videoInfo } = props;
 
     const htmlContentString = generateHtmlContentContainerString(classes);
-    const apiPlayer = (this.apiPlayer = generateApiPlayer(player, video, typePlayer, version));
+    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version }));
     const VideoContainerElement = document.getElementById(idVideoContainer);
 
     if (!this.isInit) {
@@ -78,7 +71,10 @@ class SmUIControls {
   }
 
   destroy() {
-    this.apiPlayer = undefined;
+    this.controllerContainer?.destroy();
+    this.errorContainer?.destroy();
+    this.loadingContainer?.destroy();
+    this.apiPlayer = null;
     this.isInit = false;
   }
 }

@@ -70,7 +70,7 @@ class TaskbarController extends BaseComponent {
       }
     });
     apiPlayer.eventemitter.on(EEVentName.FULLSCREENCHANGE, () => {
-      if (this.apiPlayer.method.isFullScreen()) {
+      if (this.apiPlayer.isFullScreen()) {
         if (this.buttonExitFullScreen) {
           this.buttonExitFullScreen.show();
         }

@@ -1,29 +1,197 @@
+import { ETypePlayer } from '../../constants';
 import { EEVentName } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 export default class SmApiPlayer {
-  method: {
-    play: () => void;
-    pause: () => void;
-    isPlay: () => boolean;
-    isFullScreen: () => boolean;
-    enterFullScreen: () => void;
-    exitFullScreen: () => void;
-    updateVolume: (value: number) => void;
-  };
-  eventemitter: SmEventEmitter;
-  addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-  removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-  constructor(props: SmApiPlayer) {
-    this.method = props.method;
-    this.eventemitter = props.eventemitter;
-    this.addEventListener = props.addEventListener;
-    this.removeEventListener = props.removeEventListener;
+  // method: {
+  //   play: () => void;
+  //   pause: () => void;
+  //   isPlay: () => boolean;
+  //   isFullScreen: () => boolean;
+  //   enterFullScreen: () => void;
+  //   exitFullScreen: () => void;
+  //   updateVolume: (value: number) => void;
+  // };
+  // eventemitter: SmEventEmitter;
+  // addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
+  // removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
+
+  public player: any;
+  public video: HTMLVideoElement | null | undefined;
+  public typePlayer: ETypePlayer;
+  public version?: string;
+  public eventemitter = new SmEventEmitter();
+
+  constructor(props: {
+    player: any;
+    video: HTMLVideoElement | null | undefined;
+    typePlayer: ETypePlayer;
+    version?: string;
+  }) {
+    this.player = props.player;
+    this.video = props.video;
+    this.typePlayer = props.typePlayer;
+    this.version = props.version;
   }
-  // public setAddEventListener(value: (evtName: EEVentName, clb: (data: any) => any) => void) {
-  //   this.addEventListener = value;
-  // }
-  // public setRemoveEventListener(value: (evtName: EEVentName, clb: (data: any) => any) => void) {
-  //   this.removeEventListener = value;
-  // }
+
+  play() {
+    const { video } = this;
+    return video?.play();
+  }
+  pause() {
+    const { video } = this;
+    video?.pause();
+  }
+  isPlay() {
+    const { video } = this;
+
+    if (video) {
+      return !video.paused;
+    }
+    return false;
+  }
+  isFullScreen() {
+    const isFullscreen = document.fullscreenElement;
+    if (isFullscreen) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  enterFullScreen() {
+    const { video } = this;
+
+    if (video) {
+      const videoContainer = video.parentElement as any;
+      if (videoContainer) {
+        if (videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen();
+        } else if (videoContainer.mozRequestFullScreen) {
+          // Firefox
+          videoContainer.mozRequestFullScreen();
+        } else if (videoContainer.webkitRequestFullscreen) {
+          // Chrome, Safari and Opera
+          videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) {
+          // IE/Edge
+          videoContainer.msRequestFullscreen();
+        }
+      }
+    }
+  }
+  exitFullScreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+  addEventListener(evtName: EEVentName, clb: (data: any) => any) {
+    const { typePlayer, video, player, version } = this;
+    if (typePlayer === ETypePlayer.SHAKA) {
+      switch (evtName) {
+        case EEVentName.PLAY:
+          video?.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventPlay(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.PAUSE:
+          video?.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventPause(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.LOADED:
+          // TODO: check api version document
+          if (version) {
+            //check version
+          }
+          player.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventLoaded(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.ERROR:
+          player.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventError(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.FULLSCREENCHANGE:
+          document.addEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventFullScreenChange(data);
+            clb(dataConvert);
+          });
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  removeEventListener(evtName: EEVentName, clb: (data: any) => any) {
+    const { player, typePlayer } = this;
+    if (typePlayer === ETypePlayer.SHAKA) {
+      switch (evtName) {
+        case EEVentName.LOADED:
+          player.removeEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventLoaded(data);
+            clb(dataConvert);
+          });
+          break;
+        case EEVentName.ERROR:
+          player.removeEventListener(evtName, (data: any) => {
+            const dataConvert = convertDataEventError(data);
+            clb(dataConvert);
+          });
+          break;
+        default:
+          break;
+      }
+    }
+  }
 }
+
+export const convertDataEventLoaded = (data: any) => {
+  return {
+    event: EEVentName.LOADED,
+    data: {
+      ...data,
+    },
+  };
+};
+
+export const convertDataEventError = (data: any) => {
+  return {
+    event: EEVentName.ERROR,
+    data: {
+      errorCode: data.detail.code,
+      message: data.detail.message,
+    },
+  };
+};
+
+export const convertDataEventPlay = (data: any) => {
+  return {
+    event: EEVentName.PLAY,
+    data: {
+      ...data,
+    },
+  };
+};
+
+export const convertDataEventPause = (data: any) => {
+  return {
+    event: EEVentName.PAUSE,
+    data: {
+      ...data,
+    },
+  };
+};
+
+export const convertDataEventFullScreenChange = (data: any) => {
+  return {
+    event: EEVentName.FULLSCREENCHANGE,
+    data: {
+      ...data,
+    },
+  };
+};
