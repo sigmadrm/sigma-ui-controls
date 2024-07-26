@@ -1,6 +1,6 @@
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
 import { ids } from '../../../../../constants';
-import { IConstructorBaseProps } from '../../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../../type';
 import BaseComponent from '../../../../BaseComponent';
 
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -35,6 +35,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   registerListener() {
+    const { apiPlayer } = this;
     const smPlaybackSpeedElement = document.getElementById(ids.smPlaybackSpeed);
     const smQualityElement = document.getElementById(ids.smQuality);
     const smSettingDetailGoBackIconElement = document.getElementById(ids.smSettingDetailGoBackIcon);
@@ -52,7 +53,9 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     if (smSettingDetailTitleElement) {
       smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
     }
-    // TODO: listener playback speed change
+
+    apiPlayer.eventemitter.on(EEVentName.ERROR, this.handleQualityChange, this);
+
     PLAYBACK_SPEEDS.forEach((pbsValue, index) => {
       const id = this.generatePlaybackItemId(index);
       const playbackSpeedValueElement = document.getElementById(id);
@@ -70,7 +73,10 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     });
   }
 
-  unregisterListener() {}
+  unregisterListener() {
+    const { apiPlayer } = this;
+    apiPlayer.eventemitter.off(EEVentName.FULLSCREENCHANGE, this.handleQualityChange, this);
+  }
 
   goToPlaybackSpeedTab(event: MouseEvent) {
     this.state = { ...this.state, currentTab: 'playbackSpeed' };
@@ -95,6 +101,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     // TODO: handle change playbackSpeed
     // this.apiPlayer.
   }
+
+  handleQualityChange() {}
 
   renderDefaultTab() {
     const { classes, state = initState } = this;

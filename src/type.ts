@@ -46,41 +46,40 @@ export interface IConstructorBaseProps {
   classes: TClasses;
   apiPlayer: IApiPlayer;
 }
-export interface smListeners {
-  [EEVentName.LOADED]: {
-    event: EEVentName.LOADED;
-    data: { [key: string]: any };
-  };
-  [EEVentName.PAUSE]: {
-    event: EEVentName.PAUSE;
-    data: { [key: string]: any };
-  };
-  [EEVentName.PLAY]: {
-    event: EEVentName.PLAY;
-    data: { [key: string]: any };
-  };
-  [EEVentName.ERROR]: {
-    event: EEVentName.ERROR;
-    data: { [key: string]: any };
-  };
-  [EEVentName.FULLSCREENCHANGE]: {
-    event: EEVentName.FULLSCREENCHANGE;
-    data: { [key: string]: any };
-  };
+export interface SmListeners {
+  [EEVentName.LOADED]: (event: EEVentName.LOADED, data: { [key: string]: any }) => void;
+  [EEVentName.PAUSE]: (event: EEVentName.PAUSE, data: { [key: string]: any }) => void;
+  [EEVentName.PLAY]: (event: EEVentName.PLAY, data: { [key: string]: any }) => void;
+  [EEVentName.ERROR]: (event: EEVentName.ERROR, data: { [key: string]: any }) => void;
+  [EEVentName.FULLSCREENCHANGE]: (event: EEVentName.FULLSCREENCHANGE, data: { [key: string]: any }) => void;
 }
-export interface smEventEmitter {
-  on<E extends keyof smListeners, Context = undefined>(event: E, listener: smListeners[E], context?: Context): void;
-  // once<E extends keyof smListeners, Context = undefined>(event: E, listener: smListeners[E], context?: Context): void;
+// export interface ISmEventEmitter {
+//   on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+//   once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+//   removeAllListeners<E extends keyof SmListeners>(event?: E): void;
+//   off<E extends keyof SmListeners, Context = undefined>(
+//     event: E,
+//     listener?: SmListeners[E],
+//     context?: Context,
+//     once?: boolean,
+//   ): void;
 
-  // removeAllListeners<E extends keyof smListeners>(event?: E): void;
-  // off<E extends keyof smListeners, Context = undefined>(
-  //   event: E,
-  //   listener?: smListeners[E],
-  //   context?: Context,
-  //   once?: boolean,
-  // ): void;
+//   listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
+//   emit<E extends keyof SmListeners>(event: E, data: SmListeners[E]['data']): boolean;
+//   listenerCount<E extends keyof SmListeners>(event: E): number;
+// }
 
-  // listeners<E extends keyof smListeners>(event: E): smListeners[E][];
-  emit<E extends keyof smListeners>(event: E, data: smListeners[E]['data']): boolean;
-  // listenerCount<E extends keyof smListeners>(event: E): number;
+export interface ISmEventEmitter {
+  on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+  once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+  removeAllListeners<E extends keyof SmListeners>(event?: E): void;
+  off<E extends keyof SmListeners, Context = undefined>(
+    event: E,
+    listener?: SmListeners[E],
+    context?: Context,
+    once?: boolean,
+  ): void;
+  listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
+  emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean;
+  listenerCount<E extends keyof SmListeners>(event: E): number;
 }
