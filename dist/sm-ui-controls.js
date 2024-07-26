@@ -3133,6 +3133,181 @@ exports["default"] = ButtonVolume;
 
 /***/ }),
 
+/***/ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts":
+/*!*********************************************************************************************!*\
+  !*** ./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ./../../../../../icons */ "./src/icons.ts");
+const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+const initState = {
+    playbackSpeed: 1,
+    quality: 'Auto',
+    currentTab: 'default',
+    previousTab: 'default',
+    qualities: ['Auto', 'SD', 'HD', 'FHD'],
+};
+class SettingsController extends BaseComponent_1.default {
+    constructor(props) {
+        super(props, initState);
+    }
+    generatePlaybackItemId(index) {
+        return `${constants_1.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
+    }
+    generateQualityItemId(index) {
+        return `${constants_1.ids.smSettingQualityItemPrefix}-${index}`;
+    }
+    registerListener() {
+        const smPlaybackSpeedElement = document.getElementById(constants_1.ids.smPlaybackSpeed);
+        const smQualityElement = document.getElementById(constants_1.ids.smQuality);
+        const smSettingDetailGoBackIconElement = document.getElementById(constants_1.ids.smSettingDetailGoBackIcon);
+        const smSettingDetailTitleElement = document.getElementById(constants_1.ids.smSettingDetailTitle);
+        if (smPlaybackSpeedElement) {
+            smPlaybackSpeedElement.onclick = (event) => this.goToPlaybackSpeedTab(event);
+        }
+        if (smQualityElement) {
+            smQualityElement.onclick = (event) => this.goToQualityTab(event);
+        }
+        if (smSettingDetailGoBackIconElement) {
+            smSettingDetailGoBackIconElement.onclick = (event) => this.goToTab('default');
+        }
+        if (smSettingDetailTitleElement) {
+            smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
+        }
+        // TODO: listener playback speed change
+        PLAYBACK_SPEEDS.forEach((pbsValue, index) => {
+            const id = this.generatePlaybackItemId(index);
+            const playbackSpeedValueElement = document.getElementById(id);
+            if (playbackSpeedValueElement) {
+                playbackSpeedValueElement.onclick = (event) => this.changePlaybackSpeed(pbsValue);
+            }
+        });
+        // TODO: listener quality change
+        this.state?.qualities?.forEach((rValue, index) => {
+            const id = this.generateQualityItemId(index);
+            const qualitiesValueElement = document.getElementById(id);
+            if (qualitiesValueElement) {
+                qualitiesValueElement.onclick = (event) => this.changeQuality(rValue);
+            }
+        });
+    }
+    unregisterListener() { }
+    goToPlaybackSpeedTab(event) {
+        this.state = { ...this.state, currentTab: 'playbackSpeed' };
+    }
+    goToQualityTab(event) {
+        this.state = { ...this.state, currentTab: 'quality' };
+    }
+    goToTab(tabName) {
+        this.state = { ...this.state, currentTab: tabName };
+    }
+    changePlaybackSpeed(value) {
+        this.state = { ...this.state, playbackSpeed: value };
+        // TODO: handle change playbackSpeed
+        // this.apiPlayer.
+    }
+    changeQuality(value) {
+        this.state = { ...this.state, quality: value };
+        // TODO: handle change playbackSpeed
+        // this.apiPlayer.
+    }
+    renderDefaultTab() {
+        const { classes, state = initState } = this;
+        const settingItems = [
+            {
+                title: 'Tốc độ phát',
+                id: constants_1.ids.smPlaybackSpeed,
+                icon: icons_1.playbackSpeedIcon,
+                value: `<div class=${classes.settingItemValue}>
+          <div>${state.playbackSpeed === 1 ? 'Bình thường' : state.playbackSpeed}</div>
+          <div class=${classes.settingItemIconSecondary}>${icons_1.chevronRightIcon}</div>
+        </div>`,
+            },
+            {
+                title: 'Chất lượng',
+                id: constants_1.ids.smQuality,
+                icon: icons_1.qualityIcon,
+                value: `<div class=${classes.settingItemValue}>
+          <div>${state.quality}</div>
+          <div class=${classes.settingItemIconSecondary}>${icons_1.chevronRightIcon}</div>
+        </div>`,
+            },
+        ];
+        return settingItems
+            .map(({ title, id, icon, value }) => {
+            return `<div class=${classes.settingItem} id=${id}>
+        <div class=${classes.settingItemIcon}>${icon}</div>
+        <div class=${classes.settingItemTitle}>${title}</div>
+        <div class=${classes.settingItemValue}>${value}</div>
+      </div>`;
+        })
+            .join('');
+    }
+    renderPlaybackSpeedTab() {
+        const { classes, state } = this;
+        const header = `
+    <div class=${classes.settingHeader}>
+      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Tốc độ phát</div>
+    </div>`;
+        const body = PLAYBACK_SPEEDS.map((pbsValue, index) => {
+            const id = this.generatePlaybackItemId(index);
+            const isActive = state.playbackSpeed === pbsValue;
+            return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
+        <div class=${classes.settingItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
+        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${pbsValue === 1 ? 'Bình thường' : `${pbsValue}x`}</div>
+      </div>`;
+        }).join('');
+        return header + body;
+    }
+    renderQualityTab() {
+        const { classes, state } = this;
+        const header = `
+    <div class=${classes.settingHeader}>
+      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Chất lượng</div>
+    </div>`;
+        const body = state.qualities
+            .map((rValue, index) => {
+            const id = this.generateQualityItemId(index);
+            const isActive = state.quality === rValue;
+            return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
+        <div class=${classes.settingItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
+        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${rValue}</div>
+      </div>`;
+        })
+            .join('');
+        return header + body;
+    }
+    renderSettingContent() {
+        switch (this.state?.currentTab) {
+            case 'playbackSpeed':
+                return this.renderPlaybackSpeedTab();
+            case 'quality':
+                return this.renderQualityTab();
+            default:
+                return this.renderDefaultTab();
+        }
+    }
+    render() {
+        const { classes } = this;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<div class=${classes.settingsContent}>
+        ${this.renderSettingContent()}
+      </div>`;
+        }
+    }
+}
+exports["default"] = SettingsController;
+
+
+/***/ }),
+
 /***/ "./src/class/Containers/ControllerContainer/BodyController/index.ts":
 /*!**************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/BodyController/index.ts ***!
@@ -3146,14 +3321,20 @@ const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/cons
 const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const ButtonPlayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts");
+const SettingsController_1 = __webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts");
 class BodyController extends BaseComponent_1.default {
     buttonPrimary;
-    // private settingsController: SettingsController;
+    settingsController;
     constructor(props) {
         const { classes, apiPlayer } = props;
         super(props);
         this.buttonPrimary = new ButtonPlayPrimary_1.default({
             id: constants_1.ids.smButtonPlayPrimary,
+            classes,
+            apiPlayer,
+        });
+        this.settingsController = new SettingsController_1.default({
+            id: constants_1.ids.smSettingsContainer,
             classes,
             apiPlayer,
         });
@@ -4053,6 +4234,24 @@ const generateStyles = (props) => {
       left: 0;
       z-index: 9999;
       overflow: hidden;
+      color: white;
+      ::-webkit-scrollbar,
+      *::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      ::-webkit-scrollbar-track,
+      *::-webkit-scrollbar-track {
+        border-radius: 8px;
+        background-color: transparent;
+        border: 1px solid transparent;
+      }
+
+      ::-webkit-scrollbar-thumb,
+      *::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        background-color: #888888;
+      }
     `,
         controllerContent: (0, css_1.css) `
       position: absolute;

@@ -4,6 +4,7 @@ interface IConstructorProps extends IConstructorBaseProps {
 }
 declare class BodyController extends BaseComponent {
     private buttonPrimary;
+    private settingsController;
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;

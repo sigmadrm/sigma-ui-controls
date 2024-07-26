@@ -14,6 +14,24 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       left: 0;
       z-index: 9999;
       overflow: hidden;
+      color: white;
+      ::-webkit-scrollbar,
+      *::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      ::-webkit-scrollbar-track,
+      *::-webkit-scrollbar-track {
+        border-radius: 8px;
+        background-color: transparent;
+        border: 1px solid transparent;
+      }
+
+      ::-webkit-scrollbar-thumb,
+      *::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        background-color: #888888;
+      }
     `,
     controllerContent: css`
       position: absolute;
