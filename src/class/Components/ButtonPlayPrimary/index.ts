@@ -27,16 +27,16 @@ class ButtonPlayPrimary extends BaseComponent {
     }
   }
 
-  hide = () => {
+  hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.buttonPlayPrimary;
     }
-  };
-  show = () => {
+  }
+  show() {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.buttonPlayPrimaryEnable);
     }
-  };
+  }
 }
 
 export default ButtonPlayPrimary;

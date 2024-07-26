@@ -19,16 +19,16 @@ class ButtonFullScreen extends BaseComponent {
     this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
   }
 
-  hide = () => {
+  hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.taskbarGroupBtn;
     }
-  };
-  show = () => {
+  }
+  show() {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
     }
-  };
+  }
   unregisterListener() {}
 
   handleContainerClick = (event: MouseEvent) => {

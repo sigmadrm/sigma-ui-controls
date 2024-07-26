@@ -16,15 +16,15 @@ class LoadingContainer extends BaseComponent {
       this.containerElement.innerHTML = loadingIcon;
     }
   }
-  hide = () => {
+  hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.errorContainer;
     }
-  };
-  show = () => {
+  }
+  show() {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.loadingContainerEnable);
     }
-  };
+  }
 }
 export default LoadingContainer;

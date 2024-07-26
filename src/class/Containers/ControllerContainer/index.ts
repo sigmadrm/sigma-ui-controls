@@ -57,15 +57,15 @@ class ControllerContainer extends BaseComponent {
     }
   };
 
-  hide = () => {
+  hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.controllerContent;
     }
-  };
-  show = () => {
+  }
+  show() {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.controllerContentEnable);
     }
-  };
+  }
 }
 export default ControllerContainer;

@@ -19,11 +19,11 @@ class ErrorContainer extends BaseComponent {
     });
   }
 
-  hide = () => {
+  hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.errorContainer;
     }
-  };
+  }
   show = (data) => {
     if (this.containerElement) {
       this.containerElement.classList.add(this.classes.loadingContainerEnable);
