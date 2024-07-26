@@ -1,34 +1,35 @@
 import { EventEmitter } from 'eventemitter3';
-import { smEventEmitter, smListeners } from '../../type';
+import { ISmEventEmitter, SmListeners } from '../../type';
 
-export default class SmEventEmitter {
+export default class SmEventEmitter implements ISmEventEmitter {
   private eventEmitter: EventEmitter = new EventEmitter();
-
-  public emit<E extends keyof smListeners>(eventName: E, data: smListeners[E]['data']): boolean {
-    return this.eventEmitter.emit(eventName, data);
+  on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void {
+    this.eventEmitter.on(event, listener, context);
   }
-
-  public on<E extends keyof smListeners>(event: E, callback: (data: smListeners[E]['data']) => void): void {
-    this.eventEmitter.on(event, callback);
+  once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void {
+    this.eventEmitter.once(event, listener, context);
   }
-
-  public once<E extends keyof smListeners>(event: E, callback: (data: smListeners[E]['data']) => void): void {
-    this.eventEmitter.once(event, callback);
-  }
-
-  public off<E extends keyof smListeners>(event: E, callback?: (data: smListeners[E]['data']) => void): void {
-    this.eventEmitter.off(event, callback);
-  }
-
-  public removeAllListeners<E extends keyof smListeners>(event?: E): void {
+  removeAllListeners<E extends keyof SmListeners>(event?: E): void {
     this.eventEmitter.removeAllListeners(event);
   }
-
-  public listeners<E extends keyof smListeners>(event: E): Array<(data: smListeners[E]['data']) => void> {
+  off<E extends keyof SmListeners, Context = undefined>(
+    event: E,
+    listener?: SmListeners[E],
+    context?: Context,
+    once?: boolean,
+  ): void {
+    this.eventEmitter.off(event, listener, context, once);
+  }
+  listeners<E extends keyof SmListeners>(event: E): SmListeners[E][] {
     return this.eventEmitter.listeners(event);
   }
-
-  public listenerCount<E extends keyof smListeners>(event: E): number {
+  emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean {
+    return this.eventEmitter.emit(event, name, eventObject);
+  }
+  trigger<E extends keyof SmListeners>(event: E, eventObject: Parameters<SmListeners[E]>[1]): boolean {
+    return this.emit(event, event, eventObject);
+  }
+  listenerCount<E extends keyof SmListeners>(event: E): number {
     return this.eventEmitter.listenerCount(event);
   }
 }

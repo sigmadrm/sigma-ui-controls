@@ -12,9 +12,9 @@ class ErrorContainer extends BaseComponent {
     apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
       this.hide();
     });
-    apiPlayer.eventemitter.on(EEVentName.ERROR, (dataEvent) => {
-      if (dataEvent?.data) {
-        this.show(dataEvent);
+    apiPlayer.eventemitter.on(EEVentName.ERROR, (event, data) => {
+      if (data) {
+        this.show(data);
       }
     });
   }

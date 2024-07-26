@@ -1,5 +1,5 @@
 import { ids, typePlayerDef, versionDef } from './constants';
-import { EEVentName, IApiPlayer, IConfigureUIPlayerProps } from './type';
+import { EEVentName, IApiPlayer, IConfigureUIPlayerProps, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
@@ -31,8 +31,7 @@ class SmUIControls {
     } = props;
 
     const htmlContentString = generateHtmlContentContainerString(classes);
-    const apiPlayer = generateApiPlayer(player, video, typePlayer, version);
-    this.apiPlayer = apiPlayer;
+    const apiPlayer = (this.apiPlayer = generateApiPlayer(player, video, typePlayer, version));
     const VideoContainerElement = document.getElementById(idVideoContainer);
 
     if (!this.isInit) {
@@ -56,27 +55,28 @@ class SmUIControls {
 
         apiPlayer.addEventListener(EEVentName.LOADED, (data: any) => {
           console.log('addEventListener', EEVentName.LOADED, data);
-          apiPlayer.eventemitter.emit(EEVentName.LOADED, data);
+          apiPlayer.eventemitter.trigger(EEVentName.LOADED, data);
         });
         apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
           console.log('addEventListener', EEVentName.ERROR, data);
-          apiPlayer.eventemitter.emit(EEVentName.ERROR, data);
+          apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
           console.log('addEventListener', EEVentName.PLAY, data);
-          apiPlayer.eventemitter.emit(EEVentName.PLAY, data);
+          apiPlayer.eventemitter.trigger(EEVentName.PLAY, data);
         });
         apiPlayer.addEventListener(EEVentName.PAUSE, (data: any) => {
           console.log('addEventListener', EEVentName.PAUSE, data);
-          apiPlayer.eventemitter.emit(EEVentName.PAUSE, data);
+          apiPlayer.eventemitter.trigger(EEVentName.PAUSE, data);
         });
         apiPlayer.addEventListener(EEVentName.FULLSCREENCHANGE, (data: any) => {
           console.log('addEventListener', EEVentName.FULLSCREENCHANGE, data);
-          apiPlayer.eventemitter.emit(EEVentName.FULLSCREENCHANGE, data);
+          apiPlayer.eventemitter.trigger(EEVentName.FULLSCREENCHANGE, data);
         });
       }
     }
   }
+
   destroy() {
     this.apiPlayer = undefined;
     this.isInit = false;

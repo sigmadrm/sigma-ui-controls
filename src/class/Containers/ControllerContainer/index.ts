@@ -21,12 +21,6 @@ class ControllerContainer extends BaseComponent {
     this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
-    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
-      this.show();
-    });
-    apiPlayer.eventemitter.on(EEVentName.ERROR, () => {
-      this.hide();
-    });
   }
 
   render() {
@@ -43,9 +37,14 @@ class ControllerContainer extends BaseComponent {
 
   registerListener() {
     this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.show, this);
+    this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
   }
 
-  unregisterListener() {}
+  unregisterListener() {
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.show, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
+  }
 
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;
