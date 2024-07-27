@@ -69,19 +69,13 @@ export default class SettingsController extends BaseComponent<TSettingState> {
         qualitiesValueElement.onclick = (event: MouseEvent) => this.changeQuality(rValue);
       }
     });
-
-    apiPlayer.addEventListener(EEVentName.ADAPTATION, this.handleQualityChange, this);
-    apiPlayer.addEventListener(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
-    apiPlayer.addEventListener(EEVentName.ABR_STATUS_CHANGED, this.handleQualityChange, this);
-    apiPlayer.addEventListener(EEVentName.VARIANT_CHANGED, this.handleQualityChange, this);
+    console.log('*** setting change ', this);
+    apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
   }
 
   unregisterListener() {
     const { apiPlayer } = this;
-    apiPlayer.removeEventListener(EEVentName.ADAPTATION, this.handleQualityChange, this);
-    apiPlayer.removeEventListener(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
-    apiPlayer.removeEventListener(EEVentName.ABR_STATUS_CHANGED, this.handleQualityChange, this);
-    apiPlayer.removeEventListener(EEVentName.VARIANT_CHANGED, this.handleQualityChange, this);
+    apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
   }
 
   goToPlaybackSpeedTab(event: MouseEvent) {
@@ -108,10 +102,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     // this.apiPlayer.
   }
 
-  handleQualityChange(data) {
+  handleQualityChange(event, data) {
     console.log('handleQualityChange', data);
-    const tracks = this.apiPlayer.getVariantTracks();
-    console.log('tracks ', tracks);
   }
 
   renderDefaultTab() {

@@ -27,10 +27,7 @@ export enum EEVentName {
   PAUSE = 'pause',
   FULLSCREENCHANGE = 'fullscreenchange',
   LOADING = 'loading',
-  ADAPTATION = 'adaptation',
   TRACKS_CHANGED = 'trackschanged',
-  VARIANT_CHANGED = 'variantchanged',
-  ABR_STATUS_CHANGED = 'abrstatuschanged',
 }
 
 export const RESOLUTION_LABEL = {
@@ -55,6 +52,10 @@ export interface SmListeners {
   [EEVentName.PLAY]: (event: EEVentName.PLAY, data: { [key: string]: any }) => void;
   [EEVentName.ERROR]: (event: EEVentName.ERROR, data: { [key: string]: any }) => void;
   [EEVentName.FULLSCREENCHANGE]: (event: EEVentName.FULLSCREENCHANGE, data: { [key: string]: any }) => void;
+  [EEVentName.TRACKS_CHANGED]: (
+    event: EEVentName.FULLSCREENCHANGE,
+    data: { tracks: Array<object>; activeTrack: object },
+  ) => void;
 }
 // export interface ISmEventEmitter {
 //   on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;

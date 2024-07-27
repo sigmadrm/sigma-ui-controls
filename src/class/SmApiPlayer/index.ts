@@ -1,28 +1,14 @@
 /* eslint-disable no-restricted-properties */
-import { version } from 'webpack';
 import { ETypePlayer } from '../../constants';
 import { EEVentName } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 export default class SmApiPlayer {
-  // method: {
-  //   play: () => void;
-  //   pause: () => void;
-  //   isPlay: () => boolean;
-  //   isFullScreen: () => boolean;
-  //   enterFullScreen: () => void;
-  //   exitFullScreen: () => void;
-  //   updateVolume: (value: number) => void;
-  // };
-  // eventemitter: SmEventEmitter;
-  // addEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-  // removeEventListener: (evtName: EEVentName, clb: (data: any) => any) => void;
-
   public player: any;
   public video: HTMLVideoElement | null | undefined;
   public typePlayer: ETypePlayer;
   public version?: string;
-  public eventemitter = new SmEventEmitter();
+  public eventemitter: SmEventEmitter;
 
   constructor(props: {
     player: any;
@@ -34,6 +20,32 @@ export default class SmApiPlayer {
     this.video = props.video;
     this.typePlayer = props.typePlayer;
     this.version = props.version;
+    this.eventemitter = new SmEventEmitter();
+
+    this.emitTracksChangeEvent = this.emitTracksChangeEvent.bind(this);
+
+    this.registerListener();
+  }
+
+  registerListener() {
+    const { player } = this;
+    player.addEventListener('adaptation', this.emitTracksChangeEvent);
+    player.addEventListener('variantchanged', this.emitTracksChangeEvent);
+    player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
+    player.addEventListener('trackschanged', this.emitTracksChangeEvent);
+  }
+
+  unregisterListener() {
+    const { player } = this;
+    player.addEventListener('adaptation', this.emitTracksChangeEvent);
+    player.addEventListener('variantchanged', this.emitTracksChangeEvent);
+    player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
+    player.addEventListener('trackschanged', this.emitTracksChangeEvent);
+  }
+
+  emitTracksChangeEvent() {
+    const data = this.getVariantTracks();
+    this.eventemitter.trigger(EEVentName.TRACKS_CHANGED, data);
   }
 
   play() {
@@ -153,14 +165,6 @@ export default class SmApiPlayer {
             clb.call(context, dataConvert);
           });
           break;
-        case EEVentName.ADAPTATION:
-        case EEVentName.TRACKS_CHANGED:
-        case EEVentName.ABR_STATUS_CHANGED:
-        case EEVentName.VARIANT_CHANGED:
-          player.addEventListener(evtName, (data: any) => {
-            clb.call(context, data);
-          });
-          break;
         default:
           break;
       }
@@ -181,6 +185,11 @@ export default class SmApiPlayer {
           break;
       }
     }
+  }
+
+  destroy() {
+    this.unregisterListener();
+    this.eventemitter.removeAllListeners();
   }
 }
 
