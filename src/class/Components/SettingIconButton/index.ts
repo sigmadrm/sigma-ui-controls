@@ -24,9 +24,15 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
+    this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
   }
   unregisterListener() {
     if (!this.containerElement) return;
+    this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+  }
+
+  handleSettingPanelBlur() {
+    this.state = { ...this.state, visible: false };
   }
 
   handleContainerClick(event: MouseEvent) {

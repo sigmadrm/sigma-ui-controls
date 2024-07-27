@@ -105,6 +105,16 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       max-height: 100%;
       overflow: hidden;
     `,
+    settingsContainerMask: css`
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: transparent;
+      pointer-events: none;
+      z-index: 99999999;
+    `,
     settingsContent: css`
       min-width: 280px;
       max-width: 300px;

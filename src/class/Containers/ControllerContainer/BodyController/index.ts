@@ -51,11 +51,8 @@ class BodyController extends BaseComponent {
     }
   }
 
-  registerListener(): void {
-    document.getElementById(ids.smSettingsContainer)?.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    });
+  destroy(): void {
+    this.settingsController.destroy();
   }
 }
 

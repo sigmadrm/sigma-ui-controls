@@ -7,6 +7,7 @@ export const ids = {
   smBodyController: 'sm-body-controller',
   smButtonPlayPrimary: 'sm-button-play-primary',
   smSettingsContainer: 'sm-settings-container',
+  smSettingsContainerMask: 'sm-settings-container-mask',
   smSettingDetailTitle: 'sm-settings-detail-title',
   smSettingDetailGoBackIcon: 'sm-settings-detail-go-back-icon',
   smSettingPlaybackSpeedItemPrefix: 'sm-settings-playback-speed-item',

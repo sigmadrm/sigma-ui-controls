@@ -49,7 +49,8 @@ class ControllerContainer extends BaseComponent {
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;
     event.preventDefault();
-    event.stopPropagation();
+    // FIXME: do not use this method.
+    // event.stopPropagation();
     if (apiPlayer.isPlay()) {
       apiPlayer.pause();
     } else {

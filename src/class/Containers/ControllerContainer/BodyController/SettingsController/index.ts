@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
 import { ids } from '../../../../../constants';
 import { EEVentName, IConstructorBaseProps, Track } from '../../../../../type';
@@ -27,6 +28,7 @@ const initState: TSettingState = {
 export default class SettingsController extends BaseComponent<TSettingState> {
   constructor(props: IConstructorBaseProps) {
     super(props, initState);
+    this.handleSettingContainerClickOut = this.handleSettingContainerClickOut.bind(this);
   }
 
   generatePlaybackItemId(index: number) {
@@ -38,7 +40,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   registerListener() {
-    const { apiPlayer, state } = this;
+    const { apiPlayer, state, containerElement } = this;
     const smPlaybackSpeedElement = document.getElementById(ids.smPlaybackSpeed);
     const smQualityElement = document.getElementById(ids.smQuality);
     const smSettingDetailGoBackIconElement = document.getElementById(ids.smSettingDetailGoBackIcon);
@@ -73,6 +75,12 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.on(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
+    if (containerElement) {
+      containerElement.onclick = (e) => {
+        e.stopPropagation();
+      };
+      window.addEventListener('click', this.handleSettingContainerClickOut);
+    }
   }
 
   unregisterListener() {
@@ -80,6 +88,9 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
+    if (this.containerElement) {
+      window.removeEventListener('click', this.handleSettingContainerClickOut);
+    }
   }
 
   goToPlaybackSpeedTab(event: MouseEvent) {
@@ -130,6 +141,14 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   handleSettingPanelVisible(event, data) {
     const { visible } = data;
     this.state = { ...this.state, visible, currentTab: 'default' };
+  }
+
+  handleSettingContainerClickOut(event) {
+    console.log('handleSettingContainerClickOut ', event);
+    if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
+      this.state = { ...this.state, visible: false };
+      this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_BLUR, null);
+    }
   }
 
   renderDefaultTab() {
