@@ -1,6 +1,6 @@
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
 import { ids } from '../../../../../constants';
-import { EEVentName, IConstructorBaseProps } from '../../../../../type';
+import { EEVentName, IConstructorBaseProps, Track } from '../../../../../type';
 import BaseComponent from '../../../../BaseComponent';
 
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -11,14 +11,14 @@ type TSettingState = {
   quality: string;
   currentTab: TTabName;
   previousTab: TTabName;
-  qualities: string[];
+  tracks: Track[];
 };
 const initState: TSettingState = {
   playbackSpeed: 1,
   quality: 'Auto',
   currentTab: 'default',
   previousTab: 'default',
-  qualities: ['Auto', 'SD', 'HD', 'FHD'],
+  tracks: [{ id: -1, label: 'Auto', bandwidth: 0 }],
 };
 
 export default class SettingsController extends BaseComponent<TSettingState> {
@@ -53,7 +53,6 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     if (smSettingDetailTitleElement) {
       smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
     }
-
     PLAYBACK_SPEEDS.forEach((pbsValue, index) => {
       const id = this.generatePlaybackItemId(index);
       const playbackSpeedValueElement = document.getElementById(id);
@@ -61,15 +60,13 @@ export default class SettingsController extends BaseComponent<TSettingState> {
         playbackSpeedValueElement.onclick = (event: MouseEvent) => this.changePlaybackSpeed(pbsValue);
       }
     });
-    // TODO: listener quality change
-    state?.qualities?.forEach((rValue, index) => {
+    state?.tracks?.forEach((track, index) => {
       const id = this.generateQualityItemId(index);
       const qualitiesValueElement = document.getElementById(id);
       if (qualitiesValueElement) {
-        qualitiesValueElement.onclick = (event: MouseEvent) => this.changeQuality(rValue);
+        qualitiesValueElement.onclick = (event: MouseEvent) => this.changeQuality(track);
       }
     });
-    console.log('*** setting change ', this);
     apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
   }
 
@@ -96,14 +93,13 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     // this.apiPlayer.
   }
 
-  changeQuality(value: string) {
-    this.state = { ...this.state, quality: value };
-    // TODO: handle change playbackSpeed
-    // this.apiPlayer.
+  changeQuality(track: Track) {
+    this.apiPlayer.selectVariantTrack(track);
   }
 
   handleQualityChange(event, data) {
-    console.log('handleQualityChange', data);
+    const { tracks } = data;
+    this.state = { ...this.state, tracks };
   }
 
   renderDefaultTab() {
@@ -160,21 +156,67 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     return header + body;
   }
 
+  getResolutionLabel(track: Track, tracks: Track[]) {
+    if (track.id === -1) {
+      return 'Tự dộng';
+    }
+    console.log('getResolutionLabel ', track);
+    const trackHeight = track.height || 0;
+    const trackWidth = track.width || 0;
+    let height = trackHeight;
+    const aspectRatio = trackWidth / trackHeight;
+    if (aspectRatio > 16 / 9) {
+      height = Math.round((trackWidth * 9) / 16);
+    }
+    let text = height + 'p';
+    if (height == 2160) {
+      text = '4K';
+    }
+    const frameRate = track.frameRate;
+    if (frameRate && (frameRate >= 50 || frameRate <= 20)) {
+      text += Math.round(track.frameRate || 0);
+    }
+    if (track.hdr == 'PQ' || track.hdr == 'HLG') {
+      text += ' (HDR)';
+    }
+    if (track.videoLayout == 'CH-STEREO') {
+      text += ' (3D)';
+    }
+    const hasDuplicateResolution = tracks.some((otherTrack) => {
+      return otherTrack != track && otherTrack.height == track.height;
+    });
+    if (hasDuplicateResolution) {
+      const bandwidth = track.videoBandwidth || track.bandwidth;
+      text += ' (' + Math.round(bandwidth / 1000) + ' kbits/s)';
+    }
+    return text;
+  }
+
   renderQualityTab() {
     const { classes, state } = this;
+    const { tracks } = state;
+
     const header = `
     <div class=${classes.settingHeader}>
       <div class=${classes.settingItemIcon} id=${ids.smSettingDetailGoBackIcon}>${chevronLeftIcon}</div>
       <div class=${classes.settingItemTitle} id=${ids.smSettingDetailTitle}>Chất lượng</div>
     </div>`;
 
-    const body = state.qualities
-      .map((rValue, index) => {
+    const isAuto = tracks[tracks.length - 1].active;
+    const body = tracks
+      .map((track, index) => {
         const id = this.generateQualityItemId(index);
-        const isActive = state.quality === rValue;
+        let isActive: boolean = false;
+        if (track.id === -1) {
+          isActive = !!track.active;
+        } else {
+          isActive = !!(isAuto ? false : track.active);
+        }
+        const label = this.getResolutionLabel(track, tracks);
+
         return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
         <div class=${classes.settingItemIcon}>${isActive ? checkedIcon : ''}</div>
-        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${rValue}</div>
+        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${label}</div>
       </div>`;
       })
       .join('');

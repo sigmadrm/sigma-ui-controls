@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-properties */
 import { ETypePlayer } from '../../constants';
-import { EEVentName } from '../../type';
+import { EEVentName, SmListeners, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 export default class SmApiPlayer {
@@ -41,6 +41,51 @@ export default class SmApiPlayer {
     player.addEventListener('variantchanged', this.emitTracksChangeEvent);
     player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
     player.addEventListener('trackschanged', this.emitTracksChangeEvent);
+  }
+
+  getVariantTracks(): { tracks: Track[] } {
+    const tracks = this.player.getVariantTracks();
+    const selectedTrack = tracks.find((track) => track.active);
+    let filteredTracks = tracks;
+
+    if (selectedTrack) {
+      filteredTracks = tracks.filter(
+        (track) => track.language === selectedTrack.language && track.channelsCount === selectedTrack.channelsCount,
+      );
+    }
+    filteredTracks = filteredTracks.filter((track, idx) => {
+      const otherIdx = this.player.isAudioOnly()
+        ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
+        : filteredTracks.findIndex((t) => t.height === track.height);
+      return otherIdx === idx;
+    });
+
+    if (this.player.isAudioOnly()) {
+      filteredTracks.sort((t1, t2) => t2.bandwidth - t1.bandwidth);
+    } else {
+      filteredTracks.sort((t1, t2) => t2.height - t1.height);
+    }
+
+    const isAuto = this.player.getConfiguration().abr.enabled;
+    const autoTrack: Track = {
+      id: -1,
+      label: 'Auto',
+      bandwidth: 0,
+      active: isAuto,
+    };
+
+    return { tracks: [...filteredTracks, autoTrack] };
+  }
+
+  selectVariantTrack(track: Track) {
+    console.log('selectVariantTrack ', track);
+    if (track.id === -1) {
+      // Enable ABR (Adaptive Bitrate)
+      this.player.configure({ abr: { enabled: true } });
+    } else {
+      this.player.configure({ abr: { enabled: false } });
+      this.player.selectVariantTrack(track, /* clearBuffer= */ true);
+    }
   }
 
   emitTracksChangeEvent() {
@@ -97,34 +142,6 @@ export default class SmApiPlayer {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     }
-  }
-
-  getVariantTracks() {
-    const tracks = this.player.getVariantTracks();
-    const selectedTrack = tracks.find((track) => track.active);
-    let filteredTracks = tracks;
-
-    if (selectedTrack) {
-      filteredTracks = tracks.filter(
-        (track) => track.language === selectedTrack.language && track.channelsCount === selectedTrack.channelsCount,
-      );
-    }
-    filteredTracks = filteredTracks.filter((track, idx) => {
-      const otherIdx = this.player.isAudioOnly()
-        ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
-        : filteredTracks.findIndex((t) => t.height === track.height);
-      return otherIdx === idx;
-    });
-
-    if (this.player.isAudioOnly()) {
-      filteredTracks.sort((t1, t2) => t1.bandwidth - t2.bandwidth);
-    } else {
-      filteredTracks.sort((t1, t2) => t1.height - t2.height);
-    }
-
-    const activeTrack = filteredTracks.find((track) => track.active);
-
-    return { tracks: filteredTracks, activeTrack };
   }
 
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {

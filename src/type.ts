@@ -52,26 +52,52 @@ export interface SmListeners {
   [EEVentName.PLAY]: (event: EEVentName.PLAY, data: { [key: string]: any }) => void;
   [EEVentName.ERROR]: (event: EEVentName.ERROR, data: { [key: string]: any }) => void;
   [EEVentName.FULLSCREENCHANGE]: (event: EEVentName.FULLSCREENCHANGE, data: { [key: string]: any }) => void;
-  [EEVentName.TRACKS_CHANGED]: (
-    event: EEVentName.FULLSCREENCHANGE,
-    data: { tracks: Array<object>; activeTrack: object },
-  ) => void;
+  [EEVentName.TRACKS_CHANGED]: (event: EEVentName.TRACKS_CHANGED, data: { tracks: Track[] }) => void;
 }
-// export interface ISmEventEmitter {
-//   on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
-//   once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
-//   removeAllListeners<E extends keyof SmListeners>(event?: E): void;
-//   off<E extends keyof SmListeners, Context = undefined>(
-//     event: E,
-//     listener?: SmListeners[E],
-//     context?: Context,
-//     once?: boolean,
-//   ): void;
-
-//   listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
-//   emit<E extends keyof SmListeners>(event: E, data: SmListeners[E]['data']): boolean;
-//   listenerCount<E extends keyof SmListeners>(event: E): number;
-// }
+enum AccessibilityPurpose {
+  HARD_OF_HEARING = 'hard of hearing',
+  VISUALLY_IMPAIRED = 'visually impaired',
+}
+export type Track = {
+  accessibilityPurpose?: AccessibilityPurpose | null;
+  active?: boolean;
+  audioBandwidth?: number | null;
+  audioCodec?: string | null;
+  audioId?: number | null;
+  audioMimeType?: string | null;
+  audioRoles?: string[] | null;
+  audioSamplingRate?: number | null;
+  bandwidth: number;
+  channelsCount?: number | null;
+  codecs?: string | null;
+  colorGamut?: string | null;
+  forced?: boolean;
+  frameRate?: number | null;
+  hdr?: string | null;
+  height?: number | null;
+  id?: number;
+  kind?: string | null;
+  label?: string | null;
+  language?: string;
+  mimeType?: string | null;
+  originalAudioId?: string | null;
+  originalImageId?: string | null;
+  originalLanguage?: string | null;
+  originalTextId?: string | null;
+  originalVideoId?: string | null;
+  pixelAspectRatio?: string | null;
+  primary?: boolean;
+  roles?: string[];
+  spatialAudio?: boolean;
+  tilesLayout?: string | null;
+  type?: string;
+  videoBandwidth?: number | null;
+  videoCodec?: string | null;
+  videoId?: number | null;
+  videoLayout?: string | null;
+  videoMimeType?: string | null;
+  width?: number | null;
+};
 
 export interface ISmEventEmitter {
   on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;

@@ -22,7 +22,8 @@ const initPlayer = async () => {
 
     try {
       // Thêm URL của video bạn muốn phát
-      await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.mpd' );
+      // await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.mpd' );
+      await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.m3u8');
       console.log('The video has now been loaded!');
     } catch (e) {
       console.error('Error code', e.code, 'object', e);
