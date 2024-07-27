@@ -9,7 +9,7 @@ export default class BaseComponent<T = {}> {
   private _state?: T;
 
   protected get state(): T {
-    return this._state as T;
+    return (this._state || {}) as T;
   }
   protected set state(value: T | undefined) {
     this._state = value;
@@ -28,11 +28,13 @@ export default class BaseComponent<T = {}> {
   }
 
   registerListener() {
-    // Ex: this.apiPlayer.addEventListener("loaded", (data: any) => { });
+    // Ex:
+    // this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleLoaded);
   }
 
   unregisterListener() {
-    // Ex: this.apiPlayer.removeEventListener("loaded");
+    // Ex:
+    // this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleLoaded);
   }
 
   render() {

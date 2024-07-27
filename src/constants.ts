@@ -24,6 +24,7 @@ export const ids = {
   smButtonMute: 'sm-button-mute',
   smPlaybackSpeed: 'sm-playback-rate-controller',
   smQuality: 'sm-quality-controller',
+  smSettingIconButton: 'sm-setting-icon-button',
 };
 export const versionDef = '4.10.0';
 
@@ -32,4 +33,4 @@ export enum ETypePlayer {
   VIDEOSJS = 'VIDEOSJS',
 }
 export const typePlayerDef = ETypePlayer.SHAKA;
-export const primaryColorDef = '#2196f3';
+export const primaryColorDef = '#F58220';

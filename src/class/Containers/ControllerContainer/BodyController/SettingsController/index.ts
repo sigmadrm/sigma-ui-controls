@@ -7,18 +7,21 @@ const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
 type TTabName = 'default' | 'playbackRate' | 'quality';
 type TSettingState = {
+  visible: boolean;
   playbackRate: number;
-  quality: string;
   currentTab: TTabName;
   previousTab: TTabName;
   tracks: Track[];
+  activeTrack: Track;
 };
+const autoTrack: Track = { id: -1, label: 'Auto', bandwidth: 0 };
 const initState: TSettingState = {
+  visible: false,
   playbackRate: 1,
-  quality: 'Auto',
   currentTab: 'default',
   previousTab: 'default',
-  tracks: [{ id: -1, label: 'Auto', bandwidth: 0 }],
+  tracks: [autoTrack],
+  activeTrack: autoTrack,
 };
 
 export default class SettingsController extends BaseComponent<TSettingState> {
@@ -69,12 +72,14 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     });
     apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.on(EEVentName.RATE_CHANGE, this.handleRateChange, this);
+    apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
 
   unregisterListener() {
     const { apiPlayer } = this;
     apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
+    apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
 
   goToPlaybackSpeedTab(event: MouseEvent) {
@@ -89,17 +94,29 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     this.state = { ...this.state, currentTab: tabName };
   }
 
-  changePlaybackRate(value: number) {
-    this.apiPlayer.playbackRate = value;
-  }
-
   changeQuality(track: Track) {
     this.apiPlayer.selectVariantTrack(track);
   }
 
   handleQualityChange(event, data) {
     const { tracks } = data;
-    this.state = { ...this.state, tracks };
+    const isAuto = tracks[tracks.length - 1].active;
+    let activeTrack = tracks[tracks.length - 1];
+    if (!isAuto) {
+      for (let index = 0; index < tracks.length - 1; index += 1) {
+        const track: Track = tracks[index];
+        if (track.active) {
+          activeTrack = track;
+          break;
+        }
+      }
+    }
+
+    this.state = { ...this.state, tracks, activeTrack };
+  }
+
+  changePlaybackRate(value: number) {
+    this.apiPlayer.playbackRate = value;
   }
 
   handleRateChange(event, data) {
@@ -110,8 +127,13 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     }
   }
 
+  handleSettingPanelVisible(event, data) {
+    const { visible } = data;
+    this.state = { ...this.state, visible, currentTab: 'default' };
+  }
+
   renderDefaultTab() {
-    const { classes, state = initState } = this;
+    const { classes, state } = this;
     const settingItems = [
       {
         title: 'Tốc độ phát',
@@ -127,7 +149,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
         id: ids.smQuality,
         icon: qualityIcon,
         value: `<div class=${classes.settingItemValue}>
-          <div>${state.quality}</div>
+          <div>${this.getQualityLabel(this.state.activeTrack, this.state.tracks)}</div>
           <div class=${classes.settingItemIconSecondary}>${chevronRightIcon}</div>
         </div>`,
       },
@@ -164,7 +186,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     return header + body;
   }
 
-  getResolutionLabel(track: Track, tracks: Track[]) {
+  getQualityLabel(track: Track, tracks: Track[]) {
     if (track.id === -1) {
       return 'Tự dộng';
     }
@@ -209,17 +231,11 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       <div class=${classes.settingItemTitle} id=${ids.smSettingDetailTitle}>Chất lượng</div>
     </div>`;
 
-    const isAuto = tracks[tracks.length - 1].active;
     const body = tracks
       .map((track, index) => {
         const id = this.generateQualityItemId(index);
-        let isActive: boolean = false;
-        if (track.id === -1) {
-          isActive = !!track.active;
-        } else {
-          isActive = !!(isAuto ? false : track.active);
-        }
-        const label = this.getResolutionLabel(track, tracks);
+        const isActive = track === state.activeTrack;
+        const label = this.getQualityLabel(track, tracks);
 
         return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
         <div class=${classes.settingItemIcon}>${isActive ? checkedIcon : ''}</div>
@@ -243,12 +259,16 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   render() {
-    const { classes } = this;
+    const {
+      classes,
+      state: { visible },
+    } = this;
 
     if (this.containerElement) {
       this.containerElement.innerHTML = `<div class=${classes.settingsContent}>
         ${this.renderSettingContent()}
       </div>`;
+      this.containerElement.style.display = visible ? 'flex' : 'none';
     }
   }
 }
