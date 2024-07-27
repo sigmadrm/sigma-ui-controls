@@ -5,16 +5,16 @@ import BaseComponent from '../../../../BaseComponent';
 
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
-type TTabName = 'default' | 'playbackSpeed' | 'quality';
+type TTabName = 'default' | 'playbackRate' | 'quality';
 type TSettingState = {
-  playbackSpeed: number;
+  playbackRate: number;
   quality: string;
   currentTab: TTabName;
   previousTab: TTabName;
   tracks: Track[];
 };
 const initState: TSettingState = {
-  playbackSpeed: 1,
+  playbackRate: 1,
   quality: 'Auto',
   currentTab: 'default',
   previousTab: 'default',
@@ -53,11 +53,11 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     if (smSettingDetailTitleElement) {
       smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
     }
-    PLAYBACK_SPEEDS.forEach((pbsValue, index) => {
+    PLAYBACK_SPEEDS.forEach((pbrValue, index) => {
       const id = this.generatePlaybackItemId(index);
       const playbackSpeedValueElement = document.getElementById(id);
       if (playbackSpeedValueElement) {
-        playbackSpeedValueElement.onclick = (event: MouseEvent) => this.changePlaybackSpeed(pbsValue);
+        playbackSpeedValueElement.onclick = (event: MouseEvent) => this.changePlaybackRate(pbrValue);
       }
     });
     state?.tracks?.forEach((track, index) => {
@@ -68,15 +68,17 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       }
     });
     apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
+    apiPlayer.eventemitter.on(EEVentName.RATE_CHANGE, this.handleRateChange, this);
   }
 
   unregisterListener() {
     const { apiPlayer } = this;
     apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
+    apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
   }
 
   goToPlaybackSpeedTab(event: MouseEvent) {
-    this.state = { ...this.state, currentTab: 'playbackSpeed' };
+    this.state = { ...this.state, currentTab: 'playbackRate' };
   }
 
   goToQualityTab(event: MouseEvent) {
@@ -87,10 +89,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     this.state = { ...this.state, currentTab: tabName };
   }
 
-  changePlaybackSpeed(value: number) {
-    this.state = { ...this.state, playbackSpeed: value };
-    // TODO: handle change playbackSpeed
-    // this.apiPlayer.
+  changePlaybackRate(value: number) {
+    this.apiPlayer.playbackRate = value;
   }
 
   changeQuality(track: Track) {
@@ -102,6 +102,14 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     this.state = { ...this.state, tracks };
   }
 
+  handleRateChange(event, data) {
+    const { playbackRate } = data;
+    // playbackRate = 0 is loading...
+    if (playbackRate > 0) {
+      this.state = { ...this.state, playbackRate };
+    }
+  }
+
   renderDefaultTab() {
     const { classes, state = initState } = this;
     const settingItems = [
@@ -110,7 +118,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
         id: ids.smPlaybackSpeed,
         icon: playbackSpeedIcon,
         value: `<div class=${classes.settingItemValue}>
-          <div>${state.playbackSpeed === 1 ? 'Bình thường' : state.playbackSpeed}</div>
+          <div>${state.playbackRate === 1 ? 'Bình thường' : state.playbackRate}</div>
           <div class=${classes.settingItemIconSecondary}>${chevronRightIcon}</div>
         </div>`,
       },
@@ -144,12 +152,12 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       <div class=${classes.settingItemTitle} id=${ids.smSettingDetailTitle}>Tốc độ phát</div>
     </div>`;
 
-    const body = PLAYBACK_SPEEDS.map((pbsValue, index) => {
+    const body = PLAYBACK_SPEEDS.map((pbrValue, index) => {
       const id = this.generatePlaybackItemId(index);
-      const isActive = state.playbackSpeed === pbsValue;
+      const isActive = state.playbackRate === pbrValue;
       return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
         <div class=${classes.settingItemIcon}>${isActive ? checkedIcon : ''}</div>
-        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${pbsValue === 1 ? 'Bình thường' : `${pbsValue}x`}</div>
+        <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${pbrValue === 1 ? 'Bình thường' : `${pbrValue}`}</div>
       </div>`;
     }).join('');
 
@@ -160,7 +168,6 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     if (track.id === -1) {
       return 'Tự dộng';
     }
-    console.log('getResolutionLabel ', track);
     const trackHeight = track.height || 0;
     const trackWidth = track.width || 0;
     let height = trackHeight;
@@ -226,7 +233,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
 
   renderSettingContent() {
     switch (this.state?.currentTab) {
-      case 'playbackSpeed':
+      case 'playbackRate':
         return this.renderPlaybackSpeedTab();
       case 'quality':
         return this.renderQualityTab();

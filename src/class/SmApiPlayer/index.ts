@@ -1,21 +1,16 @@
 /* eslint-disable no-restricted-properties */
 import { ETypePlayer } from '../../constants';
-import { EEVentName, SmListeners, Track } from '../../type';
+import { EEVentName, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 export default class SmApiPlayer {
   public player: any;
-  public video: HTMLVideoElement | null | undefined;
+  public video?: HTMLVideoElement;
   public typePlayer: ETypePlayer;
   public version?: string;
   public eventemitter: SmEventEmitter;
 
-  constructor(props: {
-    player: any;
-    video: HTMLVideoElement | null | undefined;
-    typePlayer: ETypePlayer;
-    version?: string;
-  }) {
+  constructor(props: { player: any; video?: HTMLVideoElement; typePlayer: ETypePlayer; version?: string }) {
     this.player = props.player;
     this.video = props.video;
     this.typePlayer = props.typePlayer;
@@ -23,6 +18,7 @@ export default class SmApiPlayer {
     this.eventemitter = new SmEventEmitter();
 
     this.emitTracksChangeEvent = this.emitTracksChangeEvent.bind(this);
+    this.emitRateChange = this.emitRateChange.bind(this);
 
     this.registerListener();
   }
@@ -33,6 +29,8 @@ export default class SmApiPlayer {
     player.addEventListener('variantchanged', this.emitTracksChangeEvent);
     player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
     player.addEventListener('trackschanged', this.emitTracksChangeEvent);
+
+    this.video?.addEventListener('ratechange', this.emitRateChange);
   }
 
   unregisterListener() {
@@ -41,6 +39,7 @@ export default class SmApiPlayer {
     player.addEventListener('variantchanged', this.emitTracksChangeEvent);
     player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
     player.addEventListener('trackschanged', this.emitTracksChangeEvent);
+    this.video?.removeEventListener('ratechange', this.emitRateChange);
   }
 
   getVariantTracks(): { tracks: Track[] } {
@@ -93,6 +92,11 @@ export default class SmApiPlayer {
     this.eventemitter.trigger(EEVentName.TRACKS_CHANGED, data);
   }
 
+  emitRateChange() {
+    const playbackRate = this.video?.playbackRate || 0;
+    this.eventemitter.trigger(EEVentName.RATE_CHANGE, { playbackRate });
+  }
+
   play() {
     const { video } = this;
     return video?.play();
@@ -142,6 +146,16 @@ export default class SmApiPlayer {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     }
+  }
+
+  set playbackRate(value: number) {
+    if (this.video) {
+      this.video.playbackRate = value;
+    }
+  }
+
+  get playbackRate(): number {
+    return this.video?.playbackRate || 1;
   }
 
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {

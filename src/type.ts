@@ -1,11 +1,10 @@
 import SmApiPlayer from './class/SmApiPlayer';
-import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 import { ETypePlayer } from './constants';
 import generateStyles from './style';
 
 export interface IConfigureUIPlayerProps {
   player: any;
-  video: HTMLVideoElement | null | undefined;
+  video?: HTMLVideoElement;
   idVideoContainer: string;
   typePlayer?: ETypePlayer;
   version?: string;
@@ -28,6 +27,7 @@ export enum EEVentName {
   FULLSCREENCHANGE = 'fullscreenchange',
   LOADING = 'loading',
   TRACKS_CHANGED = 'trackschanged',
+  RATE_CHANGE = 'ratechange',
 }
 
 export const RESOLUTION_LABEL = {
@@ -53,6 +53,7 @@ export interface SmListeners {
   [EEVentName.ERROR]: (event: EEVentName.ERROR, data: { [key: string]: any }) => void;
   [EEVentName.FULLSCREENCHANGE]: (event: EEVentName.FULLSCREENCHANGE, data: { [key: string]: any }) => void;
   [EEVentName.TRACKS_CHANGED]: (event: EEVentName.TRACKS_CHANGED, data: { tracks: Track[] }) => void;
+  [EEVentName.RATE_CHANGE]: (event: EEVentName.RATE_CHANGE, data: { playbackRate: number }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',
