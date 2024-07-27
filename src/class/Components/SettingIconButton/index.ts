@@ -9,6 +9,7 @@ type TSettingIconButtonState = {
 class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   constructor(props: IConstructorProps) {
     super(props, { visible: false });
+    this.handleSettingPanelBlur = this.handleSettingPanelBlur.bind(this);
   }
 
   render() {
@@ -28,7 +29,7 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   }
   unregisterListener() {
     if (!this.containerElement) return;
-    this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
   }
 
   handleSettingPanelBlur() {

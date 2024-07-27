@@ -16,8 +16,11 @@ class ButtonFullScreen extends BaseComponent {
   }
 
   registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
+
+  unregisterListener() {}
 
   hide() {
     if (this.containerElement) {
@@ -29,7 +32,6 @@ class ButtonFullScreen extends BaseComponent {
       this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
     }
   }
-  unregisterListener() {}
 
   handleContainerClick = (event: MouseEvent) => {
     const { apiPlayer } = this;

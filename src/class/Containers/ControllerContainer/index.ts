@@ -21,6 +21,9 @@ class ControllerContainer extends BaseComponent {
     this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
+
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
   }
 
   render() {

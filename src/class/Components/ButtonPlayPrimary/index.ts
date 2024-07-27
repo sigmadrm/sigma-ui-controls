@@ -13,7 +13,8 @@ class ButtonPlayPrimary extends BaseComponent {
     }
   }
   registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
 
   unregisterListener() {}
