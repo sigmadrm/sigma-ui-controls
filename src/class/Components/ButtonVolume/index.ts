@@ -2,10 +2,15 @@ import { volumeIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
-interface IConstructorProps extends IConstructorBaseProps {}
+interface IConstructorProps extends IConstructorBaseProps {
+  handleButtonClick: (event: MouseEvent) => void;
+}
+
 class ButtonVolume extends BaseComponent {
+  private handleButtonClick: (event: MouseEvent) => void;
   constructor(props: IConstructorProps) {
     super(props);
+    this.handleButtonClick = props.handleButtonClick;
   }
 
   render() {
@@ -15,18 +20,15 @@ class ButtonVolume extends BaseComponent {
     }
   }
   registerListener() {
-    if (!this.containerElement) return;
-    this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
   }
   unregisterListener() {}
-  handleContainerClick(event: MouseEvent) {
-    const { apiPlayer } = this;
-    event.preventDefault();
-    event.stopPropagation();
-    if (apiPlayer.isFullScreen()) {
-      apiPlayer.exitFullScreen();
-    }
-  }
+  // handleContainerClick(event: MouseEvent) {
+  //   const { apiPlayer } = this;
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   apiPlayer.updateVolume(0);
+  // }
 
   hide() {
     if (this.containerElement) {

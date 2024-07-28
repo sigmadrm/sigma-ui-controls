@@ -22,7 +22,7 @@ class ButtonPlaySecondary extends BaseComponent {
     }
   }
 
-  registerListener(): void {
+  registerListener() {
     const { apiPlayer } = this;
     this.containerElement?.addEventListener('click', (event: MouseEvent) => {
       event.preventDefault();

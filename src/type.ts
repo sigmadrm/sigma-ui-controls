@@ -27,9 +27,13 @@ export enum EEVentName {
   FULLSCREENCHANGE = 'fullscreenchange',
   LOADING = 'loading',
   TRACKS_CHANGED = 'trackschanged',
+  ADAPTATION = 'adaptation',
   RATE_CHANGE = 'ratechange',
   SETTING_PANEL_VISIBLE = 'settingPanelVisible',
   SETTING_PANEL_BLUR = 'settingPanelBlur',
+  VARIANT_CHANGED = 'variantchanged',
+  ABR_STATUS_CHANGED = 'abrstatuschanged',
+  VOLUME_CHANGE = 'volumechange',
 }
 
 export const RESOLUTION_LABEL = {
@@ -58,6 +62,7 @@ export interface SmListeners {
   [EEVentName.RATE_CHANGE]: (event: EEVentName.RATE_CHANGE, data: { playbackRate: number }) => void;
   [EEVentName.SETTING_PANEL_VISIBLE]: (event: EEVentName.SETTING_PANEL_VISIBLE, data: { visible: boolean }) => void;
   [EEVentName.SETTING_PANEL_BLUR]: (event: EEVentName.SETTING_PANEL_BLUR, data?: any) => void;
+  [EEVentName.VOLUME_CHANGE]: (event: EEVentName.VOLUME_CHANGE, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',

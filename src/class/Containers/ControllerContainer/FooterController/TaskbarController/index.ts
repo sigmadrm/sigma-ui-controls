@@ -8,6 +8,7 @@ import ButtonExitFullScreen from '../../../../Components/ButtonExitFullScreen';
 import ButtonVolume from '../../../../Components/ButtonVolume';
 import ButtonMute from '../../../../Components/ButtonMute';
 import SettingIconButton from '../../../../Components/SettingIconButton';
+import VolumeContainer from './VolumeContainer';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
@@ -15,15 +16,13 @@ class TaskbarController extends BaseComponent {
   private buttonFullScreen: ButtonFullScreen | undefined;
   private buttonPlaySecondary: ButtonPlaySecondary | undefined;
   private buttonPauseSecondary: ButtonPauseSecondary | undefined;
-  private buttonVolume: ButtonVolume | undefined;
-  private buttonMute: ButtonMute | undefined;
+  private volumeContainer: VolumeContainer | undefined;
   private buttonExitFullScreen: ButtonExitFullScreen | undefined;
-  private settingIconButton: SettingIconButton;
+  // private settingIconButton: SettingIconButton;
 
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
     super(props);
-
+    const { classes, apiPlayer } = props;
     this.buttonFullScreen = new ButtonFullScreen({
       id: ids.smButtonFullScreen,
       classes,
@@ -39,19 +38,17 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
-    this.buttonVolume = new ButtonVolume({ id: ids.smButtonVolume, classes, apiPlayer });
-    this.buttonMute = new ButtonMute({ id: ids.smButtonMute, classes, apiPlayer });
-    this.settingIconButton = new SettingIconButton({
-      id: ids.smSettingIconButton,
-      classes,
-      apiPlayer,
-    });
     this.buttonExitFullScreen = new ButtonExitFullScreen({
       id: ids.smButtonExitFullScreen,
       classes,
       apiPlayer,
     });
 
+    this.volumeContainer = new VolumeContainer({
+      id: ids.smVolumeContainer,
+      classes,
+      apiPlayer,
+    });
     apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
       if (this.buttonPauseSecondary) {
         this.buttonPauseSecondary.show();
@@ -101,9 +98,8 @@ class TaskbarController extends BaseComponent {
       const { classes } = this;
       const htmlString = `<div class=${classes.taskbarGroup}>
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPlaySecondary}></div>
-     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
-     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonVolume}></div>
-     <div class=${classes.taskbarGroupBtn} id=${ids.smButtonMute}></div>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
+      <div class=${classes.taskbarVolumeContainer} id=${ids.smVolumeContainer}></div>
   </div>
   <div class=${classes.taskbarGroup}>
       <div class=${classes.taskbarGroupBtn} id=${ids.smSettingIconButton}></div>
