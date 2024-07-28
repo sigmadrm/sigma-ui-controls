@@ -5,10 +5,10 @@ import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
 import BaseComponent from '../../../../BaseComponent';
 import ButtonPauseSecondary from '../../../../Components/ButtonPauseSecondary';
 import ButtonExitFullScreen from '../../../../Components/ButtonExitFullScreen';
-import ButtonVolume from '../../../../Components/ButtonVolume';
-import ButtonMute from '../../../../Components/ButtonMute';
 import SettingIconButton from '../../../../Components/SettingIconButton';
 import VolumeContainer from './VolumeContainer';
+import TimeBarContainer from './TimeBarContainer';
+import LiveStream from '../../../../Components/LiveStream';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
@@ -19,6 +19,8 @@ class TaskbarController extends BaseComponent {
   private volumeContainer: VolumeContainer | undefined;
   private buttonExitFullScreen: ButtonExitFullScreen | undefined;
   // private settingIconButton: SettingIconButton;
+  private timeBarContainer: TimeBarContainer | undefined;
+  private liveStream: LiveStream | undefined;
 
   constructor(props: IConstructorProps) {
     super(props);
@@ -49,6 +51,16 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
+    this.liveStream = new LiveStream({
+      id: ids.smTaskbarLiveStream,
+      classes,
+      apiPlayer,
+    });
+    this.timeBarContainer = new TimeBarContainer({
+      id: ids.smTimeBarContainer,
+      classes,
+      apiPlayer,
+    });
     apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
       if (this.buttonPauseSecondary) {
         this.buttonPauseSecondary.show();
@@ -74,7 +86,7 @@ class TaskbarController extends BaseComponent {
         this.buttonPauseSecondary.hide();
       }
     });
-    apiPlayer.eventemitter.on(EEVentName.FULLSCREENCHANGE, () => {
+    apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, () => {
       if (this.apiPlayer.isFullScreen()) {
         if (this.buttonExitFullScreen) {
           this.buttonExitFullScreen.show();
@@ -91,6 +103,24 @@ class TaskbarController extends BaseComponent {
         }
       }
     });
+    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
+      const isLive = this.apiPlayer.isLive();
+      if (isLive) {
+        if (this.liveStream) {
+          this.liveStream.show();
+        }
+        if (this.timeBarContainer) {
+          this.timeBarContainer.hide();
+        }
+      } else {
+        if (this.liveStream) {
+          this.liveStream.hide();
+        }
+        if (this.timeBarContainer) {
+          this.timeBarContainer.show();
+        }
+      }
+    });
   }
 
   render() {
@@ -100,6 +130,8 @@ class TaskbarController extends BaseComponent {
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPlaySecondary}></div>
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
       <div class=${classes.taskbarVolumeContainer} id=${ids.smVolumeContainer}></div>
+     <div class=${classes.taskbarTimeBarContainer} id=${ids.smTimeBarContainer}></div>
+     <div class=${classes.taskbarLiveStream} id=${ids.smTaskbarLiveStream}></div>
   </div>
   <div class=${classes.taskbarGroup}>
       <div class=${classes.taskbarGroupBtn} id=${ids.smSettingIconButton}></div>

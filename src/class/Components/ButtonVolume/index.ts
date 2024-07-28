@@ -23,12 +23,6 @@ class ButtonVolume extends BaseComponent {
     this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
   }
   unregisterListener() {}
-  // handleContainerClick(event: MouseEvent) {
-  //   const { apiPlayer } = this;
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   apiPlayer.updateVolume(0);
-  // }
 
   hide() {
     if (this.containerElement) {

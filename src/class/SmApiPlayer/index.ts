@@ -172,6 +172,25 @@ export default class SmApiPlayer {
     return 0;
   }
 
+  getDuration() {
+    const { video } = this;
+    if (video) {
+      return video.duration;
+    }
+    return 0;
+  }
+  getCurrentTime() {
+    const { video } = this;
+    if (video) {
+      return video.currentTime;
+    }
+    return 0;
+  }
+  isLive() {
+    const { player } = this;
+    return player?.isLive();
+  }
+
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
     const { typePlayer, video, player, version } = this;
     if (typePlayer === ETypePlayer.SHAKA) {
@@ -204,7 +223,7 @@ export default class SmApiPlayer {
             clb.call(context, dataConvert);
           });
           break;
-        case EEVentName.FULLSCREENCHANGE:
+        case EEVentName.FULL_SCREEN_CHANGE:
           document.addEventListener(evtName, (data: any) => {
             const dataConvert = convertDataEventFullScreenChange(data);
             clb.call(context, dataConvert);
@@ -222,6 +241,22 @@ export default class SmApiPlayer {
           if (video) {
             video.addEventListener(evtName, (data: any) => {
               const dataConvert = convertDataEventVolumeChange(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
+        case EEVentName.TIME_UPDATE:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventTimeUpdate(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
+        case EEVentName.LOADED_META_DATA:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventLoadedMetaData(data);
               clb.call(context, dataConvert);
             });
           }
@@ -289,6 +324,14 @@ export const convertDataEventVolumeChange = (data: any) => {
     },
   };
 };
+export const convertDataEventTimeUpdate = (data: any) => {
+  return {
+    event: EEVentName.TIME_UPDATE,
+    data: {
+      ...data,
+    },
+  };
+};
 
 export const convertDataEventPause = (data: any) => {
   return {
@@ -301,7 +344,15 @@ export const convertDataEventPause = (data: any) => {
 
 export const convertDataEventFullScreenChange = (data: any) => {
   return {
-    event: EEVentName.FULLSCREENCHANGE,
+    event: EEVentName.FULL_SCREEN_CHANGE,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventLoadedMetaData = (data: any) => {
+  return {
+    event: EEVentName.LOADED_META_DATA,
     data: {
       ...data,
     },

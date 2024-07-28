@@ -147,7 +147,6 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   handleSettingContainerClickOut(event) {
-    console.log('handleSettingContainerClickOut ', event);
     if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
       this.state = { ...this.state, visible: false };
       this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_BLUR, null);

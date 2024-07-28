@@ -5,6 +5,13 @@ const generateStyles = (props?: TGenerateStylesProps) => {
   const { primaryColor = primaryColorDef, logo } = props || {};
   return {
     container: css`
+      font-family: 'Be Vietnam Pro';
+      background: black;
+      color: white;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none;
       border: 1px solid ${primaryColor};
       background: transparent;
       position: absolute;
@@ -51,8 +58,9 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     headController: css`
       background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 16%;
-      min-height: 50px;
+      // height: 16%;
+      // min-height: 50px;
+      min-height: 60px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -214,15 +222,15 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 20%;
-      min-height: 50px;
+      // height: 20%;
+      min-height: 80px;
       padding: 8px 32px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 4px;
       overflow: hidden;
     `,
     seekBarController: css`
@@ -251,10 +259,10 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       box-sizing: border-box;
       display: none;
       border-radius: 50%;
-      &:hover {
-        box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.1);
-      }
+      // &:hover {
+      //   box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
+      //   background: rgba(255, 255, 255, 0.1);
+      // }
     `,
     taskbarIconActive: css`
       color: ${primaryColorDef};
@@ -271,6 +279,31 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
       margin: 0px;
     `,
+    taskbarTimeBarContainer: css`
+      display: none;
+    `,
+    taskbarTimeBarContainerEnable: css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+      font-size: 12px;
+      gap: 4px;
+    `,
+    taskbarLiveStream: css`
+      display: none;
+    `,
+    taskbarLiveStreamEnable: css`
+      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+      font-size: 12px;
+      gap: 4px;
+    `,
+    taskbarTimeCurrent: css``,
+    taskbarTimeDuration: css``,
     smSelectVolumeRangeContainer: css`
       display: flex;
       flex-direction: row;

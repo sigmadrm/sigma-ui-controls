@@ -29,6 +29,10 @@ export const ids = {
   smPlaybackSpeed: 'sm-playback-rate-controller',
   smQuality: 'sm-quality-controller',
   smSettingIconButton: 'sm-setting-icon-button',
+  smTimeBarContainer: 'sm-time-bar-container',
+  smTaskbarLiveStream: 'sm-taskbar-live-stream',
+  smTimeCurrent: 'sm-time-current',
+  smTimeDuration: 'sm-time-duration',
 };
 export const versionDef = '4.10.0';
 

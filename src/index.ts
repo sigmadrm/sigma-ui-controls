@@ -62,13 +62,21 @@ class SmUIControls {
           console.log('addEventListener', EEVentName.PAUSE, data);
           apiPlayer.eventemitter.trigger(EEVentName.PAUSE, data);
         });
-        apiPlayer.addEventListener(EEVentName.FULLSCREENCHANGE, (data: any) => {
-          console.log('addEventListener', EEVentName.FULLSCREENCHANGE, data);
-          apiPlayer.eventemitter.trigger(EEVentName.FULLSCREENCHANGE, data);
+        apiPlayer.addEventListener(EEVentName.FULL_SCREEN_CHANGE, (data: any) => {
+          console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+          apiPlayer.eventemitter.trigger(EEVentName.FULL_SCREEN_CHANGE, data);
         });
         apiPlayer.addEventListener(EEVentName.VOLUME_CHANGE, (data: any) => {
           console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
           apiPlayer.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
+        });
+        apiPlayer.addEventListener(EEVentName.TIME_UPDATE, (data: any) => {
+          console.log('addEventListener', EEVentName.TIME_UPDATE, data);
+          apiPlayer.eventemitter.trigger(EEVentName.TIME_UPDATE, data);
+        });
+        apiPlayer.addEventListener(EEVentName.LOADED_META_DATA, (data: any) => {
+          console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
+          apiPlayer.eventemitter.trigger(EEVentName.LOADED_META_DATA, data);
         });
       }
     }

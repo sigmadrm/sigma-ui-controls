@@ -24,7 +24,7 @@ export enum EEVentName {
   ERROR = 'error',
   PLAY = 'play',
   PAUSE = 'pause',
-  FULLSCREENCHANGE = 'fullscreenchange',
+  FULL_SCREEN_CHANGE = 'fullscreenchange',
   LOADING = 'loading',
   TRACKS_CHANGED = 'trackschanged',
   ADAPTATION = 'adaptation',
@@ -34,6 +34,8 @@ export enum EEVentName {
   VARIANT_CHANGED = 'variantchanged',
   ABR_STATUS_CHANGED = 'abrstatuschanged',
   VOLUME_CHANGE = 'volumechange',
+  TIME_UPDATE = 'timeupdate',
+  LOADED_META_DATA = 'loadedmetadata',
 }
 
 export const RESOLUTION_LABEL = {
@@ -57,12 +59,14 @@ export interface SmListeners {
   [EEVentName.PAUSE]: (event: EEVentName.PAUSE, data: { [key: string]: any }) => void;
   [EEVentName.PLAY]: (event: EEVentName.PLAY, data: { [key: string]: any }) => void;
   [EEVentName.ERROR]: (event: EEVentName.ERROR, data: { [key: string]: any }) => void;
-  [EEVentName.FULLSCREENCHANGE]: (event: EEVentName.FULLSCREENCHANGE, data: { [key: string]: any }) => void;
+  [EEVentName.FULL_SCREEN_CHANGE]: (event: EEVentName.FULL_SCREEN_CHANGE, data: { [key: string]: any }) => void;
   [EEVentName.TRACKS_CHANGED]: (event: EEVentName.TRACKS_CHANGED, data: { tracks: Track[] }) => void;
   [EEVentName.RATE_CHANGE]: (event: EEVentName.RATE_CHANGE, data: { playbackRate: number }) => void;
   [EEVentName.SETTING_PANEL_VISIBLE]: (event: EEVentName.SETTING_PANEL_VISIBLE, data: { visible: boolean }) => void;
   [EEVentName.SETTING_PANEL_BLUR]: (event: EEVentName.SETTING_PANEL_BLUR, data?: any) => void;
   [EEVentName.VOLUME_CHANGE]: (event: EEVentName.VOLUME_CHANGE, data: { [key: string]: any }) => void;
+  [EEVentName.TIME_UPDATE]: (event: EEVentName.TIME_UPDATE, data: { [key: string]: any }) => void;
+  [EEVentName.LOADED_META_DATA]: (event: EEVentName.LOADED_META_DATA, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',
