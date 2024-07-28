@@ -22,6 +22,9 @@ export const ids = {
   smButtonExitFullScreen: 'sm-button-exit-full-screen',
   smButtonVolume: 'sm-button-volume',
   smButtonMute: 'sm-button-mute',
+  smSelectVolumeRange: 'sm-select-volume-range',
+  smInputVolumeRange: 'sm-input-volume-range',
+  smVolumeContainer: 'sm-volume-container',
   smPlaybackSpeed: 'sm-playback-rate-controller',
   smQuality: 'sm-quality-controller',
 };

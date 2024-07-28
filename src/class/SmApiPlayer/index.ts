@@ -77,7 +77,6 @@ export default class SmApiPlayer {
   }
 
   selectVariantTrack(track: Track) {
-    console.log('selectVariantTrack ', track);
     if (track.id === -1) {
       // Enable ABR (Adaptive Bitrate)
       this.player.configure({ abr: { enabled: true } });
@@ -158,6 +157,21 @@ export default class SmApiPlayer {
     return this.video?.playbackRate || 1;
   }
 
+  updateVolume(value: number) {
+    const { video } = this;
+    if (video) {
+      return (video.volume = value);
+    }
+  }
+
+  getVolume() {
+    const { video } = this;
+    if (video) {
+      return video.volume;
+    }
+    return 0;
+  }
+
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
     const { typePlayer, video, player, version } = this;
     if (typePlayer === ETypePlayer.SHAKA) {
@@ -195,6 +209,22 @@ export default class SmApiPlayer {
             const dataConvert = convertDataEventFullScreenChange(data);
             clb.call(context, dataConvert);
           });
+          break;
+        case EEVentName.ADAPTATION:
+        case EEVentName.TRACKS_CHANGED:
+        case EEVentName.ABR_STATUS_CHANGED:
+        case EEVentName.VARIANT_CHANGED:
+          player.addEventListener(evtName, (data: any) => {
+            clb.call(context, data);
+          });
+          break;
+        case EEVentName.VOLUME_CHANGE:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventVolumeChange(data);
+              clb.call(context, dataConvert);
+            });
+          }
           break;
         default:
           break;
@@ -246,6 +276,14 @@ export const convertDataEventError = (data: any) => {
 export const convertDataEventPlay = (data: any) => {
   return {
     event: EEVentName.PLAY,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventVolumeChange = (data: any) => {
+  return {
+    event: EEVentName.VARIANT_CHANGED,
     data: {
       ...data,
     },

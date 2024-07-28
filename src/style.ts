@@ -252,6 +252,87 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
       cursor: pointer;
     `,
+    taskbarVolumeContainer: css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+    `,
+    smSelectVolumeRangeContainer: css`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding-left: 8px;
+    `,
+    taskbarVolumeSlider: css`
+      -webkit-appearance: none;
+      width: 100px;
+      height: 6px;
+      border-radius: 16px;
+      background: #ddd;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      position: relative;
+      overflow: visible;
+
+      ::-webkit-slider-runnable-track {
+        width: 100%;
+        border-radius: 18px;
+        height: 6px;
+        cursor: pointer;
+        background: #ddd;
+      }
+
+      ::-moz-range-track {
+        width: 100%;
+        height: 6px;
+        cursor: pointer;
+        background: #ddd;
+      }
+
+      ::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        margin-top: -4px;
+        border-radius: 50%;
+        background: ${primaryColor};
+        cursor: pointer;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 2;
+      }
+
+      ::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: ${primaryColor};
+        cursor: pointer;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 2;
+      }
+
+      ::before {
+        content: '';
+        height: 100%;
+        width: var(--highlight-width);
+        background: ${primaryColor};
+        position: absolute;
+        left: 0;
+        border-radius: 18px;
+        top: 0;
+        z-index: 1;
+      }
+
+      :hover {
+        opacity: 1;
+      }
+    `,
     loadingContainer: css`
       background: rgb(119 119 119 / 50%);
       position: absolute;

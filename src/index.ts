@@ -66,6 +66,10 @@ class SmUIControls {
           console.log('addEventListener', EEVentName.FULLSCREENCHANGE, data);
           apiPlayer.eventemitter.trigger(EEVentName.FULLSCREENCHANGE, data);
         });
+        apiPlayer.addEventListener(EEVentName.VOLUME_CHANGE, (data: any) => {
+          console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
+          apiPlayer.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
+        });
       }
     }
   }
