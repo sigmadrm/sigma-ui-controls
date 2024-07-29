@@ -10,8 +10,10 @@ class LiveStream extends BaseComponent {
   }
 
   render() {
+    const { classes } = this;
     if (this.containerElement) {
-      this.containerElement.innerHTML = this.containerElement.innerHTML = `<spam>Trực tiếp</span>`;
+      this.containerElement.innerHTML =
+        this.containerElement.innerHTML = `<div class="${classes.liveStreamDot}"></div><spam>Trực tiếp</span>`;
     }
   }
   registerListener() {}

@@ -1,5 +1,5 @@
 import { ids } from '../../../constants';
-import { EEVentName, IConstructorBaseProps } from '../../../type';
+import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}

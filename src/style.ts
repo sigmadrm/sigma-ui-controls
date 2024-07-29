@@ -259,6 +259,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       box-sizing: border-box;
       display: none;
       border-radius: 50%;
+      cursor: pointer;
       // &:hover {
       //   box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
       //   background: rgba(255, 255, 255, 0.1);
@@ -292,6 +293,14 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     taskbarLiveStream: css`
       display: none;
+    `,
+    liveStreamDot: css`
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: red;
+      margin-right: 4px;
+      box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
     `,
     taskbarLiveStreamEnable: css`
       display: none;

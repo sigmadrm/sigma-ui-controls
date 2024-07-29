@@ -1,10 +1,7 @@
 import { ids } from '../../../../../../constants';
 import { EEVentName, IConstructorBaseProps } from '../../../../../../type';
 import BaseComponent from '../../../../../BaseComponent';
-import ButtonMute from '../../../../../Components/ButtonMute';
-import ButtonVolume from '../../../../../Components/ButtonVolume';
 import CurrentTime from '../../../../../Components/CurrentTime';
-import SelectVolumeRange from '../../../../../Components/SelectVolumeRange';
 import TimeDuration from '../../../../../Components/TimeDuration';
 
 interface IConstructorProps extends IConstructorBaseProps {}

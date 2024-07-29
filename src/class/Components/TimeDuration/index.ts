@@ -13,7 +13,7 @@ class TimeDuration extends BaseComponent {
     const timeDuration = this.apiPlayer.getDuration();
 
     if (this.containerElement) {
-      this.containerElement.innerHTML = `<spam>${formatTime(timeDuration)}</span>`;
+      this.containerElement.innerHTML = `/ <spam>${formatTime(timeDuration)}</span>`;
     }
   }
   registerListener() {}

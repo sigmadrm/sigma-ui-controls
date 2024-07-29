@@ -18,7 +18,7 @@ class TaskbarController extends BaseComponent {
   private buttonPauseSecondary: ButtonPauseSecondary | undefined;
   private volumeContainer: VolumeContainer | undefined;
   private buttonExitFullScreen: ButtonExitFullScreen | undefined;
-  // private settingIconButton: SettingIconButton;
+  private settingIconButton: SettingIconButton;
   private timeBarContainer: TimeBarContainer | undefined;
   private liveStream: LiveStream | undefined;
 
@@ -42,6 +42,11 @@ class TaskbarController extends BaseComponent {
     });
     this.buttonExitFullScreen = new ButtonExitFullScreen({
       id: ids.smButtonExitFullScreen,
+      classes,
+      apiPlayer,
+    });
+    this.settingIconButton = new SettingIconButton({
+      id: ids.smSettingIconButton,
       classes,
       apiPlayer,
     });
