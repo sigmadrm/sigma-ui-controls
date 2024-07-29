@@ -6,9 +6,9 @@ declare class ButtonFullScreen extends BaseComponent {
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
-    hide: () => void;
-    show: () => void;
     unregisterListener(): void;
+    hide(): void;
+    show(): void;
     handleContainerClick: (event: MouseEvent) => void;
 }
 export default ButtonFullScreen;

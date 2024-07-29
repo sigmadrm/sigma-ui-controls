@@ -8,8 +8,8 @@ declare class ButtonPlayPrimary extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handleContainerClick(event: MouseEvent): void;
-    hide: () => void;
-    show: () => void;
+    hide(): void;
+    show(): void;
 }
 export default ButtonPlayPrimary;
 //# sourceMappingURL=index.d.ts.map

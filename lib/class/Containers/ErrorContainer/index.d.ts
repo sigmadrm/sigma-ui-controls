@@ -1,11 +1,11 @@
-import { convertDataEventError } from '../../../services';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
+import { convertDataEventError } from '../../SmApiPlayer';
 interface IConstructorProps extends IConstructorBaseProps {
 }
 declare class ErrorContainer extends BaseComponent {
     constructor(props: IConstructorProps);
-    hide: () => void;
+    hide(): void;
     show: (data: any) => void;
     generateHtml: (dataEvent: ReturnType<typeof convertDataEventError>) => string;
 }

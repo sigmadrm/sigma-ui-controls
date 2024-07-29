@@ -6,8 +6,8 @@ declare class ButtonPlaySecondary extends BaseComponent {
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
-    hide: () => void;
-    show: () => void;
+    hide(): void;
+    show(): void;
 }
 export default ButtonPlaySecondary;
 //# sourceMappingURL=index.d.ts.map

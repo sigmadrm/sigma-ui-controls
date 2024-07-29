@@ -1,5 +1,33 @@
 
 
+## [0.0.3](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.2...v0.0.3) (2024-07-29)
+
+
+### Bug Fixes
+
+* can not use arrow function in class ([6c91e8b](https://github.com/sigmadrm/sigma-ui-controls/commit/6c91e8b2ee19a80812ac2d4ddcaa47424d64e44f))
+* css for scroll bar ([0422620](https://github.com/sigmadrm/sigma-ui-controls/commit/0422620defca6678b315b481a8ac52c5832d574b))
+* fix css for mode full screen ([e450eed](https://github.com/sigmadrm/sigma-ui-controls/commit/e450eede0a000f34eb0e998962885a04ab50cbdc))
+* remove event listener ([97ef264](https://github.com/sigmadrm/sigma-ui-controls/commit/97ef26413900634a3cce77275b2688f8c1e4eafa))
+* show setting button ([20c8565](https://github.com/sigmadrm/sigma-ui-controls/commit/20c85657ad7f59f996cac3bab599b530635abd7f))
+* show SettingsController ([d1c9480](https://github.com/sigmadrm/sigma-ui-controls/commit/d1c9480d6022e858eb7ef66fd2491f2b925b843e))
+
+
+### Features
+
+* add setting icon button ([ca06476](https://github.com/sigmadrm/sigma-ui-controls/commit/ca064766bc89b47449cd9653ef71499a72e1a419))
+* change addEventListener context ([24dbb4b](https://github.com/sigmadrm/sigma-ui-controls/commit/24dbb4b0ba49ae0f677691af593165afbdca7d2f))
+* change SmEventEmitter interface ([e0433f5](https://github.com/sigmadrm/sigma-ui-controls/commit/e0433f51ddfb1a98a2c77444f286f2590d7bd201))
+* getVariantTracks ([67f349e](https://github.com/sigmadrm/sigma-ui-controls/commit/67f349e75b7d745761bab8ab854b896b8b3c904c))
+* handle change quality ([27a7fdc](https://github.com/sigmadrm/sigma-ui-controls/commit/27a7fdcb1d74b7adeb5c12936ebce7d5f266b468))
+* handle playbackRate change ([7d027a3](https://github.com/sigmadrm/sigma-ui-controls/commit/7d027a32d940c5c834b78ebd25e92b5a084a5017))
+* implement button volune, mute and select range volume ([fd54ad3](https://github.com/sigmadrm/sigma-ui-controls/commit/fd54ad30468fe8812021d415129f1025937c8620))
+* implement class SmApiplayer and renmove interface TApiPlayer ([ced3734](https://github.com/sigmadrm/sigma-ui-controls/commit/ced3734fd27363474e886da0ee4ed521606132d2))
+* implement class SmApiplayer and renmove interface TApiPlayer ([0b09653](https://github.com/sigmadrm/sigma-ui-controls/commit/0b0965349ca19b6b7abc338050af34b64a789bd0))
+* implement SmEventEmitter ([af05d34](https://github.com/sigmadrm/sigma-ui-controls/commit/af05d343c30c0eaf564620d80df608bb158f4ebb))
+* implement time bar ([5f8e443](https://github.com/sigmadrm/sigma-ui-controls/commit/5f8e443ba70aaeed1f8e76f4226d8048db675260))
+* use function bind in class ([fd40d2a](https://github.com/sigmadrm/sigma-ui-controls/commit/fd40d2a23e4715d99c4d7ed2b380698fbc6e9a15))
+
 ## 0.0.2 (2024-07-26)
 
 

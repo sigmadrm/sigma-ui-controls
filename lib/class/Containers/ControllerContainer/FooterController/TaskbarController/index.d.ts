@@ -6,9 +6,11 @@ declare class TaskbarController extends BaseComponent {
     private buttonFullScreen;
     private buttonPlaySecondary;
     private buttonPauseSecondary;
-    private buttonVolume;
-    private buttonMute;
+    private volumeContainer;
     private buttonExitFullScreen;
+    private settingIconButton;
+    private timeBarContainer;
+    private liveStream;
     constructor(props: IConstructorProps);
     render(): void;
 }

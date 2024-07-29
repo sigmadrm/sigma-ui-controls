@@ -7,6 +7,7 @@ export declare const ids: {
     smBodyController: string;
     smButtonPlayPrimary: string;
     smSettingsContainer: string;
+    smSettingsContainerMask: string;
     smSettingDetailTitle: string;
     smSettingDetailGoBackIcon: string;
     smSettingPlaybackSpeedItemPrefix: string;
@@ -22,8 +23,16 @@ export declare const ids: {
     smButtonExitFullScreen: string;
     smButtonVolume: string;
     smButtonMute: string;
+    smSelectVolumeRange: string;
+    smInputVolumeRange: string;
+    smVolumeContainer: string;
     smPlaybackSpeed: string;
     smQuality: string;
+    smSettingIconButton: string;
+    smTimeBarContainer: string;
+    smTaskbarLiveStream: string;
+    smTimeCurrent: string;
+    smTimeDuration: string;
 };
 export declare const versionDef = "4.10.0";
 export declare enum ETypePlayer {
@@ -31,5 +40,5 @@ export declare enum ETypePlayer {
     VIDEOSJS = "VIDEOSJS"
 }
 export declare const typePlayerDef = ETypePlayer.SHAKA;
-export declare const primaryColorDef = "#2196f3";
+export declare const primaryColorDef = "#F58220";
 //# sourceMappingURL=constants.d.ts.map

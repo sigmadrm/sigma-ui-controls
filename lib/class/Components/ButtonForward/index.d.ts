@@ -8,8 +8,8 @@ declare class ButtonForward extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handleContainerClick(event: MouseEvent): void;
-    hide: () => void;
-    show: () => void;
+    hide(): void;
+    show(): void;
 }
 export default ButtonForward;
 //# sourceMappingURL=index.d.ts.map

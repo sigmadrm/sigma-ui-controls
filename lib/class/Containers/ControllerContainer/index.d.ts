@@ -12,8 +12,8 @@ declare class ControllerContainer extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handleClickContainer: (event: MouseEvent) => void;
-    hide: () => void;
-    show: () => void;
+    hide(): void;
+    show(): void;
 }
 export default ControllerContainer;
 //# sourceMappingURL=index.d.ts.map

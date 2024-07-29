@@ -7,7 +7,7 @@ declare class BodyController extends BaseComponent {
     private settingsController;
     constructor(props: IConstructorProps);
     render(): void;
-    registerListener(): void;
+    destroy(): void;
 }
 export default BodyController;
 //# sourceMappingURL=index.d.ts.map

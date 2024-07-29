@@ -8,8 +8,8 @@ declare class ButtonReply extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handleContainerClick(event: MouseEvent): void;
-    hide: () => void;
-    show: () => void;
+    hide(): void;
+    show(): void;
 }
 export default ButtonReply;
 //# sourceMappingURL=index.d.ts.map

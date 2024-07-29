@@ -8,6 +8,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     bodyController: string;
     buttonPlayPrimary: string;
     settingsContainer: string;
+    settingsContainerMask: string;
     settingsContent: string;
     settingHeader: string;
     settingItem: string;
@@ -25,7 +26,18 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     taskbarController: string;
     taskbarGroup: string;
     taskbarGroupBtn: string;
+    taskbarIconActive: string;
     taskbarGroupBtnEnable: string;
+    taskbarVolumeContainer: string;
+    taskbarTimeBarContainer: string;
+    taskbarTimeBarContainerEnable: string;
+    taskbarLiveStream: string;
+    liveStreamDot: string;
+    taskbarLiveStreamEnable: string;
+    taskbarTimeCurrent: string;
+    taskbarTimeDuration: string;
+    smSelectVolumeRangeContainer: string;
+    taskbarVolumeSlider: string;
     loadingContainer: string;
     loadingContainerEnable: string;
     errorContainer: string;

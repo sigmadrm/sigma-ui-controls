@@ -1,12 +1,13 @@
-import { smListeners } from '../../type';
-export default class SmEventEmitter {
+import { ISmEventEmitter, SmListeners } from '../../type';
+export default class SmEventEmitter implements ISmEventEmitter {
     private eventEmitter;
-    emit<E extends keyof smListeners>(eventName: E, data: smListeners[E]['data']): boolean;
-    on<E extends keyof smListeners>(event: E, callback: (data: smListeners[E]['data']) => void): void;
-    once<E extends keyof smListeners>(event: E, callback: (data: smListeners[E]['data']) => void): void;
-    off<E extends keyof smListeners>(event: E, callback?: (data: smListeners[E]['data']) => void): void;
-    removeAllListeners<E extends keyof smListeners>(event?: E): void;
-    listeners<E extends keyof smListeners>(event: E): Array<(data: smListeners[E]['data']) => void>;
-    listenerCount<E extends keyof smListeners>(event: E): number;
+    on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+    once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
+    removeAllListeners<E extends keyof SmListeners>(event?: E): void;
+    off<E extends keyof SmListeners, Context = undefined>(event: E, listener?: SmListeners[E], context?: Context, once?: boolean): void;
+    listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
+    emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean;
+    trigger<E extends keyof SmListeners>(event: E, eventObject: Parameters<SmListeners[E]>[1]): boolean;
+    listenerCount<E extends keyof SmListeners>(event: E): number;
 }
 //# sourceMappingURL=SmEventEmitter.d.ts.map

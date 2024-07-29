@@ -1,7 +1,8 @@
 import BaseComponent from '../../../BaseComponent';
-import { IApiPlayer, IConstructorBaseProps } from '../../../../type';
+import { IConstructorBaseProps } from '../../../../type';
+import SmApiPlayer from '../../../SmApiPlayer';
 interface IConstructorProps extends IConstructorBaseProps {
-    apiPlayer: IApiPlayer;
+    apiPlayer: SmApiPlayer;
 }
 declare class FooterController extends BaseComponent {
     private seekBarController;
