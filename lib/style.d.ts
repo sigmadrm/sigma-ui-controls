@@ -37,6 +37,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     taskbarTimeCurrent: string;
     taskbarTimeDuration: string;
     smSelectVolumeRangeContainer: string;
+    taskbarVolumeSliderEnable: string;
     taskbarVolumeSlider: string;
     loadingContainer: string;
     loadingContainerEnable: string;

@@ -10,7 +10,7 @@ declare class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
-    handleSettingPanelBlur(): void;
+    handleSettingPanelVisible(event: any, data: any): void;
     handleContainerClick(event: MouseEvent): void;
 }
 export default SettingIconButton;

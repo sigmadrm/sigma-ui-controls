@@ -1,4 +1,5 @@
 import { IConfigureUIPlayerProps } from './type';
+import 'animate.css';
 import './index.css';
 declare class SmUIControls {
     private apiPlayer;
