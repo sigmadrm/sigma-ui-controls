@@ -7,7 +7,7 @@ export default class BaseComponent<T = {}> {
   protected classes: TClasses;
   protected containerElement: HTMLElement | null = null;
   private _state?: T;
-  private initiated: boolean = false;
+  protected initiated: boolean = false;
 
   protected get state(): T {
     return (this._state || {}) as T;

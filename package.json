@@ -42,6 +42,7 @@
       ]
     },
     "git": {
+      "requireBranch": "main",
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}",
       "push": true
