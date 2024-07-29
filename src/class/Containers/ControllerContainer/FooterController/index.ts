@@ -36,6 +36,12 @@ class FooterController extends BaseComponent {
       this.containerElement.innerHTML = htmlString;
     }
   }
+  registerListener() {
+    this?.containerElement?.addEventListener('click', (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
 }
 
 export default FooterController;

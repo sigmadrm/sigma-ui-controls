@@ -48,36 +48,40 @@ class SmUIControls {
         this.loadingContainer = new LoadingContainer({ id: ids.smLoading, classes, apiPlayer });
 
         apiPlayer.addEventListener(EEVentName.LOADED, (data: any) => {
-          console.log('addEventListener', EEVentName.LOADED, data);
+          // console.log('addEventListener', EEVentName.LOADED, data);
           apiPlayer.eventemitter.trigger(EEVentName.LOADED, data);
         });
         apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
-          console.log('addEventListener', EEVentName.ERROR, data);
+          // console.log('addEventListener', EEVentName.ERROR, data);
           apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
-          console.log('addEventListener', EEVentName.PLAY, data);
+          // console.log('addEventListener', EEVentName.PLAY, data);
           apiPlayer.eventemitter.trigger(EEVentName.PLAY, data);
         });
         apiPlayer.addEventListener(EEVentName.PAUSE, (data: any) => {
-          console.log('addEventListener', EEVentName.PAUSE, data);
+          // console.log('addEventListener', EEVentName.PAUSE, data);
           apiPlayer.eventemitter.trigger(EEVentName.PAUSE, data);
         });
         apiPlayer.addEventListener(EEVentName.FULL_SCREEN_CHANGE, (data: any) => {
-          console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+          // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
           apiPlayer.eventemitter.trigger(EEVentName.FULL_SCREEN_CHANGE, data);
         });
         apiPlayer.addEventListener(EEVentName.VOLUME_CHANGE, (data: any) => {
-          console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
+          // console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
           apiPlayer.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
         });
         apiPlayer.addEventListener(EEVentName.TIME_UPDATE, (data: any) => {
-          console.log('addEventListener', EEVentName.TIME_UPDATE, data);
+          // console.log('addEventListener', EEVentName.TIME_UPDATE, data);
           apiPlayer.eventemitter.trigger(EEVentName.TIME_UPDATE, data);
         });
         apiPlayer.addEventListener(EEVentName.LOADED_META_DATA, (data: any) => {
-          console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
+          // console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
           apiPlayer.eventemitter.trigger(EEVentName.LOADED_META_DATA, data);
+        });
+        apiPlayer.addEventListener(EEVentName.PROGRESS, (data: any) => {
+          // console.log('addEventListener', EEVentName.PROGRESS, data);
+          apiPlayer.eventemitter.trigger(EEVentName.PROGRESS, data);
         });
       }
     }

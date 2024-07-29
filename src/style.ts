@@ -74,7 +74,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       text-overflow: ellipsis;
     `,
     bodyController: css`
-      position: relative;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
       background: transparent;
       width: 100%;
       flex: 1;
@@ -99,7 +103,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     settingsContainer: css`
       position: absolute;
-      bottom: 0;
+      bottom: 90px;
       right: 12px;
       border-radius: 8px;
       background-color: rgba(0, 0, 0, 0.64);
@@ -107,7 +111,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
-      max-height: 100%;
+      max-height: calc(100% - 90px);
       overflow: hidden;
     `,
     settingsContainerMask: css`
@@ -220,6 +224,10 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
       // height: 20%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
       min-height: 80px;
       padding: 8px 12px;
       box-sizing: border-box;
@@ -227,16 +235,56 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 24px;
       overflow: hidden;
     `,
     seekBarController: css`
-      background: green;
       width: 100%;
+      height: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
     `,
+    progressContainer: css`
+      height: 8px;
+      width: 100%;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      margin-top: 10px;
+    `,
+    progressBuffer: css`
+      position: absolute;
+      width: var(--highlight-width-progress-buffer);
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+
+      border-radius: 8px;
+      z-index: 1;
+    `,
+    progressBar: css`
+      position: absolute;
+      width: var(--highlight-width-progress-bar);
+      height: 100%;
+      background-color: ${primaryColor};
+      opacity: 1;
+      z-index: 2;
+      border-radius: 5px;
+    `,
+    progressThumb: css`
+      position: absolute;
+      left: var(--highlight-width-progress-thumb);
+      margin-left: -4px;
+      height: 16px;
+      width: 16px;
+      background-color: ${primaryColor};
+      opacity: 1;
+      border-radius: 50%;
+      top: -3.5px;
+      cursor: pointer;
+      z-index: 3;
+    `,
+
     taskbarController: css`
       width: 100%;
       display: flex;
@@ -318,6 +366,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       padding-left: 8px;
     `,
     taskbarVolumeSliderEnable: css`
+      cursor: pointer;
       height: 40px;
       display: block !important;
       width: 100%;
@@ -417,7 +466,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
+      z-index: 1;
       overflow: hidden;
       display: none;
     `,

@@ -54,7 +54,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
       return;
     }
     apiPlayer.updateVolume(1);
-    // console.log('run Button volume Click');
   }
 
   render(): void {
@@ -74,7 +73,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
       });
 
       this.containerElement.addEventListener('mouseover', (e: MouseEvent) => {
-        console.log('run');
         if (this.selectVolumeRange) {
           this.selectVolumeRange.show();
         }
@@ -82,7 +80,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
         e.stopPropagation();
       });
       this.containerElement.addEventListener('mouseout', (e: MouseEvent) => {
-        console.log('run');
         if (this.selectVolumeRange) {
           this.selectVolumeRange.hide();
         }

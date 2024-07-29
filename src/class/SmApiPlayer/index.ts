@@ -190,6 +190,26 @@ export default class SmApiPlayer {
     const { player } = this;
     return player?.isLive();
   }
+  getProgress() {
+    const { video } = this;
+    if (video) {
+      console.log({ currentTime: video.currentTime, duration: video.duration });
+      return (video.currentTime / video.duration) * 100;
+    }
+    return 0;
+  }
+  getBuffering() {
+    const { video } = this;
+    if (video) {
+      if (video.buffered.length > 0) {
+        const bufferEnd = video.buffered.end(video.buffered.length - 1);
+        const bufferedProgress = (bufferEnd / video.duration) * 100;
+        return bufferedProgress;
+      }
+      return 0;
+    }
+    return 0;
+  }
 
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {
     const { typePlayer, video, player, version } = this;
@@ -257,6 +277,14 @@ export default class SmApiPlayer {
           if (video) {
             video.addEventListener(evtName, (data: any) => {
               const dataConvert = convertDataEventLoadedMetaData(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
+        case EEVentName.PROGRESS:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventProgress(data);
               clb.call(context, dataConvert);
             });
           }
@@ -353,6 +381,14 @@ export const convertDataEventFullScreenChange = (data: any) => {
 export const convertDataEventLoadedMetaData = (data: any) => {
   return {
     event: EEVentName.LOADED_META_DATA,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventProgress = (data: any) => {
+  return {
+    event: EEVentName.PROGRESS,
     data: {
       ...data,
     },
