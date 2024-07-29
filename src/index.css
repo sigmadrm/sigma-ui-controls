@@ -8,7 +8,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000000000000;
+  z-index: 0;
   margin: 0;
 }
 
@@ -144,5 +144,25 @@ body {
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes scaleUpHorizontalLeft {
+  from {
+    width: 0px;
+    transform-origin: left;
+  }
+  to {
+    width: 100px;
+    transform-origin: left;
+  }
+}
+@keyframes scaleDownHorizontalLeft {
+  from {
+    width: 0px;
+    transform-origin: left;
+  }
+  to {
+    width: 100px;
+    transform-origin: left;
   }
 }

@@ -12,7 +12,7 @@ class SelectVolumeRange extends BaseComponent {
   render() {
     const volume = this.apiPlayer.getVolume();
     if (this.containerElement) {
-      this.containerElement.innerHTML = `<input id=${ids.smInputVolumeRange}
+      this.containerElement.innerHTML = `<input  id=${ids.smInputVolumeRange}
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
        value=${volume}>
       `;
@@ -46,8 +46,18 @@ class SelectVolumeRange extends BaseComponent {
 
   unregisterListener() {}
 
-  hide = () => {};
-  show = () => {};
+  hide = () => {
+    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;
+    if (inputVolRangeEle) {
+      inputVolRangeEle.className = this.classes.taskbarVolumeSlider;
+    }
+  };
+  show = () => {
+    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;
+    if (inputVolRangeEle) {
+      inputVolRangeEle.classList.toggle(this.classes.taskbarVolumeSliderEnable);
+    }
+  };
 }
 
 export default SelectVolumeRange;

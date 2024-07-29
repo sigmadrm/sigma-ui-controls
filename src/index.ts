@@ -7,8 +7,9 @@ import LoadingContainer from './class/Containers/LoadingContainer';
 
 import { generateHtmlContentContainerString } from './services';
 
-import generateStyles from './style';
+import 'animate.css';
 import './index.css';
+import generateStyles from './style';
 import SmApiPlayer from './class/SmApiPlayer';
 
 const classes = generateStyles();

@@ -1,6 +1,6 @@
 {
   "name": "sigma-ui-controls",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "**This is ui controls plugin for video players**",
   "main": "dist/sm-ui-controls.min.js",
   "types": "lib/index.d.ts",
@@ -101,6 +101,7 @@
   "dependencies": {
     "@commitlint/cli": "^19.3.0",
     "@emotion/css": "^11.13.0",
+    "animate.css": "^4.1.1",
     "css-loader": "^7.1.2",
     "es6-shim": "^0.35.6",
     "eventemitter3": "^5.0.1",

@@ -1,5 +1,25 @@
 
 
+## [0.0.6](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.5...v0.0.6) (2024-07-29)
+
+
+### Bug Fixes
+
+* z-index for layout loading ([e2e7b38](https://github.com/sigmadrm/sigma-ui-controls/commit/e2e7b3895671320690a52427977a54ac9ce44045))
+
+## [0.0.5](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.4...v0.0.5) (2024-07-29)
+
+
+### Bug Fixes
+
+* setting header detail background color ([e8f1851](https://github.com/sigmadrm/sigma-ui-controls/commit/e8f18511ab0ae1d4c38ab0dd3f50e52890a5f1e9))
+* setting tab display when playbackSpeed and quality change ([9c4ef6d](https://github.com/sigmadrm/sigma-ui-controls/commit/9c4ef6d57111216e5f8062ba22cfd4237489c130))
+
+
+### Features
+
+* implement animation for volume container ([85215d1](https://github.com/sigmadrm/sigma-ui-controls/commit/85215d16a775f2ae16a86cc5576eac3cff7a1faa))
+
 ## [0.0.4](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.3...v0.0.4) (2024-07-29)
 
 ## [0.0.3](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.2...v0.0.3) (2024-07-29)

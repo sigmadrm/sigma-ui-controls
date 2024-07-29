@@ -2716,6 +2716,18 @@ if (true) {
 
 /***/ }),
 
+/***/ "./node_modules/animate.css/animate.css":
+/*!**********************************************!*\
+  !*** ./node_modules/animate.css/animate.css ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/index.css":
 /*!***********************!*\
   !*** ./src/index.css ***!
@@ -3185,7 +3197,15 @@ class LiveStream extends BaseComponent_1.default {
                 this.containerElement.innerHTML = `<div class="${classes.liveStreamDot}"></div><spam>Trực tiếp</span>`;
         }
     }
-    registerListener() { }
+    registerListener() {
+        if (this.containerElement) {
+            this.containerElement.addEventListener('click', (e) => {
+                console.log('run');
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+    }
     unregisterListener() { }
     hide() {
         if (this.containerElement) {
@@ -3220,7 +3240,7 @@ class SelectVolumeRange extends BaseComponent_1.default {
     render() {
         const volume = this.apiPlayer.getVolume();
         if (this.containerElement) {
-            this.containerElement.innerHTML = `<input id=${constants_1.ids.smInputVolumeRange}
+            this.containerElement.innerHTML = `<input  id=${constants_1.ids.smInputVolumeRange}
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
        value=${volume}>
       `;
@@ -3250,8 +3270,18 @@ class SelectVolumeRange extends BaseComponent_1.default {
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${percentage}%`);
     }
     unregisterListener() { }
-    hide = () => { };
-    show = () => { };
+    hide = () => {
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        if (inputVolRangeEle) {
+            inputVolRangeEle.className = this.classes.taskbarVolumeSlider;
+        }
+    };
+    show = () => {
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        if (inputVolRangeEle) {
+            inputVolRangeEle.classList.toggle(this.classes.taskbarVolumeSliderEnable);
+        }
+    };
 }
 exports["default"] = SelectVolumeRange;
 
@@ -3272,7 +3302,7 @@ const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/cl
 class SettingIconButton extends BaseComponent_1.default {
     constructor(props) {
         super(props, { visible: false });
-        this.handleSettingPanelBlur = this.handleSettingPanelBlur.bind(this);
+        this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
         const { classes } = this;
@@ -3287,22 +3317,22 @@ class SettingIconButton extends BaseComponent_1.default {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handleContainerClick(event);
         }
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     }
     unregisterListener() {
         if (!this.containerElement)
             return;
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     }
-    handleSettingPanelBlur() {
-        this.state = { ...this.state, visible: false };
+    handleSettingPanelVisible(event, data) {
+        const { visible } = data;
+        this.state = { ...this.state, visible };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        this.state = { ...this.state, visible: !this.state.visible };
-        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: this.state.visible });
+        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: !this.state.visible });
     }
 }
 exports["default"] = SettingIconButton;
@@ -3439,6 +3469,7 @@ class SettingsController extends BaseComponent_1.default {
     }
     changeQuality(track) {
         this.apiPlayer.selectVariantTrack(track);
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
     handleQualityChange(event, data) {
         const { tracks } = data;
@@ -3457,6 +3488,7 @@ class SettingsController extends BaseComponent_1.default {
     }
     changePlaybackRate(value) {
         this.apiPlayer.playbackRate = value;
+        this.goToTab('default');
     }
     handleRateChange(event, data) {
         const { playbackRate } = data;
@@ -3472,7 +3504,7 @@ class SettingsController extends BaseComponent_1.default {
     handleSettingContainerClickOut(event) {
         if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
             this.state = { ...this.state, visible: false };
-            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_BLUR, null);
+            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
         }
     }
     renderDefaultTab() {
@@ -3819,15 +3851,16 @@ class VolumeContainer extends BaseComponent_1.default {
         });
     }
     handleButtonClick(event) {
-        const { apiPlayer } = this;
-        event.preventDefault();
-        event.stopPropagation();
-        const volume = apiPlayer.getVolume();
-        if (volume > 0) {
-            apiPlayer.updateVolume(0);
-            return;
-        }
-        apiPlayer.updateVolume(1);
+        // const { apiPlayer } = this;
+        // event.preventDefault();
+        // event.stopPropagation();
+        // const volume = apiPlayer.getVolume();
+        // if (volume > 0) {
+        //   apiPlayer.updateVolume(0);
+        //   return;
+        // }
+        // apiPlayer.updateVolume(1);
+        console.log('run Button volume Click');
     }
     render() {
         if (this.containerElement) {
@@ -3841,6 +3874,22 @@ class VolumeContainer extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            this.containerElement.addEventListener('mouseover', (e) => {
+                console.log('run');
+                if (this.selectVolumeRange) {
+                    this.selectVolumeRange.show();
+                }
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            this.containerElement.addEventListener('mouseout', (e) => {
+                console.log('run');
+                if (this.selectVolumeRange) {
+                    this.selectVolumeRange.hide();
+                }
                 e.preventDefault();
                 e.stopPropagation();
             });
@@ -4697,6 +4746,9 @@ exports.ids = {
     smTaskbarLiveStream: 'sm-taskbar-live-stream',
     smTimeCurrent: 'sm-time-current',
     smTimeDuration: 'sm-time-duration',
+    smProgressBar: 'sm-progress-bar',
+    smProgressThumb: 'sm-progress-thumb',
+    smProgressBarContainer: 'sm-progress-bar-container',
 };
 exports.versionDef = '4.10.0';
 var ETypePlayer;
@@ -4931,21 +4983,18 @@ const generateStyles = (props) => {
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* Internet Explorer/Edge */
       user-select: none;
-      border: 1px solid ${primaryColor};
       background: transparent;
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
       overflow: hidden;
       color: white;
       ::-webkit-scrollbar,
       *::-webkit-scrollbar {
         width: 10px;
       }
-
       ::-webkit-scrollbar-track,
       *::-webkit-scrollbar-track {
         border-radius: 8px;
@@ -4984,7 +5033,7 @@ const generateStyles = (props) => {
       align-items: center;
       justify-content: flex-start;
       box-sizing: border-box;
-      padding: 8px 32px;
+      padding: 8px 12px;
       overflow: hidden;
       animation-name: fadeInDown;
     `,
@@ -5040,7 +5089,6 @@ const generateStyles = (props) => {
       height: 100vh;
       background-color: transparent;
       pointer-events: none;
-      z-index: 99999999;
     `,
         settingsContent: (0, css_1.css) `
       min-width: 280px;
@@ -5055,6 +5103,7 @@ const generateStyles = (props) => {
       align-items: center;
       gap: 12px;
       align-self: stretch;
+      background-color: rgba(255, 255, 255, 0.04);
     `,
         settingItem: (0, css_1.css) `
       height: 48px;
@@ -5141,7 +5190,7 @@ const generateStyles = (props) => {
       width: 100%;
       // height: 20%;
       min-height: 80px;
-      padding: 8px 32px;
+      padding: 8px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -5237,9 +5286,18 @@ const generateStyles = (props) => {
       justify-content: center;
       padding-left: 8px;
     `,
+        taskbarVolumeSliderEnable: (0, css_1.css) `
+      height: 40px;
+      display: block !important;
+      width: 100%;
+      animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
+    `,
         taskbarVolumeSlider: (0, css_1.css) `
+      height: 40px;
+      display: none;
+      width: 0px;
+      animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
       -webkit-appearance: none;
-      width: 100px;
       height: 6px;
       border-radius: 16px;
       background: #ddd;
@@ -5312,7 +5370,6 @@ const generateStyles = (props) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
       overflow: hidden;
       display: none;
     `,
@@ -5381,7 +5438,6 @@ var EEVentName;
     EEVentName["ADAPTATION"] = "adaptation";
     EEVentName["RATE_CHANGE"] = "ratechange";
     EEVentName["SETTING_PANEL_VISIBLE"] = "settingPanelVisible";
-    EEVentName["SETTING_PANEL_BLUR"] = "settingPanelBlur";
     EEVentName["VARIANT_CHANGED"] = "variantchanged";
     EEVentName["ABR_STATUS_CHANGED"] = "abrstatuschanged";
     EEVentName["VOLUME_CHANGE"] = "volumechange";
@@ -5511,8 +5567,9 @@ const ControllerContainer_1 = __webpack_require__(/*! ./class/Containers/Control
 const ErrorContainer_1 = __webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts");
 const LoadingContainer_1 = __webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts");
 const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
-const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
+__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
 __webpack_require__(/*! ./index.css */ "./src/index.css");
+const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
 const SmApiPlayer_1 = __webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts");
 const classes = (0, style_1.default)();
 class SmUIControls {
