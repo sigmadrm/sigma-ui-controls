@@ -206,6 +206,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       line-height: 20px;
     `,
     buttonPlayPrimaryEnable: css`
+      animation: zoomIn;
+      animation-duration: 0.2s;
       display: flex;
       flex-direction: row;
       align-items: center;
