@@ -1,5 +1,12 @@
 
 
+## [0.0.8](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.7...v0.0.8) (2024-07-29)
+
+
+### Bug Fixes
+
+* handle click btn volume ([d613443](https://github.com/sigmadrm/sigma-ui-controls/commit/d6134436e7371f825344a228eb5514356cb9a1e3))
+
 ## [0.0.7](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.6...v0.0.7) (2024-07-29)
 
 
