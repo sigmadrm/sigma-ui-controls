@@ -36,6 +36,7 @@ export const ids = {
   smProgressBar: 'sm-progress-bar',
   smProgressThumb: 'sm-progress-thumb',
   smProgressBarContainer: 'sm-progress-bar-container',
+  smProgressBuffer: 'sm-progress-buffer',
 };
 export const versionDef = '4.10.0';
 

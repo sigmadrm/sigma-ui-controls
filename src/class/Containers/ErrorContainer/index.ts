@@ -26,7 +26,7 @@ class ErrorContainer extends BaseComponent {
   }
   show = (data) => {
     if (this.containerElement) {
-      this.containerElement.classList.add(this.classes.loadingContainerEnable);
+      this.containerElement.classList.add(this.classes.errorContainerEnable);
       const htmlString = this.generateHtml(data);
       this.containerElement.innerHTML = htmlString;
     }

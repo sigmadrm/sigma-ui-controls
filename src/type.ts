@@ -35,6 +35,7 @@ export enum EEVentName {
   VOLUME_CHANGE = 'volumechange',
   TIME_UPDATE = 'timeupdate',
   LOADED_META_DATA = 'loadedmetadata',
+  PROGRESS = 'progress',
 }
 
 export const RESOLUTION_LABEL = {
@@ -65,6 +66,7 @@ export interface SmListeners {
   [EEVentName.VOLUME_CHANGE]: (event: EEVentName.VOLUME_CHANGE, data: { [key: string]: any }) => void;
   [EEVentName.TIME_UPDATE]: (event: EEVentName.TIME_UPDATE, data: { [key: string]: any }) => void;
   [EEVentName.LOADED_META_DATA]: (event: EEVentName.LOADED_META_DATA, data: { [key: string]: any }) => void;
+  [EEVentName.PROGRESS]: (event: EEVentName.PROGRESS, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',

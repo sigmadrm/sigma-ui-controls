@@ -19,7 +19,6 @@ class LiveStream extends BaseComponent {
   registerListener(): void {
     if (this.containerElement) {
       this.containerElement.addEventListener('click', (e: MouseEvent) => {
-        console.log('run');
         e.preventDefault();
         e.stopPropagation();
       });
