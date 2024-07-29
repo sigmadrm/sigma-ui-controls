@@ -118,7 +118,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       height: 100vh;
       background-color: transparent;
       pointer-events: none;
-      z-index: 99999999;
     `,
     settingsContent: css`
       min-width: 280px;
@@ -400,7 +399,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
       overflow: hidden;
       display: none;
     `,
