@@ -1,5 +1,12 @@
 
 
+## [0.0.6](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.5...v0.0.6) (2024-07-29)
+
+
+### Bug Fixes
+
+* z-index for layout loading ([e2e7b38](https://github.com/sigmadrm/sigma-ui-controls/commit/e2e7b3895671320690a52427977a54ac9ce44045))
+
 ## [0.0.5](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.4...v0.0.5) (2024-07-29)
 
 

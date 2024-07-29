@@ -4746,6 +4746,9 @@ exports.ids = {
     smTaskbarLiveStream: 'sm-taskbar-live-stream',
     smTimeCurrent: 'sm-time-current',
     smTimeDuration: 'sm-time-duration',
+    smProgressBar: 'sm-progress-bar',
+    smProgressThumb: 'sm-progress-thumb',
+    smProgressBarContainer: 'sm-progress-bar-container',
 };
 exports.versionDef = '4.10.0';
 var ETypePlayer;
@@ -5086,7 +5089,6 @@ const generateStyles = (props) => {
       height: 100vh;
       background-color: transparent;
       pointer-events: none;
-      z-index: 99999999;
     `,
         settingsContent: (0, css_1.css) `
       min-width: 280px;
@@ -5368,7 +5370,6 @@ const generateStyles = (props) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
       overflow: hidden;
       display: none;
     `,

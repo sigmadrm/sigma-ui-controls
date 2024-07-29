@@ -33,6 +33,9 @@ export declare const ids: {
     smTaskbarLiveStream: string;
     smTimeCurrent: string;
     smTimeDuration: string;
+    smProgressBar: string;
+    smProgressThumb: string;
+    smProgressBarContainer: string;
 };
 export declare const versionDef = "4.10.0";
 export declare enum ETypePlayer {
