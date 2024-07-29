@@ -30,7 +30,6 @@ export enum EEVentName {
   ADAPTATION = 'adaptation',
   RATE_CHANGE = 'ratechange',
   SETTING_PANEL_VISIBLE = 'settingPanelVisible',
-  SETTING_PANEL_BLUR = 'settingPanelBlur',
   VARIANT_CHANGED = 'variantchanged',
   ABR_STATUS_CHANGED = 'abrstatuschanged',
   VOLUME_CHANGE = 'volumechange',
@@ -63,7 +62,6 @@ export interface SmListeners {
   [EEVentName.TRACKS_CHANGED]: (event: EEVentName.TRACKS_CHANGED, data: { tracks: Track[] }) => void;
   [EEVentName.RATE_CHANGE]: (event: EEVentName.RATE_CHANGE, data: { playbackRate: number }) => void;
   [EEVentName.SETTING_PANEL_VISIBLE]: (event: EEVentName.SETTING_PANEL_VISIBLE, data: { visible: boolean }) => void;
-  [EEVentName.SETTING_PANEL_BLUR]: (event: EEVentName.SETTING_PANEL_BLUR, data?: any) => void;
   [EEVentName.VOLUME_CHANGE]: (event: EEVentName.VOLUME_CHANGE, data: { [key: string]: any }) => void;
   [EEVentName.TIME_UPDATE]: (event: EEVentName.TIME_UPDATE, data: { [key: string]: any }) => void;
   [EEVentName.LOADED_META_DATA]: (event: EEVentName.LOADED_META_DATA, data: { [key: string]: any }) => void;
