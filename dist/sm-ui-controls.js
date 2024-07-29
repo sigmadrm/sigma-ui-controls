@@ -3556,8 +3556,14 @@ class SettingsController extends BaseComponent_1.default {
         }).join('');
         return header + body;
     }
-    getQualityLabel(track, tracks) {
+    getQualityLabel(track, tracks, ignoreSelectedTrack = false) {
         if (track.id === -1) {
+            // eslint-disable-next-line no-restricted-properties
+            const selectedTrack = tracks.find((track) => track.active);
+            if (selectedTrack && !ignoreSelectedTrack) {
+                const selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
+                return `Tự động (${selectedTrackLabel})`;
+            }
             return 'Tự dộng';
         }
         const trackHeight = track.height || 0;
@@ -3602,7 +3608,7 @@ class SettingsController extends BaseComponent_1.default {
             .map((track, index) => {
             const id = this.generateQualityItemId(index);
             const isActive = track === state.activeTrack;
-            const label = this.getQualityLabel(track, tracks);
+            const label = this.getQualityLabel(track, tracks, true);
             return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
         <div class=${classes.settingItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
         <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${label}</div>
@@ -5060,8 +5066,8 @@ const generateStyles = (props) => {
       pointer-events: none;
     `,
         settingsContent: (0, css_1.css) `
-      min-width: 280px;
-      max-width: 300px;
+      min-width: 300px;
+      max-width: 320px;
       overflow-y: auto;
     `,
         settingHeader: (0, css_1.css) `

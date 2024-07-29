@@ -1,5 +1,16 @@
 
 
+<<<<<<< HEAD
+=======
+## [0.0.9](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.7...v0.0.9) (2024-07-29)
+
+
+### Features
+
+* display selected track in default setting tab ([ef05e27](https://github.com/sigmadrm/sigma-ui-controls/commit/ef05e27680a999b681db96bb5a3d60e5239c1b09))
+* display selected track in default setting tab ([df049db](https://github.com/sigmadrm/sigma-ui-controls/commit/df049dbf8faa2252d538b71423bd8196637836b4))
+
+>>>>>>> 08444e41ab0d8bdd5a338c2ccbedb74ee37f87f3
 ## [0.0.8](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.7...v0.0.8) (2024-07-29)
 
 

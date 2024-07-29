@@ -120,8 +120,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       pointer-events: none;
     `,
     settingsContent: css`
-      min-width: 280px;
-      max-width: 300px;
+      min-width: 300px;
+      max-width: 320px;
       overflow-y: auto;
     `,
     settingHeader: css`

@@ -209,8 +209,14 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     return header + body;
   }
 
-  getQualityLabel(track: Track, tracks: Track[]) {
+  getQualityLabel(track: Track, tracks: Track[], ignoreSelectedTrack: boolean = false) {
     if (track.id === -1) {
+      // eslint-disable-next-line no-restricted-properties
+      const selectedTrack = tracks.find((track) => track.active);
+      if (selectedTrack && !ignoreSelectedTrack) {
+        const selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
+        return `Tự động (${selectedTrackLabel})`;
+      }
       return 'Tự dộng';
     }
     const trackHeight = track.height || 0;
@@ -258,7 +264,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       .map((track, index) => {
         const id = this.generateQualityItemId(index);
         const isActive = track === state.activeTrack;
-        const label = this.getQualityLabel(track, tracks);
+        const label = this.getQualityLabel(track, tracks, true);
 
         return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
         <div class=${classes.settingItemIcon}>${isActive ? checkedIcon : ''}</div>
