@@ -181,13 +181,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     settingItemIcon: css`
       width: 24px;
       height: 24px;
-      padding: 4px 0px;
       cursor: pointer;
     `,
     settingItemIconSecondary: css`
       width: 20px;
       height: 20px;
-      padding: 4px 0px;
       color: rgba(255, 255, 255, 0.64);
     `,
     settingItemTitle: css`
