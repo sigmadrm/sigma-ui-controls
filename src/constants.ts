@@ -33,6 +33,9 @@ export const ids = {
   smTaskbarLiveStream: 'sm-taskbar-live-stream',
   smTimeCurrent: 'sm-time-current',
   smTimeDuration: 'sm-time-duration',
+  smProgressBar: 'sm-progress-bar',
+  smProgressThumb: 'sm-progress-thumb',
+  smProgressBarContainer: 'sm-progress-bar-container',
 };
 export const versionDef = '4.10.0';
 
