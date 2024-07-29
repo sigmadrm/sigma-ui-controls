@@ -45,15 +45,16 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
     });
   }
   handleButtonClick(event: MouseEvent) {
-    const { apiPlayer } = this;
-    event.preventDefault();
-    event.stopPropagation();
-    const volume = apiPlayer.getVolume();
-    if (volume > 0) {
-      apiPlayer.updateVolume(0);
-      return;
-    }
-    apiPlayer.updateVolume(1);
+    // const { apiPlayer } = this;
+    // event.preventDefault();
+    // event.stopPropagation();
+    // const volume = apiPlayer.getVolume();
+    // if (volume > 0) {
+    //   apiPlayer.updateVolume(0);
+    //   return;
+    // }
+    // apiPlayer.updateVolume(1);
+    console.log('run Button volume Click');
   }
 
   render(): void {
@@ -68,6 +69,23 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   registerListener(): void {
     if (this.containerElement) {
       this.containerElement.addEventListener('click', (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      this.containerElement.addEventListener('mouseover', (e: MouseEvent) => {
+        console.log('run');
+        if (this.selectVolumeRange) {
+          this.selectVolumeRange.show();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      this.containerElement.addEventListener('mouseout', (e: MouseEvent) => {
+        console.log('run');
+        if (this.selectVolumeRange) {
+          this.selectVolumeRange.hide();
+        }
         e.preventDefault();
         e.stopPropagation();
       });

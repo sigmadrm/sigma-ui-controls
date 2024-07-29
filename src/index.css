@@ -146,3 +146,23 @@ body {
     transform: translate3d(0, 0, 0);
   }
 }
+@keyframes scaleUpHorizontalLeft {
+  from {
+    width: 0px;
+    transform-origin: left;
+  }
+  to {
+    width: 100px;
+    transform-origin: left;
+  }
+}
+@keyframes scaleDownHorizontalLeft {
+  from {
+    width: 0px;
+    transform-origin: left;
+  }
+  to {
+    width: 100px;
+    transform-origin: left;
+  }
+}

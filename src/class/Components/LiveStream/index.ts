@@ -16,7 +16,15 @@ class LiveStream extends BaseComponent {
         this.containerElement.innerHTML = `<div class="${classes.liveStreamDot}"></div><spam>Trực tiếp</span>`;
     }
   }
-  registerListener() {}
+  registerListener(): void {
+    if (this.containerElement) {
+      this.containerElement.addEventListener('click', (e: MouseEvent) => {
+        console.log('run');
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
+  }
   unregisterListener() {}
 
   hide() {

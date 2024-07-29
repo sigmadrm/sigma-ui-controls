@@ -12,21 +12,18 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* Internet Explorer/Edge */
       user-select: none;
-      border: 1px solid ${primaryColor};
       background: transparent;
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
       overflow: hidden;
       color: white;
       ::-webkit-scrollbar,
       *::-webkit-scrollbar {
         width: 10px;
       }
-
       ::-webkit-scrollbar-track,
       *::-webkit-scrollbar-track {
         border-radius: 8px;
@@ -65,7 +62,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: flex-start;
       box-sizing: border-box;
-      padding: 8px 32px;
+      padding: 8px 12px;
       overflow: hidden;
       animation-name: fadeInDown;
     `,
@@ -222,7 +219,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       width: 100%;
       // height: 20%;
       min-height: 80px;
-      padding: 8px 32px;
+      padding: 8px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -318,9 +315,18 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
       padding-left: 8px;
     `,
+    taskbarVolumeSliderEnable: css`
+      height: 40px;
+      display: block !important;
+      width: 100%;
+      animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
+    `,
     taskbarVolumeSlider: css`
+      height: 40px;
+      display: none;
+      width: 0px;
+      animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
       -webkit-appearance: none;
-      width: 100px;
       height: 6px;
       border-radius: 16px;
       background: #ddd;
