@@ -1,5 +1,12 @@
 
 
+## [0.0.7](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.6...v0.0.7) (2024-07-29)
+
+
+### Bug Fixes
+
+* change clearBuffer = false ([137e055](https://github.com/sigmadrm/sigma-ui-controls/commit/137e05534e54d9b413dd3d0652a74f8084888312))
+
 ## [0.0.6](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.5...v0.0.6) (2024-07-29)
 
 

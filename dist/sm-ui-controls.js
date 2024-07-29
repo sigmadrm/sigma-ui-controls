@@ -4385,7 +4385,7 @@ class SmApiPlayer {
         }
         else {
             this.player.configure({ abr: { enabled: false } });
-            this.player.selectVariantTrack(track, /* clearBuffer= */ true);
+            this.player.selectVariantTrack(track, /* clearBuffer= */ false);
         }
     }
     emitTracksChangeEvent() {
