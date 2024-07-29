@@ -45,16 +45,16 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
     });
   }
   handleButtonClick(event: MouseEvent) {
-    // const { apiPlayer } = this;
-    // event.preventDefault();
-    // event.stopPropagation();
-    // const volume = apiPlayer.getVolume();
-    // if (volume > 0) {
-    //   apiPlayer.updateVolume(0);
-    //   return;
-    // }
-    // apiPlayer.updateVolume(1);
-    console.log('run Button volume Click');
+    const { apiPlayer } = this;
+    event.preventDefault();
+    event.stopPropagation();
+    const volume = apiPlayer.getVolume();
+    if (volume > 0) {
+      apiPlayer.updateVolume(0);
+      return;
+    }
+    apiPlayer.updateVolume(1);
+    // console.log('run Button volume Click');
   }
 
   render(): void {

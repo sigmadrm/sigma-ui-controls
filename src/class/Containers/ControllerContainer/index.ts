@@ -18,7 +18,7 @@ class ControllerContainer extends BaseComponent {
     const { classes, videoInfo, apiPlayer } = props;
     super(props);
 
-    this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
+    // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
 
@@ -28,8 +28,12 @@ class ControllerContainer extends BaseComponent {
 
   render() {
     const { classes } = this;
+    //   const htmlContentString = `
+    //   <div class=${classes.headController} id=${ids.smHeadController}></div>
+    //   <div class=${classes.bodyController} id=${ids.smBodyController}></div>
+    //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
+    //  `;
     const htmlContentString = `
-      <div class=${classes.headController} id=${ids.smHeadController}></div>
       <div class=${classes.bodyController} id=${ids.smBodyController}></div>
       <div class=${classes.footerController} id=${ids.smFooterController}></div>
      `;

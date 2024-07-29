@@ -120,8 +120,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       pointer-events: none;
     `,
     settingsContent: css`
-      min-width: 280px;
-      max-width: 300px;
+      min-width: 300px;
+      max-width: 320px;
       overflow-y: auto;
     `,
     settingHeader: css`
@@ -206,6 +206,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       line-height: 20px;
     `,
     buttonPlayPrimaryEnable: css`
+      animation: zoomIn;
+      animation-duration: 0.2s;
       display: flex;
       flex-direction: row;
       align-items: center;

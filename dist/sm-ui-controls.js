@@ -3851,16 +3851,16 @@ class VolumeContainer extends BaseComponent_1.default {
         });
     }
     handleButtonClick(event) {
-        // const { apiPlayer } = this;
-        // event.preventDefault();
-        // event.stopPropagation();
-        // const volume = apiPlayer.getVolume();
-        // if (volume > 0) {
-        //   apiPlayer.updateVolume(0);
-        //   return;
-        // }
-        // apiPlayer.updateVolume(1);
-        console.log('run Button volume Click');
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        const volume = apiPlayer.getVolume();
+        if (volume > 0) {
+            apiPlayer.updateVolume(0);
+            return;
+        }
+        apiPlayer.updateVolume(1);
+        // console.log('run Button volume Click');
     }
     render() {
         if (this.containerElement) {
@@ -4103,40 +4103,6 @@ exports["default"] = FooterController;
 
 /***/ }),
 
-/***/ "./src/class/Containers/ControllerContainer/HeadController/index.ts":
-/*!**************************************************************************!*\
-  !*** ./src/class/Containers/ControllerContainer/HeadController/index.ts ***!
-  \**************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
-class HeadController extends BaseComponent_1.default {
-    videoInfo;
-    constructor(props) {
-        const { videoInfo, ...baseProps } = props;
-        super(baseProps);
-        this.videoInfo = videoInfo;
-        baseProps.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
-            this.render();
-        });
-    }
-    render() {
-        if (this.containerElement) {
-            const videoName = this.videoInfo?.name ?? '';
-            const { classes } = this;
-            const htmlString = `${videoName && `<p class=${classes.headControllerTitle}>${videoName}</p>`}`;
-            this.containerElement.innerHTML = htmlString;
-        }
-    }
-}
-exports["default"] = HeadController;
-
-
-/***/ }),
-
 /***/ "./src/class/Containers/ControllerContainer/index.ts":
 /*!***********************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/index.ts ***!
@@ -4145,7 +4111,6 @@ exports["default"] = HeadController;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const HeadController_1 = __webpack_require__(/*! ./HeadController */ "./src/class/Containers/ControllerContainer/HeadController/index.ts");
 const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
 const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
@@ -4158,7 +4123,7 @@ class ControllerContainer extends BaseComponent_1.default {
     constructor(props) {
         const { classes, videoInfo, apiPlayer } = props;
         super(props);
-        this.headController = new HeadController_1.default({ id: constants_1.ids.smHeadController, classes, videoInfo, apiPlayer });
+        // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
         this.bodyController = new BodyController_1.default({ id: constants_1.ids.smBodyController, classes, apiPlayer });
         this.footerController = new FooterController_1.default({ id: constants_1.ids.smFooterController, classes, apiPlayer });
         this.show = this.show.bind(this);
@@ -4166,8 +4131,12 @@ class ControllerContainer extends BaseComponent_1.default {
     }
     render() {
         const { classes } = this;
+        //   const htmlContentString = `
+        //   <div class=${classes.headController} id=${ids.smHeadController}></div>
+        //   <div class=${classes.bodyController} id=${ids.smBodyController}></div>
+        //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
+        //  `;
         const htmlContentString = `
-      <div class=${classes.headController} id=${constants_1.ids.smHeadController}></div>
       <div class=${classes.bodyController} id=${constants_1.ids.smBodyController}></div>
       <div class=${classes.footerController} id=${constants_1.ids.smFooterController}></div>
      `;
@@ -5177,6 +5146,8 @@ const generateStyles = (props) => {
       line-height: 20px;
     `,
         buttonPlayPrimaryEnable: (0, css_1.css) `
+      animation: zoomIn;
+      animation-duration: 0.2s;
       display: flex;
       flex-direction: row;
       align-items: center;
