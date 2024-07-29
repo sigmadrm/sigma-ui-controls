@@ -1,5 +1,21 @@
 
 
+## [0.0.10](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.9...v0.0.10) (2024-07-29)
+
+
+### Features
+
+* implement seek bar ([193078d](https://github.com/sigmadrm/sigma-ui-controls/commit/193078d5e168a2dff900116f641d6e2548def78d))
+
+
+
+## [0.0.8](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.9...v0.0.10) (2024-07-29)
+
+
+### Bug Fixes
+
+* handle click btn volume ([d613443](https://github.com/sigmadrm/sigma-ui-controls/commit/d6134436e7371f825344a228eb5514356cb9a1e3))
+
 <<<<<<< HEAD
 =======
 ## [0.0.9](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.7...v0.0.9) (2024-07-29)

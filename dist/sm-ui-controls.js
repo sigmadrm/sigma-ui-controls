@@ -3200,7 +3200,6 @@ class LiveStream extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.addEventListener('click', (e) => {
-                console.log('run');
                 e.preventDefault();
                 e.stopPropagation();
             });
@@ -3714,18 +3713,132 @@ exports["default"] = BodyController;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
+const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
+const services_1 = __webpack_require__(/*! ../../../../../services */ "./src/services.ts");
 class SeekBarController extends BaseComponent_1.default {
+    progressBuffer;
+    progressBar;
+    progressThumb;
     constructor(props) {
+        const { classes, apiPlayer } = props;
+        super(props);
+        this.progressBuffer = new ProgressBuffer({
+            id: constants_1.ids.smProgressBarContainer,
+            classes,
+            apiPlayer,
+        });
+        this.progressBar = new ProgressBar({
+            id: constants_1.ids.smProgressBarContainer,
+            classes,
+            apiPlayer,
+        });
+        this.progressThumb = new ProgressThumb({
+            id: constants_1.ids.smProgressBarContainer,
+            classes,
+            apiPlayer,
+        });
+    }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class="${classes.progressContainer}" id="${constants_1.ids.smProgressBarContainer}"></div>`;
+            this.containerElement.innerHTML = htmlString;
+        }
+    }
+    registerListener() {
+        const { apiPlayer } = this;
+        apiPlayer.eventemitter.on(type_1.EEVentName.PROGRESS, (e, data) => {
+            const bufferedProgress = apiPlayer.getBuffering();
+            if (this.progressBuffer) {
+                this.progressBuffer.updateSliderHighlight(bufferedProgress);
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, (e, data) => {
+            const progress = apiPlayer.getProgress();
+            if (!Number.isNaN(progress)) {
+                if (this.progressBar) {
+                    this.progressBar.updateSliderHighlight(progress);
+                }
+                if (this.progressThumb) {
+                    this.progressThumb.updateSliderHighlight(progress);
+                }
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, (e, data) => {
+            const progress = apiPlayer.getProgress();
+            if (this.progressBar) {
+                this.progressBar.updateSliderHighlight(progress);
+            }
+            const bufferedProgress = apiPlayer.getBuffering();
+            if (this.progressBuffer) {
+                this.progressBuffer.updateSliderHighlight(bufferedProgress);
+            }
+            if (this.progressThumb) {
+                this.progressThumb.updateSliderHighlight(progress);
+            }
+        });
+    }
+    unregisterListener() { }
+}
+exports["default"] = SeekBarController;
+class ProgressBuffer extends BaseComponent_1.default {
+    constructor(props) {
+        const { classes, apiPlayer } = props;
         super(props);
     }
     render() {
         if (this.containerElement) {
-            const htmlString = `<div>SeekBarController</div>`;
-            this.containerElement.innerHTML = htmlString;
+            const { classes } = this;
+            const htmlString = `<div class="${classes.progressBuffer}" id="${constants_1.ids.smProgressBuffer}"></div>`;
+            const ele = (0, services_1.createElementFromHTML)(htmlString);
+            ele && this.containerElement.appendChild(ele);
         }
     }
+    updateSliderHighlight(volume) {
+        const percentage = volume;
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBuffer);
+        inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
+    }
 }
-exports["default"] = SeekBarController;
+class ProgressBar extends BaseComponent_1.default {
+    constructor(props) {
+        const { classes, apiPlayer } = props;
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class="${classes.progressBar}" id="${constants_1.ids.smProgressBar}"></div>`;
+            const ele = (0, services_1.createElementFromHTML)(htmlString);
+            ele && this.containerElement.appendChild(ele);
+        }
+    }
+    updateSliderHighlight(volume) {
+        const percentage = volume;
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBar);
+        inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+    }
+}
+class ProgressThumb extends BaseComponent_1.default {
+    constructor(props) {
+        const { classes, apiPlayer } = props;
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `<div class="${classes.progressThumb}" id="${constants_1.ids.smProgressThumb}"></div>`;
+            const ele = (0, services_1.createElementFromHTML)(htmlString);
+            ele && this.containerElement.appendChild(ele);
+        }
+    }
+    updateSliderHighlight(volume) {
+        const percentage = volume;
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressThumb);
+        inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-thumb', `${percentage}%`);
+    }
+}
 
 
 /***/ }),
@@ -3866,7 +3979,6 @@ class VolumeContainer extends BaseComponent_1.default {
             return;
         }
         apiPlayer.updateVolume(1);
-        // console.log('run Button volume Click');
     }
     render() {
         if (this.containerElement) {
@@ -3884,7 +3996,6 @@ class VolumeContainer extends BaseComponent_1.default {
                 e.stopPropagation();
             });
             this.containerElement.addEventListener('mouseover', (e) => {
-                console.log('run');
                 if (this.selectVolumeRange) {
                     this.selectVolumeRange.show();
                 }
@@ -3892,7 +4003,6 @@ class VolumeContainer extends BaseComponent_1.default {
                 e.stopPropagation();
             });
             this.containerElement.addEventListener('mouseout', (e) => {
-                console.log('run');
                 if (this.selectVolumeRange) {
                     this.selectVolumeRange.hide();
                 }
@@ -4103,6 +4213,12 @@ class FooterController extends BaseComponent_1.default {
             this.containerElement.innerHTML = htmlString;
         }
     }
+    registerListener() {
+        this?.containerElement?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    }
 }
 exports["default"] = FooterController;
 
@@ -4218,7 +4334,7 @@ class ErrorContainer extends BaseComponent_1.default {
     }
     show = (data) => {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.loadingContainerEnable);
+            this.containerElement.classList.add(this.classes.errorContainerEnable);
             const htmlString = this.generateHtml(data);
             this.containerElement.innerHTML = htmlString;
         }
@@ -4288,7 +4404,7 @@ exports["default"] = LoadingContainer;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
+exports.convertDataEventProgress = exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
 /* eslint-disable no-restricted-properties */
 const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
@@ -4462,6 +4578,26 @@ class SmApiPlayer {
         const { player } = this;
         return player?.isLive();
     }
+    getProgress() {
+        const { video } = this;
+        if (video) {
+            console.log({ currentTime: video.currentTime, duration: video.duration });
+            return (video.currentTime / video.duration) * 100;
+        }
+        return 0;
+    }
+    getBuffering() {
+        const { video } = this;
+        if (video) {
+            if (video.buffered.length > 0) {
+                const bufferEnd = video.buffered.end(video.buffered.length - 1);
+                const bufferedProgress = (bufferEnd / video.duration) * 100;
+                return bufferedProgress;
+            }
+            return 0;
+        }
+        return 0;
+    }
     addEventListener(evtName, clb, context) {
         const { typePlayer, video, player, version } = this;
         if (typePlayer === constants_1.ETypePlayer.SHAKA) {
@@ -4528,6 +4664,14 @@ class SmApiPlayer {
                     if (video) {
                         video.addEventListener(evtName, (data) => {
                             const dataConvert = (0, exports.convertDataEventLoadedMetaData)(data);
+                            clb.call(context, dataConvert);
+                        });
+                    }
+                    break;
+                case type_1.EEVentName.PROGRESS:
+                    if (video) {
+                        video.addEventListener(evtName, (data) => {
+                            const dataConvert = (0, exports.convertDataEventProgress)(data);
                             clb.call(context, dataConvert);
                         });
                     }
@@ -4632,6 +4776,15 @@ const convertDataEventLoadedMetaData = (data) => {
     };
 };
 exports.convertDataEventLoadedMetaData = convertDataEventLoadedMetaData;
+const convertDataEventProgress = (data) => {
+    return {
+        event: type_1.EEVentName.PROGRESS,
+        data: {
+            ...data,
+        },
+    };
+};
+exports.convertDataEventProgress = convertDataEventProgress;
 
 
 /***/ }),
@@ -4724,6 +4877,7 @@ exports.ids = {
     smProgressBar: 'sm-progress-bar',
     smProgressThumb: 'sm-progress-thumb',
     smProgressBarContainer: 'sm-progress-bar-container',
+    smProgressBuffer: 'sm-progress-buffer',
 };
 exports.versionDef = '4.10.0';
 var ETypePlayer;
@@ -5020,7 +5174,11 @@ const generateStyles = (props) => {
       text-overflow: ellipsis;
     `,
         bodyController: (0, css_1.css) `
-      position: relative;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
       background: transparent;
       width: 100%;
       flex: 1;
@@ -5045,7 +5203,7 @@ const generateStyles = (props) => {
     `,
         settingsContainer: (0, css_1.css) `
       position: absolute;
-      bottom: 0;
+      bottom: 90px;
       right: 12px;
       border-radius: 8px;
       background-color: rgba(0, 0, 0, 0.64);
@@ -5053,7 +5211,7 @@ const generateStyles = (props) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
-      max-height: 100%;
+      max-height: calc(100% - 90px);
       overflow: hidden;
     `,
         settingsContainerMask: (0, css_1.css) `
@@ -5166,6 +5324,10 @@ const generateStyles = (props) => {
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
       // height: 20%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
       min-height: 80px;
       padding: 8px 12px;
       box-sizing: border-box;
@@ -5173,15 +5335,54 @@ const generateStyles = (props) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 24px;
       overflow: hidden;
     `,
         seekBarController: (0, css_1.css) `
-      background: green;
       width: 100%;
+      height: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
+    `,
+        progressContainer: (0, css_1.css) `
+      height: 8px;
+      width: 100%;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      margin-top: 10px;
+    `,
+        progressBuffer: (0, css_1.css) `
+      position: absolute;
+      width: var(--highlight-width-progress-buffer);
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+
+      border-radius: 8px;
+      z-index: 1;
+    `,
+        progressBar: (0, css_1.css) `
+      position: absolute;
+      width: var(--highlight-width-progress-bar);
+      height: 100%;
+      background-color: ${primaryColor};
+      opacity: 1;
+      z-index: 2;
+      border-radius: 5px;
+    `,
+        progressThumb: (0, css_1.css) `
+      position: absolute;
+      left: var(--highlight-width-progress-thumb);
+      margin-left: -4px;
+      height: 16px;
+      width: 16px;
+      background-color: ${primaryColor};
+      opacity: 1;
+      border-radius: 50%;
+      top: -3.5px;
+      cursor: pointer;
+      z-index: 3;
     `,
         taskbarController: (0, css_1.css) `
       width: 100%;
@@ -5264,6 +5465,7 @@ const generateStyles = (props) => {
       padding-left: 8px;
     `,
         taskbarVolumeSliderEnable: (0, css_1.css) `
+      cursor: pointer;
       height: 40px;
       display: block !important;
       width: 100%;
@@ -5363,7 +5565,7 @@ const generateStyles = (props) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 9999;
+      z-index: 1;
       overflow: hidden;
       display: none;
     `,
@@ -5420,6 +5622,7 @@ var EEVentName;
     EEVentName["VOLUME_CHANGE"] = "volumechange";
     EEVentName["TIME_UPDATE"] = "timeupdate";
     EEVentName["LOADED_META_DATA"] = "loadedmetadata";
+    EEVentName["PROGRESS"] = "progress";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 exports.RESOLUTION_LABEL = {
     AUTO: 'Auto',
@@ -5447,7 +5650,7 @@ var AccessibilityPurpose;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatTime = void 0;
+exports.hexToRgba = exports.formatTime = void 0;
 function formatTime(seconds) {
     if (seconds >= 3600) {
         // Format as HH:mm:ss
@@ -5469,6 +5672,17 @@ function formatTime(seconds) {
     }
 }
 exports.formatTime = formatTime;
+function hexToRgba(hex, alpha) {
+    // Loại bỏ ký tự # nếu có
+    hex = hex.replace(/^#/, '');
+    // Chuyển đổi giá trị HEX thành RGB
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    // Trả về màu RGBA
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+exports.hexToRgba = hexToRgba;
 
 
 /***/ })
@@ -5578,36 +5792,40 @@ class SmUIControls {
                 this.errorContainer = new ErrorContainer_1.default({ id: constants_1.ids.smError, classes, apiPlayer });
                 this.loadingContainer = new LoadingContainer_1.default({ id: constants_1.ids.smLoading, classes, apiPlayer });
                 apiPlayer.addEventListener(type_1.EEVentName.LOADED, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.LOADED, data);
+                    // console.log('addEventListener', EEVentName.LOADED, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.LOADED, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.ERROR, data);
+                    // console.log('addEventListener', EEVentName.ERROR, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.ERROR, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.PLAY, data);
+                    // console.log('addEventListener', EEVentName.PLAY, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.PLAY, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PAUSE, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.PAUSE, data);
+                    // console.log('addEventListener', EEVentName.PAUSE, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.PAUSE, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.FULL_SCREEN_CHANGE, data);
+                    // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.FULL_SCREEN_CHANGE, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.VOLUME_CHANGE, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.VOLUME_CHANGE, data);
+                    // console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.VOLUME_CHANGE, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.TIME_UPDATE, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.TIME_UPDATE, data);
+                    // console.log('addEventListener', EEVentName.TIME_UPDATE, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.TIME_UPDATE, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.LOADED_META_DATA, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.LOADED_META_DATA, data);
+                    // console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.LOADED_META_DATA, data);
+                });
+                apiPlayer.addEventListener(type_1.EEVentName.PROGRESS, (data) => {
+                    // console.log('addEventListener', EEVentName.PROGRESS, data);
+                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PROGRESS, data);
                 });
             }
         }

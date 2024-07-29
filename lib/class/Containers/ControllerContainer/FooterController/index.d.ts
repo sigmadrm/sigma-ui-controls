@@ -9,6 +9,7 @@ declare class FooterController extends BaseComponent {
     private taskbarController;
     constructor(props: IConstructorProps);
     render(): void;
+    registerListener(): void;
 }
 export default FooterController;
 //# sourceMappingURL=index.d.ts.map

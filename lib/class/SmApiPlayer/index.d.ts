@@ -34,6 +34,8 @@ export default class SmApiPlayer {
     getDuration(): number;
     getCurrentTime(): number;
     isLive(): any;
+    getProgress(): number;
+    getBuffering(): number;
     addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context): void;
     removeEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context): void;
     destroy(): void;
@@ -70,6 +72,10 @@ export declare const convertDataEventFullScreenChange: (data: any) => {
     data: any;
 };
 export declare const convertDataEventLoadedMetaData: (data: any) => {
+    event: EEVentName;
+    data: any;
+};
+export declare const convertDataEventProgress: (data: any) => {
     event: EEVentName;
     data: any;
 };

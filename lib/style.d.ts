@@ -23,6 +23,10 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     buttonPlayPrimaryEnable: string;
     footerController: string;
     seekBarController: string;
+    progressContainer: string;
+    progressBuffer: string;
+    progressBar: string;
+    progressThumb: string;
     taskbarController: string;
     taskbarGroup: string;
     taskbarGroupBtn: string;

@@ -36,6 +36,7 @@ export declare const ids: {
     smProgressBar: string;
     smProgressThumb: string;
     smProgressBarContainer: string;
+    smProgressBuffer: string;
 };
 export declare const versionDef = "4.10.0";
 export declare enum ETypePlayer {
