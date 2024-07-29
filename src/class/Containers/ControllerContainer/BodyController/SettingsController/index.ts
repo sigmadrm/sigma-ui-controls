@@ -110,6 +110,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
 
   changeQuality(track: Track) {
     this.apiPlayer.selectVariantTrack(track);
+    this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
   }
 
   handleQualityChange(event, data) {
@@ -131,6 +132,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
 
   changePlaybackRate(value: number) {
     this.apiPlayer.playbackRate = value;
+    this.goToTab('default');
   }
 
   handleRateChange(event, data) {
@@ -149,7 +151,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   handleSettingContainerClickOut(event) {
     if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
       this.state = { ...this.state, visible: false };
-      this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_BLUR, null);
+      this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
   }
 

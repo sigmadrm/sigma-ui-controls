@@ -9,7 +9,7 @@ type TSettingIconButtonState = {
 class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   constructor(props: IConstructorProps) {
     super(props, { visible: false });
-    this.handleSettingPanelBlur = this.handleSettingPanelBlur.bind(this);
+    this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
   }
 
   render() {
@@ -25,23 +25,23 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
-    this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
   unregisterListener() {
     if (!this.containerElement) return;
-    this.apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_BLUR, this.handleSettingPanelBlur, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
 
-  handleSettingPanelBlur() {
-    this.state = { ...this.state, visible: false };
+  handleSettingPanelVisible(event, data) {
+    const { visible } = data;
+    this.state = { ...this.state, visible };
   }
 
   handleContainerClick(event: MouseEvent) {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    this.state = { ...this.state, visible: !this.state.visible };
-    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: this.state.visible });
+    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: !this.state.visible });
   }
 }
 
