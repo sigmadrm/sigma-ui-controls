@@ -82,7 +82,7 @@ export default class SmApiPlayer {
       this.player.configure({ abr: { enabled: true } });
     } else {
       this.player.configure({ abr: { enabled: false } });
-      this.player.selectVariantTrack(track, /* clearBuffer= */ true);
+      this.player.selectVariantTrack(track, /* clearBuffer= */ false);
     }
   }
 
