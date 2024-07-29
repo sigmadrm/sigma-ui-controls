@@ -136,6 +136,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       gap: 12px;
       align-self: stretch;
+      background-color: rgba(255, 255, 255, 0.04);
     `,
     settingItem: css`
       height: 48px;
