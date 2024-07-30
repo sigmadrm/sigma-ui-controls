@@ -125,6 +125,9 @@ class TaskbarController extends BaseComponent {
     if (this.buttonPlaySecondary) {
       this.buttonPlaySecondary.show();
     }
+    if (this.buttonReplaySecondary) {
+      this.buttonReplaySecondary.hide();
+    }
   }
   handleEventLoaded() {
     if (this.buttonPlaySecondary) {
@@ -136,6 +139,7 @@ class TaskbarController extends BaseComponent {
     if (this.buttonReplaySecondary) {
       this.buttonReplaySecondary.hide();
     }
+
     const isLive = this.apiPlayer.isLive();
     if (isLive) {
       if (this.liveStream) {
