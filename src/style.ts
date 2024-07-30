@@ -198,6 +198,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       line-height: 20px;
     `,
     buttonPrimary: css`
+      color: white;
+
       background: rgba(0, 0, 0, 0.48);
       backdrop-filter: blur(25px);
       border-radius: 50%;
@@ -213,7 +215,8 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     buttonPrimaryEnable: css`
       animation: zoomIn;
       animation-duration: 0.2s;
-      display: flex;
+      display: block;
+      // display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
@@ -315,6 +318,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     taskbarGroupBtnEnable: css`
       display: flex;
+      display: block;
       align-items: center;
       justify-content: center;
       cursor: pointer;
