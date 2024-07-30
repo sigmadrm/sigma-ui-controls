@@ -4352,6 +4352,9 @@ class TaskbarController extends BaseComponent_1.default {
         if (this.buttonPlaySecondary) {
             this.buttonPlaySecondary.hide();
         }
+        if (this.buttonReplaySecondary) {
+            this.buttonReplaySecondary.hide();
+        }
     }
     handleEventPause() {
         if (this.buttonPauseSecondary) {
@@ -4359,6 +4362,9 @@ class TaskbarController extends BaseComponent_1.default {
         }
         if (this.buttonPlaySecondary) {
             this.buttonPlaySecondary.show();
+        }
+        if (this.buttonReplaySecondary) {
+            this.buttonReplaySecondary.hide();
         }
     }
     handleEventLoaded() {

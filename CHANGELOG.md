@@ -1,5 +1,13 @@
 
 
+## [0.0.13](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.12...v0.0.13) (2024-07-30)
+
+
+### Bug Fixes
+
+* disable iocn replay when pause ([e909134](https://github.com/sigmadrm/sigma-ui-controls/commit/e9091349c77ede1a7cdacb859996a56e6c097a67))
+* disable iocn replay when pause ([4f5dda0](https://github.com/sigmadrm/sigma-ui-controls/commit/4f5dda0121c61c9dbba841a0f5e8f54eb4719f1a))
+
 ## [0.0.12](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.11...v0.0.12) (2024-07-30)
 
 
