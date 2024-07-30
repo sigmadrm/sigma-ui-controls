@@ -2973,7 +2973,7 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        // this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
     }
     unregisterListener() {
         // FIXME: this function not working?
@@ -2983,8 +2983,8 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (!apiPlayer.isPlay()) {
-            apiPlayer.play();
+        if (apiPlayer.isPlay()) {
+            apiPlayer.pause();
         }
     }
     hide() {
@@ -3715,26 +3715,26 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
-const services_1 = __webpack_require__(/*! ../../../../../services */ "./src/services.ts");
 class SeekBarController extends BaseComponent_1.default {
     progressBuffer;
     progressBar;
     progressThumb;
+    timeoutId;
     constructor(props) {
         const { classes, apiPlayer } = props;
         super(props);
         this.progressBuffer = new ProgressBuffer({
-            id: constants_1.ids.smProgressBarContainer,
+            id: constants_1.ids.smProgressBuffer,
             classes,
             apiPlayer,
         });
         this.progressBar = new ProgressBar({
-            id: constants_1.ids.smProgressBarContainer,
+            id: constants_1.ids.smProgressBar,
             classes,
             apiPlayer,
         });
         this.progressThumb = new ProgressThumb({
-            id: constants_1.ids.smProgressBarContainer,
+            id: constants_1.ids.smProgressThumb,
             classes,
             apiPlayer,
         });
@@ -3742,8 +3742,53 @@ class SeekBarController extends BaseComponent_1.default {
     render() {
         if (this.containerElement) {
             const { classes } = this;
-            const htmlString = `<div class="${classes.progressContainer}" id="${constants_1.ids.smProgressBarContainer}"></div>`;
+            const htmlString = `
+        <div class="${classes.progressContainer}" id="${constants_1.ids.smProgressBarContainer}">
+          <div class="${classes.progressBuffer}" id="${constants_1.ids.smProgressBuffer}"></div>
+          <div class="${classes.progressBar}" id="${constants_1.ids.smProgressBar}"></div>
+          <div class="${classes.progressThumb}" id="${constants_1.ids.smProgressThumb}"></div>
+        </div>`;
             this.containerElement.innerHTML = htmlString;
+            const progressThumbContainer = document.getElementById(constants_1.ids.smProgressThumb);
+            const progressBarbContainer = document.getElementById(constants_1.ids.smProgressBar);
+            const progressBufferContainer = document.getElementById(constants_1.ids.smProgressBuffer);
+            // Xử lý kéo thanh tiến trình
+            if (progressThumbContainer && progressBarbContainer) {
+                progressThumbContainer.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
+                    e.stopPropagation();
+                    // Hàm cập nhật thanh tiến trình và video.currentTime
+                    const onMouseMove = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (this.apiPlayer.isPlay()) {
+                            this.apiPlayer.pause();
+                        }
+                        const rect = progressBarbContainer.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+                        const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+                        if (percentage >= 0 && percentage <= 100) {
+                            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                            progressThumbContainer.style.setProperty('--highlight-width-progress-thumb', `${percentage}%`);
+                            // Xóa timeout cũ nếu có
+                            if (this.timeoutId) {
+                                clearTimeout(this.timeoutId);
+                            }
+                            // Đặt timeout để cập nhật video.currentTime sau 300ms
+                            this.timeoutId = self.setTimeout(() => {
+                                this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                                this.apiPlayer.play();
+                            }, 300);
+                        }
+                    };
+                    // Thêm các sự kiện mousemove và mouseup
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', () => {
+                        document.removeEventListener('mousemove', onMouseMove);
+                    }, { once: true });
+                });
+            }
         }
     }
     registerListener() {
@@ -3787,18 +3832,15 @@ class ProgressBuffer extends BaseComponent_1.default {
         const { classes, apiPlayer } = props;
         super(props);
     }
-    render() {
-        if (this.containerElement) {
-            const { classes } = this;
-            const htmlString = `<div class="${classes.progressBuffer}" id="${constants_1.ids.smProgressBuffer}"></div>`;
-            const ele = (0, services_1.createElementFromHTML)(htmlString);
-            ele && this.containerElement.appendChild(ele);
-        }
-    }
+    render() { }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBuffer);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
+    }
+    getElementContainer() {
+        const containerElement = this.containerElement;
+        return containerElement;
     }
 }
 class ProgressBar extends BaseComponent_1.default {
@@ -3806,18 +3848,15 @@ class ProgressBar extends BaseComponent_1.default {
         const { classes, apiPlayer } = props;
         super(props);
     }
-    render() {
-        if (this.containerElement) {
-            const { classes } = this;
-            const htmlString = `<div class="${classes.progressBar}" id="${constants_1.ids.smProgressBar}"></div>`;
-            const ele = (0, services_1.createElementFromHTML)(htmlString);
-            ele && this.containerElement.appendChild(ele);
-        }
-    }
+    render() { }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBar);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+    }
+    getElementContainer() {
+        const containerElement = this.containerElement;
+        return containerElement;
     }
 }
 class ProgressThumb extends BaseComponent_1.default {
@@ -3825,18 +3864,15 @@ class ProgressThumb extends BaseComponent_1.default {
         const { classes, apiPlayer } = props;
         super(props);
     }
-    render() {
-        if (this.containerElement) {
-            const { classes } = this;
-            const htmlString = `<div class="${classes.progressThumb}" id="${constants_1.ids.smProgressThumb}"></div>`;
-            const ele = (0, services_1.createElementFromHTML)(htmlString);
-            ele && this.containerElement.appendChild(ele);
-        }
-    }
+    render() { }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressThumb);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-thumb', `${percentage}%`);
+    }
+    getElementContainer() {
+        const containerElement = this.containerElement;
+        return containerElement;
     }
 }
 
@@ -4581,7 +4617,6 @@ class SmApiPlayer {
     getProgress() {
         const { video } = this;
         if (video) {
-            console.log({ currentTime: video.currentTime, duration: video.duration });
             return (video.currentTime / video.duration) * 100;
         }
         return 0;
@@ -4597,6 +4632,12 @@ class SmApiPlayer {
             return 0;
         }
         return 0;
+    }
+    setCurrentTime(time) {
+        const { video } = this;
+        if (video) {
+            video.currentTime = time;
+        }
     }
     addEventListener(evtName, clb, context) {
         const { typePlayer, video, player, version } = this;
@@ -5335,7 +5376,7 @@ const generateStyles = (props) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 16px;
       overflow: hidden;
     `,
         seekBarController: (0, css_1.css) `
@@ -5358,7 +5399,6 @@ const generateStyles = (props) => {
       width: var(--highlight-width-progress-buffer);
       height: 100%;
       background-color: rgba(255, 255, 255, 0.5);
-
       border-radius: 8px;
       z-index: 1;
     `,
@@ -5368,7 +5408,7 @@ const generateStyles = (props) => {
       height: 100%;
       background-color: ${primaryColor};
       opacity: 1;
-      z-index: 2;
+      z-index: 1;
       border-radius: 5px;
     `,
         progressThumb: (0, css_1.css) `
@@ -5382,7 +5422,7 @@ const generateStyles = (props) => {
       border-radius: 50%;
       top: -3.5px;
       cursor: pointer;
-      z-index: 3;
+      z-index: 1;
     `,
         taskbarController: (0, css_1.css) `
       width: 100%;

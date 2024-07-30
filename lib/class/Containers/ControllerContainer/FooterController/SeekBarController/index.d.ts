@@ -6,6 +6,7 @@ declare class SeekBarController extends BaseComponent {
     private progressBuffer;
     private progressBar;
     private progressThumb;
+    private timeoutId;
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;

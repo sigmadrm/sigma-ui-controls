@@ -36,6 +36,7 @@ export default class SmApiPlayer {
     isLive(): any;
     getProgress(): number;
     getBuffering(): number;
+    setCurrentTime(time: number): void;
     addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context): void;
     removeEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context): void;
     destroy(): void;

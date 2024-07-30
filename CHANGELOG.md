@@ -1,5 +1,12 @@
 
 
+## [0.0.11](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.10...v0.0.11) (2024-07-30)
+
+
+### Features
+
+* handle event mousedown seek bar ([7d9141e](https://github.com/sigmadrm/sigma-ui-controls/commit/7d9141ea7125143664a35f5e0910c411ede8b20f))
+
 ## [0.0.10](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.9...v0.0.10) (2024-07-29)
 
 
