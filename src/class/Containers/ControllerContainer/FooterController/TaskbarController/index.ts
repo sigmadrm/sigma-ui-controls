@@ -114,6 +114,9 @@ class TaskbarController extends BaseComponent {
     if (this.buttonPlaySecondary) {
       this.buttonPlaySecondary.hide();
     }
+    if (this.buttonReplaySecondary) {
+      this.buttonReplaySecondary.hide();
+    }
   }
   handleEventPause() {
     if (this.buttonPauseSecondary) {
