@@ -13,7 +13,7 @@ class ButtonPauseSecondary extends BaseComponent {
     }
   }
   registerListener() {
-    // this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
   }
   unregisterListener() {
     // FIXME: this function not working?
@@ -23,8 +23,9 @@ class ButtonPauseSecondary extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (!apiPlayer.isPlay()) {
-      apiPlayer.play();
+
+    if (apiPlayer.isPlay()) {
+      apiPlayer.pause();
     }
   }
 

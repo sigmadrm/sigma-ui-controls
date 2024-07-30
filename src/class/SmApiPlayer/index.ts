@@ -98,6 +98,7 @@ export default class SmApiPlayer {
 
   play() {
     const { video } = this;
+
     return video?.play();
   }
   pause() {
@@ -193,7 +194,6 @@ export default class SmApiPlayer {
   getProgress() {
     const { video } = this;
     if (video) {
-      console.log({ currentTime: video.currentTime, duration: video.duration });
       return (video.currentTime / video.duration) * 100;
     }
     return 0;
@@ -209,6 +209,12 @@ export default class SmApiPlayer {
       return 0;
     }
     return 0;
+  }
+  setCurrentTime(time: number) {
+    const { video } = this;
+    if (video) {
+      video.currentTime = time;
+    }
   }
 
   addEventListener<Context = undefined>(evtName: EEVentName, clb: (data: any) => any, context?: Context) {

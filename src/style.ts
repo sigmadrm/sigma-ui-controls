@@ -235,7 +235,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 16px;
       overflow: hidden;
     `,
     seekBarController: css`
@@ -258,7 +258,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       width: var(--highlight-width-progress-buffer);
       height: 100%;
       background-color: rgba(255, 255, 255, 0.5);
-
       border-radius: 8px;
       z-index: 1;
     `,
@@ -268,7 +267,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       height: 100%;
       background-color: ${primaryColor};
       opacity: 1;
-      z-index: 2;
+      z-index: 1;
       border-radius: 5px;
     `,
     progressThumb: css`
@@ -282,7 +281,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       border-radius: 50%;
       top: -3.5px;
       cursor: pointer;
-      z-index: 3;
+      z-index: 1;
     `,
 
     taskbarController: css`
