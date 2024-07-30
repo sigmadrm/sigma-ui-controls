@@ -1,17 +1,15 @@
-import { playIcon } from '../../../icons';
+import { replyIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonPlayPrimary extends BaseComponent {
+class ButtonReplyPrimary extends BaseComponent {
   constructor(props: IConstructorProps) {
     super(props);
   }
-
   render() {
     if (this.containerElement) {
-      this.containerElement.innerHTML = playIcon;
-      this.containerElement.classList.add(this.classes.buttonPrimaryEnable);
+      this.containerElement.innerHTML = replyIcon;
     }
   }
   registerListener() {
@@ -33,9 +31,8 @@ class ButtonPlayPrimary extends BaseComponent {
   handleContainerClick(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (!this.apiPlayer.isPlay()) {
-      this.apiPlayer.play();
-    }
+    this.apiPlayer.setCurrentTime(0);
+    this.apiPlayer.play();
   }
 
   hide() {
@@ -50,4 +47,4 @@ class ButtonPlayPrimary extends BaseComponent {
   }
 }
 
-export default ButtonPlayPrimary;
+export default ButtonReplyPrimary;

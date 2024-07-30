@@ -19,7 +19,6 @@ export const ids = {
   smButtonPlaySecondary: 'sm-button-play-secondary',
   smButtonPauseSecondary: 'sm-button-pause-secondary',
   smButtonForward: 'sm-button-forward',
-  smButtonReply: 'sm-button-reply',
   smButtonExitFullScreen: 'sm-button-exit-full-screen',
   smButtonVolume: 'sm-button-volume',
   smButtonMute: 'sm-button-mute',
@@ -37,6 +36,8 @@ export const ids = {
   smProgressThumb: 'sm-progress-thumb',
   smProgressBarContainer: 'sm-progress-bar-container',
   smProgressBuffer: 'sm-progress-buffer',
+  smButtonReplaySecondary: 'sm-button-replay-secondary',
+  smButtonReplayPrimary: 'sm-button-replay-primary',
 };
 export const versionDef = '4.10.0';
 

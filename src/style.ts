@@ -88,19 +88,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
     `,
-    buttonPlayPrimary: css`
-      background: rgba(0, 0, 0, 0.48);
-      backdrop-filter: blur(25px);
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      cursor: pointer;
-      color: white;
-      display: none;
-      padding: 8px;
-      box-sizing: border-box;
-      cursor: pointer;
-    `,
+
     settingsContainer: css`
       position: absolute;
       bottom: 90px;
@@ -209,7 +197,20 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       font-weight: 400;
       line-height: 20px;
     `,
-    buttonPlayPrimaryEnable: css`
+    buttonPrimary: css`
+      background: rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(25px);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      color: white;
+      display: none;
+      padding: 8px;
+      box-sizing: border-box;
+      cursor: pointer;
+    `,
+    buttonPrimaryEnable: css`
       animation: zoomIn;
       animation-duration: 0.2s;
       display: flex;

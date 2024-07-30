@@ -83,6 +83,10 @@ class SmUIControls {
           // console.log('addEventListener', EEVentName.PROGRESS, data);
           apiPlayer.eventemitter.trigger(EEVentName.PROGRESS, data);
         });
+        apiPlayer.addEventListener(EEVentName.ENDED, (data: any) => {
+          console.log('addEventListener', EEVentName.ENDED, data);
+          apiPlayer.eventemitter.trigger(EEVentName.ENDED, data);
+        });
       }
     }
   }

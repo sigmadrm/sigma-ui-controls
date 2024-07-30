@@ -3,7 +3,7 @@ import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonReply extends BaseComponent {
+class ButtonReplySecondary extends BaseComponent {
   constructor(props: IConstructorProps) {
     super(props);
   }
@@ -11,21 +11,21 @@ class ButtonReply extends BaseComponent {
   render() {
     if (this.containerElement) {
       this.containerElement.innerHTML = replyIcon;
-      this.containerElement.classList.add([this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtn].join(' '));
     }
   }
   registerListener() {
-    // if (!this.containerElement) return;
-    // this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    if (this.containerElement) {
+      this.containerElement.addEventListener('click', (event: MouseEvent) => {
+        this.handleContainerClick(event);
+      });
+    }
   }
   unregisterListener() {}
   handleContainerClick(event: MouseEvent) {
-    const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (!apiPlayer.isPlay()) {
-      apiPlayer.play();
-    }
+    this.apiPlayer.setCurrentTime(0);
+    this.apiPlayer.play();
   }
 
   hide() {
@@ -40,4 +40,4 @@ class ButtonReply extends BaseComponent {
   }
 }
 
-export default ButtonReply;
+export default ButtonReplySecondary;

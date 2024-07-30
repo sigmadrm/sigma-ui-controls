@@ -68,26 +68,49 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   registerListener(): void {
     if (this.containerElement) {
       this.containerElement.addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        this.handelEventClick(e);
       });
 
       this.containerElement.addEventListener('mouseover', (e: MouseEvent) => {
-        if (this.selectVolumeRange) {
-          this.selectVolumeRange.show();
-        }
-        e.preventDefault();
-        e.stopPropagation();
+        this.handelEventMouseover(e);
       });
       this.containerElement.addEventListener('mouseout', (e: MouseEvent) => {
-        if (this.selectVolumeRange) {
-          this.selectVolumeRange.hide();
-        }
-        e.preventDefault();
-        e.stopPropagation();
+        this.handelEventMouseout(e);
       });
     }
   }
-  unregisterListener(): void {}
+  unregisterListener(): void {
+    if (this.containerElement) {
+      this.containerElement.removeEventListener('click', (e: MouseEvent) => {
+        this.handelEventClick(e);
+      });
+
+      this.containerElement.removeEventListener('mouseover', (e: MouseEvent) => {
+        this.handelEventMouseover(e);
+      });
+      this.containerElement.removeEventListener('mouseout', (e: MouseEvent) => {
+        this.handelEventMouseout(e);
+      });
+    }
+  }
+
+  handelEventClick(e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  handelEventMouseover(e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (this.selectVolumeRange) {
+      this.selectVolumeRange.show();
+    }
+  }
+  handelEventMouseout(e: MouseEvent) {
+    e.stopPropagation();
+    if (this.selectVolumeRange) {
+      this.selectVolumeRange.hide();
+    }
+    e.preventDefault();
+  }
 }
 export default VolumeContainer;

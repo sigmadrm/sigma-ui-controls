@@ -24,17 +24,6 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
       classes,
       apiPlayer,
     });
-
-    apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, () => {
-      if (this.currentTime) {
-        this.currentTime.render();
-      }
-    });
-    apiPlayer.eventemitter.on(EEVentName.LOADED_META_DATA, (e, data) => {
-      if (this.timeDuration) {
-        this.timeDuration.render();
-      }
-    });
   }
 
   render(): void {
@@ -50,12 +39,38 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
   registerListener(): void {
     if (this.containerElement) {
       this.containerElement.addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        this.handleEventClick(e);
       });
     }
+    this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
   }
-  unregisterListener(): void {}
+  unregisterListener(): void {
+    if (this.containerElement) {
+      this.containerElement.removeEventListener('click', (e: MouseEvent) => {
+        this.handleEventClick(e);
+      });
+    }
+    this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
+  }
+  handleEventClick(event: MouseEvent) {
+    if (this.currentTime) {
+      this.currentTime.render();
+    }
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  handleEventTimeUpdate() {
+    if (this.currentTime) {
+      this.currentTime.render();
+    }
+  }
+  handleEventLoadMetaData() {
+    if (this.timeDuration) {
+      this.timeDuration.render();
+    }
+  }
   hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.taskbarTimeBarContainer;

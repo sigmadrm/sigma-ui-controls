@@ -29,7 +29,6 @@ export default class SmApiPlayer {
     player.addEventListener('variantchanged', this.emitTracksChangeEvent);
     player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
     player.addEventListener('trackschanged', this.emitTracksChangeEvent);
-
     this.video?.addEventListener('ratechange', this.emitRateChange);
   }
 
@@ -295,6 +294,14 @@ export default class SmApiPlayer {
             });
           }
           break;
+        case EEVentName.ENDED:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventEnded(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
         default:
           break;
       }
@@ -395,6 +402,14 @@ export const convertDataEventLoadedMetaData = (data: any) => {
 export const convertDataEventProgress = (data: any) => {
   return {
     event: EEVentName.PROGRESS,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventEnded = (data: any) => {
+  return {
+    event: EEVentName.ENDED,
     data: {
       ...data,
     },

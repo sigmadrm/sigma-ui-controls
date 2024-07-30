@@ -22,7 +22,9 @@ class ButtonVolume extends BaseComponent {
   registerListener() {
     this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
   }
-  unregisterListener() {}
+  unregisterListener() {
+    this.containerElement?.removeEventListener('click', (event) => this.handleButtonClick(event));
+  }
 
   hide() {
     if (this.containerElement) {

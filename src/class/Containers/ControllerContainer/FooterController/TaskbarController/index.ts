@@ -9,6 +9,7 @@ import SettingIconButton from '../../../../Components/SettingIconButton';
 import VolumeContainer from './VolumeContainer';
 import TimeBarContainer from './TimeBarContainer';
 import LiveStream from '../../../../Components/LiveStream';
+import ButtonReplySecondary from '../../../../Components/ButtonReplySecondary';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
@@ -16,6 +17,7 @@ class TaskbarController extends BaseComponent {
   private buttonFullScreen: ButtonFullScreen | undefined;
   private buttonPlaySecondary: ButtonPlaySecondary | undefined;
   private buttonPauseSecondary: ButtonPauseSecondary | undefined;
+  private buttonReplaySecondary: ButtonReplySecondary | undefined;
   private volumeContainer: VolumeContainer | undefined;
   private buttonExitFullScreen: ButtonExitFullScreen | undefined;
   private settingIconButton: SettingIconButton;
@@ -50,7 +52,6 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
-
     this.volumeContainer = new VolumeContainer({
       id: ids.smVolumeContainer,
       classes,
@@ -66,65 +67,10 @@ class TaskbarController extends BaseComponent {
       classes,
       apiPlayer,
     });
-    apiPlayer.eventemitter.on(EEVentName.PLAY, () => {
-      if (this.buttonPauseSecondary) {
-        this.buttonPauseSecondary.show();
-      }
-      if (this.buttonPlaySecondary) {
-        this.buttonPlaySecondary.hide();
-      }
-    });
-    apiPlayer.eventemitter.on(EEVentName.PAUSE, () => {
-      if (this.buttonPauseSecondary) {
-        this.buttonPauseSecondary.hide();
-      }
-      if (this.buttonPlaySecondary) {
-        this.buttonPlaySecondary.show();
-      }
-    });
-    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
-      // this.show();
-      if (this.buttonPlaySecondary) {
-        this.buttonPlaySecondary.show();
-      }
-      if (this.buttonPauseSecondary) {
-        this.buttonPauseSecondary.hide();
-      }
-    });
-    apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, () => {
-      if (this.apiPlayer.isFullScreen()) {
-        if (this.buttonExitFullScreen) {
-          this.buttonExitFullScreen.show();
-        }
-        if (this.buttonFullScreen) {
-          this.buttonFullScreen.hide();
-        }
-      } else {
-        if (this.buttonExitFullScreen) {
-          this.buttonExitFullScreen.hide();
-        }
-        if (this.buttonFullScreen) {
-          this.buttonFullScreen.show();
-        }
-      }
-    });
-    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
-      const isLive = this.apiPlayer.isLive();
-      if (isLive) {
-        if (this.liveStream) {
-          this.liveStream.show();
-        }
-        if (this.timeBarContainer) {
-          this.timeBarContainer.hide();
-        }
-      } else {
-        if (this.liveStream) {
-          this.liveStream.hide();
-        }
-        if (this.timeBarContainer) {
-          this.timeBarContainer.show();
-        }
-      }
+    this.buttonReplaySecondary = new ButtonReplySecondary({
+      id: ids.smButtonReplaySecondary,
+      classes,
+      apiPlayer,
     });
   }
 
@@ -134,6 +80,7 @@ class TaskbarController extends BaseComponent {
       const htmlString = `<div class=${classes.taskbarGroup}>
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPlaySecondary}></div>
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
+      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonReplaySecondary}></div>
       <div class=${classes.taskbarVolumeContainer} id=${ids.smVolumeContainer}></div>
      <div class=${classes.taskbarTimeBarContainer} id=${ids.smTimeBarContainer}></div>
      <div class=${classes.taskbarLiveStream} id=${ids.smTaskbarLiveStream}></div>
@@ -144,6 +91,91 @@ class TaskbarController extends BaseComponent {
       <div class=${classes.taskbarGroupBtn} id=${ids.smButtonExitFullScreen}></div>
   </div>`;
       this.containerElement.innerHTML = htmlString;
+    }
+  }
+  registerListener() {
+    this.apiPlayer.eventemitter.on(EEVentName.PLAY, this.handleEventPlay, this);
+    this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEventLoaded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
+    this.apiPlayer.eventemitter.on(EEVentName.ENDED, this.handleEventEnded, this);
+  }
+  unregisterListener() {
+    this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
+    this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEventLoaded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventFullScreen, this);
+  }
+  handleEventPlay() {
+    if (this.buttonPauseSecondary) {
+      this.buttonPauseSecondary.show();
+    }
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.hide();
+    }
+  }
+  handleEventPause() {
+    if (this.buttonPauseSecondary) {
+      this.buttonPauseSecondary.hide();
+    }
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.show();
+    }
+  }
+  handleEventLoaded() {
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.show();
+    }
+    if (this.buttonPauseSecondary) {
+      this.buttonPauseSecondary.hide();
+    }
+    if (this.buttonReplaySecondary) {
+      this.buttonReplaySecondary.hide();
+    }
+    const isLive = this.apiPlayer.isLive();
+    if (isLive) {
+      if (this.liveStream) {
+        this.liveStream.show();
+      }
+      if (this.timeBarContainer) {
+        this.timeBarContainer.hide();
+      }
+    } else {
+      if (this.liveStream) {
+        this.liveStream.hide();
+      }
+      if (this.timeBarContainer) {
+        this.timeBarContainer.show();
+      }
+    }
+  }
+  handleEventFullScreen() {
+    if (this.apiPlayer.isFullScreen()) {
+      if (this.buttonExitFullScreen) {
+        this.buttonExitFullScreen.show();
+      }
+      if (this.buttonFullScreen) {
+        this.buttonFullScreen.hide();
+      }
+    } else {
+      if (this.buttonExitFullScreen) {
+        this.buttonExitFullScreen.hide();
+      }
+      if (this.buttonFullScreen) {
+        this.buttonFullScreen.show();
+      }
+    }
+  }
+  handleEventEnded() {
+    if (this.buttonPauseSecondary) {
+      this.buttonPauseSecondary.hide();
+    }
+    if (this.buttonPlaySecondary) {
+      this.buttonPlaySecondary.hide();
+    }
+    if (this.buttonReplaySecondary) {
+      this.buttonReplaySecondary.show();
     }
   }
 }
