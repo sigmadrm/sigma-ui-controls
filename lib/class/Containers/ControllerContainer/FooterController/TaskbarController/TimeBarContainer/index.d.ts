@@ -9,6 +9,9 @@ declare class TimeBarContainer extends BaseComponent<IConstructorProps> {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    handleEventClick(event: MouseEvent): void;
+    handleEventTimeUpdate(): void;
+    handleEventLoadMetaData(): void;
     hide(): void;
     show(): void;
 }

@@ -32,7 +32,8 @@ export declare enum EEVentName {
     VOLUME_CHANGE = "volumechange",
     TIME_UPDATE = "timeupdate",
     LOADED_META_DATA = "loadedmetadata",
-    PROGRESS = "progress"
+    PROGRESS = "progress",
+    ENDED = "ended"
 }
 export declare const RESOLUTION_LABEL: {
     AUTO: string;
@@ -84,6 +85,9 @@ export interface SmListeners {
         [key: string]: any;
     }) => void;
     [EEVentName.PROGRESS]: (event: EEVentName.PROGRESS, data: {
+        [key: string]: any;
+    }) => void;
+    [EEVentName.ENDED]: (event: EEVentName.ENDED, data: {
         [key: string]: any;
     }) => void;
 }

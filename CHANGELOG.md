@@ -1,5 +1,17 @@
 
 
+## [0.0.12](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.11...v0.0.12) (2024-07-30)
+
+
+### Bug Fixes
+
+* show icon button  in safari ([e4a8788](https://github.com/sigmadrm/sigma-ui-controls/commit/e4a87885cbedc2cda817c1bcbe3c6386b279a006))
+
+
+### Features
+
+* implement button replay ([35e5638](https://github.com/sigmadrm/sigma-ui-controls/commit/35e5638f10bd17c287ee704b8851fe28e9d26f96))
+
 ## [0.0.11](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.10...v0.0.11) (2024-07-30)
 
 

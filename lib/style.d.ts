@@ -6,7 +6,6 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     headController: string;
     headControllerTitle: string;
     bodyController: string;
-    buttonPlayPrimary: string;
     settingsContainer: string;
     settingsContainerMask: string;
     settingsContent: string;
@@ -20,7 +19,8 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     settingItemIconSecondary: string;
     settingItemTitle: string;
     settingItemValue: string;
-    buttonPlayPrimaryEnable: string;
+    buttonPrimary: string;
+    buttonPrimaryEnable: string;
     footerController: string;
     seekBarController: string;
     progressContainer: string;

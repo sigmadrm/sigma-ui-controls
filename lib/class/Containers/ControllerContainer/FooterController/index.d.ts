@@ -10,6 +10,8 @@ declare class FooterController extends BaseComponent {
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
+    unregisterListener(): void;
+    handelEventClick: (e: MouseEvent) => void;
 }
 export default FooterController;
 //# sourceMappingURL=index.d.ts.map

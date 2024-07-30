@@ -80,4 +80,8 @@ export declare const convertDataEventProgress: (data: any) => {
     event: EEVentName;
     data: any;
 };
+export declare const convertDataEventEnded: (data: any) => {
+    event: EEVentName;
+    data: any;
+};
 //# sourceMappingURL=index.d.ts.map
