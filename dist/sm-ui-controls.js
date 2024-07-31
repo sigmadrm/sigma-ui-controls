@@ -3881,7 +3881,6 @@ class SeekBarController extends BaseComponent_1.default {
     progressThumb;
     timeoutId;
     isPlay;
-    percentage;
     constructor(props) {
         const { classes, apiPlayer } = props;
         super(props);
@@ -3936,7 +3935,6 @@ class SeekBarController extends BaseComponent_1.default {
                         if (percentage >= 0 && percentage <= 100) {
                             progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
                             progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                            this.percentage = percentage;
                             // Xóa timeout cũ nếu có
                             if (this.timeoutId) {
                                 clearTimeout(this.timeoutId);
@@ -5730,12 +5728,11 @@ const generateStyles = (props) => {
       background-color: ${primaryColor};
       opacity: 1;
       z-index: 1;
-      border-radius: 5px;
+      border-radius: 8px 0px 0px 8px;
     `,
         progressThumb: (0, css_1.css) `
       position: absolute;
-      left: var(--highlight-left-progress-thumb);
-      margin-left: -4px;
+      left: calc(var(--highlight-left-progress-thumb) - 8px);
       height: 16px;
       width: 16px;
       background-color: ${primaryColor};
@@ -5835,16 +5832,15 @@ const generateStyles = (props) => {
     `,
         taskbarVolumeSlider: (0, css_1.css) `
       height: 40px;
-      display: none;
+      // display: none;
       width: 0px;
       animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
       -webkit-appearance: none;
       height: 6px;
       border-radius: 16px;
-      background: #ddd;
+      background: transparent;
       outline: none;
-      opacity: 0.7;
-      transition: opacity 0.2s;
+      // transition: opacity 0.2s;
       position: relative;
       overflow: visible;
 
@@ -5853,14 +5849,15 @@ const generateStyles = (props) => {
         border-radius: 18px;
         height: 6px;
         cursor: pointer;
-        background: #ddd;
+        background-color: rgba(255, 255, 255, 0.24);
       }
 
       ::-moz-range-track {
         width: 100%;
+        border-radius: 18px;
         height: 6px;
         cursor: pointer;
-        background: #ddd;
+        background-color: rgba(255, 255, 255, 0.24);
       }
 
       ::-webkit-slider-thumb {
@@ -5870,7 +5867,7 @@ const generateStyles = (props) => {
         height: 16px;
         margin-top: -4px;
         border-radius: 50%;
-        background: ${primaryColor};
+        background-color: white;
         cursor: pointer;
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
         position: relative;
@@ -5878,10 +5875,12 @@ const generateStyles = (props) => {
       }
 
       ::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        margin-top: -4px;
         border-radius: 50%;
-        background: ${primaryColor};
+        background-color: white;
         cursor: pointer;
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
         position: relative;
@@ -5892,16 +5891,12 @@ const generateStyles = (props) => {
         content: '';
         height: 100%;
         width: var(--highlight-width);
-        background: ${primaryColor};
+        background-color: white;
         position: absolute;
         left: 0;
         border-radius: 18px;
         top: 0;
         z-index: 1;
-      }
-
-      :hover {
-        opacity: 1;
       }
     `,
         loadingContainer: (0, css_1.css) `
@@ -6141,6 +6136,7 @@ class SmUIControls {
             this.isInit = true;
             if (VideoContainerElement) {
                 VideoContainerElement.style.position = 'relative';
+                VideoContainerElement.style.overflow = 'hidden';
                 const smControllerContainerEle = document.createElement('div');
                 smControllerContainerEle.className = classes.container;
                 smControllerContainerEle.id = constants_1.ids.smControllerContainer;

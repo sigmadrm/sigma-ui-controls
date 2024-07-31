@@ -1,5 +1,12 @@
 
 
+## [0.0.19](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.18...v0.0.19) (2024-07-31)
+
+
+### Bug Fixes
+
+* css for input volume slice ([b0bfc21](https://github.com/sigmadrm/sigma-ui-controls/commit/b0bfc21a587812ccba35adffd87ac7d9260b80eb))
+
 ## [0.0.18](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.16...v0.0.18) (2024-07-31)
 
 
