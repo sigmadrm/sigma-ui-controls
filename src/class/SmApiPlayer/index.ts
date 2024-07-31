@@ -53,7 +53,7 @@ export default class SmApiPlayer {
       );
     }
     filteredTracks = filteredTracks.filter((track, idx) => {
-      if (track.height === 0 || track.width === 0) return false; // only video tracks
+      if (!track.height || !track.width) return false; // only video tracks
       const otherIdx = this.player.isAudioOnly()
         ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
         : filteredTracks.findIndex((t) => t.height === track.height);
