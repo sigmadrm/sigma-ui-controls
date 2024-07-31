@@ -22,6 +22,7 @@ export declare const ids: {
     smButtonExitFullScreen: string;
     smButtonVolume: string;
     smButtonMute: string;
+    smSelectVolumeRangeContainer: string;
     smSelectVolumeRange: string;
     smInputVolumeRange: string;
     smVolumeContainer: string;

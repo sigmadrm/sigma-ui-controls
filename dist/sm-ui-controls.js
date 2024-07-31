@@ -3400,18 +3400,8 @@ class SelectVolumeRange extends BaseComponent_1.default {
             inputVolRangeEle.oninput = (event) => { };
         }
     }
-    hide = () => {
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
-        if (inputVolRangeEle) {
-            inputVolRangeEle.className = this.classes.taskbarVolumeSlider;
-        }
-    };
-    show = () => {
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
-        if (inputVolRangeEle) {
-            inputVolRangeEle.classList.toggle(this.classes.taskbarVolumeSliderEnable);
-        }
-    };
+    hide = () => { };
+    show = () => { };
 }
 exports["default"] = SelectVolumeRange;
 
@@ -4195,7 +4185,7 @@ class VolumeContainer extends BaseComponent_1.default {
             handleButtonClick: this.handleButtonClick,
         });
         this.selectVolumeRange = new SelectVolumeRange_1.default({
-            id: constants_1.ids.smSelectVolumeRange,
+            id: constants_1.ids.smSelectVolumeRangeContainer,
             classes,
             apiPlayer,
         });
@@ -4228,7 +4218,7 @@ class VolumeContainer extends BaseComponent_1.default {
             const { classes } = this;
             const htmlString = `<div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonVolume}></div>
       <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonMute}></div>
-        <div class=${classes.smSelectVolumeRangeContainer} id=${constants_1.ids.smSelectVolumeRange}></div>`;
+        <div class=${classes.smSelectVolumeRangeContainer} id=${constants_1.ids.smSelectVolumeRangeContainer}></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4261,16 +4251,18 @@ class VolumeContainer extends BaseComponent_1.default {
     handelEventMouseover(e) {
         e.preventDefault();
         e.stopPropagation();
-        if (this.selectVolumeRange) {
-            this.selectVolumeRange.show();
+        const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
+        if (selectVolumeRangeContainerEle) {
+            selectVolumeRangeContainerEle.classList.add(this.classes.smSelectVolumeRangeContainerEnable);
         }
     }
     handelEventMouseout(e) {
         e.stopPropagation();
-        if (this.selectVolumeRange) {
-            this.selectVolumeRange.hide();
-        }
         e.preventDefault();
+        const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
+        if (selectVolumeRangeContainerEle) {
+            selectVolumeRangeContainerEle.className = this.classes.smSelectVolumeRangeContainer;
+        }
     }
 }
 exports["default"] = VolumeContainer;
@@ -5215,6 +5207,7 @@ exports.ids = {
     smButtonExitFullScreen: 'sm-button-exit-full-screen',
     smButtonVolume: 'sm-button-volume',
     smButtonMute: 'sm-button-mute',
+    smSelectVolumeRangeContainer: 'sm-select-volume-range-container',
     smSelectVolumeRange: 'sm-select-volume-range',
     smInputVolumeRange: 'sm-input-volume-range',
     smVolumeContainer: 'sm-volume-container',
@@ -5822,81 +5815,48 @@ const generateStyles = (props) => {
       align-items: center;
       justify-content: center;
       padding-left: 8px;
+      width: 0px;
+      height: 0px;
+      overflow: hidden;
+      transition: 0.2s ease-in-out;
     `,
-        taskbarVolumeSliderEnable: (0, css_1.css) `
-      cursor: pointer;
-      height: 40px;
-      display: block !important;
-      width: 100%;
-      animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
+        smSelectVolumeRangeContainerEnable: (0, css_1.css) `
+      width: 100px;
+      height: 6px;
+      overflow: visible;
+      transition: 0.2s ease-in-out;
+      // animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
     `,
         taskbarVolumeSlider: (0, css_1.css) `
-      height: 40px;
-      // display: none;
-      width: 0px;
-      animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
-      -webkit-appearance: none;
+      margin-left: 2px;
       height: 6px;
-      border-radius: 16px;
-      background: transparent;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
       outline: none;
-      // transition: opacity 0.2s;
-      position: relative;
-      overflow: visible;
-
-      ::-webkit-slider-runnable-track {
-        width: 100%;
-        border-radius: 18px;
-        height: 6px;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.24);
-      }
-
-      ::-moz-range-track {
-        width: 100%;
-        border-radius: 18px;
-        height: 6px;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.24);
-      }
-
+      border-radius: 15px;
+      background: linear-gradient(
+        to right,
+        white var(--highlight-width),
+        rgba(255, 255, 255, 0.24) var(--highlight-width)
+      );
       ::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 16px;
+        /* creating a custom design */
         height: 16px;
-        margin-top: -4px;
-        border-radius: 50%;
+        width: 16px;
         background-color: white;
-        cursor: pointer;
-        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-        position: relative;
-        z-index: 2;
+        border-radius: 50%;
+        border: none;
       }
-
       ::-moz-range-thumb {
-        appearance: none;
-        width: 16px;
         height: 16px;
-        margin-top: -4px;
+        width: 16px;
+        background-color: white;
         border-radius: 50%;
-        background-color: white;
-        cursor: pointer;
-        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-        position: relative;
-        z-index: 2;
-      }
-
-      ::before {
-        content: '';
-        height: 100%;
-        width: var(--highlight-width);
-        background-color: white;
-        position: absolute;
-        left: 0;
-        border-radius: 18px;
-        top: 0;
-        z-index: 1;
+        border: none;
       }
     `,
         loadingContainer: (0, css_1.css) `

@@ -51,18 +51,8 @@ class SelectVolumeRange extends BaseComponent {
     }
   }
 
-  hide = () => {
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;
-    if (inputVolRangeEle) {
-      inputVolRangeEle.className = this.classes.taskbarVolumeSlider;
-    }
-  };
-  show = () => {
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;
-    if (inputVolRangeEle) {
-      inputVolRangeEle.classList.toggle(this.classes.taskbarVolumeSliderEnable);
-    }
-  };
+  hide = () => {};
+  show = () => {};
 }
 
 export default SelectVolumeRange;

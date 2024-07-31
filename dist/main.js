@@ -23,7 +23,7 @@ const initPlayer = async () => {
     try {
       // Thêm URL của video bạn muốn phát
       // await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.m3u8');
-      await player.load('https://cdn.pixabay.com/video/2022/11/26/140521-775376205_large.mp4');
+      await player.load('http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
       console.log('The video has now been loaded!');
     } catch (e) {
       console.error('Error code', e.code, 'object', e);

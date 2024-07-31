@@ -22,6 +22,7 @@ export const ids = {
   smButtonExitFullScreen: 'sm-button-exit-full-screen',
   smButtonVolume: 'sm-button-volume',
   smButtonMute: 'sm-button-mute',
+  smSelectVolumeRangeContainer: 'sm-select-volume-range-container',
   smSelectVolumeRange: 'sm-select-volume-range',
   smInputVolumeRange: 'sm-input-volume-range',
   smVolumeContainer: 'sm-volume-container',

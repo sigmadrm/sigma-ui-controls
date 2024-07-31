@@ -370,81 +370,49 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
       padding-left: 8px;
-    `,
-    taskbarVolumeSliderEnable: css`
-      cursor: pointer;
-      height: 40px;
-      display: block !important;
-      width: 100%;
-      animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
-    `,
-    taskbarVolumeSlider: css`
-      height: 40px;
-      // display: none;
       width: 0px;
-      animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
-      -webkit-appearance: none;
+      height: 0px;
+      overflow: hidden;
+      transition: 0.2s ease-in-out;
+    `,
+    smSelectVolumeRangeContainerEnable: css`
+      width: 100px;
       height: 6px;
-      border-radius: 16px;
-      background: transparent;
-      outline: none;
-      // transition: opacity 0.2s;
-      position: relative;
       overflow: visible;
+      transition: 0.2s ease-in-out;
+      // animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
+    `,
 
-      ::-webkit-slider-runnable-track {
-        width: 100%;
-        border-radius: 18px;
-        height: 6px;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.24);
-      }
-
-      ::-moz-range-track {
-        width: 100%;
-        border-radius: 18px;
-        height: 6px;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.24);
-      }
-
+    taskbarVolumeSlider: css`
+      margin-left: 2px;
+      height: 6px;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+      border-radius: 15px;
+      background: linear-gradient(
+        to right,
+        white var(--highlight-width),
+        rgba(255, 255, 255, 0.24) var(--highlight-width)
+      );
       ::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 16px;
+        /* creating a custom design */
         height: 16px;
-        margin-top: -4px;
-        border-radius: 50%;
+        width: 16px;
         background-color: white;
-        cursor: pointer;
-        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-        position: relative;
-        z-index: 2;
+        border-radius: 50%;
+        border: none;
       }
-
       ::-moz-range-thumb {
-        appearance: none;
-        width: 16px;
         height: 16px;
-        margin-top: -4px;
+        width: 16px;
+        background-color: white;
         border-radius: 50%;
-        background-color: white;
-        cursor: pointer;
-        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
-        position: relative;
-        z-index: 2;
-      }
-
-      ::before {
-        content: '';
-        height: 100%;
-        width: var(--highlight-width);
-        background-color: white;
-        position: absolute;
-        left: 0;
-        border-radius: 18px;
-        top: 0;
-        z-index: 1;
+        border: none;
       }
     `,
     loadingContainer: css`
