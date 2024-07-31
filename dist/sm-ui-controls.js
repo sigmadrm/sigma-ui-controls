@@ -4782,7 +4782,7 @@ class SmApiPlayer {
             filteredTracks = tracks.filter((track) => track.language === selectedTrack.language && track.channelsCount === selectedTrack.channelsCount);
         }
         filteredTracks = filteredTracks.filter((track, idx) => {
-            if (track.height === 0 || track.width === 0)
+            if (!track.height || !track.width)
                 return false; // only video tracks
             const otherIdx = this.player.isAudioOnly()
                 ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
