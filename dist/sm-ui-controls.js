@@ -5483,7 +5483,7 @@ const generateStyles = (props) => {
     `,
         settingsContainer: (0, css_1.css) `
       position: absolute;
-      bottom: 90px;
+      bottom: 80px; // bottomHeight
       right: 12px;
       border-radius: 8px;
       background-color: rgba(0, 0, 0, 0.64);
@@ -5491,7 +5491,7 @@ const generateStyles = (props) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
-      max-height: 70%; // FIXME: change maxHeight if header is display
+      max-height: calc(86% - 80px);
       overflow: hidden;
       outline: none;
       border: none;

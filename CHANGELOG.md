@@ -1,5 +1,12 @@
 
 
+## [0.0.15](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.14...v0.0.15) (2024-07-31)
+
+
+### Bug Fixes
+
+* setting max height ([088ae1f](https://github.com/sigmadrm/sigma-ui-controls/commit/088ae1ff3c1e9923d2d42d2f4f6e5e19f90c542c))
+
 ## [0.0.14](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.13...v0.0.14) (2024-07-31)
 
 
