@@ -3382,11 +3382,11 @@ class SelectVolumeRange extends BaseComponent_1.default {
     registerListener() {
         const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
         if (inputVolRangeEle) {
-            inputVolRangeEle.addEventListener('input', (event) => {
+            inputVolRangeEle.oninput = (event) => {
                 const { value } = event.target;
                 this.apiPlayer.updateVolume(parseFloat(value));
                 this.updateSliderHighlight(parseFloat(value));
-            });
+            };
         }
     }
     updateSliderHighlight(volume) {
@@ -3394,7 +3394,12 @@ class SelectVolumeRange extends BaseComponent_1.default {
         const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${percentage}%`);
     }
-    unregisterListener() { }
+    unregisterListener() {
+        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        if (inputVolRangeEle) {
+            inputVolRangeEle.oninput = (event) => { };
+        }
+    }
     hide = () => {
         const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
         if (inputVolRangeEle) {
@@ -3875,6 +3880,8 @@ class SeekBarController extends BaseComponent_1.default {
     progressBar;
     progressThumb;
     timeoutId;
+    isPlay;
+    percentage;
     constructor(props) {
         const { classes, apiPlayer } = props;
         super(props);
@@ -3906,26 +3913,30 @@ class SeekBarController extends BaseComponent_1.default {
             this.containerElement.innerHTML = htmlString;
             const progressThumbContainer = document.getElementById(constants_1.ids.smProgressThumb);
             const progressBarbContainer = document.getElementById(constants_1.ids.smProgressBar);
-            const progressBufferContainer = document.getElementById(constants_1.ids.smProgressBuffer);
             // Xử lý kéo thanh tiến trình
             if (progressThumbContainer && progressBarbContainer) {
                 progressThumbContainer.addEventListener('mousedown', (e) => {
                     e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
                     e.stopPropagation();
                     // Hàm cập nhật thanh tiến trình và video.currentTime
+                    if (this.apiPlayer.isPlay()) {
+                        this.isPlay = true;
+                        this.apiPlayer.pause();
+                    }
+                    else {
+                        this.isPlay = false;
+                    }
                     const onMouseMove = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (this.apiPlayer.isPlay()) {
-                            this.apiPlayer.pause();
-                        }
                         const rect = progressBarbContainer.getBoundingClientRect();
                         const x = e.clientX - rect.left;
                         const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
                         const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
                         if (percentage >= 0 && percentage <= 100) {
                             progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                            progressThumbContainer.style.setProperty('--highlight-width-progress-thumb', `${percentage}%`);
+                            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                            this.percentage = percentage;
                             // Xóa timeout cũ nếu có
                             if (this.timeoutId) {
                                 clearTimeout(this.timeoutId);
@@ -3933,7 +3944,9 @@ class SeekBarController extends BaseComponent_1.default {
                             // Đặt timeout để cập nhật video.currentTime sau 300ms
                             this.timeoutId = self.setTimeout(() => {
                                 this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-                                this.apiPlayer.play();
+                                if (this.isPlay) {
+                                    this.apiPlayer.play();
+                                }
                             }, 300);
                         }
                     };
@@ -3947,47 +3960,72 @@ class SeekBarController extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        const { apiPlayer } = this;
-        apiPlayer.eventemitter.on(type_1.EEVentName.PROGRESS, (e, data) => {
-            const bufferedProgress = apiPlayer.getBuffering();
-            if (this.progressBuffer) {
-                this.progressBuffer.updateSliderHighlight(bufferedProgress);
-            }
-        });
-        apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, (e, data) => {
-            const progress = apiPlayer.getProgress();
-            if (!Number.isNaN(progress)) {
-                if (this.progressBar) {
-                    this.progressBar.updateSliderHighlight(progress);
-                }
-                if (this.progressThumb) {
-                    this.progressThumb.updateSliderHighlight(progress);
-                }
-            }
-        });
-        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, (e, data) => {
-            const progress = apiPlayer.getProgress();
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
+        if (this?.containerElement) {
+            this.containerElement.onclick = (e) => {
+                this.handleEventClick(e);
+            };
+        }
+    }
+    unregisterListener() {
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
+        if (this?.containerElement) {
+            this.containerElement.onclick = () => { };
+        }
+    }
+    handleEventClick(e) {
+        const progressBarbContainer = document.getElementById(constants_1.ids.smProgressBar);
+        if (progressBarbContainer) {
+            const rect = progressBarbContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+            const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+        }
+    }
+    handleEventProgress() {
+        const bufferedProgress = this.apiPlayer.getBuffering();
+        if (this.progressBuffer) {
+            this.progressBuffer.updateSliderHighlight(bufferedProgress);
+        }
+    }
+    handleEventTimeUpdate() {
+        const progress = this.apiPlayer.getProgress();
+        if (!Number.isNaN(progress)) {
             if (this.progressBar) {
                 this.progressBar.updateSliderHighlight(progress);
-            }
-            const bufferedProgress = apiPlayer.getBuffering();
-            if (this.progressBuffer) {
-                this.progressBuffer.updateSliderHighlight(bufferedProgress);
             }
             if (this.progressThumb) {
                 this.progressThumb.updateSliderHighlight(progress);
             }
-        });
+        }
     }
-    unregisterListener() { }
+    handleEventTimeLoaded() {
+        const progress = this.apiPlayer.getProgress();
+        if (this.progressBar) {
+            this.progressBar.updateSliderHighlight(progress);
+        }
+        const bufferedProgress = this.apiPlayer.getBuffering();
+        if (this.progressBuffer) {
+            this.progressBuffer.updateSliderHighlight(bufferedProgress);
+        }
+        if (this.progressThumb) {
+            this.progressThumb.updateSliderHighlight(progress);
+        }
+    }
 }
 exports["default"] = SeekBarController;
 class ProgressBuffer extends BaseComponent_1.default {
     constructor(props) {
-        const { classes, apiPlayer } = props;
         super(props);
     }
-    render() { }
+    render() {
+        this?.containerElement?.style.setProperty('--highlight-width-progress-buffer', `0%`);
+    }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBuffer);
@@ -4000,10 +4038,11 @@ class ProgressBuffer extends BaseComponent_1.default {
 }
 class ProgressBar extends BaseComponent_1.default {
     constructor(props) {
-        const { classes, apiPlayer } = props;
         super(props);
     }
-    render() { }
+    render() {
+        this?.containerElement?.style.setProperty('--highlight-width-progress-bar', `0%`);
+    }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBar);
@@ -4016,14 +4055,15 @@ class ProgressBar extends BaseComponent_1.default {
 }
 class ProgressThumb extends BaseComponent_1.default {
     constructor(props) {
-        const { classes, apiPlayer } = props;
         super(props);
     }
-    render() { }
+    render() {
+        this?.containerElement?.style.setProperty('--highlight-left-progress-thumb', `0%`);
+    }
     updateSliderHighlight(volume) {
         const percentage = volume;
         const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressThumb);
-        inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-thumb', `${percentage}%`);
+        inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
     }
     getElementContainer() {
         const containerElement = this.containerElement;
@@ -4076,18 +4116,16 @@ class TimeBarContainer extends BaseComponent_1.default {
     }
     registerListener() {
         if (this.containerElement) {
-            this.containerElement.addEventListener('click', (e) => {
+            this.containerElement.onclick = (e) => {
                 this.handleEventClick(e);
-            });
+            };
         }
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
     }
     unregisterListener() {
         if (this.containerElement) {
-            this.containerElement.removeEventListener('click', (e) => {
-                this.handleEventClick(e);
-            });
+            this.containerElement.onclick = (e) => { };
         }
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
@@ -4163,18 +4201,6 @@ class VolumeContainer extends BaseComponent_1.default {
             classes,
             apiPlayer,
         });
-        apiPlayer.eventemitter.on(type_1.EEVentName.VOLUME_CHANGE, () => {
-            const volume = this.apiPlayer.getVolume();
-            if (volume <= 0) {
-                this.buttonMute?.show();
-                this.buttonVolume?.hide();
-            }
-            else {
-                this.buttonMute?.hide();
-                this.buttonVolume?.show();
-            }
-            this.selectVolumeRange?.update(volume);
-        });
     }
     handleButtonClick(event) {
         const { apiPlayer } = this;
@@ -4187,6 +4213,18 @@ class VolumeContainer extends BaseComponent_1.default {
         }
         apiPlayer.updateVolume(1);
     }
+    handleEventVolumeChange() {
+        const volume = this.apiPlayer.getVolume();
+        if (volume <= 0) {
+            this.buttonMute?.show();
+            this.buttonVolume?.hide();
+        }
+        else {
+            this.buttonMute?.hide();
+            this.buttonVolume?.show();
+        }
+        this.selectVolumeRange?.update(volume);
+    }
     render() {
         if (this.containerElement) {
             const { classes } = this;
@@ -4197,29 +4235,25 @@ class VolumeContainer extends BaseComponent_1.default {
         }
     }
     registerListener() {
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.VOLUME_CHANGE, this.handleEventVolumeChange, this);
         if (this.containerElement) {
-            this.containerElement.addEventListener('click', (e) => {
+            this.containerElement.onclick = (e) => {
                 this.handelEventClick(e);
-            });
-            this.containerElement.addEventListener('mouseover', (e) => {
+            };
+            this.containerElement.onmouseover = (e) => {
                 this.handelEventMouseover(e);
-            });
-            this.containerElement.addEventListener('mouseout', (e) => {
+            };
+            this.containerElement.onmouseout = (e) => {
                 this.handelEventMouseout(e);
-            });
+            };
         }
     }
     unregisterListener() {
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.VOLUME_CHANGE, this.handleEventVolumeChange, this);
         if (this.containerElement) {
-            this.containerElement.removeEventListener('click', (e) => {
-                this.handelEventClick(e);
-            });
-            this.containerElement.removeEventListener('mouseover', (e) => {
-                this.handelEventMouseover(e);
-            });
-            this.containerElement.removeEventListener('mouseout', (e) => {
-                this.handelEventMouseout(e);
-            });
+            this.containerElement.onclick = (e) => { };
+            this.containerElement.onmouseover = (e) => { };
+            this.containerElement.onmouseout = (e) => { };
         }
     }
     handelEventClick(e) {
@@ -4481,10 +4515,14 @@ class FooterController extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this?.containerElement?.addEventListener('click', (event) => this.handelEventClick(event));
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => this.handelEventClick(event);
+        }
     }
     unregisterListener() {
-        this?.containerElement?.removeEventListener('click', (event) => this.handelEventClick(event));
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => { };
+        }
     }
     handelEventClick = (e) => {
         e.preventDefault();
@@ -4538,11 +4576,17 @@ class ControllerContainer extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => this.handleClickContainer(event);
+        }
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
     }
     unregisterListener() {
+        this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => { };
+        }
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
     }
@@ -4597,6 +4641,22 @@ class ErrorContainer extends BaseComponent_1.default {
             }
         });
     }
+    registerListener() {
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handelEventLoaded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.handelEventError, this);
+    }
+    unregisterListener() {
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handelEventLoaded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.handelEventError, this);
+    }
+    handelEventLoaded() {
+        this.hide();
+    }
+    handelEventError(event, data) {
+        if (data) {
+            this.show(data);
+        }
+    }
     hide() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.errorContainer;
@@ -4641,8 +4701,12 @@ class LoadingContainer extends BaseComponent_1.default {
     constructor(props) {
         const { apiPlayer } = props;
         super(props);
-        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => this.hide());
-        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, () => this.hide());
+        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.hide, this);
+        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
+    }
+    registerListener() {
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.hide, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
     }
     render() {
         this.containerElement?.classList.add(this.classes.loadingContainerEnable);
@@ -4713,6 +4777,7 @@ class SmApiPlayer {
     }
     getVariantTracks() {
         const tracks = this.player.getVariantTracks();
+        console.log('getVariantTracks-------', tracks);
         const selectedTrack = tracks.find((track) => track.active);
         let filteredTracks = tracks;
         if (selectedTrack) {
@@ -5651,6 +5716,7 @@ const generateStyles = (props) => {
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
       margin-top: 10px;
+      cursor: pointer;
     `,
         progressBuffer: (0, css_1.css) `
       position: absolute;
@@ -5671,7 +5737,7 @@ const generateStyles = (props) => {
     `,
         progressThumb: (0, css_1.css) `
       position: absolute;
-      left: var(--highlight-width-progress-thumb);
+      left: var(--highlight-left-progress-thumb);
       margin-left: -4px;
       height: 16px;
       width: 16px;

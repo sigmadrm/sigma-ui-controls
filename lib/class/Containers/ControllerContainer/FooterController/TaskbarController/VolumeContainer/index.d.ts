@@ -8,6 +8,7 @@ declare class VolumeContainer extends BaseComponent<IConstructorProps> {
     private selectVolumeRange;
     constructor(props: IConstructorProps);
     handleButtonClick(event: MouseEvent): void;
+    handleEventVolumeChange(): void;
     render(): void;
     registerListener(): void;
     unregisterListener(): void;

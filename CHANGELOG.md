@@ -1,5 +1,12 @@
 
 
+## [0.0.16](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.15...v0.0.16) (2024-07-31)
+
+
+### Features
+
+* handle onclick and mouse for seek bar ([0bb7631](https://github.com/sigmadrm/sigma-ui-controls/commit/0bb763124e78c212106a483046a32b609b0b619a))
+
 ## [0.0.15](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.14...v0.0.15) (2024-07-31)
 
 
