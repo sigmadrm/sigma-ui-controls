@@ -1,5 +1,12 @@
 
 
+## [0.0.16](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.15...v0.0.16) (2024-07-31)
+
+
+### Features
+
+* filter video tracks only ([9f0fdc6](https://github.com/sigmadrm/sigma-ui-controls/commit/9f0fdc69b5bb17cf4baaed84f52113fd0be5c2b9))
+
 ## [0.0.15](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.14...v0.0.15) (2024-07-31)
 
 
