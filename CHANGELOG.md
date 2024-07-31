@@ -1,5 +1,12 @@
 
 
+## [0.0.21](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.20...v0.0.21) (2024-07-31)
+
+
+### Bug Fixes
+
+* show input slide volume ([5ee91f8](https://github.com/sigmadrm/sigma-ui-controls/commit/5ee91f8e7f9eab251e7502a1fc60acaef4bea76f))
+
 ## [0.0.20](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.19...v0.0.20) (2024-07-31)
 
 
