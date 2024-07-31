@@ -19,6 +19,22 @@ class ErrorContainer extends BaseComponent {
     });
   }
 
+  registerListener(): void {
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handelEventError, this);
+  }
+  unregisterListener(): void {
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handelEventLoaded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handelEventError, this);
+  }
+  handelEventLoaded() {
+    this.hide();
+  }
+  handelEventError(event, data) {
+    if (data) {
+      this.show(data);
+    }
+  }
   hide() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.errorContainer;

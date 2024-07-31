@@ -43,12 +43,18 @@ class ControllerContainer extends BaseComponent {
   }
 
   registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+    if (this.containerElement) {
+      this.containerElement.onclick = (event) => this.handleClickContainer(event);
+    }
     this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
   }
 
   unregisterListener() {
+    this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+    if (this.containerElement) {
+      this.containerElement.onclick = (event) => {};
+    }
     this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
   }

@@ -38,18 +38,16 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
   }
   registerListener(): void {
     if (this.containerElement) {
-      this.containerElement.addEventListener('click', (e: MouseEvent) => {
+      this.containerElement.onclick = (e: MouseEvent) => {
         this.handleEventClick(e);
-      });
+      };
     }
     this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.on(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
   }
   unregisterListener(): void {
     if (this.containerElement) {
-      this.containerElement.removeEventListener('click', (e: MouseEvent) => {
-        this.handleEventClick(e);
-      });
+      this.containerElement.onclick = (e: MouseEvent) => {};
     }
     this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.off(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);

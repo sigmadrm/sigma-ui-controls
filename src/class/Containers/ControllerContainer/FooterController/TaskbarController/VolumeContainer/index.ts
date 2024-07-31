@@ -32,17 +32,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
       classes,
       apiPlayer,
     });
-    apiPlayer.eventemitter.on(EEVentName.VOLUME_CHANGE, () => {
-      const volume = this.apiPlayer.getVolume();
-      if (volume <= 0) {
-        this.buttonMute?.show();
-        this.buttonVolume?.hide();
-      } else {
-        this.buttonMute?.hide();
-        this.buttonVolume?.show();
-      }
-      this.selectVolumeRange?.update(volume);
-    });
   }
   handleButtonClick(event: MouseEvent) {
     const { apiPlayer } = this;
@@ -55,7 +44,17 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
     }
     apiPlayer.updateVolume(1);
   }
-
+  handleEventVolumeChange() {
+    const volume = this.apiPlayer.getVolume();
+    if (volume <= 0) {
+      this.buttonMute?.show();
+      this.buttonVolume?.hide();
+    } else {
+      this.buttonMute?.hide();
+      this.buttonVolume?.show();
+    }
+    this.selectVolumeRange?.update(volume);
+  }
   render(): void {
     if (this.containerElement) {
       const { classes } = this;
@@ -66,31 +65,27 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
     }
   }
   registerListener(): void {
+    this.apiPlayer.eventemitter.on(EEVentName.VOLUME_CHANGE, this.handleEventVolumeChange, this);
     if (this.containerElement) {
-      this.containerElement.addEventListener('click', (e: MouseEvent) => {
+      this.containerElement.onclick = (e: MouseEvent) => {
         this.handelEventClick(e);
-      });
+      };
 
-      this.containerElement.addEventListener('mouseover', (e: MouseEvent) => {
+      this.containerElement.onmouseover = (e: MouseEvent) => {
         this.handelEventMouseover(e);
-      });
-      this.containerElement.addEventListener('mouseout', (e: MouseEvent) => {
+      };
+      this.containerElement.onmouseout = (e: MouseEvent) => {
         this.handelEventMouseout(e);
-      });
+      };
     }
   }
   unregisterListener(): void {
+    this.apiPlayer.eventemitter.off(EEVentName.VOLUME_CHANGE, this.handleEventVolumeChange, this);
     if (this.containerElement) {
-      this.containerElement.removeEventListener('click', (e: MouseEvent) => {
-        this.handelEventClick(e);
-      });
+      this.containerElement.onclick = (e: MouseEvent) => {};
 
-      this.containerElement.removeEventListener('mouseover', (e: MouseEvent) => {
-        this.handelEventMouseover(e);
-      });
-      this.containerElement.removeEventListener('mouseout', (e: MouseEvent) => {
-        this.handelEventMouseout(e);
-      });
+      this.containerElement.onmouseover = (e: MouseEvent) => {};
+      this.containerElement.onmouseout = (e: MouseEvent) => {};
     }
   }
 

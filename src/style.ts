@@ -258,6 +258,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
       margin-top: 10px;
+      cursor: pointer;
     `,
     progressBuffer: css`
       position: absolute;
@@ -278,7 +279,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     progressThumb: css`
       position: absolute;
-      left: var(--highlight-width-progress-thumb);
+      left: var(--highlight-left-progress-thumb);
       margin-left: -4px;
       height: 16px;
       width: 16px;

@@ -30,11 +30,11 @@ class SelectVolumeRange extends BaseComponent {
   registerListener() {
     const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange);
     if (inputVolRangeEle) {
-      inputVolRangeEle.addEventListener('input', (event) => {
+      inputVolRangeEle.oninput = (event) => {
         const { value } = event.target as HTMLInputElement;
         this.apiPlayer.updateVolume(parseFloat(value));
         this.updateSliderHighlight(parseFloat(value));
-      });
+      };
     }
   }
 
@@ -44,7 +44,12 @@ class SelectVolumeRange extends BaseComponent {
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${percentage}%`);
   }
 
-  unregisterListener() {}
+  unregisterListener() {
+    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange);
+    if (inputVolRangeEle) {
+      inputVolRangeEle.oninput = (event) => {};
+    }
+  }
 
   hide = () => {
     const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;

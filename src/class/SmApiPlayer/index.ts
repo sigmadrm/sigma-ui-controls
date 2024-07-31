@@ -43,6 +43,7 @@ export default class SmApiPlayer {
 
   getVariantTracks(): { tracks: Track[] } {
     const tracks = this.player.getVariantTracks();
+    console.log('getVariantTracks-------', tracks);
     const selectedTrack = tracks.find((track) => track.active);
     let filteredTracks = tracks;
 
