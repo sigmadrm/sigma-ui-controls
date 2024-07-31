@@ -15,7 +15,7 @@ type TSettingState = {
   tracks: Track[];
   activeTrack: Track;
 };
-const autoTrack: Track = { id: -1, label: 'Auto', bandwidth: 0 };
+const autoTrack: Track = { id: -1, label: 'Auto', bandwidth: 0, active: true };
 const initState: TSettingState = {
   visible: false,
   playbackRate: 1,
@@ -215,7 +215,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       // eslint-disable-next-line no-restricted-properties
       const selectedTrack = tracks.find((track) => track.active);
       let selectedTrackLabel = '';
-      if (selectedTrack && !ignoreSelectedTrack) {
+      if (selectedTrack && selectedTrack !== track && !ignoreSelectedTrack) {
         selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
       }
       return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
@@ -242,7 +242,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       text += ' (3D)';
     }
     const hasDuplicateResolution = tracks.some((otherTrack) => {
-      return otherTrack != track && track.height && otherTrack.height == track.height;
+      return otherTrack != track && otherTrack.id !== -1 && otherTrack.height == track.height;
     });
     if (hasDuplicateResolution) {
       const bandwidth = track.videoBandwidth || track.bandwidth;

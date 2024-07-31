@@ -3515,7 +3515,7 @@ const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/c
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-const autoTrack = { id: -1, label: 'Auto', bandwidth: 0 };
+const autoTrack = { id: -1, label: 'Auto', bandwidth: 0, active: true };
 const initState = {
     visible: false,
     playbackRate: 1,
@@ -3692,7 +3692,7 @@ class SettingsController extends BaseComponent_1.default {
             // eslint-disable-next-line no-restricted-properties
             const selectedTrack = tracks.find((track) => track.active);
             let selectedTrackLabel = '';
-            if (selectedTrack && !ignoreSelectedTrack) {
+            if (selectedTrack && selectedTrack !== track && !ignoreSelectedTrack) {
                 selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
             }
             return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
@@ -3719,7 +3719,7 @@ class SettingsController extends BaseComponent_1.default {
             text += ' (3D)';
         }
         const hasDuplicateResolution = tracks.some((otherTrack) => {
-            return otherTrack != track && track.height && otherTrack.height == track.height;
+            return otherTrack != track && otherTrack.id !== -1 && otherTrack.height == track.height;
         });
         if (hasDuplicateResolution) {
             const bandwidth = track.videoBandwidth || track.bandwidth;
@@ -4784,23 +4784,20 @@ class SmApiPlayer {
             filteredTracks = tracks.filter((track) => track.language === selectedTrack.language && track.channelsCount === selectedTrack.channelsCount);
         }
         filteredTracks = filteredTracks.filter((track, idx) => {
+            if (track.height === 0 || track.width === 0)
+                return false; // only video tracks
             const otherIdx = this.player.isAudioOnly()
                 ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
                 : filteredTracks.findIndex((t) => t.height === track.height);
-            return otherIdx === idx;
+            return otherIdx === idx; // only select video track
         });
-        if (this.player.isAudioOnly()) {
-            filteredTracks.sort((t1, t2) => t2.bandwidth - t1.bandwidth);
-        }
-        else {
-            filteredTracks.sort((t1, t2) => t2.height - t1.height);
-        }
+        filteredTracks.sort((t1, t2) => t2.height - t1.height);
         const isAuto = this.player.getConfiguration().abr.enabled;
         const autoTrack = {
             id: -1,
             label: 'Auto',
             bandwidth: 0,
-            active: isAuto,
+            active: isAuto || !filteredTracks.length,
         };
         return { tracks: [...filteredTracks, autoTrack] };
     }

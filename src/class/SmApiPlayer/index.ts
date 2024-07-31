@@ -53,26 +53,20 @@ export default class SmApiPlayer {
       );
     }
     filteredTracks = filteredTracks.filter((track, idx) => {
+      if (track.height === 0 || track.width === 0) return false; // only video tracks
       const otherIdx = this.player.isAudioOnly()
         ? filteredTracks.findIndex((t) => t.bandwidth === track.bandwidth)
         : filteredTracks.findIndex((t) => t.height === track.height);
-      return otherIdx === idx;
+      return otherIdx === idx; // only select video track
     });
-
-    if (this.player.isAudioOnly()) {
-      filteredTracks.sort((t1, t2) => t2.bandwidth - t1.bandwidth);
-    } else {
-      filteredTracks.sort((t1, t2) => t2.height - t1.height);
-    }
-
+    filteredTracks.sort((t1, t2) => t2.height - t1.height);
     const isAuto = this.player.getConfiguration().abr.enabled;
     const autoTrack: Track = {
       id: -1,
       label: 'Auto',
       bandwidth: 0,
-      active: isAuto,
+      active: isAuto || !filteredTracks.length,
     };
-
     return { tracks: [...filteredTracks, autoTrack] };
   }
 
