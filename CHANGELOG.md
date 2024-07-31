@@ -1,5 +1,12 @@
 
 
+## [0.0.14](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.13...v0.0.14) (2024-07-31)
+
+
+### Bug Fixes
+
+* settings popup blur, setting popup max height, remove button onclick event ([0a1d97f](https://github.com/sigmadrm/sigma-ui-controls/commit/0a1d97f0facfa78849634c06ddd3c304816d3f54))
+
 ## [0.0.13](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.12...v0.0.13) (2024-07-30)
 
 

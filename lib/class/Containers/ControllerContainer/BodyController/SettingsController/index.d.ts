@@ -26,7 +26,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     handleSettingContainerClickOut(event: any): void;
     renderDefaultTab(): string;
     renderPlaybackSpeedTab(): string;
-    getQualityLabel(track: Track, tracks: Track[], ignoreSelectedTrack?: boolean): any;
+    getQualityLabel(track: Track, tracks: Track[], ignoreSelectedTrack?: boolean): string;
     renderQualityTab(): string;
     renderSettingContent(): string;
     render(): void;

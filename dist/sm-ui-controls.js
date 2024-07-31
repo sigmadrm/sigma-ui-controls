@@ -2819,11 +2819,14 @@ class ButtonExitFullScreen extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
-        // FIXME: this function not working?
-        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
@@ -2874,7 +2877,11 @@ class ButtonFullScreen extends BaseComponent_1.default {
             return;
         this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
-    unregisterListener() { }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
     hide() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.taskbarGroupBtn;
@@ -2925,18 +2932,15 @@ class ButtonMute extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleButtonClick(event);
     }
     unregisterListener() {
-        // FIXME: this function not working?
-        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
-    // handleContainerClick(event: MouseEvent) {
-    //   const { apiPlayer } = this;
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    //   apiPlayer.updateVolume(1);
-    // }
     hide() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.taskbarGroupBtn;
@@ -2973,11 +2977,14 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
-        // FIXME: this function not working?
-        // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
@@ -3024,18 +3031,14 @@ class ButtonPlayPrimary extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        if (this.containerElement) {
-            this.containerElement.addEventListener('click', (event) => {
-                this.handleContainerClick(event);
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
-        if (this.containerElement) {
-            this.containerElement.removeEventListener('click', (event) => {
-                this.handleContainerClick(event);
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
     handleContainerClick(event) {
         event.preventDefault();
@@ -3078,24 +3081,25 @@ class ButtonPlaySecondary extends BaseComponent_1.default {
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.playIcon;
             this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
-            this.containerElement.addEventListener('click', (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (!this.apiPlayer.isPlay()) {
-                    this.apiPlayer.play();
-                }
-            });
         }
     }
     registerListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
+    handleContainerClick(event) {
         const { apiPlayer } = this;
-        this.containerElement?.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            if (!apiPlayer.isPlay()) {
-                apiPlayer.play();
-            }
-        });
+        event.preventDefault();
+        event.stopPropagation();
+        if (!apiPlayer.isPlay()) {
+            apiPlayer.play();
+        }
     }
     hide() {
         if (this.containerElement) {
@@ -3133,18 +3137,14 @@ class ButtonReplyPrimary extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        if (this.containerElement) {
-            this.containerElement.addEventListener('click', (event) => {
-                this.handleContainerClick(event);
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
-        if (this.containerElement) {
-            this.containerElement.removeEventListener('click', (event) => {
-                this.handleContainerClick(event);
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
     handleContainerClick(event) {
         event.preventDefault();
@@ -3188,13 +3188,15 @@ class ButtonReplySecondary extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        if (this.containerElement) {
-            this.containerElement.addEventListener('click', (event) => {
-                this.handleContainerClick(event);
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
-    unregisterListener() { }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
     handleContainerClick(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -3240,10 +3242,14 @@ class ButtonVolume extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleButtonClick(event);
     }
     unregisterListener() {
-        this.containerElement?.removeEventListener('click', (event) => this.handleButtonClick(event));
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
     }
     hide() {
         if (this.containerElement) {
@@ -3313,14 +3319,19 @@ class LiveStream extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        if (this.containerElement) {
-            this.containerElement.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
     }
-    unregisterListener() { }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
+    handleContainerClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     hide() {
         if (this.containerElement) {
             this.containerElement.className = `${this.classes.taskbarLiveStream}`;
@@ -3428,14 +3439,15 @@ class SettingIconButton extends BaseComponent_1.default {
         }
     }
     registerListener() {
-        if (this.containerElement) {
-            this.containerElement.onclick = (event) => this.handleContainerClick(event);
-        }
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     }
     unregisterListener() {
         if (!this.containerElement)
             return;
+        this.containerElement.onclick = () => { };
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     }
     handleSettingPanelVisible(event, data) {
@@ -3557,10 +3569,11 @@ class SettingsController extends BaseComponent_1.default {
         apiPlayer.eventemitter.on(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
         apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
         if (containerElement) {
+            containerElement.focus();
             containerElement.onclick = (e) => {
                 e.stopPropagation();
             };
-            window.addEventListener('click', this.handleSettingContainerClickOut);
+            containerElement.onblur = (event) => this.handleSettingContainerClickOut(event);
         }
     }
     unregisterListener() {
@@ -3569,7 +3582,7 @@ class SettingsController extends BaseComponent_1.default {
         apiPlayer.eventemitter.off(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
         apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
         if (this.containerElement) {
-            window.removeEventListener('click', this.handleSettingContainerClickOut);
+            this.containerElement.onblur = () => { };
         }
     }
     goToPlaybackSpeedTab(event) {
@@ -3616,10 +3629,8 @@ class SettingsController extends BaseComponent_1.default {
         this.state = { ...this.state, visible, currentTab: 'default' };
     }
     handleSettingContainerClickOut(event) {
-        if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
-            this.state = { ...this.state, visible: false };
-            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
-        }
+        this.state = { ...this.state, visible: false };
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
     renderDefaultTab() {
         const { classes, state } = this;
@@ -3668,17 +3679,18 @@ class SettingsController extends BaseComponent_1.default {
         <div class=${isActive ? classes.settingTitleActive : classes.settingTitleNormal}>${pbrValue === 1 ? 'Bình thường' : `${pbrValue}`}</div>
       </div>`;
         }).join('');
-        return header + body;
+        const divDivider = `<div style='height:6px'></div>`;
+        return header + body + divDivider;
     }
     getQualityLabel(track, tracks, ignoreSelectedTrack = false) {
         if (track.id === -1) {
             // eslint-disable-next-line no-restricted-properties
             const selectedTrack = tracks.find((track) => track.active);
+            let selectedTrackLabel = '';
             if (selectedTrack && !ignoreSelectedTrack) {
-                const selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
-                return `Tự động (${selectedTrackLabel})`;
+                selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
             }
-            return 'Tự dộng';
+            return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
         }
         const trackHeight = track.height || 0;
         const trackWidth = track.width || 0;
@@ -3702,7 +3714,7 @@ class SettingsController extends BaseComponent_1.default {
             text += ' (3D)';
         }
         const hasDuplicateResolution = tracks.some((otherTrack) => {
-            return otherTrack != track && otherTrack.height == track.height;
+            return otherTrack != track && track.height && otherTrack.height == track.height;
         });
         if (hasDuplicateResolution) {
             const bandwidth = track.videoBandwidth || track.bandwidth;
@@ -3748,6 +3760,7 @@ class SettingsController extends BaseComponent_1.default {
         ${this.renderSettingContent()}
       </div>`;
             this.containerElement.style.display = visible ? 'flex' : 'none';
+            this.containerElement.setAttribute('tabindex', '0');
         }
     }
 }
@@ -3799,7 +3812,7 @@ class BodyController extends BaseComponent_1.default {
             const htmlString = `
       <div class=${classes.buttonPrimary} id=${constants_1.ids.smButtonPlayPrimary}></div>
       <div class=${classes.buttonPrimary} id=${constants_1.ids.smButtonReplayPrimary}></div>
-      <div class=${classes.settingsContainer} id=${constants_1.ids.smSettingsContainer}></div>`;
+      <div class=${classes.settingsContainer} id=${constants_1.ids.smSettingsContainer} tabindex="0"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4536,8 +4549,7 @@ class ControllerContainer extends BaseComponent_1.default {
     handleClickContainer = (event) => {
         const { apiPlayer } = this;
         event.preventDefault();
-        // FIXME: do not use this method.
-        // event.stopPropagation();
+        event.stopPropagation();
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
         }
@@ -5403,7 +5415,7 @@ const generateStyles = (props) => {
       color: white;
       ::-webkit-scrollbar,
       *::-webkit-scrollbar {
-        width: 10px;
+        width: 6px;
       }
       ::-webkit-scrollbar-track,
       *::-webkit-scrollbar-track {
@@ -5415,7 +5427,7 @@ const generateStyles = (props) => {
       ::-webkit-scrollbar-thumb,
       *::-webkit-scrollbar-thumb {
         border-radius: 8px;
-        background-color: #888888;
+        background-color: #616161;
       }
     `,
         controllerContent: (0, css_1.css) `
@@ -5479,8 +5491,11 @@ const generateStyles = (props) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
-      max-height: calc(100% - 90px);
+      max-height: 70%; // FIXME: change maxHeight if header is display
       overflow: hidden;
+      outline: none;
+      border: none;
+      box-shadow: none;
     `,
         settingsContainerMask: (0, css_1.css) `
       position: fixed;

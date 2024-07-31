@@ -7,6 +7,7 @@ declare class LiveStream extends BaseComponent {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    handleContainerClick(event: MouseEvent): void;
     hide(): void;
     show(): void;
 }
