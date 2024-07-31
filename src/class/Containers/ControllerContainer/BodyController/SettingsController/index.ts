@@ -79,10 +79,11 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.on(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     if (containerElement) {
+      containerElement.focus();
       containerElement.onclick = (e) => {
         e.stopPropagation();
       };
-      window.addEventListener('click', this.handleSettingContainerClickOut);
+      containerElement.onblur = (event) => this.handleSettingContainerClickOut(event);
     }
   }
 
@@ -92,7 +93,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
     if (this.containerElement) {
-      window.removeEventListener('click', this.handleSettingContainerClickOut);
+      this.containerElement.onblur = () => {};
     }
   }
 
@@ -149,10 +150,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   handleSettingContainerClickOut(event) {
-    if (this.containerElement?.style.display === 'flex' && event.target !== this.containerElement) {
-      this.state = { ...this.state, visible: false };
-      this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
-    }
+    this.state = { ...this.state, visible: false };
+    this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
   }
 
   renderDefaultTab() {
@@ -206,18 +205,20 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       </div>`;
     }).join('');
 
-    return header + body;
+    const divDivider = `<div style='height:6px'></div>`;
+
+    return header + body + divDivider;
   }
 
   getQualityLabel(track: Track, tracks: Track[], ignoreSelectedTrack: boolean = false) {
     if (track.id === -1) {
       // eslint-disable-next-line no-restricted-properties
       const selectedTrack = tracks.find((track) => track.active);
+      let selectedTrackLabel = '';
       if (selectedTrack && !ignoreSelectedTrack) {
-        const selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
-        return `Tự động (${selectedTrackLabel})`;
+        selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
       }
-      return 'Tự dộng';
+      return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
     }
     const trackHeight = track.height || 0;
     const trackWidth = track.width || 0;
@@ -241,7 +242,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       text += ' (3D)';
     }
     const hasDuplicateResolution = tracks.some((otherTrack) => {
-      return otherTrack != track && otherTrack.height == track.height;
+      return otherTrack != track && track.height && otherTrack.height == track.height;
     });
     if (hasDuplicateResolution) {
       const bandwidth = track.videoBandwidth || track.bandwidth;
@@ -298,6 +299,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
         ${this.renderSettingContent()}
       </div>`;
       this.containerElement.style.display = visible ? 'flex' : 'none';
+      this.containerElement.setAttribute('tabindex', '0');
     }
   }
 }

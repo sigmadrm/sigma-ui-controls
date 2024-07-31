@@ -13,11 +13,12 @@ class ButtonPauseSecondary extends BaseComponent {
     }
   }
   registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleContainerClick(event));
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
   unregisterListener() {
-    // FIXME: this function not working?
-    // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
   }
   handleContainerClick(event: MouseEvent) {
     const { apiPlayer } = this;

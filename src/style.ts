@@ -22,7 +22,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       color: white;
       ::-webkit-scrollbar,
       *::-webkit-scrollbar {
-        width: 10px;
+        width: 6px;
       }
       ::-webkit-scrollbar-track,
       *::-webkit-scrollbar-track {
@@ -34,7 +34,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       ::-webkit-scrollbar-thumb,
       *::-webkit-scrollbar-thumb {
         border-radius: 8px;
-        background-color: #888888;
+        background-color: #616161;
       }
     `,
     controllerContent: css`
@@ -88,7 +88,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
     `,
-
     settingsContainer: css`
       position: absolute;
       bottom: 90px;
@@ -99,8 +98,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: flex;
       flex-direction: column;
       gap: 0px;
-      max-height: calc(100% - 90px);
+      max-height: 70%; // FIXME: change maxHeight if header is display
       overflow: hidden;
+      outline: none;
+      border: none;
+      box-shadow: none;
     `,
     settingsContainerMask: css`
       position: fixed;

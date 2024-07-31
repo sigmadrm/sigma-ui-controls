@@ -14,13 +14,13 @@ class ButtonReplySecondary extends BaseComponent {
     }
   }
   registerListener() {
-    if (this.containerElement) {
-      this.containerElement.addEventListener('click', (event: MouseEvent) => {
-        this.handleContainerClick(event);
-      });
-    }
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
-  unregisterListener() {}
+  unregisterListener() {
+    if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
+  }
   handleContainerClick(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();

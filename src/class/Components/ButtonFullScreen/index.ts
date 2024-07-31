@@ -20,7 +20,10 @@ class ButtonFullScreen extends BaseComponent {
     this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
 
-  unregisterListener() {}
+  unregisterListener() {
+    if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
+  }
 
   hide() {
     if (this.containerElement) {

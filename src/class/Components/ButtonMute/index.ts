@@ -20,20 +20,14 @@ class ButtonMute extends BaseComponent {
     }
   }
   registerListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleButtonClick(event));
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleButtonClick(event);
   }
 
   unregisterListener() {
-    // FIXME: this function not working?
-    // this.containerElement?.removeEventListener('click', this.handleContainerClick);
+    if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
   }
-  // handleContainerClick(event: MouseEvent) {
-  //   const { apiPlayer } = this;
-  //   event.preventDefault();
-  //   event.stopPropagation();
-
-  //   apiPlayer.updateVolume(1);
-  // }
 
   hide() {
     if (this.containerElement) {

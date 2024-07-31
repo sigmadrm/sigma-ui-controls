@@ -12,25 +12,26 @@ class ButtonPlaySecondary extends BaseComponent {
     if (this.containerElement) {
       this.containerElement.innerHTML = playIcon;
       this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
-      this.containerElement.addEventListener('click', (event: MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!this.apiPlayer.isPlay()) {
-          this.apiPlayer.play();
-        }
-      });
     }
   }
 
   registerListener() {
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
+  }
+
+  unregisterListener() {
+    if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
+  }
+
+  handleContainerClick(event: MouseEvent) {
     const { apiPlayer } = this;
-    this.containerElement?.addEventListener('click', (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!apiPlayer.isPlay()) {
-        apiPlayer.play();
-      }
-    });
+    event.preventDefault();
+    event.stopPropagation();
+    if (!apiPlayer.isPlay()) {
+      apiPlayer.play();
+    }
   }
 
   hide() {

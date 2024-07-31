@@ -39,7 +39,7 @@ class BodyController extends BaseComponent {
       const htmlString = `
       <div class=${classes.buttonPrimary} id=${ids.smButtonPlayPrimary}></div>
       <div class=${classes.buttonPrimary} id=${ids.smButtonReplayPrimary}></div>
-      <div class=${classes.settingsContainer} id=${ids.smSettingsContainer}></div>`;
+      <div class=${classes.settingsContainer} id=${ids.smSettingsContainer} tabindex="0"></div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }

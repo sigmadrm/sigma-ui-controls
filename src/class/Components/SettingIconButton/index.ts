@@ -22,13 +22,13 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     }
   }
   registerListener() {
-    if (this.containerElement) {
-      this.containerElement.onclick = (event) => this.handleContainerClick(event);
-    }
+    if (!this.containerElement) return;
+    this.containerElement.onclick = (event) => this.handleContainerClick(event);
     this.apiPlayer.eventemitter.on(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
   unregisterListener() {
     if (!this.containerElement) return;
+    this.containerElement.onclick = () => {};
     this.apiPlayer.eventemitter.off(EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
   }
 
