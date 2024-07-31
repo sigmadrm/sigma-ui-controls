@@ -32,6 +32,7 @@ class SmUIControls {
       this.isInit = true;
       if (VideoContainerElement) {
         VideoContainerElement.style.position = 'relative';
+        VideoContainerElement.style.overflow = 'hidden';
         const smControllerContainerEle = document.createElement('div');
         smControllerContainerEle.className = classes.container;
         smControllerContainerEle.id = ids.smControllerContainer;

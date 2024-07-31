@@ -275,12 +275,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       background-color: ${primaryColor};
       opacity: 1;
       z-index: 1;
-      border-radius: 5px;
+      border-radius: 8px 0px 0px 8px;
     `,
     progressThumb: css`
       position: absolute;
-      left: var(--highlight-left-progress-thumb);
-      margin-left: -4px;
+      left: calc(var(--highlight-left-progress-thumb) - 8px);
       height: 16px;
       width: 16px;
       background-color: ${primaryColor};
@@ -381,16 +380,15 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     taskbarVolumeSlider: css`
       height: 40px;
-      display: none;
+      // display: none;
       width: 0px;
       animation: scaleDownHorizontalLeft 0.1s ease-in-out forwards;
       -webkit-appearance: none;
       height: 6px;
       border-radius: 16px;
-      background: #ddd;
+      background: transparent;
       outline: none;
-      opacity: 0.7;
-      transition: opacity 0.2s;
+      // transition: opacity 0.2s;
       position: relative;
       overflow: visible;
 
@@ -399,14 +397,15 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         border-radius: 18px;
         height: 6px;
         cursor: pointer;
-        background: #ddd;
+        background-color: rgba(255, 255, 255, 0.24);
       }
 
       ::-moz-range-track {
         width: 100%;
+        border-radius: 18px;
         height: 6px;
         cursor: pointer;
-        background: #ddd;
+        background-color: rgba(255, 255, 255, 0.24);
       }
 
       ::-webkit-slider-thumb {
@@ -416,7 +415,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         height: 16px;
         margin-top: -4px;
         border-radius: 50%;
-        background: ${primaryColor};
+        background-color: white;
         cursor: pointer;
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
         position: relative;
@@ -424,10 +423,12 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       }
 
       ::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        margin-top: -4px;
         border-radius: 50%;
-        background: ${primaryColor};
+        background-color: white;
         cursor: pointer;
         box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
         position: relative;
@@ -438,16 +439,12 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         content: '';
         height: 100%;
         width: var(--highlight-width);
-        background: ${primaryColor};
+        background-color: white;
         position: absolute;
         left: 0;
         border-radius: 18px;
         top: 0;
         z-index: 1;
-      }
-
-      :hover {
-        opacity: 1;
       }
     `,
     loadingContainer: css`

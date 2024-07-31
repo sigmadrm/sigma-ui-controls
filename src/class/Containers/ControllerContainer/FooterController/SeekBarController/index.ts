@@ -11,7 +11,6 @@ class SeekBarController extends BaseComponent {
   private progressThumb: ProgressThumb | undefined;
   private timeoutId: number | null | undefined;
   private isPlay: boolean | undefined;
-  private percentage: number | undefined;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer } = props;
     super(props);
@@ -70,7 +69,6 @@ class SeekBarController extends BaseComponent {
             if (percentage >= 0 && percentage <= 100) {
               progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
               progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-              this.percentage = percentage;
               // Xóa timeout cũ nếu có
               if (this.timeoutId) {
                 clearTimeout(this.timeoutId);
