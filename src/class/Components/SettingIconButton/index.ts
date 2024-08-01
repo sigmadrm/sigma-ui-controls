@@ -1,5 +1,5 @@
 import { settingIcon } from '../../../icons';
-import { EEVentName, IConstructorBaseProps } from '../../../type';
+import { EEVentName, ESettingPanelDataState, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
@@ -41,7 +41,12 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: !this.state.visible });
+    const visible = !this.state.visible;
+    this.containerElement?.setAttribute(
+      'data-state',
+      visible ? ESettingPanelDataState.OPENED : ESettingPanelDataState.CLOSED,
+    );
+    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible });
   }
 }
 
