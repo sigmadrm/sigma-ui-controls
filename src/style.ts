@@ -323,6 +323,12 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     taskbarIconActive: css`
       color: ${primaryColorDef};
+      rotate: 45deg;
+      transition: rotate 1s;
+    `,
+    taskbarIconInactive: css`
+      rotate: 0;
+      transition: rotate 1s;
     `,
     taskbarGroupBtnEnable: css`
       display: flex;
