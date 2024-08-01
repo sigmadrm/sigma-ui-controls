@@ -1,5 +1,12 @@
 
 
+## [0.0.22](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.21...v0.0.22) (2024-08-01)
+
+
+### Features
+
+* add animation for footer controller ([5d15cfc](https://github.com/sigmadrm/sigma-ui-controls/commit/5d15cfc811cddfac9d51e46cb0e7d727797cb88c))
+
 ## [0.0.21](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.20...v0.0.21) (2024-07-31)
 
 
