@@ -16,6 +16,11 @@ export interface IConfigureUIPlayerProps {
     };
 }
 export type TGenerateStylesProps = IConfigureUIPlayerProps['style'];
+export declare enum ESettingPanelDataState {
+    BLUR = "blur",
+    OPENED = "opened",
+    CLOSED = "closed"
+}
 export declare enum EEVentName {
     LOADED = "loaded",
     ERROR = "error",

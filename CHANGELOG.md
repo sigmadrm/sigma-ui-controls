@@ -1,5 +1,14 @@
 
 
+## [0.0.24](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.23...v0.0.24) (2024-08-01)
+
+
+### Features
+
+* export emitter ([5ba397f](https://github.com/sigmadrm/sigma-ui-controls/commit/5ba397f9efc2f906d670c58a2ecd593bad2b2336))
+* prevent container click events when setting panel blur ([cf6669f](https://github.com/sigmadrm/sigma-ui-controls/commit/cf6669fc3f769af05d34a29f1f4089e003c452cb))
+* setting icon animation ([f187281](https://github.com/sigmadrm/sigma-ui-controls/commit/f187281017a98fce579268f9aef4b2b2e82c967f))
+
 ## [0.0.23](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.22...v0.0.23) (2024-08-01)
 
 

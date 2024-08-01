@@ -3421,16 +3421,22 @@ const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class SettingIconButton extends BaseComponent_1.default {
     constructor(props) {
-        super(props, { visible: false });
+        super(props, { active: false });
         this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
         const { classes } = this;
-        const { visible } = this.state;
+        const { active } = this.state;
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.settingIcon;
             this.containerElement.style.display = 'block';
-            this.containerElement.className = `${classes.taskbarGroupBtn} ${visible ? classes.taskbarIconActive : ''}`;
+            this.containerElement.style.setProperty('--animate-duration', '1s');
+            if (active) {
+                this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconActive}`;
+            }
+            else {
+                this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconInactive}`;
+            }
         }
     }
     registerListener() {
@@ -3447,13 +3453,15 @@ class SettingIconButton extends BaseComponent_1.default {
     }
     handleSettingPanelVisible(event, data) {
         const { visible } = data;
-        this.state = { ...this.state, visible };
+        this.state = { ...this.state, active: visible };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: !this.state.visible });
+        const visible = !this.state.active;
+        this.containerElement?.setAttribute('data-state', visible ? type_1.ESettingPanelDataState.OPENED : type_1.ESettingPanelDataState.CLOSED);
+        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible });
     }
 }
 exports["default"] = SettingIconButton;
@@ -3591,6 +3599,7 @@ class SettingsController extends BaseComponent_1.default {
     }
     changeQuality(track) {
         this.apiPlayer.selectVariantTrack(track);
+        this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
         this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
     handleQualityChange(event, data) {
@@ -3624,7 +3633,11 @@ class SettingsController extends BaseComponent_1.default {
         this.state = { ...this.state, visible, currentTab: 'default' };
     }
     handleSettingContainerClickOut(event) {
-        this.state = { ...this.state, visible: false };
+        this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.BLUR); // flag for prevent event controller container click
+        setTimeout(() => {
+            //  reset state enable event controller container click
+            this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
+        }, 300);
         this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
     renderDefaultTab() {
@@ -4550,7 +4563,7 @@ class ControllerContainer extends BaseComponent_1.default {
     bodyController;
     footerController;
     constructor(props) {
-        const { classes, videoInfo, apiPlayer } = props;
+        const { classes, apiPlayer } = props;
         super(props);
         // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
         this.bodyController = new BodyController_1.default({ id: constants_1.ids.smBodyController, classes, apiPlayer });
@@ -4610,6 +4623,10 @@ class ControllerContainer extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
+        if (document.getElementById(constants_1.ids.smSettingsContainer)?.getAttribute('data-state') === type_1.ESettingPanelDataState.BLUR) {
+            // prevent event click when setting panel change state opened to blur
+            return;
+        }
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
         }
@@ -4642,28 +4659,18 @@ exports["default"] = ControllerContainer;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class ErrorContainer extends BaseComponent_1.default {
     constructor(props) {
-        const { apiPlayer } = props;
         super(props);
-        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, () => {
-            this.hide();
-        });
-        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, (event, data) => {
-            if (data) {
-                this.show(data);
-            }
-        });
     }
     registerListener() {
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handelEventLoaded, this);
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.handelEventError, this);
+        // this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
+        // this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handelEventError, this);
     }
     unregisterListener() {
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handelEventLoaded, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.handelEventError, this);
+        // this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handelEventLoaded, this);
+        // this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handelEventError, this);
     }
     handelEventLoaded() {
         this.hide();
@@ -5833,6 +5840,12 @@ const generateStyles = (props) => {
     `,
         taskbarIconActive: (0, css_1.css) `
       color: ${constants_1.primaryColorDef};
+      rotate: 45deg;
+      transition: rotate 1s;
+    `,
+        taskbarIconInactive: (0, css_1.css) `
+      rotate: 0;
+      transition: rotate 1s;
     `,
         taskbarGroupBtnEnable: (0, css_1.css) `
       display: flex;
@@ -6100,7 +6113,13 @@ exports["default"] = generateStyles;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RESOLUTION_LABEL = exports.EEVentName = void 0;
+exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = void 0;
+var ESettingPanelDataState;
+(function (ESettingPanelDataState) {
+    ESettingPanelDataState["BLUR"] = "blur";
+    ESettingPanelDataState["OPENED"] = "opened";
+    ESettingPanelDataState["CLOSED"] = "closed";
+})(ESettingPanelDataState || (exports.ESettingPanelDataState = ESettingPanelDataState = {}));
 var EEVentName;
 (function (EEVentName) {
     EEVentName["LOADED"] = "loaded";
@@ -6297,8 +6316,7 @@ class SmUIControls {
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
                     // console.log('addEventListener', EEVentName.ERROR, data);
-                    // apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
-                    console.log(type_1.EEVentName.ERROR, data);
+                    apiPlayer.eventemitter.trigger(type_1.EEVentName.ERROR, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
                     // console.log('addEventListener', EEVentName.PLAY, data);
@@ -6333,11 +6351,11 @@ class SmUIControls {
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.ENDED, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.WAITING, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.WAITING, data);
+                    // console.log('addEventListener', EEVentName.WAITING, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.WAITING, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAYING, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.PLAYING, data);
+                    // console.log('addEventListener', EEVentName.PLAYING, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.PLAYING, data);
                 });
             }
@@ -6345,20 +6363,34 @@ class SmUIControls {
     }
     on(event, listener, context) {
         this.apiPlayer?.eventemitter.on(event, listener, context);
+        return;
     }
-    once(event, listener, context) { }
-    removeAllListeners(event) { }
-    off(event, listener, context, once) { }
+    once(event, listener, context) {
+        this.apiPlayer?.eventemitter.on(event, listener, context);
+        return;
+    }
+    removeAllListeners(event) {
+        this.apiPlayer?.eventemitter.removeAllListeners(event);
+        return;
+    }
+    off(event, listener, context, once) {
+        this.apiPlayer?.eventemitter.off(event, listener, context, once);
+        return;
+    }
     listeners(event) {
+        this.apiPlayer?.eventemitter.listeners(event);
         return [];
     }
     emit(event, name, eventObject) {
+        this.apiPlayer?.eventemitter.emit(event, name, eventObject);
         return true;
     }
     trigger(event, eventObject) {
+        this.apiPlayer?.eventemitter.trigger(event, eventObject);
         return true;
     }
     listenerCount(event) {
+        this.apiPlayer?.eventemitter.listenerCount(event);
         return 0;
     }
     destroy() {

@@ -32,6 +32,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     taskbarGroup: string;
     taskbarGroupBtn: string;
     taskbarIconActive: string;
+    taskbarIconInactive: string;
     taskbarGroupBtnEnable: string;
     taskbarVolumeContainer: string;
     taskbarTimeBarContainer: string;

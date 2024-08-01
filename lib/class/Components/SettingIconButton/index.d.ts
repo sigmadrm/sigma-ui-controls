@@ -3,7 +3,7 @@ import BaseComponent from '../../BaseComponent';
 interface IConstructorProps extends IConstructorBaseProps {
 }
 type TSettingIconButtonState = {
-    visible: boolean;
+    active: boolean;
 };
 declare class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
     constructor(props: IConstructorProps);
