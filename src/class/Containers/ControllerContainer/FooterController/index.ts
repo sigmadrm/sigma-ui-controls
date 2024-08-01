@@ -50,6 +50,16 @@ class FooterController extends BaseComponent {
     e.preventDefault();
     e.stopPropagation();
   };
+  hidden() {
+    if (this.containerElement) {
+      this.containerElement.className = this.classes.footerController;
+    }
+  }
+  show() {
+    if (this.containerElement) {
+      this.containerElement.classList.add(this.classes.footerControllerEnable);
+    }
+  }
 }
 
 export default FooterController;

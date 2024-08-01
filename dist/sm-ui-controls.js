@@ -4250,7 +4250,6 @@ class VolumeContainer extends BaseComponent_1.default {
     }
     handelEventMouseover(e) {
         e.preventDefault();
-        e.stopPropagation();
         const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
         if (selectVolumeRangeContainerEle) {
             selectVolumeRangeContainerEle.classList.add(this.classes.smSelectVolumeRangeContainerEnable);
@@ -4258,7 +4257,6 @@ class VolumeContainer extends BaseComponent_1.default {
     }
     handelEventMouseout(e) {
         e.stopPropagation();
-        e.preventDefault();
         const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
         if (selectVolumeRangeContainerEle) {
             selectVolumeRangeContainerEle.className = this.classes.smSelectVolumeRangeContainer;
@@ -4518,6 +4516,16 @@ class FooterController extends BaseComponent_1.default {
         e.preventDefault();
         e.stopPropagation();
     };
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.footerController;
+        }
+    }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.footerControllerEnable);
+        }
+    }
 }
 exports["default"] = FooterController;
 
@@ -4558,8 +4566,8 @@ class ControllerContainer extends BaseComponent_1.default {
         //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
         //  `;
         const htmlContentString = `
-      <div class=${classes.bodyController} id=${constants_1.ids.smBodyController}></div>
-      <div class=${classes.footerController} id=${constants_1.ids.smFooterController}></div>
+      <div class="${classes.bodyController}" id="${constants_1.ids.smBodyController}"></div>
+      <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${constants_1.ids.smFooterController}"></div>
      `;
         if (this.containerElement) {
             this.containerElement.innerHTML = htmlContentString;
@@ -4569,16 +4577,34 @@ class ControllerContainer extends BaseComponent_1.default {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handleClickContainer(event);
         }
+        if (this.containerElement) {
+            this.containerElement.onmouseover = () => this.handleOnMouseover();
+            this.containerElement.onmouseout = () => this.handleOnMouseout();
+        }
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
     }
     unregisterListener() {
-        this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+        this.containerElement?.addEventListener('click', (event) => { });
+        if (this.containerElement) {
+            this.containerElement.onmouseover = () => { };
+            this.containerElement.onmouseout = () => { };
+        }
         if (this.containerElement) {
             this.containerElement.onclick = (event) => { };
         }
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
+    }
+    handleOnMouseover() {
+        if (this.footerController) {
+            this.footerController.show();
+        }
+    }
+    handleOnMouseout() {
+        if (this.footerController) {
+            this.footerController.hidden();
+        }
     }
     handleClickContainer = (event) => {
         const { apiPlayer } = this;
@@ -5675,13 +5701,11 @@ const generateStyles = (props) => {
         footerController: (0, css_1.css) `
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      // height: 20%;
+      height: 80px;
       position: absolute;
-      bottom: 0;
+      bottom: -80px;
       right: 0;
       left: 0;
-      min-height: 80px;
-      padding: 8px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -5689,6 +5713,14 @@ const generateStyles = (props) => {
       justify-content: center;
       gap: 16px;
       overflow: hidden;
+      transition: 0.3s ease-in-out;
+      padding: 8px 12px;
+      overflow: hidden;
+    `,
+        footerControllerEnable: (0, css_1.css) `
+      min-height: 80px;
+      bottom: 0px;
+      transition: 0.3s ease-in-out;
     `,
         seekBarController: (0, css_1.css) `
       width: 100%;

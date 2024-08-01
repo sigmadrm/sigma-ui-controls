@@ -229,13 +229,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      // height: 20%;
+      height: 80px;
       position: absolute;
-      bottom: 0;
+      bottom: -80px;
       right: 0;
       left: 0;
-      min-height: 80px;
-      padding: 8px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -243,6 +241,14 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
       gap: 16px;
       overflow: hidden;
+      transition: 0.3s ease-in-out;
+      padding: 8px 12px;
+      overflow: hidden;
+    `,
+    footerControllerEnable: css`
+      min-height: 80px;
+      bottom: 0px;
+      transition: 0.3s ease-in-out;
     `,
     seekBarController: css`
       width: 100%;

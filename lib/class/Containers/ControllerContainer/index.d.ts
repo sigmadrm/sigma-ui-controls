@@ -11,6 +11,8 @@ declare class ControllerContainer extends BaseComponent {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    handleOnMouseover(): void;
+    handleOnMouseout(): void;
     handleClickContainer: (event: MouseEvent) => void;
     hide(): void;
     show(): void;

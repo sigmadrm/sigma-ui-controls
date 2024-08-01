@@ -22,6 +22,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     buttonPrimary: string;
     buttonPrimaryEnable: string;
     footerController: string;
+    footerControllerEnable: string;
     seekBarController: string;
     progressContainer: string;
     progressBuffer: string;

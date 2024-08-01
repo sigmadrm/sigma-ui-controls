@@ -12,6 +12,8 @@ declare class FooterController extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handelEventClick: (e: MouseEvent) => void;
+    hidden(): void;
+    show(): void;
 }
 export default FooterController;
 //# sourceMappingURL=index.d.ts.map

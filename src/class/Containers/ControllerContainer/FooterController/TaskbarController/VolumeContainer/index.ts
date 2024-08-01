@@ -95,7 +95,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   }
   handelEventMouseover(e: MouseEvent) {
     e.preventDefault();
-    e.stopPropagation();
     const selectVolumeRangeContainerEle = document.getElementById(ids.smSelectVolumeRangeContainer);
     if (selectVolumeRangeContainerEle) {
       selectVolumeRangeContainerEle.classList.add(this.classes.smSelectVolumeRangeContainerEnable);
@@ -103,7 +102,6 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   }
   handelEventMouseout(e: MouseEvent) {
     e.stopPropagation();
-    e.preventDefault();
 
     const selectVolumeRangeContainerEle = document.getElementById(ids.smSelectVolumeRangeContainer);
     if (selectVolumeRangeContainerEle) {

@@ -34,8 +34,8 @@ class ControllerContainer extends BaseComponent {
     //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
     //  `;
     const htmlContentString = `
-      <div class=${classes.bodyController} id=${ids.smBodyController}></div>
-      <div class=${classes.footerController} id=${ids.smFooterController}></div>
+      <div class="${classes.bodyController}" id="${ids.smBodyController}"></div>
+      <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${ids.smFooterController}"></div>
      `;
     if (this.containerElement) {
       this.containerElement.innerHTML = htmlContentString;
@@ -46,19 +46,36 @@ class ControllerContainer extends BaseComponent {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handleClickContainer(event);
     }
+    if (this.containerElement) {
+      this.containerElement.onmouseover = () => this.handleOnMouseover();
+      this.containerElement.onmouseout = () => this.handleOnMouseout();
+    }
     this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
   }
 
   unregisterListener() {
-    this.containerElement?.addEventListener('click', (event) => this.handleClickContainer(event));
+    this.containerElement?.addEventListener('click', (event) => {});
+    if (this.containerElement) {
+      this.containerElement.onmouseover = () => {};
+      this.containerElement.onmouseout = () => {};
+    }
     if (this.containerElement) {
       this.containerElement.onclick = (event) => {};
     }
     this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
   }
-
+  handleOnMouseover() {
+    if (this.footerController) {
+      this.footerController.show();
+    }
+  }
+  handleOnMouseout() {
+    if (this.footerController) {
+      this.footerController.hidden();
+    }
+  }
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;
     event.preventDefault();
