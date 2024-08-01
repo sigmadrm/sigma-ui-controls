@@ -3,7 +3,7 @@ import BodyController from './BodyController';
 import FooterController from './FooterController';
 
 import { ids } from '../../../constants';
-import { EEVentName, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
+import { EEVentName, ESettingPanelDataState, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {
@@ -15,7 +15,7 @@ class ControllerContainer extends BaseComponent {
   private footerController: FooterController | undefined;
 
   constructor(props: IConstructorProps) {
-    const { classes, videoInfo, apiPlayer } = props;
+    const { classes, apiPlayer } = props;
     super(props);
 
     // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
@@ -80,6 +80,10 @@ class ControllerContainer extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
+    if (document.getElementById(ids.smSettingsContainer)?.getAttribute('data-state') === ESettingPanelDataState.BLUR) {
+      // prevent event click when setting panel change state opened to blur
+      return;
+    }
     if (apiPlayer.isPlay()) {
       apiPlayer.pause();
     } else {

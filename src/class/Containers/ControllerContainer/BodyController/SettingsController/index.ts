@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
 import { ids } from '../../../../../constants';
-import { EEVentName, IConstructorBaseProps, Track } from '../../../../../type';
+import { EEVentName, ESettingPanelDataState, IConstructorBaseProps, Track } from '../../../../../type';
 import BaseComponent from '../../../../BaseComponent';
 
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -111,6 +111,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
 
   changeQuality(track: Track) {
     this.apiPlayer.selectVariantTrack(track);
+    this.containerElement?.setAttribute('data-state', ESettingPanelDataState.CLOSED);
     this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
   }
 
@@ -150,7 +151,11 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   handleSettingContainerClickOut(event) {
-    this.state = { ...this.state, visible: false };
+    this.containerElement?.setAttribute('data-state', ESettingPanelDataState.BLUR); // flag for prevent event controller container click
+    setTimeout(() => {
+      //  reset state enable event controller container click
+      this.containerElement?.setAttribute('data-state', ESettingPanelDataState.CLOSED);
+    }, 300);
     this.apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
   }
 

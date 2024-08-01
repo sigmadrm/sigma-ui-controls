@@ -1,24 +1,29 @@
 import { settingIcon } from '../../../icons';
-import { EEVentName, IConstructorBaseProps } from '../../../type';
+import { EEVentName, ESettingPanelDataState, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 type TSettingIconButtonState = {
-  visible: boolean;
+  active: boolean;
 };
 class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   constructor(props: IConstructorProps) {
-    super(props, { visible: false });
+    super(props, { active: false });
     this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
   }
 
   render() {
     const { classes } = this;
-    const { visible } = this.state;
+    const { active } = this.state;
     if (this.containerElement) {
       this.containerElement.innerHTML = settingIcon;
       this.containerElement.style.display = 'block';
-      this.containerElement.className = `${classes.taskbarGroupBtn} ${visible ? classes.taskbarIconActive : ''}`;
+      this.containerElement.style.setProperty('--animate-duration', '1s');
+      if (active) {
+        this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconActive}`;
+      } else {
+        this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconInactive}`;
+      }
     }
   }
   registerListener() {
@@ -34,14 +39,19 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
 
   handleSettingPanelVisible(event, data) {
     const { visible } = data;
-    this.state = { ...this.state, visible };
+    this.state = { ...this.state, active: visible };
   }
 
   handleContainerClick(event: MouseEvent) {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible: !this.state.visible });
+    const visible = !this.state.active;
+    this.containerElement?.setAttribute(
+      'data-state',
+      visible ? ESettingPanelDataState.OPENED : ESettingPanelDataState.CLOSED,
+    );
+    apiPlayer.eventemitter.trigger(EEVentName.SETTING_PANEL_VISIBLE, { visible });
   }
 }
 
