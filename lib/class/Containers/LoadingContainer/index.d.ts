@@ -5,6 +5,7 @@ interface IConstructorProps extends IConstructorBaseProps {
 declare class LoadingContainer extends BaseComponent {
     constructor(props: IConstructorProps);
     registerListener(): void;
+    unregisterListener(): void;
     render(): void;
     hide(): void;
     show(): void;

@@ -84,4 +84,12 @@ export declare const convertDataEventEnded: (data: any) => {
     event: EEVentName;
     data: any;
 };
+export declare const convertDataEventWaiting: (data: any) => {
+    event: EEVentName;
+    data: any;
+};
+export declare const convertDataEventPlaying: (data: any) => {
+    event: EEVentName;
+    data: any;
+};
 //# sourceMappingURL=index.d.ts.map

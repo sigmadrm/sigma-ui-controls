@@ -4715,14 +4715,19 @@ const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 class LoadingContainer extends BaseComponent_1.default {
     constructor(props) {
-        const { apiPlayer } = props;
         super(props);
-        apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.hide, this);
-        apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
     }
     registerListener() {
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.hide, this);
+        // this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.WAITING, this.show, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAYING, this.hide, this);
+    }
+    unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.hide, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
+        // this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.WAITING, this.show, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAYING, this.hide, this);
     }
     render() {
         this.containerElement?.classList.add(this.classes.loadingContainerEnable);
@@ -4732,7 +4737,7 @@ class LoadingContainer extends BaseComponent_1.default {
     }
     hide() {
         if (this.containerElement) {
-            this.containerElement.className = this.classes.errorContainer;
+            this.containerElement.className = this.classes.loadingContainer;
         }
     }
     show() {
@@ -4754,7 +4759,7 @@ exports["default"] = LoadingContainer;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertDataEventEnded = exports.convertDataEventProgress = exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
+exports.convertDataEventPlaying = exports.convertDataEventWaiting = exports.convertDataEventEnded = exports.convertDataEventProgress = exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
 /* eslint-disable no-restricted-properties */
 const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
@@ -5037,6 +5042,22 @@ class SmApiPlayer {
                         });
                     }
                     break;
+                case type_1.EEVentName.WAITING:
+                    if (video) {
+                        video.addEventListener(evtName, (data) => {
+                            const dataConvert = (0, exports.convertDataEventWaiting)(data);
+                            clb.call(context, dataConvert);
+                        });
+                    }
+                    break;
+                case type_1.EEVentName.PLAYING:
+                    if (video) {
+                        video.addEventListener(evtName, (data) => {
+                            const dataConvert = (0, exports.convertDataEventPlaying)(data);
+                            clb.call(context, dataConvert);
+                        });
+                    }
+                    break;
                 default:
                     break;
             }
@@ -5155,6 +5176,24 @@ const convertDataEventEnded = (data) => {
     };
 };
 exports.convertDataEventEnded = convertDataEventEnded;
+const convertDataEventWaiting = (data) => {
+    return {
+        event: type_1.EEVentName.WAITING,
+        data: {
+            ...data,
+        },
+    };
+};
+exports.convertDataEventWaiting = convertDataEventWaiting;
+const convertDataEventPlaying = (data) => {
+    return {
+        event: type_1.EEVentName.PLAYING,
+        data: {
+            ...data,
+        },
+    };
+};
+exports.convertDataEventPlaying = convertDataEventPlaying;
 
 
 /***/ }),
@@ -5900,9 +5939,117 @@ const generateStyles = (props) => {
       left: 0;
       overflow: hidden;
       display: none;
+      .sm-loading-ss {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        margin: 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading {
+        display: inline-block;
+        position: absolute;
+        margin: auto;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-container {
+        width: 200px;
+        height: 100px;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-circle {
+        position: absolute;
+        width: 100%;
+        height: 200%;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
+        -webkit-transform-origin: 50% 0;
+        transform-origin: 50% 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+        top: -100px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
+        width: 96px;
+        height: 48px;
+        margin-left: -48px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+        top: -48px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
+        width: 24px;
+        height: 12px;
+        margin-left: -12px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+        top: -12px !important;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-container {
+        width: 48px;
+        height: 24px;
+        margin-left: -12px;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+        top: -24px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        -webkit-animation: 0.8s linear infinite ssrotate;
+        animation: 0.8s linear infinite ssrotate;
+      }
     `,
         loadingContainerEnable: (0, css_1.css) `
-      display: flex;
+      display: flex !important;
       flex-direction: row;
       align-items: center;
       justify-content: center;
@@ -5973,6 +6120,8 @@ var EEVentName;
     EEVentName["LOADED_META_DATA"] = "loadedmetadata";
     EEVentName["PROGRESS"] = "progress";
     EEVentName["ENDED"] = "ended";
+    EEVentName["WAITING"] = "waiting";
+    EEVentName["PLAYING"] = "playing";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 exports.RESOLUTION_LABEL = {
     AUTO: 'Auto',
@@ -6148,7 +6297,8 @@ class SmUIControls {
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
                     // console.log('addEventListener', EEVentName.ERROR, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.ERROR, data);
+                    // apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
+                    console.log(type_1.EEVentName.ERROR, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
                     // console.log('addEventListener', EEVentName.PLAY, data);
@@ -6179,8 +6329,16 @@ class SmUIControls {
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.PROGRESS, data);
                 });
                 apiPlayer.addEventListener(type_1.EEVentName.ENDED, (data) => {
-                    console.log('addEventListener', type_1.EEVentName.ENDED, data);
+                    // console.log('addEventListener', EEVentName.ENDED, data);
                     apiPlayer.eventemitter.trigger(type_1.EEVentName.ENDED, data);
+                });
+                apiPlayer.addEventListener(type_1.EEVentName.WAITING, (data) => {
+                    console.log('addEventListener', type_1.EEVentName.WAITING, data);
+                    apiPlayer.eventemitter.trigger(type_1.EEVentName.WAITING, data);
+                });
+                apiPlayer.addEventListener(type_1.EEVentName.PLAYING, (data) => {
+                    console.log('addEventListener', type_1.EEVentName.PLAYING, data);
+                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PLAYING, data);
                 });
             }
         }
