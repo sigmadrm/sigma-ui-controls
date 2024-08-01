@@ -19,11 +19,14 @@ const initPlayer = async () => {
     player.addEventListener('error', (event) => {
       console.error('Error code', event.detail.code, 'object', event.detail);
     });
+    uiPlayer.on('loaded', () => {
+      console.log('Loaded');    
+    },this);
 
     try {
       // Thêm URL của video bạn muốn phát
-      // await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.m3u8');
-      await player.load('http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+      await player.load('https://live-on-v2-akm.akamaized.net/manifest/test_live/master.m3u8');
+      // await player.load('http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
       console.log('The video has now been loaded!');
     } catch (e) {
       console.error('Error code', e.code, 'object', e);
@@ -43,5 +46,6 @@ function initApp() {
     // This browser does not have the minimum set of APIs we need.
     console.error('Browser not supported!');
   }
+
 }
 document.addEventListener('DOMContentLoaded', initApp);

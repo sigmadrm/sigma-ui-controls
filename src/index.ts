@@ -1,5 +1,5 @@
 import { ids, typePlayerDef, versionDef } from './constants';
-import { EEVentName, IConfigureUIPlayerProps, SmListeners } from './type';
+import { EEVentName, IConfigureUIPlayerProps, ISmEventEmitter, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
@@ -11,10 +11,11 @@ import 'animate.css';
 import './index.css';
 import generateStyles from './style';
 import SmApiPlayer from './class/SmApiPlayer';
+import SmEventEmitter from './class/SmEventEmitter/SmEventEmitter';
 
 const classes = generateStyles();
 
-class SmUIControls {
+class SmUIControls implements ISmEventEmitter {
   private apiPlayer: SmApiPlayer | null;
   private isInit: boolean = false;
   private controllerContainer: ControllerContainer | undefined;
@@ -54,8 +55,7 @@ class SmUIControls {
         });
         apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
           // console.log('addEventListener', EEVentName.ERROR, data);
-          // apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
-          console.log(EEVentName.ERROR, data);
+          apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
           // console.log('addEventListener', EEVentName.PLAY, data);
@@ -90,15 +90,52 @@ class SmUIControls {
           apiPlayer.eventemitter.trigger(EEVentName.ENDED, data);
         });
         apiPlayer.addEventListener(EEVentName.WAITING, (data: any) => {
-          console.log('addEventListener', EEVentName.WAITING, data);
+          // console.log('addEventListener', EEVentName.WAITING, data);
           apiPlayer.eventemitter.trigger(EEVentName.WAITING, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAYING, (data: any) => {
-          console.log('addEventListener', EEVentName.PLAYING, data);
+          // console.log('addEventListener', EEVentName.PLAYING, data);
           apiPlayer.eventemitter.trigger(EEVentName.PLAYING, data);
         });
       }
     }
+  }
+  on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void {
+    this.apiPlayer?.eventemitter.on(event, listener, context);
+    return;
+  }
+  once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void {
+    this.apiPlayer?.eventemitter.on(event, listener, context);
+    return;
+  }
+  removeAllListeners<E extends keyof SmListeners>(event?: E): void {
+    this.apiPlayer?.eventemitter.removeAllListeners(event);
+    return;
+  }
+  off<E extends keyof SmListeners, Context = undefined>(
+    event: E,
+    listener?: SmListeners[E],
+    context?: Context,
+    once?: boolean,
+  ): void {
+    this.apiPlayer?.eventemitter.off(event, listener, context, once);
+    return;
+  }
+  listeners<E extends keyof SmListeners>(event: E): SmListeners[E][] {
+    this.apiPlayer?.eventemitter.listeners(event);
+    return [];
+  }
+  emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean {
+    this.apiPlayer?.eventemitter.emit(event, name, eventObject);
+    return true;
+  }
+  trigger<E extends keyof SmListeners>(event: E, eventObject: Parameters<SmListeners[E]>[1]): boolean {
+    this.apiPlayer?.eventemitter.trigger(event, eventObject);
+    return true;
+  }
+  listenerCount<E extends keyof SmListeners>(event: E): number {
+    this.apiPlayer?.eventemitter.listenerCount(event);
+    return 0;
   }
 
   destroy() {
@@ -110,4 +147,5 @@ class SmUIControls {
   }
 }
 
+export { SmListeners };
 export default SmUIControls;

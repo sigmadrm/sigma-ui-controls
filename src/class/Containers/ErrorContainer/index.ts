@@ -7,25 +7,16 @@ interface IConstructorProps extends IConstructorBaseProps {}
 
 class ErrorContainer extends BaseComponent {
   constructor(props: IConstructorProps) {
-    const { apiPlayer } = props;
     super(props);
-    apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
-      this.hide();
-    });
-    apiPlayer.eventemitter.on(EEVentName.ERROR, (event, data) => {
-      if (data) {
-        this.show(data);
-      }
-    });
   }
 
   registerListener(): void {
-    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
-    this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handelEventError, this);
+    // this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
+    // this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handelEventError, this);
   }
   unregisterListener(): void {
-    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handelEventLoaded, this);
-    this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handelEventError, this);
+    // this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handelEventLoaded, this);
+    // this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handelEventError, this);
   }
   handelEventLoaded() {
     this.hide();

@@ -6343,6 +6343,24 @@ class SmUIControls {
             }
         }
     }
+    on(event, listener, context) {
+        this.apiPlayer?.eventemitter.on(event, listener, context);
+    }
+    once(event, listener, context) { }
+    removeAllListeners(event) { }
+    off(event, listener, context, once) { }
+    listeners(event) {
+        return [];
+    }
+    emit(event, name, eventObject) {
+        return true;
+    }
+    trigger(event, eventObject) {
+        return true;
+    }
+    listenerCount(event) {
+        return 0;
+    }
     destroy() {
         this.controllerContainer?.destroy();
         this.errorContainer?.destroy();
