@@ -1,5 +1,12 @@
 
 
+## [0.0.23](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.22...v0.0.23) (2024-08-01)
+
+
+### Features
+
+* implement overlay loading ([9adb853](https://github.com/sigmadrm/sigma-ui-controls/commit/9adb853f6850a595f12fb50165e0669d7d00ee4d))
+
 ## [0.0.22](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.21...v0.0.22) (2024-08-01)
 
 
