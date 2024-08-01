@@ -295,7 +295,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       cursor: pointer;
       z-index: 1;
     `,
-
     taskbarController: css`
       width: 100%;
       display: flex;
@@ -388,7 +387,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       transition: 0.2s ease-in-out;
       // animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
     `,
-
     taskbarVolumeSlider: css`
       margin-left: 2px;
       height: 6px;
@@ -430,13 +428,122 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       left: 0;
       overflow: hidden;
       display: none;
+      .sm-loading-ss {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        margin: 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading {
+        display: inline-block;
+        position: absolute;
+        margin: auto;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-container {
+        width: 200px;
+        height: 100px;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-circle {
+        position: absolute;
+        width: 100%;
+        height: 200%;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
+        -webkit-transform-origin: 50% 0;
+        transform-origin: 50% 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+        top: -100px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
+        width: 96px;
+        height: 48px;
+        margin-left: -48px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+        top: -48px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
+        width: 24px;
+        height: 12px;
+        margin-left: -12px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+        top: -12px !important;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-container {
+        width: 48px;
+        height: 24px;
+        margin-left: -12px;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+        top: -24px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        -webkit-animation: 0.8s linear infinite ssrotate;
+        animation: 0.8s linear infinite ssrotate;
+      }
     `,
     loadingContainerEnable: css`
-      display: flex;
+      display: flex !important;
       flex-direction: row;
       align-items: center;
       justify-content: center;
     `,
+
     errorContainer: css`
       background: rgb(119 119 119 / 50%);
       position: absolute;

@@ -297,6 +297,22 @@ export default class SmApiPlayer {
             });
           }
           break;
+        case EEVentName.WAITING:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventWaiting(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
+        case EEVentName.PLAYING:
+          if (video) {
+            video.addEventListener(evtName, (data: any) => {
+              const dataConvert = convertDataEventPlaying(data);
+              clb.call(context, dataConvert);
+            });
+          }
+          break;
         default:
           break;
       }
@@ -405,6 +421,22 @@ export const convertDataEventProgress = (data: any) => {
 export const convertDataEventEnded = (data: any) => {
   return {
     event: EEVentName.ENDED,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventWaiting = (data: any) => {
+  return {
+    event: EEVentName.WAITING,
+    data: {
+      ...data,
+    },
+  };
+};
+export const convertDataEventPlaying = (data: any) => {
+  return {
+    event: EEVentName.PLAYING,
     data: {
       ...data,
     },

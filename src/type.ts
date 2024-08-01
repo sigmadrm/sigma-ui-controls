@@ -37,6 +37,8 @@ export enum EEVentName {
   LOADED_META_DATA = 'loadedmetadata',
   PROGRESS = 'progress',
   ENDED = 'ended',
+  WAITING = 'waiting',
+  PLAYING = 'playing',
 }
 
 export const RESOLUTION_LABEL = {
@@ -69,6 +71,8 @@ export interface SmListeners {
   [EEVentName.LOADED_META_DATA]: (event: EEVentName.LOADED_META_DATA, data: { [key: string]: any }) => void;
   [EEVentName.PROGRESS]: (event: EEVentName.PROGRESS, data: { [key: string]: any }) => void;
   [EEVentName.ENDED]: (event: EEVentName.ENDED, data: { [key: string]: any }) => void;
+  [EEVentName.WAITING]: (event: EEVentName.WAITING, data: { [key: string]: any }) => void;
+  [EEVentName.PLAYING]: (event: EEVentName.PLAYING, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',

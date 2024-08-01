@@ -54,7 +54,8 @@ class SmUIControls {
         });
         apiPlayer.addEventListener(EEVentName.ERROR, (data: any) => {
           // console.log('addEventListener', EEVentName.ERROR, data);
-          apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
+          // apiPlayer.eventemitter.trigger(EEVentName.ERROR, data);
+          console.log(EEVentName.ERROR, data);
         });
         apiPlayer.addEventListener(EEVentName.PLAY, (data: any) => {
           // console.log('addEventListener', EEVentName.PLAY, data);
@@ -85,8 +86,16 @@ class SmUIControls {
           apiPlayer.eventemitter.trigger(EEVentName.PROGRESS, data);
         });
         apiPlayer.addEventListener(EEVentName.ENDED, (data: any) => {
-          console.log('addEventListener', EEVentName.ENDED, data);
+          // console.log('addEventListener', EEVentName.ENDED, data);
           apiPlayer.eventemitter.trigger(EEVentName.ENDED, data);
+        });
+        apiPlayer.addEventListener(EEVentName.WAITING, (data: any) => {
+          console.log('addEventListener', EEVentName.WAITING, data);
+          apiPlayer.eventemitter.trigger(EEVentName.WAITING, data);
+        });
+        apiPlayer.addEventListener(EEVentName.PLAYING, (data: any) => {
+          console.log('addEventListener', EEVentName.PLAYING, data);
+          apiPlayer.eventemitter.trigger(EEVentName.PLAYING, data);
         });
       }
     }
