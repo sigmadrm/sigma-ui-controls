@@ -1,5 +1,12 @@
 
 
+## [0.0.25](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.24...v0.0.25) (2024-08-03)
+
+
+### Bug Fixes
+
+* color primary when hover button ([c01ac53](https://github.com/sigmadrm/sigma-ui-controls/commit/c01ac531fbcea92d5f28431ac373f1f43ad7b32d))
+
 ## [0.0.24](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.23...v0.0.24) (2024-08-01)
 
 
