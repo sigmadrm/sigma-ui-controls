@@ -315,13 +315,12 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       display: none;
       border-radius: 50%;
       cursor: pointer;
-      // &:hover {
-      //   box-shadow: 0px 0px 8px 8px rgba(255, 255, 255, 0.1);
-      //   background: rgba(255, 255, 255, 0.1);
-      // }
+      &:hover {
+        color: ${primaryColor};
+      }
     `,
     taskbarIconActive: css`
-      color: ${primaryColorDef};
+      color: ${primaryColor};
       rotate: 45deg;
       transition: rotate 1s;
     `,
@@ -395,7 +394,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
     `,
     taskbarVolumeSlider: css`
       margin-left: 2px;
-      height: 6px;
+      height: 4px;
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
@@ -549,7 +548,6 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       align-items: center;
       justify-content: center;
     `,
-
     errorContainer: css`
       background: rgb(119 119 119 / 50%);
       position: absolute;
