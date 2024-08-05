@@ -1,5 +1,12 @@
 
 
+## [0.0.26](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.25...v0.0.26) (2024-08-05)
+
+
+### Bug Fixes
+
+* yarn build ([e2faaa0](https://github.com/sigmadrm/sigma-ui-controls/commit/e2faaa00d12e044c2940c6b6e448fd954a3cab87))
+
 ## [0.0.25](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.24...v0.0.25) (2024-08-03)
 
 

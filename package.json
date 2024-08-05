@@ -1,6 +1,6 @@
 {
   "name": "sigma-ui-controls",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "**This is ui controls plugin for video players**",
   "main": "dist/sm-ui-controls.min.js",
   "types": "lib/index.d.ts",
