@@ -1,4 +1,3 @@
-import { ids } from '../../../../../../constants';
 import { EEVentName, IConstructorBaseProps } from '../../../../../../type';
 import BaseComponent from '../../../../../BaseComponent';
 import ButtonMute from '../../../../../Components/ButtonMute';
@@ -12,25 +11,28 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   private buttonMute: ButtonMute | undefined;
   private selectVolumeRange: SelectVolumeRange | undefined;
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
 
     this.buttonVolume = new ButtonVolume({
       id: ids.smButtonVolume,
       classes,
       apiPlayer,
+      ids,
       handleButtonClick: this.handleButtonClick,
     });
     this.buttonMute = new ButtonMute({
       id: ids.smButtonMute,
       classes,
       apiPlayer,
+      ids,
       handleButtonClick: this.handleButtonClick,
     });
     this.selectVolumeRange = new SelectVolumeRange({
       id: ids.smSelectVolumeRangeContainer,
       classes,
       apiPlayer,
+      ids,
     });
   }
   handleButtonClick(event: MouseEvent) {
@@ -58,9 +60,9 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   render(): void {
     if (this.containerElement) {
       const { classes } = this;
-      const htmlString = `<div class=${classes.taskbarGroupBtn} id=${ids.smButtonVolume}></div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonMute}></div>
-        <div class=${classes.smSelectVolumeRangeContainer} id=${ids.smSelectVolumeRangeContainer}></div>`;
+      const htmlString = `<div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonVolume}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonMute}></div>
+        <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }
@@ -95,7 +97,7 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   }
   handelEventMouseover(e: MouseEvent) {
     e.preventDefault();
-    const selectVolumeRangeContainerEle = document.getElementById(ids.smSelectVolumeRangeContainer);
+    const selectVolumeRangeContainerEle = document.getElementById(this.ids.smSelectVolumeRangeContainer);
     if (selectVolumeRangeContainerEle) {
       selectVolumeRangeContainerEle.classList.add(this.classes.smSelectVolumeRangeContainerEnable);
     }
@@ -103,7 +105,7 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   handelEventMouseout(e: MouseEvent) {
     e.stopPropagation();
 
-    const selectVolumeRangeContainerEle = document.getElementById(ids.smSelectVolumeRangeContainer);
+    const selectVolumeRangeContainerEle = document.getElementById(this.ids.smSelectVolumeRangeContainer);
     if (selectVolumeRangeContainerEle) {
       selectVolumeRangeContainerEle.className = this.classes.smSelectVolumeRangeContainer;
     }

@@ -1,8 +1,6 @@
 import BaseComponent from '../../../../BaseComponent';
 import { EEVentName, IConstructorBaseProps } from '../../../../../type';
 
-import { ids } from '../../../../../constants';
-
 interface IConstructorProps extends IConstructorBaseProps {}
 
 class SeekBarController extends BaseComponent {
@@ -12,37 +10,40 @@ class SeekBarController extends BaseComponent {
   private timeoutId: number | null | undefined;
   private isPlay: boolean | undefined;
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
     this.progressBuffer = new ProgressBuffer({
       id: ids.smProgressBuffer,
       classes,
       apiPlayer,
+      ids,
     });
     this.progressBar = new ProgressBar({
       id: ids.smProgressBar,
       classes,
       apiPlayer,
+      ids,
     });
     this.progressThumb = new ProgressThumb({
       id: ids.smProgressThumb,
       classes,
       apiPlayer,
+      ids,
     });
   }
   render(): void {
     if (this.containerElement) {
       const { classes } = this;
       const htmlString = `
-        <div class="${classes.progressContainer}" id="${ids.smProgressBarContainer}">
-          <div class="${classes.progressBuffer}" id="${ids.smProgressBuffer}"></div>
-          <div class="${classes.progressBar}" id="${ids.smProgressBar}"></div>
-          <div class="${classes.progressThumb}" id="${ids.smProgressThumb}"></div>
+        <div class="${classes.progressContainer}" id="${this.ids.smProgressBarContainer}">
+          <div class="${classes.progressBuffer}" id="${this.ids.smProgressBuffer}"></div>
+          <div class="${classes.progressBar}" id="${this.ids.smProgressBar}"></div>
+          <div class="${classes.progressThumb}" id="${this.ids.smProgressThumb}"></div>
         </div>`;
       this.containerElement.innerHTML = htmlString;
 
-      const progressThumbContainer = document.getElementById(ids.smProgressThumb);
-      const progressBarbContainer = document.getElementById(ids.smProgressBar);
+      const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
+      const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
 
       // Xử lý kéo thanh tiến trình
       if (progressThumbContainer && progressBarbContainer) {
@@ -115,7 +116,7 @@ class SeekBarController extends BaseComponent {
     }
   }
   handleEventClick(e: MouseEvent) {
-    const progressBarbContainer = document.getElementById(ids.smProgressBar);
+    const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
     if (progressBarbContainer) {
       const rect = progressBarbContainer.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -168,7 +169,7 @@ class ProgressBuffer extends BaseComponent {
   }
   updateSliderHighlight(volume: number) {
     const percentage = volume;
-    const inputVolRangeEle = document.getElementById(ids.smProgressBuffer);
+    const inputVolRangeEle = document.getElementById(this.ids.smProgressBuffer);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
   }
   getElementContainer() {
@@ -185,7 +186,7 @@ class ProgressBar extends BaseComponent {
   }
   updateSliderHighlight(volume: number) {
     const percentage = volume;
-    const inputVolRangeEle = document.getElementById(ids.smProgressBar);
+    const inputVolRangeEle = document.getElementById(this.ids.smProgressBar);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
   }
   getElementContainer() {
@@ -202,7 +203,7 @@ class ProgressThumb extends BaseComponent {
   }
   updateSliderHighlight(volume: number) {
     const percentage = volume;
-    const inputVolRangeEle = document.getElementById(ids.smProgressThumb);
+    const inputVolRangeEle = document.getElementById(this.ids.smProgressThumb);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
   }
   getElementContainer() {

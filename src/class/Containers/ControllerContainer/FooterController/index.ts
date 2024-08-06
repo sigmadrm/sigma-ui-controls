@@ -1,5 +1,4 @@
 import BaseComponent from '../../../BaseComponent';
-import { ids } from '../../../../constants';
 import { IConstructorBaseProps } from '../../../../type';
 import SeekBarController from './SeekBarController';
 import TaskbarController from './TaskbarController';
@@ -14,25 +13,27 @@ class FooterController extends BaseComponent {
   private taskbarController: TaskbarController | undefined;
 
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
 
     this.seekBarController = new SeekBarController({
       id: ids.smSeekBarController,
       classes,
       apiPlayer,
+      ids,
     });
     this.taskbarController = new TaskbarController({
       id: ids.smTaskbarController,
       classes,
       apiPlayer,
+      ids,
     });
   }
   render() {
     if (this.containerElement) {
       const { classes } = this;
-      const htmlString = `<div class=${classes.seekBarController} id=${ids.smSeekBarController}></div>
-      <div class=${classes.taskbarController} id=${ids.smTaskbarController}></div>`;
+      const htmlString = `<div class="${classes.seekBarController}" id="${this.ids.smSeekBarController}"></div>
+      <div class="${classes.taskbarController}" id="${this.ids.smTaskbarController}"></div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }

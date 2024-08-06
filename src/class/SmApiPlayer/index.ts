@@ -16,31 +16,112 @@ export default class SmApiPlayer {
     this.typePlayer = props.typePlayer;
     this.version = props.version;
     this.eventemitter = new SmEventEmitter();
-
+    this.emitLoaded = this.emitLoaded.bind(this);
+    this.emitError = this.emitError.bind(this);
+    this.emitPlay = this.emitPlay.bind(this);
+    this.emitPause = this.emitPause.bind(this);
+    this.emitFullScreenChange = this.emitFullScreenChange.bind(this);
+    this.emitVolumeChange = this.emitVolumeChange.bind(this);
+    this.emitTimeUpdate = this.emitTimeUpdate.bind(this);
+    this.emitLoadedMeteData = this.emitLoadedMeteData.bind(this);
+    this.emitProgress = this.emitProgress.bind(this);
+    this.emitEnded = this.emitEnded.bind(this);
+    this.emitWaiting = this.emitWaiting.bind(this);
+    this.emitPlaying = this.emitPlaying.bind(this);
     this.emitTracksChangeEvent = this.emitTracksChangeEvent.bind(this);
     this.emitRateChange = this.emitRateChange.bind(this);
-
     this.registerListener();
   }
 
   registerListener() {
     const { player } = this;
-    player.addEventListener('adaptation', this.emitTracksChangeEvent);
-    player.addEventListener('variantchanged', this.emitTracksChangeEvent);
-    player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
-    player.addEventListener('trackschanged', this.emitTracksChangeEvent);
-    this.video?.addEventListener('ratechange', this.emitRateChange);
+    this.addEventListener(EEVentName.LOADED, this.emitLoaded);
+    this.addEventListener(EEVentName.ERROR, this.emitError);
+    this.addEventListener(EEVentName.PLAY, this.emitPlay);
+    this.addEventListener(EEVentName.PAUSE, this.emitPause);
+    this.addEventListener(EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+    this.addEventListener(EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+    this.addEventListener(EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+    this.addEventListener(EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+    this.addEventListener(EEVentName.PROGRESS, this.emitProgress);
+    this.addEventListener(EEVentName.ENDED, this.emitEnded);
+    this.addEventListener(EEVentName.WAITING, this.emitWaiting);
+    this.addEventListener(EEVentName.PLAYING, this.emitPlaying);
+    this.addEventListener(EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+    this.video?.addEventListener(EEVentName.RATE_CHANGE, this.emitRateChange);
   }
 
   unregisterListener() {
     const { player } = this;
-    player.addEventListener('adaptation', this.emitTracksChangeEvent);
-    player.addEventListener('variantchanged', this.emitTracksChangeEvent);
-    player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
-    player.addEventListener('trackschanged', this.emitTracksChangeEvent);
-    this.video?.removeEventListener('ratechange', this.emitRateChange);
+    this.addEventListener(EEVentName.LOADED, this.emitLoaded);
+    this.addEventListener(EEVentName.ERROR, this.emitError);
+    this.addEventListener(EEVentName.PLAY, this.emitPlay);
+    this.addEventListener(EEVentName.PAUSE, this.emitPause);
+    this.addEventListener(EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+    this.addEventListener(EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+    this.addEventListener(EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+    this.addEventListener(EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+    this.addEventListener(EEVentName.PROGRESS, this.emitProgress);
+    this.addEventListener(EEVentName.ENDED, this.emitEnded);
+    this.addEventListener(EEVentName.WAITING, this.emitWaiting);
+    this.addEventListener(EEVentName.PLAYING, this.emitPlaying);
+    this.addEventListener(EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+    this.addEventListener(EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+    this.video?.addEventListener(EEVentName.RATE_CHANGE, this.emitRateChange);
   }
-
+  emitLoaded(data: any) {
+    console.log('addEventListener', EEVentName.LOADED, data);
+    this.eventemitter.trigger(EEVentName.LOADED, data);
+  }
+  emitError(data: any) {
+    console.log('addEventListener', EEVentName.ERROR, data);
+    this.eventemitter.trigger(EEVentName.ERROR, data);
+  }
+  emitPlay(data: any) {
+    console.log('addEventListener', EEVentName.PLAY, data);
+    this.eventemitter.trigger(EEVentName.PLAY, data);
+  }
+  emitPause(data: any) {
+    console.log('addEventListener', EEVentName.PAUSE, data);
+    this.eventemitter.trigger(EEVentName.PAUSE, data);
+  }
+  emitFullScreenChange(data: any) {
+    console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+    this.eventemitter.trigger(EEVentName.FULL_SCREEN_CHANGE, data);
+  }
+  emitVolumeChange(data: any) {
+    console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
+    this.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
+  }
+  emitTimeUpdate(data: any) {
+    console.log('addEventListener', EEVentName.TIME_UPDATE, data);
+    this.eventemitter.trigger(EEVentName.TIME_UPDATE, data);
+  }
+  emitLoadedMeteData(data: any) {
+    console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
+    this.eventemitter.trigger(EEVentName.LOADED_META_DATA, data);
+  }
+  emitProgress(data: any) {
+    console.log('addEventListener', EEVentName.PROGRESS, data);
+    this.eventemitter.trigger(EEVentName.PROGRESS, data);
+  }
+  emitPlaying(data: any) {
+    console.log('addEventListener', EEVentName.PLAYING, data);
+    this.eventemitter.trigger(EEVentName.PLAYING, data);
+  }
+  emitEnded(data: any) {
+    console.log('addEventListener', EEVentName.ENDED, data);
+    this.eventemitter.trigger(EEVentName.ENDED, data);
+  }
+  emitWaiting(data: any) {
+    console.log('addEventListener', EEVentName.WAITING, data);
+    this.eventemitter.trigger(EEVentName.WAITING, data);
+  }
   getVariantTracks(): { tracks: Track[] } {
     const tracks = this.player.getVariantTracks();
     console.log('getVariantTracks-------', tracks);
@@ -69,7 +150,6 @@ export default class SmApiPlayer {
     };
     return { tracks: [...filteredTracks, autoTrack] };
   }
-
   selectVariantTrack(track: Track) {
     if (track.id === -1) {
       // Enable ABR (Adaptive Bitrate)
@@ -79,12 +159,10 @@ export default class SmApiPlayer {
       this.player.selectVariantTrack(track, /* clearBuffer= */ false);
     }
   }
-
   emitTracksChangeEvent() {
     const data = this.getVariantTracks();
     this.eventemitter.trigger(EEVentName.TRACKS_CHANGED, data);
   }
-
   emitRateChange() {
     const playbackRate = this.video?.playbackRate || 0;
     this.eventemitter.trigger(EEVentName.RATE_CHANGE, { playbackRate });

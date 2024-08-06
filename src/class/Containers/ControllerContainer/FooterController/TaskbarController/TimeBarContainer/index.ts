@@ -1,4 +1,3 @@
-import { ids } from '../../../../../../constants';
 import { EEVentName, IConstructorBaseProps } from '../../../../../../type';
 import BaseComponent from '../../../../../BaseComponent';
 import CurrentTime from '../../../../../Components/CurrentTime';
@@ -11,18 +10,20 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
   private timeDuration: TimeDuration | undefined;
 
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
 
     this.currentTime = new CurrentTime({
       id: ids.smTimeCurrent,
       classes,
       apiPlayer,
+      ids,
     });
     this.timeDuration = new TimeDuration({
       id: ids.smTimeDuration,
       classes,
       apiPlayer,
+      ids,
     });
   }
 
@@ -30,8 +31,8 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
     const { classes } = this;
     if (this.containerElement) {
       if (this.containerElement) {
-        const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${ids.smTimeCurrent}></div>
-        <div class=${classes.taskbarTimeDuration} id=${ids.smTimeDuration}></div>`;
+        const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${this.ids.smTimeCurrent}></div>
+        <div class=${classes.taskbarTimeDuration} id=${this.ids.smTimeDuration}></div>`;
         this.containerElement.innerHTML = htmlString;
       }
     }

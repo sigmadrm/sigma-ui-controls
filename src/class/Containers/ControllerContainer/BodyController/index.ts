@@ -1,5 +1,5 @@
 import BaseComponent from '../../../BaseComponent';
-import { ids } from '../../../../constants';
+
 import { EEVentName, IConstructorBaseProps } from '../../../../type';
 
 import ButtonPlayPrimary from '../../../Components/ButtonPlayPrimary';
@@ -14,28 +14,31 @@ class BodyController extends BaseComponent {
   private settingsController: SettingsController;
 
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
 
     this.buttonPlayPrimary = new ButtonPlayPrimary({
       id: ids.smButtonPlayPrimary,
       classes,
       apiPlayer,
+      ids,
     });
     this.buttonReplayPrimary = new ButtonReplyPrimary({
       id: ids.smButtonReplayPrimary,
       classes,
       apiPlayer,
+      ids,
     });
     this.settingsController = new SettingsController({
       id: ids.smSettingsContainer,
       classes,
       apiPlayer,
+      ids,
     });
   }
   render() {
     if (this.containerElement) {
-      const { classes } = this;
+      const { classes, ids } = this;
       const htmlString = `
       <div class=${classes.buttonPrimary} id=${ids.smButtonPlayPrimary}></div>
       <div class=${classes.buttonPrimary} id=${ids.smButtonReplayPrimary}></div>

@@ -7,6 +7,7 @@ declare class SmUIControls implements ISmEventEmitter {
     private controllerContainer;
     private errorContainer;
     private loadingContainer;
+    private ids;
     constructor(props: IConfigureUIPlayerProps);
     on<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;
     once<E extends keyof SmListeners, Context = undefined>(event: E, listener: SmListeners[E], context?: Context): void;

@@ -1,4 +1,4 @@
-import { IConstructorBaseProps, TClasses } from '../../type';
+import { IConstructorBaseProps, IIds, TClasses } from '../../type';
 import SmApiPlayer from '../SmApiPlayer';
 
 export default class BaseComponent<T = {}> {
@@ -8,6 +8,7 @@ export default class BaseComponent<T = {}> {
   protected containerElement: HTMLElement | null = null;
   private _state?: T;
   protected initiated: boolean = false;
+  protected ids: IIds;
 
   protected get state(): T {
     return (this._state || {}) as T;
@@ -23,8 +24,9 @@ export default class BaseComponent<T = {}> {
   }
 
   constructor(props: IConstructorBaseProps, initState?: T) {
-    const { id, classes, apiPlayer } = props;
+    const { id, classes, apiPlayer, ids } = props;
     this.id = id;
+    this.ids = ids;
     this.apiPlayer = apiPlayer;
     this.classes = classes;
     this.containerElement = document.getElementById(id);
