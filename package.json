@@ -106,6 +106,7 @@
     "es6-shim": "^0.35.6",
     "eventemitter3": "^5.0.1",
     "mini-css-extract-plugin": "^2.9.0",
+    "nanoid": "^5.0.7",
     "qs": "^6.9.4",
     "style-loader": "^4.0.0",
     "webpack": "^5.75.0",

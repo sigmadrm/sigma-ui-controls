@@ -1,6 +1,5 @@
 import { EEVentName, IConstructorBaseProps } from '../../../../../type';
 import ButtonFullScreen from '../../../../Components/ButtonFullScreen';
-import { ids } from '../../../../../constants';
 import ButtonPlaySecondary from '../../../../Components/ButtonPlaySecondary';
 import BaseComponent from '../../../../BaseComponent';
 import ButtonPauseSecondary from '../../../../Components/ButtonPauseSecondary';
@@ -26,51 +25,60 @@ class TaskbarController extends BaseComponent {
 
   constructor(props: IConstructorProps) {
     super(props);
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     this.buttonFullScreen = new ButtonFullScreen({
       id: ids.smButtonFullScreen,
       classes,
       apiPlayer,
+      ids,
     });
     this.buttonPlaySecondary = new ButtonPlaySecondary({
       id: ids.smButtonPlaySecondary,
       classes,
       apiPlayer,
+      ids,
     });
     this.buttonPauseSecondary = new ButtonPauseSecondary({
       id: ids.smButtonPauseSecondary,
       classes,
       apiPlayer,
+      ids,
     });
     this.buttonExitFullScreen = new ButtonExitFullScreen({
       id: ids.smButtonExitFullScreen,
       classes,
       apiPlayer,
+      ids,
     });
     this.settingIconButton = new SettingIconButton({
       id: ids.smSettingIconButton,
       classes,
       apiPlayer,
+      ids,
     });
     this.volumeContainer = new VolumeContainer({
       id: ids.smVolumeContainer,
       classes,
       apiPlayer,
+      ids,
     });
     this.liveStream = new LiveStream({
       id: ids.smTaskbarLiveStream,
       classes,
       apiPlayer,
+      ids,
     });
     this.timeBarContainer = new TimeBarContainer({
       id: ids.smTimeBarContainer,
       classes,
       apiPlayer,
+      ids,
     });
     this.buttonReplaySecondary = new ButtonReplySecondary({
       id: ids.smButtonReplaySecondary,
       classes,
       apiPlayer,
+      ids,
     });
   }
 
@@ -78,17 +86,17 @@ class TaskbarController extends BaseComponent {
     if (this.containerElement) {
       const { classes } = this;
       const htmlString = `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPlaySecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonPauseSecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonReplaySecondary}></div>
-      <div class=${classes.taskbarVolumeContainer} id=${ids.smVolumeContainer}></div>
-     <div class=${classes.taskbarTimeBarContainer} id=${ids.smTimeBarContainer}></div>
-     <div class=${classes.taskbarLiveStream} id=${ids.smTaskbarLiveStream}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPlaySecondary}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPauseSecondary}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonReplaySecondary}></div>
+      <div class=${classes.taskbarVolumeContainer} id=${this.ids.smVolumeContainer}></div>
+     <div class=${classes.taskbarTimeBarContainer} id=${this.ids.smTimeBarContainer}></div>
+     <div class=${classes.taskbarLiveStream} id=${this.ids.smTaskbarLiveStream}></div>
   </div>
   <div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smSettingIconButton}></div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonFullScreen}></div>
-      <div class=${classes.taskbarGroupBtn} id=${ids.smButtonExitFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smSettingIconButton}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonExitFullScreen}></div>
   </div>`;
       this.containerElement.innerHTML = htmlString;
     }

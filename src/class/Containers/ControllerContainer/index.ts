@@ -2,7 +2,6 @@ import HeadController from './HeadController';
 import BodyController from './BodyController';
 import FooterController from './FooterController';
 
-import { ids } from '../../../constants';
 import { EEVentName, ESettingPanelDataState, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
@@ -15,24 +14,16 @@ class ControllerContainer extends BaseComponent {
   private footerController: FooterController | undefined;
 
   constructor(props: IConstructorProps) {
-    const { classes, apiPlayer } = props;
+    const { classes, apiPlayer, ids } = props;
     super(props);
-
-    // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
-    this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer });
-    this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer });
-
+    this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer, ids });
+    this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer, ids });
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
   }
 
   render() {
-    const { classes } = this;
-    //   const htmlContentString = `
-    //   <div class=${classes.headController} id=${ids.smHeadController}></div>
-    //   <div class=${classes.bodyController} id=${ids.smBodyController}></div>
-    //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
-    //  `;
+    const { classes, ids } = this;
     const htmlContentString = `
       <div class="${classes.bodyController}" id="${ids.smBodyController}"></div>
       <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${ids.smFooterController}"></div>
@@ -80,7 +71,9 @@ class ControllerContainer extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (document.getElementById(ids.smSettingsContainer)?.getAttribute('data-state') === ESettingPanelDataState.BLUR) {
+    if (
+      document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === ESettingPanelDataState.BLUR
+    ) {
       // prevent event click when setting panel change state opened to blur
       return;
     }

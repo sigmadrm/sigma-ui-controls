@@ -16,6 +16,7 @@ export interface IConfigureUIPlayerProps {
     primaryColor?: string;
     logo?: string;
   };
+  ids: IIds;
 }
 export type TGenerateStylesProps = IConfigureUIPlayerProps['style'];
 
@@ -56,12 +57,55 @@ export const RESOLUTION_LABEL = {
   '4K': '4K',
   '8K': '8K',
 };
+export type IIds = {
+  smControllerContainer: string;
+  smControllerContent: string;
+  smLoading: string;
+  smError: string;
+  smHeadController: string;
+  smBodyController: string;
+  smButtonPlayPrimary: string;
+  smSettingsContainer: string;
+  smSettingsContainerMask: string;
+  smSettingDetailTitle: string;
+  smSettingDetailGoBackIcon: string;
+  smSettingPlaybackSpeedItemPrefix: string;
+  smSettingQualityItemPrefix: string;
+  smFooterController: string;
+  smTaskbarController: string;
+  smSeekBarController: string;
+  smButtonFullScreen: string;
+  smButtonPlaySecondary: string;
+  smButtonPauseSecondary: string;
+  smButtonForward: string;
+  smButtonExitFullScreen: string;
+  smButtonVolume: string;
+  smButtonMute: string;
+  smSelectVolumeRangeContainer: string;
+  smSelectVolumeRange: string;
+  smInputVolumeRange: string;
+  smVolumeContainer: string;
+  smPlaybackSpeed: string;
+  smQuality: string;
+  smSettingIconButton: string;
+  smTimeBarContainer: string;
+  smTaskbarLiveStream: string;
+  smTimeCurrent: string;
+  smTimeDuration: string;
+  smProgressBar: string;
+  smProgressThumb: string;
+  smProgressBarContainer: string;
+  smProgressBuffer: string;
+  smButtonReplaySecondary: string;
+  smButtonReplayPrimary: string;
+};
 
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
   id: string;
   classes: TClasses;
   apiPlayer: SmApiPlayer;
+  ids: IIds;
 }
 export interface SmListeners {
   [EEVentName.LOADED]: (event: EEVentName.LOADED, data: { [key: string]: any }) => void;

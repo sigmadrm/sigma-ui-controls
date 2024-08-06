@@ -2755,6 +2755,7 @@ class BaseComponent {
     containerElement = null;
     _state;
     initiated = false;
+    ids;
     get state() {
         return (this._state || {});
     }
@@ -2768,8 +2769,9 @@ class BaseComponent {
         this.initiated = true;
     }
     constructor(props, initState) {
-        const { id, classes, apiPlayer } = props;
+        const { id, classes, apiPlayer, ids } = props;
         this.id = id;
+        this.ids = ids;
         this.apiPlayer = apiPlayer;
         this.classes = classes;
         this.containerElement = document.getElementById(id);
@@ -3356,7 +3358,6 @@ exports["default"] = LiveStream;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class SelectVolumeRange extends BaseComponent_1.default {
     constructor(props) {
@@ -3365,7 +3366,7 @@ class SelectVolumeRange extends BaseComponent_1.default {
     render() {
         const volume = this.apiPlayer.getVolume();
         if (this.containerElement) {
-            this.containerElement.innerHTML = `<input  id=${constants_1.ids.smInputVolumeRange}
+            this.containerElement.innerHTML = `<input  id=${this.ids.smInputVolumeRange}
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
        value=${volume}>
       `;
@@ -3373,14 +3374,14 @@ class SelectVolumeRange extends BaseComponent_1.default {
         this.updateSliderHighlight(volume);
     }
     update(value) {
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
         if (inputVolRangeEle) {
             inputVolRangeEle.value = value.toString();
             inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${value * 100}%`);
         }
     }
     registerListener() {
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
         if (inputVolRangeEle) {
             inputVolRangeEle.oninput = (event) => {
                 const { value } = event.target;
@@ -3391,11 +3392,11 @@ class SelectVolumeRange extends BaseComponent_1.default {
     }
     updateSliderHighlight(volume) {
         const percentage = volume * 100;
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${percentage}%`);
     }
     unregisterListener() {
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smInputVolumeRange);
+        const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
         if (inputVolRangeEle) {
             inputVolRangeEle.oninput = (event) => { };
         }
@@ -3509,7 +3510,6 @@ exports["default"] = TimeDuration;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable no-restricted-globals */
 const icons_1 = __webpack_require__(/*! ./../../../../../icons */ "./src/icons.ts");
-const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -3531,17 +3531,17 @@ class SettingsController extends BaseComponent_1.default {
         this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     generatePlaybackItemId(index) {
-        return `${constants_1.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
+        return `${this.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
     }
     generateQualityItemId(index) {
-        return `${constants_1.ids.smSettingQualityItemPrefix}-${index}`;
+        return `${this.ids.smSettingQualityItemPrefix}-${index}`;
     }
     registerListener() {
         const { apiPlayer, state, containerElement } = this;
-        const smPlaybackSpeedElement = document.getElementById(constants_1.ids.smPlaybackSpeed);
-        const smQualityElement = document.getElementById(constants_1.ids.smQuality);
-        const smSettingDetailGoBackIconElement = document.getElementById(constants_1.ids.smSettingDetailGoBackIcon);
-        const smSettingDetailTitleElement = document.getElementById(constants_1.ids.smSettingDetailTitle);
+        const smPlaybackSpeedElement = document.getElementById(this.ids.smPlaybackSpeed);
+        const smQualityElement = document.getElementById(this.ids.smQuality);
+        const smSettingDetailGoBackIconElement = document.getElementById(this.ids.smSettingDetailGoBackIcon);
+        const smSettingDetailTitleElement = document.getElementById(this.ids.smSettingDetailTitle);
         if (smPlaybackSpeedElement) {
             smPlaybackSpeedElement.onclick = (event) => this.goToPlaybackSpeedTab(event);
         }
@@ -3645,7 +3645,7 @@ class SettingsController extends BaseComponent_1.default {
         const settingItems = [
             {
                 title: 'Tốc độ phát',
-                id: constants_1.ids.smPlaybackSpeed,
+                id: this.ids.smPlaybackSpeed,
                 icon: icons_1.playbackSpeedIcon,
                 value: `<div class=${classes.settingItemValue}>
           <div>${state.playbackRate === 1 ? 'Bình thường' : state.playbackRate}</div>
@@ -3654,7 +3654,7 @@ class SettingsController extends BaseComponent_1.default {
             },
             {
                 title: 'Chất lượng',
-                id: constants_1.ids.smQuality,
+                id: this.ids.smQuality,
                 icon: icons_1.qualityIcon,
                 value: `<div class=${classes.settingItemValue}>
           <div>${this.getQualityLabel(this.state.activeTrack, this.state.tracks)}</div>
@@ -3676,8 +3676,8 @@ class SettingsController extends BaseComponent_1.default {
         const { classes, state } = this;
         const header = `
     <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Tốc độ phát</div>
+      <div class=${classes.settingItemIcon} id=${this.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${this.ids.smSettingDetailTitle}>Tốc độ phát</div>
     </div>`;
         const body = PLAYBACK_SPEEDS.map((pbrValue, index) => {
             const id = this.generatePlaybackItemId(index);
@@ -3735,8 +3735,8 @@ class SettingsController extends BaseComponent_1.default {
         const { tracks } = state;
         const header = `
     <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${constants_1.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${constants_1.ids.smSettingDetailTitle}>Chất lượng</div>
+      <div class=${classes.settingItemIcon} id=${this.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${this.ids.smSettingDetailTitle}>Chất lượng</div>
     </div>`;
         const body = tracks
             .map((track, index) => {
@@ -3786,7 +3786,6 @@ exports["default"] = SettingsController;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const ButtonPlayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts");
 const SettingsController_1 = __webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts");
@@ -3796,31 +3795,34 @@ class BodyController extends BaseComponent_1.default {
     buttonReplayPrimary;
     settingsController;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.buttonPlayPrimary = new ButtonPlayPrimary_1.default({
-            id: constants_1.ids.smButtonPlayPrimary,
+            id: ids.smButtonPlayPrimary,
             classes,
             apiPlayer,
+            ids,
         });
         this.buttonReplayPrimary = new ButtonReplayPrimary_1.default({
-            id: constants_1.ids.smButtonReplayPrimary,
+            id: ids.smButtonReplayPrimary,
             classes,
             apiPlayer,
+            ids,
         });
         this.settingsController = new SettingsController_1.default({
-            id: constants_1.ids.smSettingsContainer,
+            id: ids.smSettingsContainer,
             classes,
             apiPlayer,
+            ids,
         });
     }
     render() {
         if (this.containerElement) {
-            const { classes } = this;
+            const { classes, ids } = this;
             const htmlString = `
-      <div class=${classes.buttonPrimary} id=${constants_1.ids.smButtonPlayPrimary}></div>
-      <div class=${classes.buttonPrimary} id=${constants_1.ids.smButtonReplayPrimary}></div>
-      <div class=${classes.settingsContainer} id=${constants_1.ids.smSettingsContainer} tabindex="0"></div>`;
+      <div class=${classes.buttonPrimary} id=${ids.smButtonPlayPrimary}></div>
+      <div class=${classes.buttonPrimary} id=${ids.smButtonReplayPrimary}></div>
+      <div class=${classes.settingsContainer} id=${ids.smSettingsContainer} tabindex="0"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -3877,7 +3879,6 @@ exports["default"] = BodyController;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
-const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
 class SeekBarController extends BaseComponent_1.default {
     progressBuffer;
     progressBar;
@@ -3885,36 +3886,39 @@ class SeekBarController extends BaseComponent_1.default {
     timeoutId;
     isPlay;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.progressBuffer = new ProgressBuffer({
-            id: constants_1.ids.smProgressBuffer,
+            id: ids.smProgressBuffer,
             classes,
             apiPlayer,
+            ids,
         });
         this.progressBar = new ProgressBar({
-            id: constants_1.ids.smProgressBar,
+            id: ids.smProgressBar,
             classes,
             apiPlayer,
+            ids,
         });
         this.progressThumb = new ProgressThumb({
-            id: constants_1.ids.smProgressThumb,
+            id: ids.smProgressThumb,
             classes,
             apiPlayer,
+            ids,
         });
     }
     render() {
         if (this.containerElement) {
             const { classes } = this;
             const htmlString = `
-        <div class="${classes.progressContainer}" id="${constants_1.ids.smProgressBarContainer}">
-          <div class="${classes.progressBuffer}" id="${constants_1.ids.smProgressBuffer}"></div>
-          <div class="${classes.progressBar}" id="${constants_1.ids.smProgressBar}"></div>
-          <div class="${classes.progressThumb}" id="${constants_1.ids.smProgressThumb}"></div>
+        <div class="${classes.progressContainer}" id="${this.ids.smProgressBarContainer}">
+          <div class="${classes.progressBuffer}" id="${this.ids.smProgressBuffer}"></div>
+          <div class="${classes.progressBar}" id="${this.ids.smProgressBar}"></div>
+          <div class="${classes.progressThumb}" id="${this.ids.smProgressThumb}"></div>
         </div>`;
             this.containerElement.innerHTML = htmlString;
-            const progressThumbContainer = document.getElementById(constants_1.ids.smProgressThumb);
-            const progressBarbContainer = document.getElementById(constants_1.ids.smProgressBar);
+            const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
+            const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
             // Xử lý kéo thanh tiến trình
             if (progressThumbContainer && progressBarbContainer) {
                 progressThumbContainer.addEventListener('mousedown', (e) => {
@@ -3979,7 +3983,7 @@ class SeekBarController extends BaseComponent_1.default {
         }
     }
     handleEventClick(e) {
-        const progressBarbContainer = document.getElementById(constants_1.ids.smProgressBar);
+        const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
         if (progressBarbContainer) {
             const rect = progressBarbContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -4029,7 +4033,7 @@ class ProgressBuffer extends BaseComponent_1.default {
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBuffer);
+        const inputVolRangeEle = document.getElementById(this.ids.smProgressBuffer);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
     }
     getElementContainer() {
@@ -4046,7 +4050,7 @@ class ProgressBar extends BaseComponent_1.default {
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressBar);
+        const inputVolRangeEle = document.getElementById(this.ids.smProgressBar);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
     }
     getElementContainer() {
@@ -4063,7 +4067,7 @@ class ProgressThumb extends BaseComponent_1.default {
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
-        const inputVolRangeEle = document.getElementById(constants_1.ids.smProgressThumb);
+        const inputVolRangeEle = document.getElementById(this.ids.smProgressThumb);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
     }
     getElementContainer() {
@@ -4083,7 +4087,6 @@ class ProgressThumb extends BaseComponent_1.default {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const constants_1 = __webpack_require__(/*! ../../../../../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const CurrentTime_1 = __webpack_require__(/*! ../../../../../Components/CurrentTime */ "./src/class/Components/CurrentTime/index.ts");
@@ -4092,25 +4095,27 @@ class TimeBarContainer extends BaseComponent_1.default {
     currentTime;
     timeDuration;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.currentTime = new CurrentTime_1.default({
-            id: constants_1.ids.smTimeCurrent,
+            id: ids.smTimeCurrent,
             classes,
             apiPlayer,
+            ids,
         });
         this.timeDuration = new TimeDuration_1.default({
-            id: constants_1.ids.smTimeDuration,
+            id: ids.smTimeDuration,
             classes,
             apiPlayer,
+            ids,
         });
     }
     render() {
         const { classes } = this;
         if (this.containerElement) {
             if (this.containerElement) {
-                const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${constants_1.ids.smTimeCurrent}></div>
-        <div class=${classes.taskbarTimeDuration} id=${constants_1.ids.smTimeDuration}></div>`;
+                const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${this.ids.smTimeCurrent}></div>
+        <div class=${classes.taskbarTimeDuration} id=${this.ids.smTimeDuration}></div>`;
                 this.containerElement.innerHTML = htmlString;
             }
         }
@@ -4172,7 +4177,6 @@ exports["default"] = TimeBarContainer;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const constants_1 = __webpack_require__(/*! ../../../../../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const ButtonMute_1 = __webpack_require__(/*! ../../../../../Components/ButtonMute */ "./src/class/Components/ButtonMute/index.ts");
@@ -4183,24 +4187,27 @@ class VolumeContainer extends BaseComponent_1.default {
     buttonMute;
     selectVolumeRange;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.buttonVolume = new ButtonVolume_1.default({
-            id: constants_1.ids.smButtonVolume,
+            id: ids.smButtonVolume,
             classes,
             apiPlayer,
+            ids,
             handleButtonClick: this.handleButtonClick,
         });
         this.buttonMute = new ButtonMute_1.default({
-            id: constants_1.ids.smButtonMute,
+            id: ids.smButtonMute,
             classes,
             apiPlayer,
+            ids,
             handleButtonClick: this.handleButtonClick,
         });
         this.selectVolumeRange = new SelectVolumeRange_1.default({
-            id: constants_1.ids.smSelectVolumeRangeContainer,
+            id: ids.smSelectVolumeRangeContainer,
             classes,
             apiPlayer,
+            ids,
         });
     }
     handleButtonClick(event) {
@@ -4229,9 +4236,9 @@ class VolumeContainer extends BaseComponent_1.default {
     render() {
         if (this.containerElement) {
             const { classes } = this;
-            const htmlString = `<div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonVolume}></div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonMute}></div>
-        <div class=${classes.smSelectVolumeRangeContainer} id=${constants_1.ids.smSelectVolumeRangeContainer}></div>`;
+            const htmlString = `<div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonVolume}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonMute}></div>
+        <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4263,14 +4270,14 @@ class VolumeContainer extends BaseComponent_1.default {
     }
     handelEventMouseover(e) {
         e.preventDefault();
-        const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
+        const selectVolumeRangeContainerEle = document.getElementById(this.ids.smSelectVolumeRangeContainer);
         if (selectVolumeRangeContainerEle) {
             selectVolumeRangeContainerEle.classList.add(this.classes.smSelectVolumeRangeContainerEnable);
         }
     }
     handelEventMouseout(e) {
         e.stopPropagation();
-        const selectVolumeRangeContainerEle = document.getElementById(constants_1.ids.smSelectVolumeRangeContainer);
+        const selectVolumeRangeContainerEle = document.getElementById(this.ids.smSelectVolumeRangeContainer);
         if (selectVolumeRangeContainerEle) {
             selectVolumeRangeContainerEle.className = this.classes.smSelectVolumeRangeContainer;
         }
@@ -4291,7 +4298,6 @@ exports["default"] = VolumeContainer;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const ButtonFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonFullScreen */ "./src/class/Components/ButtonFullScreen/index.ts");
-const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
 const ButtonPlaySecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPlaySecondary */ "./src/class/Components/ButtonPlaySecondary/index.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 const ButtonPauseSecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPauseSecondary */ "./src/class/Components/ButtonPauseSecondary/index.ts");
@@ -4313,68 +4319,77 @@ class TaskbarController extends BaseComponent_1.default {
     liveStream;
     constructor(props) {
         super(props);
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         this.buttonFullScreen = new ButtonFullScreen_1.default({
-            id: constants_1.ids.smButtonFullScreen,
+            id: ids.smButtonFullScreen,
             classes,
             apiPlayer,
+            ids,
         });
         this.buttonPlaySecondary = new ButtonPlaySecondary_1.default({
-            id: constants_1.ids.smButtonPlaySecondary,
+            id: ids.smButtonPlaySecondary,
             classes,
             apiPlayer,
+            ids,
         });
         this.buttonPauseSecondary = new ButtonPauseSecondary_1.default({
-            id: constants_1.ids.smButtonPauseSecondary,
+            id: ids.smButtonPauseSecondary,
             classes,
             apiPlayer,
+            ids,
         });
         this.buttonExitFullScreen = new ButtonExitFullScreen_1.default({
-            id: constants_1.ids.smButtonExitFullScreen,
+            id: ids.smButtonExitFullScreen,
             classes,
             apiPlayer,
+            ids,
         });
         this.settingIconButton = new SettingIconButton_1.default({
-            id: constants_1.ids.smSettingIconButton,
+            id: ids.smSettingIconButton,
             classes,
             apiPlayer,
+            ids,
         });
         this.volumeContainer = new VolumeContainer_1.default({
-            id: constants_1.ids.smVolumeContainer,
+            id: ids.smVolumeContainer,
             classes,
             apiPlayer,
+            ids,
         });
         this.liveStream = new LiveStream_1.default({
-            id: constants_1.ids.smTaskbarLiveStream,
+            id: ids.smTaskbarLiveStream,
             classes,
             apiPlayer,
+            ids,
         });
         this.timeBarContainer = new TimeBarContainer_1.default({
-            id: constants_1.ids.smTimeBarContainer,
+            id: ids.smTimeBarContainer,
             classes,
             apiPlayer,
+            ids,
         });
         this.buttonReplaySecondary = new ButtonReplySecondary_1.default({
-            id: constants_1.ids.smButtonReplaySecondary,
+            id: ids.smButtonReplaySecondary,
             classes,
             apiPlayer,
+            ids,
         });
     }
     render() {
         if (this.containerElement) {
             const { classes } = this;
             const htmlString = `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonPlaySecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonPauseSecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonReplaySecondary}></div>
-      <div class=${classes.taskbarVolumeContainer} id=${constants_1.ids.smVolumeContainer}></div>
-     <div class=${classes.taskbarTimeBarContainer} id=${constants_1.ids.smTimeBarContainer}></div>
-     <div class=${classes.taskbarLiveStream} id=${constants_1.ids.smTaskbarLiveStream}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPlaySecondary}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPauseSecondary}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonReplaySecondary}></div>
+      <div class=${classes.taskbarVolumeContainer} id=${this.ids.smVolumeContainer}></div>
+     <div class=${classes.taskbarTimeBarContainer} id=${this.ids.smTimeBarContainer}></div>
+     <div class=${classes.taskbarLiveStream} id=${this.ids.smTaskbarLiveStream}></div>
   </div>
   <div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smSettingIconButton}></div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonFullScreen}></div>
-      <div class=${classes.taskbarGroupBtn} id=${constants_1.ids.smButtonExitFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smSettingIconButton}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonFullScreen}></div>
+      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonExitFullScreen}></div>
   </div>`;
             this.containerElement.innerHTML = htmlString;
         }
@@ -4487,31 +4502,32 @@ exports["default"] = TaskbarController;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const constants_1 = __webpack_require__(/*! ../../../../constants */ "./src/constants.ts");
 const SeekBarController_1 = __webpack_require__(/*! ./SeekBarController */ "./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts");
 const TaskbarController_1 = __webpack_require__(/*! ./TaskbarController */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts");
 class FooterController extends BaseComponent_1.default {
     seekBarController;
     taskbarController;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.seekBarController = new SeekBarController_1.default({
-            id: constants_1.ids.smSeekBarController,
+            id: ids.smSeekBarController,
             classes,
             apiPlayer,
+            ids,
         });
         this.taskbarController = new TaskbarController_1.default({
-            id: constants_1.ids.smTaskbarController,
+            id: ids.smTaskbarController,
             classes,
             apiPlayer,
+            ids,
         });
     }
     render() {
         if (this.containerElement) {
             const { classes } = this;
-            const htmlString = `<div class=${classes.seekBarController} id=${constants_1.ids.smSeekBarController}></div>
-      <div class=${classes.taskbarController} id=${constants_1.ids.smTaskbarController}></div>`;
+            const htmlString = `<div class="${classes.seekBarController}" id="${this.ids.smSeekBarController}"></div>
+      <div class="${classes.taskbarController}" id="${this.ids.smTaskbarController}"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4555,7 +4571,6 @@ exports["default"] = FooterController;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
-const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class ControllerContainer extends BaseComponent_1.default {
@@ -4563,24 +4578,18 @@ class ControllerContainer extends BaseComponent_1.default {
     bodyController;
     footerController;
     constructor(props) {
-        const { classes, apiPlayer } = props;
+        const { classes, apiPlayer, ids } = props;
         super(props);
-        // this.headController = new HeadController({ id: ids.smHeadController, classes, videoInfo, apiPlayer });
-        this.bodyController = new BodyController_1.default({ id: constants_1.ids.smBodyController, classes, apiPlayer });
-        this.footerController = new FooterController_1.default({ id: constants_1.ids.smFooterController, classes, apiPlayer });
+        this.bodyController = new BodyController_1.default({ id: ids.smBodyController, classes, apiPlayer, ids });
+        this.footerController = new FooterController_1.default({ id: ids.smFooterController, classes, apiPlayer, ids });
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
     }
     render() {
-        const { classes } = this;
-        //   const htmlContentString = `
-        //   <div class=${classes.headController} id=${ids.smHeadController}></div>
-        //   <div class=${classes.bodyController} id=${ids.smBodyController}></div>
-        //   <div class=${classes.footerController} id=${ids.smFooterController}></div>
-        //  `;
+        const { classes, ids } = this;
         const htmlContentString = `
-      <div class="${classes.bodyController}" id="${constants_1.ids.smBodyController}"></div>
-      <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${constants_1.ids.smFooterController}"></div>
+      <div class="${classes.bodyController}" id="${ids.smBodyController}"></div>
+      <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${ids.smFooterController}"></div>
      `;
         if (this.containerElement) {
             this.containerElement.innerHTML = htmlContentString;
@@ -4623,7 +4632,7 @@ class ControllerContainer extends BaseComponent_1.default {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        if (document.getElementById(constants_1.ids.smSettingsContainer)?.getAttribute('data-state') === type_1.ESettingPanelDataState.BLUR) {
+        if (document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === type_1.ESettingPanelDataState.BLUR) {
             // prevent event click when setting panel change state opened to blur
             return;
         }
@@ -4783,25 +4792,109 @@ class SmApiPlayer {
         this.typePlayer = props.typePlayer;
         this.version = props.version;
         this.eventemitter = new SmEventEmitter_1.default();
+        this.emitLoaded = this.emitLoaded.bind(this);
+        this.emitError = this.emitError.bind(this);
+        this.emitPlay = this.emitPlay.bind(this);
+        this.emitPause = this.emitPause.bind(this);
+        this.emitFullScreenChange = this.emitFullScreenChange.bind(this);
+        this.emitVolumeChange = this.emitVolumeChange.bind(this);
+        this.emitTimeUpdate = this.emitTimeUpdate.bind(this);
+        this.emitLoadedMeteData = this.emitLoadedMeteData.bind(this);
+        this.emitProgress = this.emitProgress.bind(this);
+        this.emitEnded = this.emitEnded.bind(this);
+        this.emitWaiting = this.emitWaiting.bind(this);
+        this.emitPlaying = this.emitPlaying.bind(this);
         this.emitTracksChangeEvent = this.emitTracksChangeEvent.bind(this);
         this.emitRateChange = this.emitRateChange.bind(this);
         this.registerListener();
     }
     registerListener() {
         const { player } = this;
-        player.addEventListener('adaptation', this.emitTracksChangeEvent);
-        player.addEventListener('variantchanged', this.emitTracksChangeEvent);
-        player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
-        player.addEventListener('trackschanged', this.emitTracksChangeEvent);
-        this.video?.addEventListener('ratechange', this.emitRateChange);
+        this.addEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
+        this.addEventListener(type_1.EEVentName.ERROR, this.emitError);
+        this.addEventListener(type_1.EEVentName.PLAY, this.emitPlay);
+        this.addEventListener(type_1.EEVentName.PAUSE, this.emitPause);
+        this.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+        this.addEventListener(type_1.EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+        this.addEventListener(type_1.EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+        this.addEventListener(type_1.EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+        this.addEventListener(type_1.EEVentName.PROGRESS, this.emitProgress);
+        this.addEventListener(type_1.EEVentName.ENDED, this.emitEnded);
+        this.addEventListener(type_1.EEVentName.WAITING, this.emitWaiting);
+        this.addEventListener(type_1.EEVentName.PLAYING, this.emitPlaying);
+        this.addEventListener(type_1.EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+        this.video?.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
     }
     unregisterListener() {
         const { player } = this;
-        player.addEventListener('adaptation', this.emitTracksChangeEvent);
-        player.addEventListener('variantchanged', this.emitTracksChangeEvent);
-        player.addEventListener('abrstatuschanged', this.emitTracksChangeEvent);
-        player.addEventListener('trackschanged', this.emitTracksChangeEvent);
-        this.video?.removeEventListener('ratechange', this.emitRateChange);
+        this.addEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
+        this.addEventListener(type_1.EEVentName.ERROR, this.emitError);
+        this.addEventListener(type_1.EEVentName.PLAY, this.emitPlay);
+        this.addEventListener(type_1.EEVentName.PAUSE, this.emitPause);
+        this.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+        this.addEventListener(type_1.EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+        this.addEventListener(type_1.EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+        this.addEventListener(type_1.EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+        this.addEventListener(type_1.EEVentName.PROGRESS, this.emitProgress);
+        this.addEventListener(type_1.EEVentName.ENDED, this.emitEnded);
+        this.addEventListener(type_1.EEVentName.WAITING, this.emitWaiting);
+        this.addEventListener(type_1.EEVentName.PLAYING, this.emitPlaying);
+        this.addEventListener(type_1.EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+        this.addEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+        this.video?.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
+    }
+    emitLoaded(data) {
+        console.log('addEventListener', type_1.EEVentName.LOADED, data);
+        this.eventemitter.trigger(type_1.EEVentName.LOADED, data);
+    }
+    emitError(data) {
+        console.log('addEventListener', type_1.EEVentName.ERROR, data);
+        this.eventemitter.trigger(type_1.EEVentName.ERROR, data);
+    }
+    emitPlay(data) {
+        console.log('addEventListener', type_1.EEVentName.PLAY, data);
+        this.eventemitter.trigger(type_1.EEVentName.PLAY, data);
+    }
+    emitPause(data) {
+        console.log('addEventListener', type_1.EEVentName.PAUSE, data);
+        this.eventemitter.trigger(type_1.EEVentName.PAUSE, data);
+    }
+    emitFullScreenChange(data) {
+        console.log('addEventListener', type_1.EEVentName.FULL_SCREEN_CHANGE, data);
+        this.eventemitter.trigger(type_1.EEVentName.FULL_SCREEN_CHANGE, data);
+    }
+    emitVolumeChange(data) {
+        console.log('addEventListener', type_1.EEVentName.VOLUME_CHANGE, data);
+        this.eventemitter.trigger(type_1.EEVentName.VOLUME_CHANGE, data);
+    }
+    emitTimeUpdate(data) {
+        console.log('addEventListener', type_1.EEVentName.TIME_UPDATE, data);
+        this.eventemitter.trigger(type_1.EEVentName.TIME_UPDATE, data);
+    }
+    emitLoadedMeteData(data) {
+        console.log('addEventListener', type_1.EEVentName.LOADED_META_DATA, data);
+        this.eventemitter.trigger(type_1.EEVentName.LOADED_META_DATA, data);
+    }
+    emitProgress(data) {
+        console.log('addEventListener', type_1.EEVentName.PROGRESS, data);
+        this.eventemitter.trigger(type_1.EEVentName.PROGRESS, data);
+    }
+    emitPlaying(data) {
+        console.log('addEventListener', type_1.EEVentName.PLAYING, data);
+        this.eventemitter.trigger(type_1.EEVentName.PLAYING, data);
+    }
+    emitEnded(data) {
+        console.log('addEventListener', type_1.EEVentName.ENDED, data);
+        this.eventemitter.trigger(type_1.EEVentName.ENDED, data);
+    }
+    emitWaiting(data) {
+        console.log('addEventListener', type_1.EEVentName.WAITING, data);
+        this.eventemitter.trigger(type_1.EEVentName.WAITING, data);
     }
     getVariantTracks() {
         const tracks = this.player.getVariantTracks();
@@ -5254,49 +5347,7 @@ exports["default"] = SmEventEmitter;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = exports.ids = void 0;
-exports.ids = {
-    smControllerContainer: 'sm-controller-container',
-    smControllerContent: 'sm-controller-content',
-    smLoading: 'sm-loading',
-    smError: 'sm-error',
-    smHeadController: 'sm-head-controller',
-    smBodyController: 'sm-body-controller',
-    smButtonPlayPrimary: 'sm-button-play-primary',
-    smSettingsContainer: 'sm-settings-container',
-    smSettingsContainerMask: 'sm-settings-container-mask',
-    smSettingDetailTitle: 'sm-settings-detail-title',
-    smSettingDetailGoBackIcon: 'sm-settings-detail-go-back-icon',
-    smSettingPlaybackSpeedItemPrefix: 'sm-settings-playback-speed-item',
-    smSettingQualityItemPrefix: 'sm-settings-quality-item',
-    smFooterController: 'sm-footer-controller',
-    smTaskbarController: 'sm-taskbar-controller',
-    smSeekBarController: 'sm-seek-bar-controller',
-    smButtonFullScreen: 'sm-button-full-screen',
-    smButtonPlaySecondary: 'sm-button-play-secondary',
-    smButtonPauseSecondary: 'sm-button-pause-secondary',
-    smButtonForward: 'sm-button-forward',
-    smButtonExitFullScreen: 'sm-button-exit-full-screen',
-    smButtonVolume: 'sm-button-volume',
-    smButtonMute: 'sm-button-mute',
-    smSelectVolumeRangeContainer: 'sm-select-volume-range-container',
-    smSelectVolumeRange: 'sm-select-volume-range',
-    smInputVolumeRange: 'sm-input-volume-range',
-    smVolumeContainer: 'sm-volume-container',
-    smPlaybackSpeed: 'sm-playback-rate-controller',
-    smQuality: 'sm-quality-controller',
-    smSettingIconButton: 'sm-setting-icon-button',
-    smTimeBarContainer: 'sm-time-bar-container',
-    smTaskbarLiveStream: 'sm-taskbar-live-stream',
-    smTimeCurrent: 'sm-time-current',
-    smTimeDuration: 'sm-time-duration',
-    smProgressBar: 'sm-progress-bar',
-    smProgressThumb: 'sm-progress-thumb',
-    smProgressBarContainer: 'sm-progress-bar-container',
-    smProgressBuffer: 'sm-progress-buffer',
-    smButtonReplaySecondary: 'sm-button-replay-secondary',
-    smButtonReplayPrimary: 'sm-button-replay-primary',
-};
+exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
 exports.versionDef = '4.10.0';
 var ETypePlayer;
 (function (ETypePlayer) {
@@ -5484,27 +5535,78 @@ exports.playbackSpeedIcon = `
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateHtmlContentControllerString = exports.generateHtmlContentContainerString = exports.createElementFromHTML = void 0;
-const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+exports.generateIIds = exports.generateHtmlContentControllerString = exports.createElementFromHTML = void 0;
+const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 const createElementFromHTML = (htmlString) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString.trim();
     return tempDiv.firstChild;
 };
 exports.createElementFromHTML = createElementFromHTML;
-const generateHtmlContentContainerString = (classes) => {
-    return `
-    <div class=${classes.controllerContent}  id=${constants_1.ids.smControllerContent}>
-    </div>
-    <div class=${classes.loadingContainer} id=${constants_1.ids.smLoading}>
-    </div>
-    <div class=${classes.errorContainer} id=${constants_1.ids.smError}>
-    </div>
-    `;
-};
-exports.generateHtmlContentContainerString = generateHtmlContentContainerString;
+// export const generateHtmlContentContainerString = (
+//   classes: ReturnType<typeof generateStyles>,
+//   ids: {
+//     smControllerContent: string;
+//     smLoading: string;
+//     smError: string;
+//   },
+// ) => {
+//   return `
+//     <div class=${classes.controllerContent}  id=${ids.smControllerContent}>
+//     </div>
+//     <div class=${classes.loadingContainer} id=${ids.smLoading}>
+//     </div>
+//     <div class=${classes.errorContainer} id=${ids.smError}>
+//     </div>
+//     `;
+// };
 const generateHtmlContentControllerString = (classes) => { };
 exports.generateHtmlContentControllerString = generateHtmlContentControllerString;
+const generateIIds = () => {
+    return {
+        smControllerContainer: (0, nanoid_1.nanoid)(4),
+        smControllerContent: (0, nanoid_1.nanoid)(4),
+        smLoading: (0, nanoid_1.nanoid)(4),
+        smError: (0, nanoid_1.nanoid)(4),
+        smHeadController: (0, nanoid_1.nanoid)(4),
+        smBodyController: (0, nanoid_1.nanoid)(4),
+        smButtonPlayPrimary: (0, nanoid_1.nanoid)(4),
+        smSettingsContainer: (0, nanoid_1.nanoid)(4),
+        smSettingsContainerMask: (0, nanoid_1.nanoid)(4),
+        smSettingDetailTitle: (0, nanoid_1.nanoid)(4),
+        smSettingDetailGoBackIcon: (0, nanoid_1.nanoid)(4),
+        smSettingPlaybackSpeedItemPrefix: (0, nanoid_1.nanoid)(4),
+        smSettingQualityItemPrefix: (0, nanoid_1.nanoid)(4),
+        smFooterController: (0, nanoid_1.nanoid)(4),
+        smTaskbarController: (0, nanoid_1.nanoid)(4),
+        smSeekBarController: (0, nanoid_1.nanoid)(4),
+        smButtonFullScreen: (0, nanoid_1.nanoid)(4),
+        smButtonPlaySecondary: (0, nanoid_1.nanoid)(4),
+        smButtonPauseSecondary: (0, nanoid_1.nanoid)(4),
+        smButtonForward: (0, nanoid_1.nanoid)(4),
+        smButtonExitFullScreen: (0, nanoid_1.nanoid)(4),
+        smButtonVolume: (0, nanoid_1.nanoid)(4),
+        smButtonMute: (0, nanoid_1.nanoid)(4),
+        smSelectVolumeRangeContainer: (0, nanoid_1.nanoid)(4),
+        smSelectVolumeRange: (0, nanoid_1.nanoid)(4),
+        smInputVolumeRange: (0, nanoid_1.nanoid)(4),
+        smVolumeContainer: (0, nanoid_1.nanoid)(4),
+        smPlaybackSpeed: (0, nanoid_1.nanoid)(4),
+        smQuality: (0, nanoid_1.nanoid)(4),
+        smSettingIconButton: (0, nanoid_1.nanoid)(4),
+        smTimeBarContainer: (0, nanoid_1.nanoid)(4),
+        smTaskbarLiveStream: (0, nanoid_1.nanoid)(4),
+        smTimeCurrent: (0, nanoid_1.nanoid)(4),
+        smTimeDuration: (0, nanoid_1.nanoid)(4),
+        smProgressBar: (0, nanoid_1.nanoid)(4),
+        smProgressThumb: (0, nanoid_1.nanoid)(4),
+        smProgressBarContainer: (0, nanoid_1.nanoid)(4),
+        smProgressBuffer: (0, nanoid_1.nanoid)(4),
+        smButtonReplaySecondary: (0, nanoid_1.nanoid)(4),
+        smButtonReplayPrimary: (0, nanoid_1.nanoid)(4),
+    };
+};
+exports.generateIIds = generateIIds;
 
 
 /***/ }),
@@ -6202,6 +6304,61 @@ function hexToRgba(hex, alpha) {
 exports.hexToRgba = hexToRgba;
 
 
+/***/ }),
+
+/***/ "./node_modules/nanoid/index.browser.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/nanoid/index.browser.js + 1 modules ***!
+  \**********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  customAlphabet: () => (/* binding */ customAlphabet),
+  customRandom: () => (/* binding */ customRandom),
+  nanoid: () => (/* binding */ nanoid),
+  random: () => (/* binding */ random),
+  urlAlphabet: () => (/* reexport */ urlAlphabet)
+});
+
+;// CONCATENATED MODULE: ./node_modules/nanoid/url-alphabet/index.js
+const urlAlphabet =
+  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
+
+;// CONCATENATED MODULE: ./node_modules/nanoid/index.browser.js
+
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+let customRandom = (alphabet, defaultSize, getRandom) => {
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+  return (size = defaultSize) => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      let j = step
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+let customAlphabet = (alphabet, size = 21) =>
+  customRandom(alphabet, size, random)
+let nanoid = (size = 21) => {
+  let id = ''
+  let bytes = crypto.getRandomValues(new Uint8Array(size))
+  while (size--) {
+    id += urlAlphabet[bytes[size] & 63]
+  }
+  return id
+}
+
+
 /***/ })
 
 /******/ 	});
@@ -6270,7 +6427,6 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const ControllerContainer_1 = __webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts");
 const ErrorContainer_1 = __webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts");
 const LoadingContainer_1 = __webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts");
@@ -6286,11 +6442,12 @@ class SmUIControls {
     controllerContainer;
     errorContainer;
     loadingContainer;
+    ids;
     constructor(props) {
         const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const htmlContentString = (0, services_1.generateHtmlContentContainerString)(classes);
         const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version }));
         const VideoContainerElement = document.getElementById(idVideoContainer);
+        this.ids = (0, services_1.generateIIds)();
         if (!this.isInit) {
             this.isInit = true;
             if (VideoContainerElement) {
@@ -6298,65 +6455,21 @@ class SmUIControls {
                 VideoContainerElement.style.overflow = 'hidden';
                 const smControllerContainerEle = document.createElement('div');
                 smControllerContainerEle.className = classes.container;
-                smControllerContainerEle.id = constants_1.ids.smControllerContainer;
-                smControllerContainerEle.innerHTML = htmlContentString;
+                smControllerContainerEle.id = this.ids.smControllerContainer;
+                smControllerContainerEle.innerHTML = `
+          <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
+          <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
+          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
                 VideoContainerElement.appendChild(smControllerContainerEle);
                 this.controllerContainer = new ControllerContainer_1.default({
-                    id: constants_1.ids.smControllerContent,
+                    id: this.ids.smControllerContent,
                     classes,
                     videoInfo,
                     apiPlayer,
+                    ids: this.ids,
                 });
-                this.errorContainer = new ErrorContainer_1.default({ id: constants_1.ids.smError, classes, apiPlayer });
-                this.loadingContainer = new LoadingContainer_1.default({ id: constants_1.ids.smLoading, classes, apiPlayer });
-                apiPlayer.addEventListener(type_1.EEVentName.LOADED, (data) => {
-                    // console.log('addEventListener', EEVentName.LOADED, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.LOADED, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.ERROR, (data) => {
-                    // console.log('addEventListener', EEVentName.ERROR, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.ERROR, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.PLAY, (data) => {
-                    // console.log('addEventListener', EEVentName.PLAY, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PLAY, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.PAUSE, (data) => {
-                    // console.log('addEventListener', EEVentName.PAUSE, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PAUSE, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, (data) => {
-                    // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.FULL_SCREEN_CHANGE, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.VOLUME_CHANGE, (data) => {
-                    // console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.VOLUME_CHANGE, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.TIME_UPDATE, (data) => {
-                    // console.log('addEventListener', EEVentName.TIME_UPDATE, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.TIME_UPDATE, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.LOADED_META_DATA, (data) => {
-                    // console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.LOADED_META_DATA, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.PROGRESS, (data) => {
-                    // console.log('addEventListener', EEVentName.PROGRESS, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PROGRESS, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.ENDED, (data) => {
-                    // console.log('addEventListener', EEVentName.ENDED, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.ENDED, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.WAITING, (data) => {
-                    // console.log('addEventListener', EEVentName.WAITING, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.WAITING, data);
-                });
-                apiPlayer.addEventListener(type_1.EEVentName.PLAYING, (data) => {
-                    // console.log('addEventListener', EEVentName.PLAYING, data);
-                    apiPlayer.eventemitter.trigger(type_1.EEVentName.PLAYING, data);
-                });
+                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
+                this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
             }
         }
     }

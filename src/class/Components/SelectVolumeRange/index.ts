@@ -1,4 +1,3 @@
-import { ids } from '../../../constants';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
@@ -12,7 +11,7 @@ class SelectVolumeRange extends BaseComponent {
   render() {
     const volume = this.apiPlayer.getVolume();
     if (this.containerElement) {
-      this.containerElement.innerHTML = `<input  id=${ids.smInputVolumeRange}
+      this.containerElement.innerHTML = `<input  id=${this.ids.smInputVolumeRange}
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
        value=${volume}>
       `;
@@ -21,14 +20,14 @@ class SelectVolumeRange extends BaseComponent {
     this.updateSliderHighlight(volume);
   }
   update(value: number) {
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange) as HTMLInputElement;
+    const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange) as HTMLInputElement;
     if (inputVolRangeEle) {
       inputVolRangeEle.value = value.toString();
       inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${value * 100}%`);
     }
   }
   registerListener() {
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange);
+    const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
     if (inputVolRangeEle) {
       inputVolRangeEle.oninput = (event) => {
         const { value } = event.target as HTMLInputElement;
@@ -40,12 +39,12 @@ class SelectVolumeRange extends BaseComponent {
 
   updateSliderHighlight(volume: number) {
     const percentage = volume * 100;
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange);
+    const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width', `${percentage}%`);
   }
 
   unregisterListener() {
-    const inputVolRangeEle = document.getElementById(ids.smInputVolumeRange);
+    const inputVolRangeEle = document.getElementById(this.ids.smInputVolumeRange);
     if (inputVolRangeEle) {
       inputVolRangeEle.oninput = (event) => {};
     }

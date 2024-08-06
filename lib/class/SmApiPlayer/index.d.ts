@@ -15,6 +15,18 @@ export default class SmApiPlayer {
     });
     registerListener(): void;
     unregisterListener(): void;
+    emitLoaded(data: any): void;
+    emitError(data: any): void;
+    emitPlay(data: any): void;
+    emitPause(data: any): void;
+    emitFullScreenChange(data: any): void;
+    emitVolumeChange(data: any): void;
+    emitTimeUpdate(data: any): void;
+    emitLoadedMeteData(data: any): void;
+    emitProgress(data: any): void;
+    emitPlaying(data: any): void;
+    emitEnded(data: any): void;
+    emitWaiting(data: any): void;
     getVariantTracks(): {
         tracks: Track[];
     };

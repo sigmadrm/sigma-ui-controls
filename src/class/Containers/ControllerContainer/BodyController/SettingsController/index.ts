@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-globals */
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
-import { ids } from '../../../../../constants';
 import { EEVentName, ESettingPanelDataState, IConstructorBaseProps, Track } from '../../../../../type';
 import BaseComponent from '../../../../BaseComponent';
 
@@ -35,19 +34,19 @@ export default class SettingsController extends BaseComponent<TSettingState> {
   }
 
   generatePlaybackItemId(index: number) {
-    return `${ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
+    return `${this.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
   }
 
   generateQualityItemId(index: number) {
-    return `${ids.smSettingQualityItemPrefix}-${index}`;
+    return `${this.ids.smSettingQualityItemPrefix}-${index}`;
   }
 
   registerListener() {
     const { apiPlayer, state, containerElement } = this;
-    const smPlaybackSpeedElement = document.getElementById(ids.smPlaybackSpeed);
-    const smQualityElement = document.getElementById(ids.smQuality);
-    const smSettingDetailGoBackIconElement = document.getElementById(ids.smSettingDetailGoBackIcon);
-    const smSettingDetailTitleElement = document.getElementById(ids.smSettingDetailTitle);
+    const smPlaybackSpeedElement = document.getElementById(this.ids.smPlaybackSpeed);
+    const smQualityElement = document.getElementById(this.ids.smQuality);
+    const smSettingDetailGoBackIconElement = document.getElementById(this.ids.smSettingDetailGoBackIcon);
+    const smSettingDetailTitleElement = document.getElementById(this.ids.smSettingDetailTitle);
 
     if (smPlaybackSpeedElement) {
       smPlaybackSpeedElement.onclick = (event) => this.goToPlaybackSpeedTab(event);
@@ -164,7 +163,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     const settingItems = [
       {
         title: 'Tốc độ phát',
-        id: ids.smPlaybackSpeed,
+        id: this.ids.smPlaybackSpeed,
         icon: playbackSpeedIcon,
         value: `<div class=${classes.settingItemValue}>
           <div>${state.playbackRate === 1 ? 'Bình thường' : state.playbackRate}</div>
@@ -173,7 +172,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       },
       {
         title: 'Chất lượng',
-        id: ids.smQuality,
+        id: this.ids.smQuality,
         icon: qualityIcon,
         value: `<div class=${classes.settingItemValue}>
           <div>${this.getQualityLabel(this.state.activeTrack, this.state.tracks)}</div>
@@ -197,8 +196,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     const { classes, state } = this;
     const header = `
     <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${ids.smSettingDetailGoBackIcon}>${chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${ids.smSettingDetailTitle}>Tốc độ phát</div>
+      <div class=${classes.settingItemIcon} id=${this.ids.smSettingDetailGoBackIcon}>${chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${this.ids.smSettingDetailTitle}>Tốc độ phát</div>
     </div>`;
 
     const body = PLAYBACK_SPEEDS.map((pbrValue, index) => {
@@ -262,8 +261,8 @@ export default class SettingsController extends BaseComponent<TSettingState> {
 
     const header = `
     <div class=${classes.settingHeader}>
-      <div class=${classes.settingItemIcon} id=${ids.smSettingDetailGoBackIcon}>${chevronLeftIcon}</div>
-      <div class=${classes.settingItemTitle} id=${ids.smSettingDetailTitle}>Chất lượng</div>
+      <div class=${classes.settingItemIcon} id=${this.ids.smSettingDetailGoBackIcon}>${chevronLeftIcon}</div>
+      <div class=${classes.settingItemTitle} id=${this.ids.smSettingDetailTitle}>Chất lượng</div>
     </div>`;
 
     const body = tracks
