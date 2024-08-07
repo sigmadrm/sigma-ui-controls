@@ -1,5 +1,12 @@
 
 
+## [0.0.28](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.27...v0.0.28) (2024-08-07)
+
+
+### Bug Fixes
+
+* change type props SmUIControls ([f87f6d7](https://github.com/sigmadrm/sigma-ui-controls/commit/f87f6d783e659055f653183163cbd02b32f75afe))
+
 ## [0.0.27](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.26...v0.0.27) (2024-08-07)
 
 
