@@ -36,7 +36,13 @@ class ButtonMute extends BaseComponent {
   }
   show() {
     if (this.containerElement) {
-      this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+      if (this.containerElement) {
+        this.containerElement.className = [
+          this.classes.taskbarGroupBtn,
+          this.classes.taskbarGroupBtnEnable,
+          this.classes.taskbarGroupBtnMobile,
+        ].join(' ');
+      }
     }
   }
 }

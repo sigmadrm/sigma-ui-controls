@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-properties */
 import { ETypePlayer } from '../../constants';
-import { EEVentName, Track } from '../../type';
+import { EDeviceType, EEVentName, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 export default class SmApiPlayer {
@@ -9,8 +9,16 @@ export default class SmApiPlayer {
   public typePlayer: ETypePlayer;
   public version?: string;
   public eventemitter: SmEventEmitter;
+  public deviceType: EDeviceType;
 
-  constructor(props: { player: any; video?: HTMLVideoElement; typePlayer: ETypePlayer; version?: string }) {
+  constructor(props: {
+    player: any;
+    video?: HTMLVideoElement;
+    typePlayer: ETypePlayer;
+    version?: string;
+    deviceType: EDeviceType;
+  }) {
+    this.deviceType = props.deviceType;
     this.player = props.player;
     this.video = props.video;
     this.typePlayer = props.typePlayer;

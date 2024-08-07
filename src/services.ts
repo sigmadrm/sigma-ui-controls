@@ -1,31 +1,13 @@
+import { UAParser } from 'ua-parser-js';
+
 import { nanoid } from 'nanoid';
-import generateStyles from './style';
-import { IIds } from './type';
+import { EDeviceType, IIds } from './type';
 
 export const createElementFromHTML = (htmlString: string) => {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = htmlString.trim();
   return tempDiv.firstChild;
 };
-
-// export const generateHtmlContentContainerString = (
-//   classes: ReturnType<typeof generateStyles>,
-//   ids: {
-//     smControllerContent: string;
-//     smLoading: string;
-//     smError: string;
-//   },
-// ) => {
-//   return `
-//     <div class=${classes.controllerContent}  id=${ids.smControllerContent}>
-//     </div>
-//     <div class=${classes.loadingContainer} id=${ids.smLoading}>
-//     </div>
-//     <div class=${classes.errorContainer} id=${ids.smError}>
-//     </div>
-//     `;
-// };
-export const generateHtmlContentControllerString = (classes: ReturnType<typeof generateStyles>) => {};
 
 export const generateIIds = (): IIds => {
   return {
@@ -69,5 +51,33 @@ export const generateIIds = (): IIds => {
     smProgressBuffer: nanoid(4),
     smButtonReplaySecondary: nanoid(4),
     smButtonReplayPrimary: nanoid(4),
+    smSettingIconButtonMobile: nanoid(4),
   };
+};
+
+export const detectDevice = (): EDeviceType => {
+  try {
+    const parser = new UAParser();
+    const result = parser.getResult();
+    const deviceType = result.device.type;
+    console.log(deviceType);
+    if (deviceType) {
+      if (deviceType.toLowerCase() === EDeviceType.MOBILE) {
+        return EDeviceType.MOBILE;
+      } else if (deviceType.toLowerCase() === EDeviceType.TABLET) {
+        return EDeviceType.TABLET;
+      } else {
+        return EDeviceType.DESKTOP;
+      }
+    }
+    return EDeviceType.DESKTOP;
+  } catch (error) {
+    return EDeviceType.DESKTOP;
+  }
+};
+export const detectDeviceMobile = (deviceType: EDeviceType): boolean => {
+  return deviceType === EDeviceType.MOBILE;
+};
+export const checkDeviceIsTouch = (deviceType: EDeviceType): boolean => {
+  return deviceType === EDeviceType.TABLET || deviceType === EDeviceType.MOBILE;
 };

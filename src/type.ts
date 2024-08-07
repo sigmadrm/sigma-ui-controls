@@ -11,14 +11,13 @@ export interface IConfigureUIPlayerProps {
   videoInfo?: {
     name?: string;
   };
-
   style?: {
     primaryColor?: string;
     logo?: string;
   };
   ids: IIds;
 }
-export type TGenerateStylesProps = IConfigureUIPlayerProps['style'];
+export type TGenerateStylesProps = IConfigureUIPlayerProps['style'] & { deviceType: EDeviceType };
 
 export enum ESettingPanelDataState {
   BLUR = 'blur',
@@ -98,6 +97,7 @@ export type IIds = {
   smProgressBuffer: string;
   smButtonReplaySecondary: string;
   smButtonReplayPrimary: string;
+  smSettingIconButtonMobile: string;
 };
 
 export type TClasses = ReturnType<typeof generateStyles>;
@@ -182,4 +182,18 @@ export interface ISmEventEmitter {
   listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
   emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean;
   listenerCount<E extends keyof SmListeners>(event: E): number;
+}
+
+export enum EDeviceType {
+  MOBILE = 'mobile',
+  TABLET = 'tablet',
+  DESKTOP = 'desktop',
+}
+
+export enum EBreakpoint {
+  XS = 0,
+  SM = 768,
+  MD = 1024,
+  LG = 1280,
+  XL = 1441,
 }

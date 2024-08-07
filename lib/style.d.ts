@@ -4,7 +4,8 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     controllerContent: string;
     controllerContentEnable: string;
     headController: string;
-    headControllerTitle: string;
+    headControllerEnable: string;
+    smSettingIconButtonMB: string;
     bodyController: string;
     settingsContainer: string;
     settingsContainerMask: string;
@@ -32,6 +33,7 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     taskbarGroup: string;
     taskbarGroupBtn: string;
     taskbarIconActive: string;
+    taskbarGroupBtnMobile: string;
     taskbarIconInactive: string;
     taskbarGroupBtnEnable: string;
     taskbarVolumeContainer: string;

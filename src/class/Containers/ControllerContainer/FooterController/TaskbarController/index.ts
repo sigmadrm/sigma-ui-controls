@@ -85,18 +85,18 @@ class TaskbarController extends BaseComponent {
   render() {
     if (this.containerElement) {
       const { classes } = this;
-      const htmlString = `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPlaySecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPauseSecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonReplaySecondary}></div>
-      <div class=${classes.taskbarVolumeContainer} id=${this.ids.smVolumeContainer}></div>
-     <div class=${classes.taskbarTimeBarContainer} id=${this.ids.smTimeBarContainer}></div>
-     <div class=${classes.taskbarLiveStream} id=${this.ids.smTaskbarLiveStream}></div>
+      const htmlString = `<div class="${classes.taskbarGroup}">
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonPlaySecondary}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonPauseSecondary}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonReplaySecondary}"></div>
+      <div class="${classes.taskbarVolumeContainer}" id="${this.ids.smVolumeContainer}"></div>
+     <div class="${classes.taskbarTimeBarContainer}" id="${this.ids.smTimeBarContainer}"></div>
+     <div class="${classes.taskbarLiveStream}" id="${this.ids.smTaskbarLiveStream}"></div>
   </div>
-  <div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smSettingIconButton}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonFullScreen}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonExitFullScreen}></div>
+  <div class="${classes.taskbarGroup}">
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smSettingIconButton}"></div>
+      <div class="${classes.taskbarGroupBtn}" id="${this.ids.smButtonFullScreen}"></div>
+      <div class="${classes.taskbarGroupBtn}" id="${this.ids.smButtonExitFullScreen}"></div>
   </div>`;
       this.containerElement.innerHTML = htmlString;
     }

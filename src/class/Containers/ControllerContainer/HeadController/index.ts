@@ -1,28 +1,51 @@
 import BaseComponent from '../../../BaseComponent';
-import { EEVentName, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
+import { IConstructorBaseProps } from '../../../../type';
+import SettingIconButtonMB from '../../../Components/Mobile/SettingIconButtonMB';
 
-interface IConstructorProps extends IConstructorBaseProps {
-  videoInfo: IConfigureUIPlayerProps['videoInfo'];
-}
+interface IConstructorProps extends IConstructorBaseProps {}
 
 class HeadController extends BaseComponent {
-  private videoInfo: IConfigureUIPlayerProps['videoInfo'];
-
+  private settingIconButton: SettingIconButtonMB | undefined;
   constructor(props: IConstructorProps) {
-    const { videoInfo, ...baseProps } = props;
-    super(baseProps as IConstructorBaseProps);
-    this.videoInfo = videoInfo;
-    baseProps.apiPlayer.eventemitter.on(EEVentName.LOADED, () => {
-      this.render();
+    const { classes, apiPlayer, ids } = props;
+    super(props);
+    this.settingIconButton = new SettingIconButtonMB({
+      id: ids.smSettingIconButtonMobile,
+      classes,
+      apiPlayer,
+      ids,
     });
   }
 
   render() {
     if (this.containerElement) {
-      const videoName = this.videoInfo?.name ?? '';
-      const { classes } = this;
-      const htmlString = `${videoName && `<p class=${classes.headControllerTitle}>${videoName}</p>`}`;
+      const htmlString = `<div></div>
+      <div class="${this.classes.smSettingIconButtonMB}" id="${this.ids.smSettingIconButtonMobile}"></div>`;
       this.containerElement.innerHTML = htmlString;
+    }
+  }
+  registerListener() {
+    if (this.containerElement) {
+      this.containerElement.onclick = (event) => this.handelEventClick(event);
+    }
+  }
+  unregisterListener(): void {
+    if (this.containerElement) {
+      this.containerElement.onclick = (event) => {};
+    }
+  }
+  handelEventClick = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  hidden() {
+    if (this.containerElement) {
+      this.containerElement.className = this.classes.headController;
+    }
+  }
+  show() {
+    if (this.containerElement) {
+      this.containerElement.classList.add(this.classes.headControllerEnable);
     }
   }
 }

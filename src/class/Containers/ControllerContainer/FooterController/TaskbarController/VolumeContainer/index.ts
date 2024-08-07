@@ -60,9 +60,9 @@ class VolumeContainer extends BaseComponent<IConstructorProps> {
   render(): void {
     if (this.containerElement) {
       const { classes } = this;
-      const htmlString = `<div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonVolume}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonMute}></div>
-        <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
+      const htmlString = `<div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonVolume}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonMute}"></div>
+      <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
       this.containerElement.innerHTML = htmlString;
     }
   }

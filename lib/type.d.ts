@@ -16,7 +16,9 @@ export interface IConfigureUIPlayerProps {
     };
     ids: IIds;
 }
-export type TGenerateStylesProps = IConfigureUIPlayerProps['style'];
+export type TGenerateStylesProps = IConfigureUIPlayerProps['style'] & {
+    deviceType: EDeviceType;
+};
 export declare enum ESettingPanelDataState {
     BLUR = "blur",
     OPENED = "opened",
@@ -93,6 +95,7 @@ export type IIds = {
     smProgressBuffer: string;
     smButtonReplaySecondary: string;
     smButtonReplayPrimary: string;
+    smSettingIconButtonMobile: string;
 };
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
@@ -200,6 +203,18 @@ export interface ISmEventEmitter {
     listeners<E extends keyof SmListeners>(event: E): SmListeners[E][];
     emit<E extends keyof SmListeners>(event: E, name: E, eventObject: Parameters<SmListeners[E]>[1]): boolean;
     listenerCount<E extends keyof SmListeners>(event: E): number;
+}
+export declare enum EDeviceType {
+    MOBILE = "mobile",
+    TABLET = "tablet",
+    DESKTOP = "desktop"
+}
+export declare enum EBreakpoint {
+    XS = 0,
+    SM = 768,
+    MD = 1024,
+    LG = 1280,
+    XL = 1441
 }
 export {};
 //# sourceMappingURL=type.d.ts.map

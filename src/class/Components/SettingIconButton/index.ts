@@ -13,16 +13,23 @@ class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   }
 
   render() {
-    const { classes } = this;
     const { active } = this.state;
     if (this.containerElement) {
       this.containerElement.innerHTML = settingIcon;
       this.containerElement.style.display = 'block';
       this.containerElement.style.setProperty('--animate-duration', '1s');
       if (active) {
-        this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconActive}`;
+        this.containerElement.className = [
+          this.classes.taskbarGroupBtn,
+          this.classes.taskbarIconActive,
+          this.classes.taskbarGroupBtnMobile,
+        ].join(' ');
       } else {
-        this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconInactive}`;
+        this.containerElement.className = [
+          this.classes.taskbarGroupBtn,
+          this.classes.taskbarIconInactive,
+          this.classes.taskbarGroupBtnMobile,
+        ].join(' ');
       }
     }
   }

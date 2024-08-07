@@ -9,7 +9,6 @@
 		root["SmUIControls"] = factory();
 })(self, () => {
 return /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js":
@@ -18,6 +17,7 @@ return /******/ (() => { // webpackBootstrap
   \************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
@@ -2376,6 +2376,7 @@ var _createEmotion = createEmotion({
   \*********************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 var has = Object.prototype.hasOwnProperty
@@ -2722,6 +2723,7 @@ if (true) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -2734,6 +2736,7 @@ __webpack_require__.r(__webpack_exports__);
   \***********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -2746,6 +2749,7 @@ __webpack_require__.r(__webpack_exports__);
   \******************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 class BaseComponent {
@@ -2807,6 +2811,7 @@ exports["default"] = BaseComponent;
   \************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -2860,6 +2865,7 @@ exports["default"] = ButtonExitFullScreen;
   \********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -2917,6 +2923,7 @@ exports["default"] = ButtonFullScreen;
   \**************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -2950,7 +2957,13 @@ class ButtonMute extends BaseComponent_1.default {
     }
     show() {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            if (this.containerElement) {
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarGroupBtnEnable,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
+            }
         }
     }
 }
@@ -2965,6 +2978,7 @@ exports["default"] = ButtonMute;
   \************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -3003,7 +3017,11 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
     }
     show() {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            this.containerElement.className = [
+                this.classes.taskbarGroupBtn,
+                this.classes.taskbarGroupBtnEnable,
+                this.classes.taskbarGroupBtnMobile,
+            ].join(' ');
         }
     }
 }
@@ -3018,6 +3036,7 @@ exports["default"] = ButtonPauseSecondary;
   \*********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3071,6 +3090,7 @@ exports["default"] = ButtonPlayPrimary;
   \***********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3110,7 +3130,11 @@ class ButtonPlaySecondary extends BaseComponent_1.default {
     }
     show() {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            this.containerElement.className = [
+                this.classes.taskbarGroupBtn,
+                this.classes.taskbarGroupBtnEnable,
+                this.classes.taskbarGroupBtnMobile,
+            ].join(' ');
         }
     }
 }
@@ -3125,6 +3149,7 @@ exports["default"] = ButtonPlaySecondary;
   \***********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3176,6 +3201,7 @@ exports["default"] = ButtonReplyPrimary;
   \************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3212,7 +3238,11 @@ class ButtonReplySecondary extends BaseComponent_1.default {
     }
     show() {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            this.containerElement.className = [
+                this.classes.taskbarGroupBtn,
+                this.classes.taskbarGroupBtnEnable,
+                this.classes.taskbarGroupBtnMobile,
+            ].join(' ');
         }
     }
 }
@@ -3227,6 +3257,7 @@ exports["default"] = ButtonReplySecondary;
   \****************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3260,7 +3291,13 @@ class ButtonVolume extends BaseComponent_1.default {
     }
     show() {
         if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+            if (this.containerElement) {
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarGroupBtnEnable,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
+            }
         }
     }
 }
@@ -3275,6 +3312,7 @@ exports["default"] = ButtonVolume;
   \***************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const utils_1 = __webpack_require__(/*! ../../../utils */ "./src/utils.ts");
@@ -3306,6 +3344,7 @@ exports["default"] = CurrentTime;
   \**************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -3350,12 +3389,82 @@ exports["default"] = LiveStream;
 
 /***/ }),
 
+/***/ "./src/class/Components/Mobile/SettingIconButtonMB/index.ts":
+/*!******************************************************************!*\
+  !*** ./src/class/Components/Mobile/SettingIconButtonMB/index.ts ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
+const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+class SettingIconButtonMB extends BaseComponent_1.default {
+    constructor(props) {
+        super(props, { active: false });
+        this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
+    }
+    render() {
+        const { active } = this.state;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.settingIcon;
+            this.containerElement.style.display = 'block';
+            this.containerElement.style.setProperty('--animate-duration', '1s');
+            if (active) {
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarIconActive,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
+            }
+            else {
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarIconInactive,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
+            }
+        }
+    }
+    registerListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
+    }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
+    }
+    handleSettingPanelVisible(event, data) {
+        const { visible } = data;
+        this.state = { ...this.state, active: visible };
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        const visible = !this.state.active;
+        this.containerElement?.setAttribute('data-state', visible ? type_1.ESettingPanelDataState.OPENED : type_1.ESettingPanelDataState.CLOSED);
+        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible });
+    }
+}
+exports["default"] = SettingIconButtonMB;
+
+
+/***/ }),
+
 /***/ "./src/class/Components/SelectVolumeRange/index.ts":
 /*!*********************************************************!*\
   !*** ./src/class/Components/SelectVolumeRange/index.ts ***!
   \*********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -3415,6 +3524,7 @@ exports["default"] = SelectVolumeRange;
   \*********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -3426,17 +3536,24 @@ class SettingIconButton extends BaseComponent_1.default {
         this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
-        const { classes } = this;
         const { active } = this.state;
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.settingIcon;
             this.containerElement.style.display = 'block';
             this.containerElement.style.setProperty('--animate-duration', '1s');
             if (active) {
-                this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconActive}`;
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarIconActive,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
             }
             else {
-                this.containerElement.className = `${classes.taskbarGroupBtn} ${classes.taskbarIconInactive}`;
+                this.containerElement.className = [
+                    this.classes.taskbarGroupBtn,
+                    this.classes.taskbarIconInactive,
+                    this.classes.taskbarGroupBtnMobile,
+                ].join(' ');
             }
         }
     }
@@ -3476,6 +3593,7 @@ exports["default"] = SettingIconButton;
   \****************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const utils_1 = __webpack_require__(/*! ../../../utils */ "./src/utils.ts");
@@ -3506,6 +3624,7 @@ exports["default"] = TimeDuration;
   \*********************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable no-restricted-globals */
@@ -3783,6 +3902,7 @@ exports["default"] = SettingsController;
   \**************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -3875,6 +3995,7 @@ exports["default"] = BodyController;
   \**********************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -4085,6 +4206,7 @@ class ProgressThumb extends BaseComponent_1.default {
   \***************************************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
@@ -4175,6 +4297,7 @@ exports["default"] = TimeBarContainer;
   \**************************************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
@@ -4236,9 +4359,9 @@ class VolumeContainer extends BaseComponent_1.default {
     render() {
         if (this.containerElement) {
             const { classes } = this;
-            const htmlString = `<div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonVolume}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonMute}></div>
-        <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
+            const htmlString = `<div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonVolume}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonMute}"></div>
+      <div class=${classes.smSelectVolumeRangeContainer} id=${this.ids.smSelectVolumeRangeContainer}></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4294,6 +4417,7 @@ exports["default"] = VolumeContainer;
   \**********************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
@@ -4378,18 +4502,18 @@ class TaskbarController extends BaseComponent_1.default {
     render() {
         if (this.containerElement) {
             const { classes } = this;
-            const htmlString = `<div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPlaySecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonPauseSecondary}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonReplaySecondary}></div>
-      <div class=${classes.taskbarVolumeContainer} id=${this.ids.smVolumeContainer}></div>
-     <div class=${classes.taskbarTimeBarContainer} id=${this.ids.smTimeBarContainer}></div>
-     <div class=${classes.taskbarLiveStream} id=${this.ids.smTaskbarLiveStream}></div>
+            const htmlString = `<div class="${classes.taskbarGroup}">
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonPlaySecondary}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonPauseSecondary}"></div>
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smButtonReplaySecondary}"></div>
+      <div class="${classes.taskbarVolumeContainer}" id="${this.ids.smVolumeContainer}"></div>
+     <div class="${classes.taskbarTimeBarContainer}" id="${this.ids.smTimeBarContainer}"></div>
+     <div class="${classes.taskbarLiveStream}" id="${this.ids.smTaskbarLiveStream}"></div>
   </div>
-  <div class=${classes.taskbarGroup}>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smSettingIconButton}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonFullScreen}></div>
-      <div class=${classes.taskbarGroupBtn} id=${this.ids.smButtonExitFullScreen}></div>
+  <div class="${classes.taskbarGroup}">
+      <div class="${[this.classes.taskbarGroupBtn, this.classes.taskbarGroupBtnMobile].join(' ')}" id="${this.ids.smSettingIconButton}"></div>
+      <div class="${classes.taskbarGroupBtn}" id="${this.ids.smButtonFullScreen}"></div>
+      <div class="${classes.taskbarGroupBtn}" id="${this.ids.smButtonExitFullScreen}"></div>
   </div>`;
             this.containerElement.innerHTML = htmlString;
         }
@@ -4499,6 +4623,7 @@ exports["default"] = TaskbarController;
   \****************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -4561,14 +4686,63 @@ exports["default"] = FooterController;
 
 /***/ }),
 
+/***/ "./src/class/Containers/ControllerContainer/HeadController/index.ts":
+/*!**************************************************************************!*\
+  !*** ./src/class/Containers/ControllerContainer/HeadController/index.ts ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const SettingIconButtonMB_1 = __webpack_require__(/*! ../../../Components/Mobile/SettingIconButtonMB */ "./src/class/Components/Mobile/SettingIconButtonMB/index.ts");
+class HeadController extends BaseComponent_1.default {
+    settingIconButton;
+    constructor(props) {
+        const { classes, apiPlayer, ids } = props;
+        super(props);
+        this.settingIconButton = new SettingIconButtonMB_1.default({
+            id: ids.smSettingIconButtonMobile,
+            classes,
+            apiPlayer,
+            ids,
+        });
+    }
+    render() {
+        console.log(this.classes.smSettingIconButtonMB, this.containerElement);
+        if (this.containerElement) {
+            const htmlString = `<div></div>
+      <div class="${this.classes.smSettingIconButtonMB}" id="${this.ids.smSettingIconButtonMobile}"></div>`;
+            this.containerElement.innerHTML = htmlString;
+        }
+    }
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.headController;
+        }
+    }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.headControllerEnable);
+        }
+    }
+}
+exports["default"] = HeadController;
+
+
+/***/ }),
+
 /***/ "./src/class/Containers/ControllerContainer/index.ts":
 /*!***********************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/index.ts ***!
   \***********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const HeadController_1 = __webpack_require__(/*! ./HeadController */ "./src/class/Containers/ControllerContainer/HeadController/index.ts");
 const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
@@ -4580,6 +4754,7 @@ class ControllerContainer extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
+        this.headController = new HeadController_1.default({ id: ids.smHeadController, classes, apiPlayer, ids });
         this.bodyController = new BodyController_1.default({ id: ids.smBodyController, classes, apiPlayer, ids });
         this.footerController = new FooterController_1.default({ id: ids.smFooterController, classes, apiPlayer, ids });
         this.show = this.show.bind(this);
@@ -4588,6 +4763,7 @@ class ControllerContainer extends BaseComponent_1.default {
     render() {
         const { classes, ids } = this;
         const htmlContentString = `
+      <div class="${classes.headController} ${classes.headControllerEnable}" id="${ids.smHeadController}"></div>
       <div class="${classes.bodyController}" id="${ids.smBodyController}"></div>
       <div class="${classes.footerController} ${classes.footerControllerEnable}" id="${ids.smFooterController}"></div>
      `;
@@ -4622,10 +4798,16 @@ class ControllerContainer extends BaseComponent_1.default {
         if (this.footerController) {
             this.footerController.show();
         }
+        if (this.headController) {
+            this.headController.show();
+        }
     }
     handleOnMouseout() {
         if (this.footerController) {
             this.footerController.hidden();
+        }
+        if (this.headController) {
+            this.headController.hidden();
         }
     }
     handleClickContainer = (event) => {
@@ -4665,6 +4847,7 @@ exports["default"] = ControllerContainer;
   \******************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
@@ -4724,6 +4907,7 @@ exports["default"] = ErrorContainer;
   \********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
@@ -4773,6 +4957,7 @@ exports["default"] = LoadingContainer;
   \****************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.convertDataEventPlaying = exports.convertDataEventWaiting = exports.convertDataEventEnded = exports.convertDataEventProgress = exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
@@ -5304,6 +5489,7 @@ exports.convertDataEventPlaying = convertDataEventPlaying;
   \****************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const eventemitter3_1 = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
@@ -5345,6 +5531,7 @@ exports["default"] = SmEventEmitter;
   \**************************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
@@ -5366,6 +5553,7 @@ exports.primaryColorDef = '#F58220';
   \**********************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.playbackSpeedIcon = exports.checkedIcon = exports.chevronRightIcon = exports.chevronLeftIcon = exports.qualityIcon = exports.exitFullScreenIcon = exports.settingIcon = exports.subtitleIcon = exports.speedIcon = exports.fullScreenIcon = exports.muteIcon = exports.volumeIcon = exports.pausedIcon = exports.forwardIcon = exports.replyIcon = exports.infoIcon = exports.loadingIcon = exports.playIcon = void 0;
@@ -5533,35 +5721,19 @@ exports.playbackSpeedIcon = `
   \*************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateIIds = exports.generateHtmlContentControllerString = exports.createElementFromHTML = void 0;
+exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
+const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const createElementFromHTML = (htmlString) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString.trim();
     return tempDiv.firstChild;
 };
 exports.createElementFromHTML = createElementFromHTML;
-// export const generateHtmlContentContainerString = (
-//   classes: ReturnType<typeof generateStyles>,
-//   ids: {
-//     smControllerContent: string;
-//     smLoading: string;
-//     smError: string;
-//   },
-// ) => {
-//   return `
-//     <div class=${classes.controllerContent}  id=${ids.smControllerContent}>
-//     </div>
-//     <div class=${classes.loadingContainer} id=${ids.smLoading}>
-//     </div>
-//     <div class=${classes.errorContainer} id=${ids.smError}>
-//     </div>
-//     `;
-// };
-const generateHtmlContentControllerString = (classes) => { };
-exports.generateHtmlContentControllerString = generateHtmlContentControllerString;
 const generateIIds = () => {
     return {
         smControllerContainer: (0, nanoid_1.nanoid)(4),
@@ -5604,9 +5776,37 @@ const generateIIds = () => {
         smProgressBuffer: (0, nanoid_1.nanoid)(4),
         smButtonReplaySecondary: (0, nanoid_1.nanoid)(4),
         smButtonReplayPrimary: (0, nanoid_1.nanoid)(4),
+        smSettingIconButtonMobile: (0, nanoid_1.nanoid)(4),
     };
 };
 exports.generateIIds = generateIIds;
+const detectDevice = () => {
+    try {
+        const parser = new ua_parser_js_1.UAParser();
+        const result = parser.getResult();
+        const deviceType = result.device.type;
+        if (deviceType) {
+            if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
+                return type_1.EDeviceType.MOBILE;
+            }
+            else if (deviceType.toLowerCase() === type_1.EDeviceType.TABLET) {
+                return type_1.EDeviceType.TABLET;
+            }
+            else {
+                return type_1.EDeviceType.DESKTOP;
+            }
+        }
+        return type_1.EDeviceType.DESKTOP;
+    }
+    catch (error) {
+        return type_1.EDeviceType.DESKTOP;
+    }
+};
+exports.detectDevice = detectDevice;
+const detectDeviceMobile = (deviceType) => {
+    return deviceType === type_1.EDeviceType.MOBILE;
+};
+exports.detectDeviceMobile = detectDeviceMobile;
 
 
 /***/ }),
@@ -5617,12 +5817,571 @@ exports.generateIIds = generateIIds;
   \**********************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const css_1 = __webpack_require__(/*! @emotion/css */ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js");
+const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const generateStyles = (props) => {
-    const { primaryColor = constants_1.primaryColorDef, logo } = props || {};
+    const { primaryColor = constants_1.primaryColorDef, logo, deviceType } = props || {};
+    // if (deviceType === 'mobile') {
+    //   return {
+    //     container: css`
+    //       font-family: 'Be Vietnam Pro';
+    //       background: black;
+    //       color: white;
+    //       -webkit-user-select: none; /* Safari */
+    //       -moz-user-select: none; /* Firefox */
+    //       -ms-user-select: none; /* Internet Explorer/Edge */
+    //       user-select: none;
+    //       background: transparent;
+    //       position: absolute;
+    //       top: 0;
+    //       bottom: 0;
+    //       right: 0;
+    //       left: 0;
+    //       overflow: hidden;
+    //       color: white;
+    //       ::-webkit-scrollbar,
+    //       *::-webkit-scrollbar {
+    //         width: 6px;
+    //       }
+    //       ::-webkit-scrollbar-track,
+    //       *::-webkit-scrollbar-track {
+    //         border-radius: 8px;
+    //         background-color: transparent;
+    //         border: 1px solid transparent;
+    //       }
+    //       ::-webkit-scrollbar-thumb,
+    //       *::-webkit-scrollbar-thumb {
+    //         border-radius: 8px;
+    //         background-color: #616161;
+    //       }
+    //     `,
+    //     controllerContent: css`
+    //       position: absolute;
+    //       top: 0;
+    //       bottom: 0;
+    //       right: 0;
+    //       left: 0;
+    //       background: transparent;
+    //       display: none;
+    //     `,
+    //     controllerContentEnable: css`
+    //       display: flex;
+    //       flex-direction: column;
+    //       align-items: center;
+    //       justify-content: center;
+    //     `,
+    //     headController: css`
+    //       background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    //       width: 100%;
+    //       // height: 16%;
+    //       // min-height: 50px;
+    //       min-height: 60px;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: flex-start;
+    //       box-sizing: border-box;
+    //       padding: 8px 12px;
+    //       overflow: hidden;
+    //       animation-name: fadeInDown;
+    //     `,
+    //     headControllerTitle: css`
+    //       width: 80%;
+    //       font-size: 1.3rem;
+    //       white-space: nowrap;
+    //       overflow: hidden;
+    //       text-overflow: ellipsis;
+    //     `,
+    //     bodyController: css`
+    //       position: absolute;
+    //       top: 0;
+    //       bottom: 0;
+    //       right: 0;
+    //       left: 0;
+    //       background: transparent;
+    //       width: 100%;
+    //       flex: 1;
+    //       box-sizing: border-box;
+    //       overflow: hidden;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //     `,
+    //     settingsContainer: css`
+    //       position: absolute;
+    //       bottom: 80px; // bottomHeight
+    //       right: 12px;
+    //       border-radius: 8px;
+    //       background-color: rgba(0, 0, 0, 0.64);
+    //       backdrop-filter: blur(25px);
+    //       display: flex;
+    //       flex-direction: column;
+    //       gap: 0px;
+    //       max-height: calc(86% - 80px);
+    //       overflow: hidden;
+    //       outline: none;
+    //       border: none;
+    //       box-shadow: none;
+    //     `,
+    //     settingsContainerMask: css`
+    //       position: fixed;
+    //       top: 0;
+    //       left: 0;
+    //       width: 100vw;
+    //       height: 100vh;
+    //       background-color: transparent;
+    //       pointer-events: none;
+    //     `,
+    //     settingsContent: css`
+    //       min-width: 300px;
+    //       max-width: 320px;
+    //       overflow-y: auto;
+    //     `,
+    //     settingHeader: css`
+    //       box-sizing: border-box;
+    //       height: 48px;
+    //       display: flex;
+    //       padding: 8px 12px;
+    //       align-items: center;
+    //       gap: 12px;
+    //       align-self: stretch;
+    //       background-color: rgba(255, 255, 255, 0.04);
+    //     `,
+    //     settingItem: css`
+    //       height: 48px;
+    //       box-sizing: border-box;
+    //       display: flex;
+    //       padding: 8px 12px;
+    //       align-items: center;
+    //       gap: 12px;
+    //       &:hover {
+    //         background-color: rgba(255, 255, 255, 0.08);
+    //         cursor: pointer;
+    //       }
+    //     `,
+    //     settingDetailItem: css`
+    //       height: 40px;
+    //       box-sizing: border-box;
+    //       display: flex;
+    //       padding: 8px 12px;
+    //       align-items: center;
+    //       gap: 12px;
+    //       &:hover {
+    //         background-color: rgba(255, 255, 255, 0.08);
+    //         cursor: pointer;
+    //       }
+    //     `,
+    //     settingItemDivider: css`
+    //       border-top: 1px solid rgba(255, 255, 255, 0.08);
+    //     `,
+    //     settingTitleActive: css`
+    //       font-size: 14px;
+    //       font-style: normal;
+    //       font-weight: 600;
+    //       line-height: 20px;
+    //     `,
+    //     settingTitleNormal: css`
+    //       font-size: 14px;
+    //       font-style: normal;
+    //       font-weight: 400;
+    //       line-height: 20px;
+    //     `,
+    //     settingItemIcon: css`
+    //       width: 24px;
+    //       height: 24px;
+    //       cursor: pointer;
+    //     `,
+    //     settingItemIconSecondary: css`
+    //       width: 20px;
+    //       height: 20px;
+    //       color: rgba(255, 255, 255, 0.64);
+    //     `,
+    //     settingItemTitle: css`
+    //       flex: 1;
+    //       font-size: 14px;
+    //       font-style: normal;
+    //       font-weight: 600;
+    //       line-height: 20px;
+    //       cursor: pointer;
+    //     `,
+    //     settingItemValue: css`
+    //       display: flex;
+    //       align-items: center;
+    //       gap: 8px;
+    //       white-space: nowrap;
+    //       word-wrap: normal;
+    //       text-overflow: ellipsis;
+    //       font-size: 14px;
+    //       font-style: normal;
+    //       font-weight: 400;
+    //       line-height: 20px;
+    //     `,
+    //     buttonPrimary: css`
+    //       color: white;
+    //       background: rgba(0, 0, 0, 0.48);
+    //       backdrop-filter: blur(25px);
+    //       border-radius: 50%;
+    //       width: 56px;
+    //       height: 56px;
+    //       cursor: pointer;
+    //       color: white;
+    //       display: none;
+    //       padding: 8px;
+    //       box-sizing: border-box;
+    //       cursor: pointer;
+    //     `,
+    //     buttonPrimaryEnable: css`
+    //       animation: zoomIn;
+    //       animation-duration: 0.2s;
+    //       display: block;
+    //       // display: flex;
+    //       flex-direction: row;
+    //       align-items: center;
+    //       justify-content: center;
+    //       // &:hover {
+    //       //   box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
+    //       // }
+    //     `,
+    //     footerController: css`
+    //       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    //       width: 100%;
+    //       height: 80px;
+    //       position: absolute;
+    //       bottom: -80px;
+    //       right: 0;
+    //       left: 0;
+    //       box-sizing: border-box;
+    //       display: flex;
+    //       flex-direction: column;
+    //       align-items: center;
+    //       justify-content: center;
+    //       gap: 16px;
+    //       overflow: hidden;
+    //       transition: 0.3s ease-in-out;
+    //       padding: 8px 12px;
+    //       overflow: hidden;
+    //     `,
+    //     footerControllerEnable: css`
+    //       min-height: 80px;
+    //       bottom: 0px;
+    //       transition: 0.3s ease-in-out;
+    //     `,
+    //     seekBarController: css`
+    //       width: 100%;
+    //       height: 4px;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //     `,
+    //     progressContainer: css`
+    //       height: 8px;
+    //       width: 100%;
+    //       position: relative;
+    //       background-color: rgba(255, 255, 255, 0.24);
+    //       border-radius: 8px;
+    //       margin-top: 10px;
+    //       cursor: pointer;
+    //     `,
+    //     progressBuffer: css`
+    //       position: absolute;
+    //       width: var(--highlight-width-progress-buffer);
+    //       height: 100%;
+    //       background-color: rgba(255, 255, 255, 0.5);
+    //       border-radius: 8px;
+    //       z-index: 1;
+    //     `,
+    //     progressBar: css`
+    //       position: absolute;
+    //       width: var(--highlight-width-progress-bar);
+    //       height: 100%;
+    //       background-color: ${primaryColor};
+    //       opacity: 1;
+    //       z-index: 1;
+    //       border-radius: 8px 0px 0px 8px;
+    //     `,
+    //     progressThumb: css`
+    //       position: absolute;
+    //       left: calc(var(--highlight-left-progress-thumb) - 8px);
+    //       height: 16px;
+    //       width: 16px;
+    //       background-color: ${primaryColor};
+    //       opacity: 1;
+    //       border-radius: 50%;
+    //       top: -3.5px;
+    //       cursor: pointer;
+    //       z-index: 1;
+    //     `,
+    //     taskbarController: css`
+    //       width: 100%;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: space-between;
+    //     `,
+    //     taskbarGroup: css`
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       gap: 16px;
+    //     `,
+    //     taskbarGroupBtn: css`
+    //       width: 40px;
+    //       height: 40px;
+    //       padding: 2px;
+    //       box-sizing: border-box;
+    //       display: none;
+    //       border-radius: 50%;
+    //       cursor: pointer;
+    //       &:hover {
+    //         color: ${primaryColor};
+    //       }
+    //     `,
+    //     taskbarIconActive: css`
+    //       color: ${primaryColor};
+    //       rotate: 45deg;
+    //       transition: rotate 1s;
+    //     `,
+    //     taskbarIconInactive: css`
+    //       rotate: 0;
+    //       transition: rotate 1s;
+    //     `,
+    //     taskbarGroupBtnEnable: css`
+    //       display: flex;
+    //       display: block;
+    //       align-items: center;
+    //       justify-content: center;
+    //       cursor: pointer;
+    //     `,
+    //     taskbarVolumeContainer: css`
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       margin: 0px;
+    //     `,
+    //     taskbarTimeBarContainer: css`
+    //       display: none;
+    //     `,
+    //     taskbarTimeBarContainerEnable: css`
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       margin: 0px;
+    //       font-size: 12px;
+    //       gap: 4px;
+    //     `,
+    //     taskbarLiveStream: css`
+    //       display: none;
+    //     `,
+    //     liveStreamDot: css`
+    //       width: 8px;
+    //       height: 8px;
+    //       border-radius: 50%;
+    //       background: red;
+    //       margin-right: 4px;
+    //       box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
+    //     `,
+    //     taskbarLiveStreamEnable: css`
+    //       display: none;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //       margin: 0px;
+    //       font-size: 12px;
+    //       gap: 4px;
+    //     `,
+    //     taskbarTimeCurrent: css``,
+    //     taskbarTimeDuration: css``,
+    //     smSelectVolumeRangeContainer: css`
+    //       display: flex;
+    //       flex-direction: row;
+    //       align-items: center;
+    //       justify-content: center;
+    //       padding-left: 8px;
+    //       width: 0px;
+    //       height: 0px;
+    //       overflow: hidden;
+    //       transition: 0.2s ease-in-out;
+    //     `,
+    //     smSelectVolumeRangeContainerEnable: css`
+    //       width: 100px;
+    //       height: 6px;
+    //       overflow: visible;
+    //       transition: 0.2s ease-in-out;
+    //     `,
+    //     taskbarVolumeSlider: css`
+    //       margin-left: 2px;
+    //       height: 4px;
+    //       width: 100%;
+    //       -webkit-appearance: none;
+    //       appearance: none;
+    //       cursor: pointer;
+    //       outline: none;
+    //       border-radius: 15px;
+    //       background: linear-gradient(
+    //         to right,
+    //         white var(--highlight-width),
+    //         rgba(255, 255, 255, 0.24) var(--highlight-width)
+    //       );
+    //       ::-webkit-slider-thumb {
+    //         -webkit-appearance: none;
+    //         appearance: none;
+    //         /* creating a custom design */
+    //         height: 16px;
+    //         width: 16px;
+    //         background-color: white;
+    //         border-radius: 50%;
+    //         border: none;
+    //       }
+    //       ::-moz-range-thumb {
+    //         height: 16px;
+    //         width: 16px;
+    //         background-color: white;
+    //         border-radius: 50%;
+    //         border: none;
+    //       }
+    //     `,
+    //     loadingContainer: css`
+    //       background: rgb(119 119 119 / 50%);
+    //       position: absolute;
+    //       top: 0;
+    //       bottom: 0;
+    //       right: 0;
+    //       left: 0;
+    //       overflow: hidden;
+    //       display: none;
+    //       .sm-loading-ss {
+    //         position: absolute;
+    //         top: 0;
+    //         left: 0;
+    //         right: 0;
+    //         bottom: 0;
+    //         z-index: 0;
+    //         margin: 0;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading {
+    //         display: inline-block;
+    //         position: absolute;
+    //         margin: auto;
+    //         text-align: center;
+    //         top: 50%;
+    //         left: 50%;
+    //         -webkit-transform: translate(-50%, -50%);
+    //         transform: translate(-50%, -50%);
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-container {
+    //         width: 200px;
+    //         height: 100px;
+    //         overflow: hidden;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-circle {
+    //         position: absolute;
+    //         width: 100%;
+    //         height: 200%;
+    //         border-radius: 50%;
+    //         overflow: hidden;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-top {
+    //         -webkit-transform-origin: 50% 100%;
+    //         transform-origin: 50% 100%;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 10px ${primaryColor};
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
+    //         -webkit-transform-origin: 50% 0;
+    //         transform-origin: 50% 0;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 10px ${primaryColor};
+    //         top: -100px !important;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
+    //         width: 96px;
+    //         height: 48px;
+    //         margin-left: -48px;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 6px ${primaryColor};
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 6px ${primaryColor};
+    //         top: -48px !important;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
+    //         width: 24px;
+    //         height: 12px;
+    //         margin-left: -12px;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 2px ${primaryColor};
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 2px ${primaryColor};
+    //         top: -12px !important;
+    //       }
+    //       .sm-loading-ss .sm-ss-medium .sm-ss-container {
+    //         width: 48px;
+    //         height: 24px;
+    //         margin-left: -12px;
+    //       }
+    //       .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 3px ${primaryColor};
+    //       }
+    //       .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
+    //         box-shadow: inset 0 0 0 3px ${primaryColor};
+    //         top: -24px !important;
+    //       }
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
+    //       .sm-loading-ss .sm-ss-loading .sm-ss-top {
+    //         position: relative;
+    //         width: 100%;
+    //         height: 100%;
+    //         overflow: hidden;
+    //         -webkit-animation: 0.8s linear infinite ssrotate;
+    //         animation: 0.8s linear infinite ssrotate;
+    //       }
+    //     `,
+    //     loadingContainerEnable: css`
+    //       display: flex !important;
+    //       flex-direction: row;
+    //       align-items: center;
+    //       justify-content: center;
+    //     `,
+    //     errorContainer: css`
+    //       background: rgb(119 119 119 / 50%);
+    //       position: absolute;
+    //       top: 0;
+    //       bottom: 0;
+    //       right: 0;
+    //       left: 0;
+    //       z-index: 1;
+    //       overflow: hidden;
+    //       display: none;
+    //     `,
+    //     errorContainerEnable: css`
+    //       display: flex;
+    //       flex-direction: row;
+    //       align-items: center;
+    //       justify-content: center;
+    //       gap: 40px;
+    //     `,
+    //     errorIconWrap: css`
+    //       width: 50px;
+    //       height: 50px;
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+    //     `,
+    //     flexColumnStartCenter: css`
+    //       display: column;
+    //       flex-direction: row;
+    //       justify-content: flex-start;
+    //       align-items: center;
+    //     `,
+    //   };
+    // }
     return {
         container: (0, css_1.css) `
       font-family: 'Be Vietnam Pro';
@@ -5675,23 +6434,37 @@ const generateStyles = (props) => {
         headController: (0, css_1.css) `
       background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      // height: 16%;
-      // min-height: 50px;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
+      height: 88px;
+      position: absolute;
+      top: -88px;
+      right: 0;
+      left: 0;
       box-sizing: border-box;
-      padding: 8px 12px;
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       overflow: hidden;
-      animation-name: fadeInDown;
+      transition: 0.3s ease-in-out;
+      padding: 12px 12px;
+      overflow: hidden;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        display: flex;
+        height: 72px;
+        bottom: -72px;
+        gap: 0px;
+      }
     `,
-        headControllerTitle: (0, css_1.css) `
-      width: 80%;
-      font-size: 1.3rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+        headControllerEnable: (0, css_1.css) `
+      top: 0;
+      transition: 0.3s ease-in-out;
+    `,
+        smSettingIconButtonMB: (0, css_1.css) `
+      display: none;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        display: block !important;
+      }
     `,
         bodyController: (0, css_1.css) `
       position: absolute;
@@ -5821,37 +6594,36 @@ const generateStyles = (props) => {
     `,
         buttonPrimary: (0, css_1.css) `
       color: white;
-
       background: rgba(0, 0, 0, 0.48);
       backdrop-filter: blur(25px);
       border-radius: 50%;
-      width: 56px;
-      height: 56px;
+      width: 64px;
+      height: 64px;
       cursor: pointer;
       color: white;
       display: none;
       padding: 8px;
       box-sizing: border-box;
       cursor: pointer;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        width: 56px;
+        height: 56px;
+      }
     `,
         buttonPrimaryEnable: (0, css_1.css) `
       animation: zoomIn;
       animation-duration: 0.2s;
       display: block;
-      // display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      // &:hover {
-      //   box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
-      // }
     `,
         footerController: (0, css_1.css) `
       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 80px;
+      height: 88px;
       position: absolute;
-      bottom: -80px;
+      bottom: -88px;
       right: 0;
       left: 0;
       box-sizing: border-box;
@@ -5862,20 +6634,28 @@ const generateStyles = (props) => {
       gap: 16px;
       overflow: hidden;
       transition: 0.3s ease-in-out;
-      padding: 8px 12px;
+      padding: 12px 12px;
       overflow: hidden;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        height: 72px;
+        bottom: -72px;
+        gap: 0px;
+        flex-direction: column-reverse;
+      }
     `,
         footerControllerEnable: (0, css_1.css) `
-      min-height: 80px;
       bottom: 0px;
       transition: 0.3s ease-in-out;
     `,
         seekBarController: (0, css_1.css) `
       width: 100%;
-      height: 4px;
+      height: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        height: 20px;
+      }
     `,
         progressContainer: (0, css_1.css) `
       height: 8px;
@@ -5883,7 +6663,7 @@ const generateStyles = (props) => {
       position: relative;
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
-      margin-top: 10px;
+
       cursor: pointer;
     `,
         progressBuffer: (0, css_1.css) `
@@ -5938,11 +6718,20 @@ const generateStyles = (props) => {
       &:hover {
         color: ${primaryColor};
       }
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        width: 36px;
+        height: 36px;
+      }
     `,
         taskbarIconActive: (0, css_1.css) `
       color: ${primaryColor};
       rotate: 45deg;
       transition: rotate 1s;
+    `,
+        taskbarGroupBtnMobile: (0, css_1.css) `
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        display: none !important;
+      }
     `,
         taskbarIconInactive: (0, css_1.css) `
       rotate: 0;
@@ -5971,6 +6760,9 @@ const generateStyles = (props) => {
       margin: 0px;
       font-size: 12px;
       gap: 4px;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        margin-left: -12px;
+      }
     `,
         taskbarLiveStream: (0, css_1.css) `
       display: none;
@@ -5989,11 +6781,32 @@ const generateStyles = (props) => {
       align-items: center;
       justify-content: center;
       margin: 0px;
-      font-size: 12px;
+      font-size: 14px;
+      line-height: 20px;
       gap: 4px;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        margin-left: -12px;
+        font-size: 16px;
+        line-height: 24px;
+      }
     `,
-        taskbarTimeCurrent: (0, css_1.css) ``,
-        taskbarTimeDuration: (0, css_1.css) ``,
+        taskbarTimeCurrent: (0, css_1.css) `
+      font-size: 14px;
+      line-height: 20px;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        font-size: 16px;
+        line-height: 24px;
+      }
+    `,
+        taskbarTimeDuration: (0, css_1.css) `
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 14px;
+      line-height: 20px;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        font-size: 16px;
+        line-height: 24px;
+      }
+    `,
         smSelectVolumeRangeContainer: (0, css_1.css) `
       display: flex;
       flex-direction: row;
@@ -6004,13 +6817,16 @@ const generateStyles = (props) => {
       height: 0px;
       overflow: hidden;
       transition: 0.2s ease-in-out;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        display: none;
+        padding-left: 0px;
+      }
     `,
         smSelectVolumeRangeContainerEnable: (0, css_1.css) `
       width: 100px;
       height: 6px;
       overflow: visible;
       transition: 0.2s ease-in-out;
-      // animation: scaleUpHorizontalLeft 0.1s ease-in-out forwards;
     `,
         taskbarVolumeSlider: (0, css_1.css) `
       margin-left: 2px;
@@ -6212,9 +7028,10 @@ exports["default"] = generateStyles;
   \*********************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = void 0;
+exports.EBreakpoint = exports.EDeviceType = exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = void 0;
 var ESettingPanelDataState;
 (function (ESettingPanelDataState) {
     ESettingPanelDataState["BLUR"] = "blur";
@@ -6257,6 +7074,20 @@ var AccessibilityPurpose;
     AccessibilityPurpose["HARD_OF_HEARING"] = "hard of hearing";
     AccessibilityPurpose["VISUALLY_IMPAIRED"] = "visually impaired";
 })(AccessibilityPurpose || (AccessibilityPurpose = {}));
+var EDeviceType;
+(function (EDeviceType) {
+    EDeviceType["MOBILE"] = "mobile";
+    EDeviceType["TABLET"] = "tablet";
+    EDeviceType["DESKTOP"] = "desktop";
+})(EDeviceType || (exports.EDeviceType = EDeviceType = {}));
+var EBreakpoint;
+(function (EBreakpoint) {
+    EBreakpoint[EBreakpoint["XS"] = 0] = "XS";
+    EBreakpoint[EBreakpoint["SM"] = 768] = "SM";
+    EBreakpoint[EBreakpoint["MD"] = 1024] = "MD";
+    EBreakpoint[EBreakpoint["LG"] = 1280] = "LG";
+    EBreakpoint[EBreakpoint["XL"] = 1441] = "XL";
+})(EBreakpoint || (exports.EBreakpoint = EBreakpoint = {}));
 
 
 /***/ }),
@@ -6267,6 +7098,7 @@ var AccessibilityPurpose;
   \**********************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hexToRgba = exports.formatTime = void 0;
@@ -6306,12 +7138,977 @@ exports.hexToRgba = hexToRgba;
 
 /***/ }),
 
+/***/ "./node_modules/ua-parser-js/src/ua-parser.js":
+/*!****************************************************!*\
+  !*** ./node_modules/ua-parser-js/src/ua-parser.js ***!
+  \****************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////
+/* UAParser.js v1.0.38
+   Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
+   MIT License *//*
+   Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data.
+   Supports browser & node.js environment. 
+   Demo   : https://faisalman.github.io/ua-parser-js
+   Source : https://github.com/faisalman/ua-parser-js */
+/////////////////////////////////////////////////////////////////////////////////
+
+(function (window, undefined) {
+
+    'use strict';
+
+    //////////////
+    // Constants
+    /////////////
+
+
+    var LIBVERSION  = '1.0.38',
+        EMPTY       = '',
+        UNKNOWN     = '?',
+        FUNC_TYPE   = 'function',
+        UNDEF_TYPE  = 'undefined',
+        OBJ_TYPE    = 'object',
+        STR_TYPE    = 'string',
+        MAJOR       = 'major',
+        MODEL       = 'model',
+        NAME        = 'name',
+        TYPE        = 'type',
+        VENDOR      = 'vendor',
+        VERSION     = 'version',
+        ARCHITECTURE= 'architecture',
+        CONSOLE     = 'console',
+        MOBILE      = 'mobile',
+        TABLET      = 'tablet',
+        SMARTTV     = 'smarttv',
+        WEARABLE    = 'wearable',
+        EMBEDDED    = 'embedded',
+        UA_MAX_LENGTH = 500;
+
+    var AMAZON  = 'Amazon',
+        APPLE   = 'Apple',
+        ASUS    = 'ASUS',
+        BLACKBERRY = 'BlackBerry',
+        BROWSER = 'Browser',
+        CHROME  = 'Chrome',
+        EDGE    = 'Edge',
+        FIREFOX = 'Firefox',
+        GOOGLE  = 'Google',
+        HUAWEI  = 'Huawei',
+        LG      = 'LG',
+        MICROSOFT = 'Microsoft',
+        MOTOROLA  = 'Motorola',
+        OPERA   = 'Opera',
+        SAMSUNG = 'Samsung',
+        SHARP   = 'Sharp',
+        SONY    = 'Sony',
+        XIAOMI  = 'Xiaomi',
+        ZEBRA   = 'Zebra',
+        FACEBOOK    = 'Facebook',
+        CHROMIUM_OS = 'Chromium OS',
+        MAC_OS  = 'Mac OS';
+
+    ///////////
+    // Helper
+    //////////
+
+    var extend = function (regexes, extensions) {
+            var mergedRegexes = {};
+            for (var i in regexes) {
+                if (extensions[i] && extensions[i].length % 2 === 0) {
+                    mergedRegexes[i] = extensions[i].concat(regexes[i]);
+                } else {
+                    mergedRegexes[i] = regexes[i];
+                }
+            }
+            return mergedRegexes;
+        },
+        enumerize = function (arr) {
+            var enums = {};
+            for (var i=0; i<arr.length; i++) {
+                enums[arr[i].toUpperCase()] = arr[i];
+            }
+            return enums;
+        },
+        has = function (str1, str2) {
+            return typeof str1 === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
+        },
+        lowerize = function (str) {
+            return str.toLowerCase();
+        },
+        majorize = function (version) {
+            return typeof(version) === STR_TYPE ? version.replace(/[^\d\.]/g, EMPTY).split('.')[0] : undefined;
+        },
+        trim = function (str, len) {
+            if (typeof(str) === STR_TYPE) {
+                str = str.replace(/^\s\s*/, EMPTY);
+                return typeof(len) === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
+            }
+    };
+
+    ///////////////
+    // Map helper
+    //////////////
+
+    var rgxMapper = function (ua, arrays) {
+
+            var i = 0, j, k, p, q, matches, match;
+
+            // loop through all regexes maps
+            while (i < arrays.length && !matches) {
+
+                var regex = arrays[i],       // even sequence (0,2,4,..)
+                    props = arrays[i + 1];   // odd sequence (1,3,5,..)
+                j = k = 0;
+
+                // try matching uastring with regexes
+                while (j < regex.length && !matches) {
+
+                    if (!regex[j]) { break; }
+                    matches = regex[j++].exec(ua);
+
+                    if (!!matches) {
+                        for (p = 0; p < props.length; p++) {
+                            match = matches[++k];
+                            q = props[p];
+                            // check if given property is actually array
+                            if (typeof q === OBJ_TYPE && q.length > 0) {
+                                if (q.length === 2) {
+                                    if (typeof q[1] == FUNC_TYPE) {
+                                        // assign modified match
+                                        this[q[0]] = q[1].call(this, match);
+                                    } else {
+                                        // assign given value, ignore regex match
+                                        this[q[0]] = q[1];
+                                    }
+                                } else if (q.length === 3) {
+                                    // check whether function or regex
+                                    if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                                        // call function (usually string mapper)
+                                        this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined;
+                                    } else {
+                                        // sanitize match using given regex
+                                        this[q[0]] = match ? match.replace(q[1], q[2]) : undefined;
+                                    }
+                                } else if (q.length === 4) {
+                                        this[q[0]] = match ? q[3].call(this, match.replace(q[1], q[2])) : undefined;
+                                }
+                            } else {
+                                this[q] = match ? match : undefined;
+                            }
+                        }
+                    }
+                }
+                i += 2;
+            }
+        },
+
+        strMapper = function (str, map) {
+
+            for (var i in map) {
+                // check if current value is array
+                if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
+                    for (var j = 0; j < map[i].length; j++) {
+                        if (has(map[i][j], str)) {
+                            return (i === UNKNOWN) ? undefined : i;
+                        }
+                    }
+                } else if (has(map[i], str)) {
+                    return (i === UNKNOWN) ? undefined : i;
+                }
+            }
+            return str;
+    };
+
+    ///////////////
+    // String map
+    //////////////
+
+    // Safari < 3.0
+    var oldSafariMap = {
+            '1.0'   : '/8',
+            '1.2'   : '/1',
+            '1.3'   : '/3',
+            '2.0'   : '/412',
+            '2.0.2' : '/416',
+            '2.0.3' : '/417',
+            '2.0.4' : '/419',
+            '?'     : '/'
+        },
+        windowsVersionMap = {
+            'ME'        : '4.90',
+            'NT 3.11'   : 'NT3.51',
+            'NT 4.0'    : 'NT4.0',
+            '2000'      : 'NT 5.0',
+            'XP'        : ['NT 5.1', 'NT 5.2'],
+            'Vista'     : 'NT 6.0',
+            '7'         : 'NT 6.1',
+            '8'         : 'NT 6.2',
+            '8.1'       : 'NT 6.3',
+            '10'        : ['NT 6.4', 'NT 10.0'],
+            'RT'        : 'ARM'
+    };
+
+    //////////////
+    // Regex map
+    /////////////
+
+    var regexes = {
+
+        browser : [[
+
+            /\b(?:crmo|crios)\/([\w\.]+)/i                                      // Chrome for Android/iOS
+            ], [VERSION, [NAME, 'Chrome']], [
+            /edg(?:e|ios|a)?\/([\w\.]+)/i                                       // Microsoft Edge
+            ], [VERSION, [NAME, 'Edge']], [
+
+            // Presto based
+            /(opera mini)\/([-\w\.]+)/i,                                        // Opera Mini
+            /(opera [mobiletab]{3,6})\b.+version\/([-\w\.]+)/i,                 // Opera Mobi/Tablet
+            /(opera)(?:.+version\/|[\/ ]+)([\w\.]+)/i                           // Opera
+            ], [NAME, VERSION], [
+            /opios[\/ ]+([\w\.]+)/i                                             // Opera mini on iphone >= 8.0
+            ], [VERSION, [NAME, OPERA+' Mini']], [
+            /\bop(?:rg)?x\/([\w\.]+)/i                                          // Opera GX
+            ], [VERSION, [NAME, OPERA+' GX']], [
+            /\bopr\/([\w\.]+)/i                                                 // Opera Webkit
+            ], [VERSION, [NAME, OPERA]], [
+
+            // Mixed
+            /\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i            // Baidu
+            ], [VERSION, [NAME, 'Baidu']], [
+            /(kindle)\/([\w\.]+)/i,                                             // Kindle
+            /(lunascape|maxthon|netfront|jasmine|blazer)[\/ ]?([\w\.]*)/i,      // Lunascape/Maxthon/Netfront/Jasmine/Blazer
+            // Trident based
+            /(avant|iemobile|slim)\s?(?:browser)?[\/ ]?([\w\.]*)/i,             // Avant/IEMobile/SlimBrowser
+            /(?:ms|\()(ie) ([\w\.]+)/i,                                         // Internet Explorer
+
+            // Webkit/KHTML based                                               // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
+            /(flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|qq|duckduckgo)\/([-\w\.]+)/i,
+                                                                                // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ, aka ShouQ
+            /(heytap|ovi)browser\/([\d\.]+)/i,                                  // Heytap/Ovi
+            /(weibo)__([\d\.]+)/i                                               // Weibo
+            ], [NAME, VERSION], [
+            /\bddg\/([\w\.]+)/i                                                 // DuckDuckGo
+            ], [VERSION, [NAME, 'DuckDuckGo']], [
+            /(?:\buc? ?browser|(?:juc.+)ucweb)[\/ ]?([\w\.]+)/i                 // UCBrowser
+            ], [VERSION, [NAME, 'UC'+BROWSER]], [
+            /microm.+\bqbcore\/([\w\.]+)/i,                                     // WeChat Desktop for Windows Built-in Browser
+            /\bqbcore\/([\w\.]+).+microm/i,
+            /micromessenger\/([\w\.]+)/i                                        // WeChat
+            ], [VERSION, [NAME, 'WeChat']], [
+            /konqueror\/([\w\.]+)/i                                             // Konqueror
+            ], [VERSION, [NAME, 'Konqueror']], [
+            /trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i                       // IE11
+            ], [VERSION, [NAME, 'IE']], [
+            /ya(?:search)?browser\/([\w\.]+)/i                                  // Yandex
+            ], [VERSION, [NAME, 'Yandex']], [
+            /slbrowser\/([\w\.]+)/i                                             // Smart Lenovo Browser
+            ], [VERSION, [NAME, 'Smart Lenovo '+BROWSER]], [
+            /(avast|avg)\/([\w\.]+)/i                                           // Avast/AVG Secure Browser
+            ], [[NAME, /(.+)/, '$1 Secure '+BROWSER], VERSION], [
+            /\bfocus\/([\w\.]+)/i                                               // Firefox Focus
+            ], [VERSION, [NAME, FIREFOX+' Focus']], [
+            /\bopt\/([\w\.]+)/i                                                 // Opera Touch
+            ], [VERSION, [NAME, OPERA+' Touch']], [
+            /coc_coc\w+\/([\w\.]+)/i                                            // Coc Coc Browser
+            ], [VERSION, [NAME, 'Coc Coc']], [
+            /dolfin\/([\w\.]+)/i                                                // Dolphin
+            ], [VERSION, [NAME, 'Dolphin']], [
+            /coast\/([\w\.]+)/i                                                 // Opera Coast
+            ], [VERSION, [NAME, OPERA+' Coast']], [
+            /miuibrowser\/([\w\.]+)/i                                           // MIUI Browser
+            ], [VERSION, [NAME, 'MIUI '+BROWSER]], [
+            /fxios\/([-\w\.]+)/i                                                // Firefox for iOS
+            ], [VERSION, [NAME, FIREFOX]], [
+            /\bqihu|(qi?ho?o?|360)browser/i                                     // 360
+            ], [[NAME, '360 ' + BROWSER]], [
+            /(oculus|sailfish|huawei|vivo)browser\/([\w\.]+)/i
+            ], [[NAME, /(.+)/, '$1 ' + BROWSER], VERSION], [                    // Oculus/Sailfish/HuaweiBrowser/VivoBrowser
+            /samsungbrowser\/([\w\.]+)/i                                        // Samsung Internet
+            ], [VERSION, [NAME, SAMSUNG + ' Internet']], [
+            /(comodo_dragon)\/([\w\.]+)/i                                       // Comodo Dragon
+            ], [[NAME, /_/g, ' '], VERSION], [
+            /metasr[\/ ]?([\d\.]+)/i                                            // Sogou Explorer
+            ], [VERSION, [NAME, 'Sogou Explorer']], [
+            /(sogou)mo\w+\/([\d\.]+)/i                                          // Sogou Mobile
+            ], [[NAME, 'Sogou Mobile'], VERSION], [
+            /(electron)\/([\w\.]+) safari/i,                                    // Electron-based App
+            /(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,                   // Tesla
+            /m?(qqbrowser|2345Explorer)[\/ ]?([\w\.]+)/i                        // QQBrowser/2345 Browser
+            ], [NAME, VERSION], [
+            /(lbbrowser)/i,                                                     // LieBao Browser
+            /\[(linkedin)app\]/i                                                // LinkedIn App for iOS & Android
+            ], [NAME], [
+
+            // WebView
+            /((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i       // Facebook App for iOS & Android
+            ], [[NAME, FACEBOOK], VERSION], [
+            /(Klarna)\/([\w\.]+)/i,                                             // Klarna Shopping Browser for iOS & Android
+            /(kakao(?:talk|story))[\/ ]([\w\.]+)/i,                             // Kakao App
+            /(naver)\(.*?(\d+\.[\w\.]+).*\)/i,                                  // Naver InApp
+            /safari (line)\/([\w\.]+)/i,                                        // Line App for iOS
+            /\b(line)\/([\w\.]+)\/iab/i,                                        // Line App for Android
+            /(alipay)client\/([\w\.]+)/i,                                       // Alipay
+            /(twitter)(?:and| f.+e\/([\w\.]+))/i,                               // Twitter
+            /(chromium|instagram|snapchat)[\/ ]([-\w\.]+)/i                     // Chromium/Instagram/Snapchat
+            ], [NAME, VERSION], [
+            /\bgsa\/([\w\.]+) .*safari\//i                                      // Google Search Appliance on iOS
+            ], [VERSION, [NAME, 'GSA']], [
+            /musical_ly(?:.+app_?version\/|_)([\w\.]+)/i                        // TikTok
+            ], [VERSION, [NAME, 'TikTok']], [
+
+            /headlesschrome(?:\/([\w\.]+)| )/i                                  // Chrome Headless
+            ], [VERSION, [NAME, CHROME+' Headless']], [
+
+            / wv\).+(chrome)\/([\w\.]+)/i                                       // Chrome WebView
+            ], [[NAME, CHROME+' WebView'], VERSION], [
+
+            /droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i           // Android Browser
+            ], [VERSION, [NAME, 'Android '+BROWSER]], [
+
+            /(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i       // Chrome/OmniWeb/Arora/Tizen/Nokia
+            ], [NAME, VERSION], [
+
+            /version\/([\w\.\,]+) .*mobile\/\w+ (safari)/i                      // Mobile Safari
+            ], [VERSION, [NAME, 'Mobile Safari']], [
+            /version\/([\w(\.|\,)]+) .*(mobile ?safari|safari)/i                // Safari & Safari Mobile
+            ], [VERSION, NAME], [
+            /webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i                      // Safari < 3.0
+            ], [NAME, [VERSION, strMapper, oldSafariMap]], [
+
+            /(webkit|khtml)\/([\w\.]+)/i
+            ], [NAME, VERSION], [
+
+            // Gecko based
+            /(navigator|netscape\d?)\/([-\w\.]+)/i                              // Netscape
+            ], [[NAME, 'Netscape'], VERSION], [
+            /mobile vr; rv:([\w\.]+)\).+firefox/i                               // Firefox Reality
+            ], [VERSION, [NAME, FIREFOX+' Reality']], [
+            /ekiohf.+(flow)\/([\w\.]+)/i,                                       // Flow
+            /(swiftfox)/i,                                                      // Swiftfox
+            /(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror|klar)[\/ ]?([\w\.\+]+)/i,
+                                                                                // IceDragon/Iceweasel/Camino/Chimera/Fennec/Maemo/Minimo/Conkeror/Klar
+            /(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([-\w\.]+)$/i,
+                                                                                // Firefox/SeaMonkey/K-Meleon/IceCat/IceApe/Firebird/Phoenix
+            /(firefox)\/([\w\.]+)/i,                                            // Other Firefox-based
+            /(mozilla)\/([\w\.]+) .+rv\:.+gecko\/\d+/i,                         // Mozilla
+
+            // Other
+            /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir|obigo|mosaic|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
+                                                                                // Polaris/Lynx/Dillo/iCab/Doris/Amaya/w3m/NetSurf/Sleipnir/Obigo/Mosaic/Go/ICE/UP.Browser
+            /(links) \(([\w\.]+)/i,                                             // Links
+            /panasonic;(viera)/i                                                // Panasonic Viera
+            ], [NAME, VERSION], [
+            
+            /(cobalt)\/([\w\.]+)/i                                              // Cobalt
+            ], [NAME, [VERSION, /master.|lts./, ""]]
+        ],
+
+        cpu : [[
+
+            /(?:(amd|x(?:(?:86|64)[-_])?|wow|win)64)[;\)]/i                     // AMD64 (x64)
+            ], [[ARCHITECTURE, 'amd64']], [
+
+            /(ia32(?=;))/i                                                      // IA32 (quicktime)
+            ], [[ARCHITECTURE, lowerize]], [
+
+            /((?:i[346]|x)86)[;\)]/i                                            // IA32 (x86)
+            ], [[ARCHITECTURE, 'ia32']], [
+
+            /\b(aarch64|arm(v?8e?l?|_?64))\b/i                                 // ARM64
+            ], [[ARCHITECTURE, 'arm64']], [
+
+            /\b(arm(?:v[67])?ht?n?[fl]p?)\b/i                                   // ARMHF
+            ], [[ARCHITECTURE, 'armhf']], [
+
+            // PocketPC mistakenly identified as PowerPC
+            /windows (ce|mobile); ppc;/i
+            ], [[ARCHITECTURE, 'arm']], [
+
+            /((?:ppc|powerpc)(?:64)?)(?: mac|;|\))/i                            // PowerPC
+            ], [[ARCHITECTURE, /ower/, EMPTY, lowerize]], [
+
+            /(sun4\w)[;\)]/i                                                    // SPARC
+            ], [[ARCHITECTURE, 'sparc']], [
+
+            /((?:avr32|ia64(?=;))|68k(?=\))|\barm(?=v(?:[1-7]|[5-7]1)l?|;|eabi)|(?=atmel )avr|(?:irix|mips|sparc)(?:64)?\b|pa-risc)/i
+                                                                                // IA64, 68K, ARM/64, AVR/32, IRIX/64, MIPS/64, SPARC/64, PA-RISC
+            ], [[ARCHITECTURE, lowerize]]
+        ],
+
+        device : [[
+
+            //////////////////////////
+            // MOBILES & TABLETS
+            /////////////////////////
+
+            // Samsung
+            /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i
+            ], [MODEL, [VENDOR, SAMSUNG], [TYPE, TABLET]], [
+            /\b((?:s[cgp]h|gt|sm)-\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,
+            /samsung[- ]([-\w]+)/i,
+            /sec-(sgh\w+)/i
+            ], [MODEL, [VENDOR, SAMSUNG], [TYPE, MOBILE]], [
+
+            // Apple
+            /(?:\/|\()(ip(?:hone|od)[\w, ]*)(?:\/|;)/i                          // iPod/iPhone
+            ], [MODEL, [VENDOR, APPLE], [TYPE, MOBILE]], [
+            /\((ipad);[-\w\),; ]+apple/i,                                       // iPad
+            /applecoremedia\/[\w\.]+ \((ipad)/i,
+            /\b(ipad)\d\d?,\d\d?[;\]].+ios/i
+            ], [MODEL, [VENDOR, APPLE], [TYPE, TABLET]], [
+            /(macintosh);/i
+            ], [MODEL, [VENDOR, APPLE]], [
+
+            // Sharp
+            /\b(sh-?[altvz]?\d\d[a-ekm]?)/i
+            ], [MODEL, [VENDOR, SHARP], [TYPE, MOBILE]], [
+
+            // Huawei
+            /\b((?:ag[rs][23]?|bah2?|sht?|btv)-a?[lw]\d{2})\b(?!.+d\/s)/i
+            ], [MODEL, [VENDOR, HUAWEI], [TYPE, TABLET]], [
+            /(?:huawei|honor)([-\w ]+)[;\)]/i,
+            /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i
+            ], [MODEL, [VENDOR, HUAWEI], [TYPE, MOBILE]], [
+
+            // Xiaomi
+            /\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))/i,                  // Xiaomi POCO
+            /\b; (\w+) build\/hm\1/i,                                           // Xiaomi Hongmi 'numeric' models
+            /\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,                             // Xiaomi Hongmi
+            /\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))/i,                   // Xiaomi Redmi
+            /oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))/i,        // Xiaomi Redmi 'numeric' models
+            /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))/i // Xiaomi Mi
+            ], [[MODEL, /_/g, ' '], [VENDOR, XIAOMI], [TYPE, MOBILE]], [
+            /oid[^\)]+; (2\d{4}(283|rpbf)[cgl])( bui|\))/i,                     // Redmi Pad
+            /\b(mi[-_ ]?(?:pad)(?:[\w_ ]+))(?: bui|\))/i                        // Mi Pad tablets
+            ],[[MODEL, /_/g, ' '], [VENDOR, XIAOMI], [TYPE, TABLET]], [
+
+            // OPPO
+            /; (\w+) bui.+ oppo/i,
+            /\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i
+            ], [MODEL, [VENDOR, 'OPPO'], [TYPE, MOBILE]], [
+            /\b(opd2\d{3}a?) bui/i
+            ], [MODEL, [VENDOR, 'OPPO'], [TYPE, TABLET]], [
+
+            // Vivo
+            /vivo (\w+)(?: bui|\))/i,
+            /\b(v[12]\d{3}\w?[at])(?: bui|;)/i
+            ], [MODEL, [VENDOR, 'Vivo'], [TYPE, MOBILE]], [
+
+            // Realme
+            /\b(rmx[1-3]\d{3})(?: bui|;|\))/i
+            ], [MODEL, [VENDOR, 'Realme'], [TYPE, MOBILE]], [
+
+            // Motorola
+            /\b(milestone|droid(?:[2-4x]| (?:bionic|x2|pro|razr))?:?( 4g)?)\b[\w ]+build\//i,
+            /\bmot(?:orola)?[- ](\w*)/i,
+            /((?:moto[\w\(\) ]+|xt\d{3,4}|nexus 6)(?= bui|\)))/i
+            ], [MODEL, [VENDOR, MOTOROLA], [TYPE, MOBILE]], [
+            /\b(mz60\d|xoom[2 ]{0,2}) build\//i
+            ], [MODEL, [VENDOR, MOTOROLA], [TYPE, TABLET]], [
+
+            // LG
+            /((?=lg)?[vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i
+            ], [MODEL, [VENDOR, LG], [TYPE, TABLET]], [
+            /(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,
+            /\blg[-e;\/ ]+((?!browser|netcast|android tv)\w+)/i,
+            /\blg-?([\d\w]+) bui/i
+            ], [MODEL, [VENDOR, LG], [TYPE, MOBILE]], [
+
+            // Lenovo
+            /(ideatab[-\w ]+)/i,
+            /lenovo ?(s[56]000[-\w]+|tab(?:[\w ]+)|yt[-\d\w]{6}|tb[-\d\w]{6})/i
+            ], [MODEL, [VENDOR, 'Lenovo'], [TYPE, TABLET]], [
+
+            // Nokia
+            /(?:maemo|nokia).*(n900|lumia \d+)/i,
+            /nokia[-_ ]?([-\w\.]*)/i
+            ], [[MODEL, /_/g, ' '], [VENDOR, 'Nokia'], [TYPE, MOBILE]], [
+
+            // Google
+            /(pixel c)\b/i                                                      // Google Pixel C
+            ], [MODEL, [VENDOR, GOOGLE], [TYPE, TABLET]], [
+            /droid.+; (pixel[\daxl ]{0,6})(?: bui|\))/i                         // Google Pixel
+            ], [MODEL, [VENDOR, GOOGLE], [TYPE, MOBILE]], [
+
+            // Sony
+            /droid.+ (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i
+            ], [MODEL, [VENDOR, SONY], [TYPE, MOBILE]], [
+            /sony tablet [ps]/i,
+            /\b(?:sony)?sgp\w+(?: bui|\))/i
+            ], [[MODEL, 'Xperia Tablet'], [VENDOR, SONY], [TYPE, TABLET]], [
+
+            // OnePlus
+            / (kb2005|in20[12]5|be20[12][59])\b/i,
+            /(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i
+            ], [MODEL, [VENDOR, 'OnePlus'], [TYPE, MOBILE]], [
+
+            // Amazon
+            /(alexa)webm/i,
+            /(kf[a-z]{2}wi|aeo[c-r]{2})( bui|\))/i,                             // Kindle Fire without Silk / Echo Show
+            /(kf[a-z]+)( bui|\)).+silk\//i                                      // Kindle Fire HD
+            ], [MODEL, [VENDOR, AMAZON], [TYPE, TABLET]], [
+            /((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i                     // Fire Phone
+            ], [[MODEL, /(.+)/g, 'Fire Phone $1'], [VENDOR, AMAZON], [TYPE, MOBILE]], [
+
+            // BlackBerry
+            /(playbook);[-\w\),; ]+(rim)/i                                      // BlackBerry PlayBook
+            ], [MODEL, VENDOR, [TYPE, TABLET]], [
+            /\b((?:bb[a-f]|st[hv])100-\d)/i,
+            /\(bb10; (\w+)/i                                                    // BlackBerry 10
+            ], [MODEL, [VENDOR, BLACKBERRY], [TYPE, MOBILE]], [
+
+            // Asus
+            /(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i
+            ], [MODEL, [VENDOR, ASUS], [TYPE, TABLET]], [
+            / (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i
+            ], [MODEL, [VENDOR, ASUS], [TYPE, MOBILE]], [
+
+            // HTC
+            /(nexus 9)/i                                                        // HTC Nexus 9
+            ], [MODEL, [VENDOR, 'HTC'], [TYPE, TABLET]], [
+            /(htc)[-;_ ]{1,2}([\w ]+(?=\)| bui)|\w+)/i,                         // HTC
+
+            // ZTE
+            /(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,
+            /(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i         // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
+            ], [VENDOR, [MODEL, /_/g, ' '], [TYPE, MOBILE]], [
+
+            // Acer
+            /droid.+; ([ab][1-7]-?[0178a]\d\d?)/i
+            ], [MODEL, [VENDOR, 'Acer'], [TYPE, TABLET]], [
+
+            // Meizu
+            /droid.+; (m[1-5] note) bui/i,
+            /\bmz-([-\w]{2,})/i
+            ], [MODEL, [VENDOR, 'Meizu'], [TYPE, MOBILE]], [
+                
+            // Ulefone
+            /; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i
+            ], [MODEL, [VENDOR, 'Ulefone'], [TYPE, MOBILE]], [
+
+            // MIXED
+            /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)/i,
+                                                                                // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron
+            /(hp) ([\w ]+\w)/i,                                                 // HP iPAQ
+            /(asus)-?(\w+)/i,                                                   // Asus
+            /(microsoft); (lumia[\w ]+)/i,                                      // Microsoft Lumia
+            /(lenovo)[-_ ]?([-\w]+)/i,                                          // Lenovo
+            /(jolla)/i,                                                         // Jolla
+            /(oppo) ?([\w ]+) bui/i                                             // OPPO
+            ], [VENDOR, MODEL, [TYPE, MOBILE]], [
+
+            /(kobo)\s(ereader|touch)/i,                                         // Kobo
+            /(archos) (gamepad2?)/i,                                            // Archos
+            /(hp).+(touchpad(?!.+tablet)|tablet)/i,                             // HP TouchPad
+            /(kindle)\/([\w\.]+)/i,                                             // Kindle
+            /(nook)[\w ]+build\/(\w+)/i,                                        // Nook
+            /(dell) (strea[kpr\d ]*[\dko])/i,                                   // Dell Streak
+            /(le[- ]+pan)[- ]+(\w{1,9}) bui/i,                                  // Le Pan Tablets
+            /(trinity)[- ]*(t\d{3}) bui/i,                                      // Trinity Tablets
+            /(gigaset)[- ]+(q\w{1,9}) bui/i,                                    // Gigaset Tablets
+            /(vodafone) ([\w ]+)(?:\)| bui)/i                                   // Vodafone
+            ], [VENDOR, MODEL, [TYPE, TABLET]], [
+
+            /(surface duo)/i                                                    // Surface Duo
+            ], [MODEL, [VENDOR, MICROSOFT], [TYPE, TABLET]], [
+            /droid [\d\.]+; (fp\du?)(?: b|\))/i                                 // Fairphone
+            ], [MODEL, [VENDOR, 'Fairphone'], [TYPE, MOBILE]], [
+            /(u304aa)/i                                                         // AT&T
+            ], [MODEL, [VENDOR, 'AT&T'], [TYPE, MOBILE]], [
+            /\bsie-(\w*)/i                                                      // Siemens
+            ], [MODEL, [VENDOR, 'Siemens'], [TYPE, MOBILE]], [
+            /\b(rct\w+) b/i                                                     // RCA Tablets
+            ], [MODEL, [VENDOR, 'RCA'], [TYPE, TABLET]], [
+            /\b(venue[\d ]{2,7}) b/i                                            // Dell Venue Tablets
+            ], [MODEL, [VENDOR, 'Dell'], [TYPE, TABLET]], [
+            /\b(q(?:mv|ta)\w+) b/i                                              // Verizon Tablet
+            ], [MODEL, [VENDOR, 'Verizon'], [TYPE, TABLET]], [
+            /\b(?:barnes[& ]+noble |bn[rt])([\w\+ ]*) b/i                       // Barnes & Noble Tablet
+            ], [MODEL, [VENDOR, 'Barnes & Noble'], [TYPE, TABLET]], [
+            /\b(tm\d{3}\w+) b/i
+            ], [MODEL, [VENDOR, 'NuVision'], [TYPE, TABLET]], [
+            /\b(k88) b/i                                                        // ZTE K Series Tablet
+            ], [MODEL, [VENDOR, 'ZTE'], [TYPE, TABLET]], [
+            /\b(nx\d{3}j) b/i                                                   // ZTE Nubia
+            ], [MODEL, [VENDOR, 'ZTE'], [TYPE, MOBILE]], [
+            /\b(gen\d{3}) b.+49h/i                                              // Swiss GEN Mobile
+            ], [MODEL, [VENDOR, 'Swiss'], [TYPE, MOBILE]], [
+            /\b(zur\d{3}) b/i                                                   // Swiss ZUR Tablet
+            ], [MODEL, [VENDOR, 'Swiss'], [TYPE, TABLET]], [
+            /\b((zeki)?tb.*\b) b/i                                              // Zeki Tablets
+            ], [MODEL, [VENDOR, 'Zeki'], [TYPE, TABLET]], [
+            /\b([yr]\d{2}) b/i,
+            /\b(dragon[- ]+touch |dt)(\w{5}) b/i                                // Dragon Touch Tablet
+            ], [[VENDOR, 'Dragon Touch'], MODEL, [TYPE, TABLET]], [
+            /\b(ns-?\w{0,9}) b/i                                                // Insignia Tablets
+            ], [MODEL, [VENDOR, 'Insignia'], [TYPE, TABLET]], [
+            /\b((nxa|next)-?\w{0,9}) b/i                                        // NextBook Tablets
+            ], [MODEL, [VENDOR, 'NextBook'], [TYPE, TABLET]], [
+            /\b(xtreme\_)?(v(1[045]|2[015]|[3469]0|7[05])) b/i                  // Voice Xtreme Phones
+            ], [[VENDOR, 'Voice'], MODEL, [TYPE, MOBILE]], [
+            /\b(lvtel\-)?(v1[12]) b/i                                           // LvTel Phones
+            ], [[VENDOR, 'LvTel'], MODEL, [TYPE, MOBILE]], [
+            /\b(ph-1) /i                                                        // Essential PH-1
+            ], [MODEL, [VENDOR, 'Essential'], [TYPE, MOBILE]], [
+            /\b(v(100md|700na|7011|917g).*\b) b/i                               // Envizen Tablets
+            ], [MODEL, [VENDOR, 'Envizen'], [TYPE, TABLET]], [
+            /\b(trio[-\w\. ]+) b/i                                              // MachSpeed Tablets
+            ], [MODEL, [VENDOR, 'MachSpeed'], [TYPE, TABLET]], [
+            /\btu_(1491) b/i                                                    // Rotor Tablets
+            ], [MODEL, [VENDOR, 'Rotor'], [TYPE, TABLET]], [
+            /(shield[\w ]+) b/i                                                 // Nvidia Shield Tablets
+            ], [MODEL, [VENDOR, 'Nvidia'], [TYPE, TABLET]], [
+            /(sprint) (\w+)/i                                                   // Sprint Phones
+            ], [VENDOR, MODEL, [TYPE, MOBILE]], [
+            /(kin\.[onetw]{3})/i                                                // Microsoft Kin
+            ], [[MODEL, /\./g, ' '], [VENDOR, MICROSOFT], [TYPE, MOBILE]], [
+            /droid.+; (cc6666?|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i             // Zebra
+            ], [MODEL, [VENDOR, ZEBRA], [TYPE, TABLET]], [
+            /droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i
+            ], [MODEL, [VENDOR, ZEBRA], [TYPE, MOBILE]], [
+
+            ///////////////////
+            // SMARTTVS
+            ///////////////////
+
+            /smart-tv.+(samsung)/i                                              // Samsung
+            ], [VENDOR, [TYPE, SMARTTV]], [
+            /hbbtv.+maple;(\d+)/i
+            ], [[MODEL, /^/, 'SmartTV'], [VENDOR, SAMSUNG], [TYPE, SMARTTV]], [
+            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i        // LG SmartTV
+            ], [[VENDOR, LG], [TYPE, SMARTTV]], [
+            /(apple) ?tv/i                                                      // Apple TV
+            ], [VENDOR, [MODEL, APPLE+' TV'], [TYPE, SMARTTV]], [
+            /crkey/i                                                            // Google Chromecast
+            ], [[MODEL, CHROME+'cast'], [VENDOR, GOOGLE], [TYPE, SMARTTV]], [
+            /droid.+aft(\w+)( bui|\))/i                                         // Fire TV
+            ], [MODEL, [VENDOR, AMAZON], [TYPE, SMARTTV]], [
+            /\(dtv[\);].+(aquos)/i,
+            /(aquos-tv[\w ]+)\)/i                                               // Sharp
+            ], [MODEL, [VENDOR, SHARP], [TYPE, SMARTTV]],[
+            /(bravia[\w ]+)( bui|\))/i                                              // Sony
+            ], [MODEL, [VENDOR, SONY], [TYPE, SMARTTV]], [
+            /(mitv-\w{5}) bui/i                                                 // Xiaomi
+            ], [MODEL, [VENDOR, XIAOMI], [TYPE, SMARTTV]], [
+            /Hbbtv.*(technisat) (.*);/i                                         // TechniSAT
+            ], [VENDOR, MODEL, [TYPE, SMARTTV]], [
+            /\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,                          // Roku
+            /hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i         // HbbTV devices
+            ], [[VENDOR, trim], [MODEL, trim], [TYPE, SMARTTV]], [
+            /\b(android tv|smart[- ]?tv|opera tv|tv; rv:)\b/i                   // SmartTV from Unidentified Vendors
+            ], [[TYPE, SMARTTV]], [
+
+            ///////////////////
+            // CONSOLES
+            ///////////////////
+
+            /(ouya)/i,                                                          // Ouya
+            /(nintendo) ([wids3utch]+)/i                                        // Nintendo
+            ], [VENDOR, MODEL, [TYPE, CONSOLE]], [
+            /droid.+; (shield) bui/i                                            // Nvidia
+            ], [MODEL, [VENDOR, 'Nvidia'], [TYPE, CONSOLE]], [
+            /(playstation [345portablevi]+)/i                                   // Playstation
+            ], [MODEL, [VENDOR, SONY], [TYPE, CONSOLE]], [
+            /\b(xbox(?: one)?(?!; xbox))[\); ]/i                                // Microsoft Xbox
+            ], [MODEL, [VENDOR, MICROSOFT], [TYPE, CONSOLE]], [
+
+            ///////////////////
+            // WEARABLES
+            ///////////////////
+
+            /((pebble))app/i                                                    // Pebble
+            ], [VENDOR, MODEL, [TYPE, WEARABLE]], [
+            /(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i                              // Apple Watch
+            ], [MODEL, [VENDOR, APPLE], [TYPE, WEARABLE]], [
+            /droid.+; (glass) \d/i                                              // Google Glass
+            ], [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]], [
+            /droid.+; (wt63?0{2,3})\)/i
+            ], [MODEL, [VENDOR, ZEBRA], [TYPE, WEARABLE]], [
+            /(quest( \d| pro)?)/i                                               // Oculus Quest
+            ], [MODEL, [VENDOR, FACEBOOK], [TYPE, WEARABLE]], [
+
+            ///////////////////
+            // EMBEDDED
+            ///////////////////
+
+            /(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i                              // Tesla
+            ], [VENDOR, [TYPE, EMBEDDED]], [
+            /(aeobc)\b/i                                                        // Echo Dot
+            ], [MODEL, [VENDOR, AMAZON], [TYPE, EMBEDDED]], [
+
+            ////////////////////
+            // MIXED (GENERIC)
+            ///////////////////
+
+            /droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew).+? mobile safari/i    // Android Phones from Unidentified Vendors
+            ], [MODEL, [TYPE, MOBILE]], [
+            /droid .+?; ([^;]+?)(?: bui|\) applew).+?(?! mobile) safari/i       // Android Tablets from Unidentified Vendors
+            ], [MODEL, [TYPE, TABLET]], [
+            /\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i                      // Unidentifiable Tablet
+            ], [[TYPE, TABLET]], [
+            /(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i    // Unidentifiable Mobile
+            ], [[TYPE, MOBILE]], [
+            /(android[-\w\. ]{0,9});.+buil/i                                    // Generic Android Device
+            ], [MODEL, [VENDOR, 'Generic']]
+        ],
+
+        engine : [[
+
+            /windows.+ edge\/([\w\.]+)/i                                       // EdgeHTML
+            ], [VERSION, [NAME, EDGE+'HTML']], [
+
+            /webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i                         // Blink
+            ], [VERSION, [NAME, 'Blink']], [
+
+            /(presto)\/([\w\.]+)/i,                                             // Presto
+            /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna)\/([\w\.]+)/i, // WebKit/Trident/NetFront/NetSurf/Amaya/Lynx/w3m/Goanna
+            /ekioh(flow)\/([\w\.]+)/i,                                          // Flow
+            /(khtml|tasman|links)[\/ ]\(?([\w\.]+)/i,                           // KHTML/Tasman/Links
+            /(icab)[\/ ]([23]\.[\d\.]+)/i,                                      // iCab
+            /\b(libweb)/i
+            ], [NAME, VERSION], [
+
+            /rv\:([\w\.]{1,9})\b.+(gecko)/i                                     // Gecko
+            ], [VERSION, NAME]
+        ],
+
+        os : [[
+
+            // Windows
+            /microsoft (windows) (vista|xp)/i                                   // Windows (iTunes)
+            ], [NAME, VERSION], [
+            /(windows (?:phone(?: os)?|mobile))[\/ ]?([\d\.\w ]*)/i             // Windows Phone
+            ], [NAME, [VERSION, strMapper, windowsVersionMap]], [
+            /windows nt 6\.2; (arm)/i,                                        // Windows RT
+            /windows[\/ ]?([ntce\d\. ]+\w)(?!.+xbox)/i,
+            /(?:win(?=3|9|n)|win 9x )([nt\d\.]+)/i
+            ], [[VERSION, strMapper, windowsVersionMap], [NAME, 'Windows']], [
+
+            // iOS/macOS
+            /ip[honead]{2,4}\b(?:.*os ([\w]+) like mac|; opera)/i,              // iOS
+            /(?:ios;fbsv\/|iphone.+ios[\/ ])([\d\.]+)/i,
+            /cfnetwork\/.+darwin/i
+            ], [[VERSION, /_/g, '.'], [NAME, 'iOS']], [
+            /(mac os x) ?([\w\. ]*)/i,
+            /(macintosh|mac_powerpc\b)(?!.+haiku)/i                             // Mac OS
+            ], [[NAME, MAC_OS], [VERSION, /_/g, '.']], [
+
+            // Mobile OSes
+            /droid ([\w\.]+)\b.+(android[- ]x86|harmonyos)/i                    // Android-x86/HarmonyOS
+            ], [VERSION, NAME], [                                               // Android/WebOS/QNX/Bada/RIM/Maemo/MeeGo/Sailfish OS
+            /(android|webos|qnx|bada|rim tablet os|maemo|meego|sailfish)[-\/ ]?([\w\.]*)/i,
+            /(blackberry)\w*\/([\w\.]*)/i,                                      // Blackberry
+            /(tizen|kaios)[\/ ]([\w\.]+)/i,                                     // Tizen/KaiOS
+            /\((series40);/i                                                    // Series 40
+            ], [NAME, VERSION], [
+            /\(bb(10);/i                                                        // BlackBerry 10
+            ], [VERSION, [NAME, BLACKBERRY]], [
+            /(?:symbian ?os|symbos|s60(?=;)|series60)[-\/ ]?([\w\.]*)/i         // Symbian
+            ], [VERSION, [NAME, 'Symbian']], [
+            /mozilla\/[\d\.]+ \((?:mobile|tablet|tv|mobile; [\w ]+); rv:.+ gecko\/([\w\.]+)/i // Firefox OS
+            ], [VERSION, [NAME, FIREFOX+' OS']], [
+            /web0s;.+rt(tv)/i,
+            /\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i                              // WebOS
+            ], [VERSION, [NAME, 'webOS']], [
+            /watch(?: ?os[,\/]|\d,\d\/)([\d\.]+)/i                              // watchOS
+            ], [VERSION, [NAME, 'watchOS']], [
+
+            // Google Chromecast
+            /crkey\/([\d\.]+)/i                                                 // Google Chromecast
+            ], [VERSION, [NAME, CHROME+'cast']], [
+            /(cros) [\w]+(?:\)| ([\w\.]+)\b)/i                                  // Chromium OS
+            ], [[NAME, CHROMIUM_OS], VERSION],[
+
+            // Smart TVs
+            /panasonic;(viera)/i,                                               // Panasonic Viera
+            /(netrange)mmh/i,                                                   // Netrange
+            /(nettv)\/(\d+\.[\w\.]+)/i,                                         // NetTV
+
+            // Console
+            /(nintendo|playstation) ([wids345portablevuch]+)/i,                 // Nintendo/Playstation
+            /(xbox); +xbox ([^\);]+)/i,                                         // Microsoft Xbox (360, One, X, S, Series X, Series S)
+
+            // Other
+            /\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)/i,                            // Joli/Palm
+            /(mint)[\/\(\) ]?(\w*)/i,                                           // Mint
+            /(mageia|vectorlinux)[; ]/i,                                        // Mageia/VectorLinux
+            /([kxln]?ubuntu|debian|suse|opensuse|gentoo|arch(?= linux)|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire)(?: gnu\/linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)/i,
+                                                                                // Ubuntu/Debian/SUSE/Gentoo/Arch/Slackware/Fedora/Mandriva/CentOS/PCLinuxOS/RedHat/Zenwalk/Linpus/Raspbian/Plan9/Minix/RISCOS/Contiki/Deepin/Manjaro/elementary/Sabayon/Linspire
+            /(hurd|linux) ?([\w\.]*)/i,                                         // Hurd/Linux
+            /(gnu) ?([\w\.]*)/i,                                                // GNU
+            /\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)/i, // FreeBSD/NetBSD/OpenBSD/PC-BSD/GhostBSD/DragonFly
+            /(haiku) (\w+)/i                                                    // Haiku
+            ], [NAME, VERSION], [
+            /(sunos) ?([\w\.\d]*)/i                                             // Solaris
+            ], [[NAME, 'Solaris'], VERSION], [
+            /((?:open)?solaris)[-\/ ]?([\w\.]*)/i,                              // Solaris
+            /(aix) ((\d)(?=\.|\)| )[\w\.])*/i,                                  // AIX
+            /\b(beos|os\/2|amigaos|morphos|openvms|fuchsia|hp-ux|serenityos)/i, // BeOS/OS2/AmigaOS/MorphOS/OpenVMS/Fuchsia/HP-UX/SerenityOS
+            /(unix) ?([\w\.]*)/i                                                // UNIX
+            ], [NAME, VERSION]
+        ]
+    };
+
+    /////////////////
+    // Constructor
+    ////////////////
+
+    var UAParser = function (ua, extensions) {
+
+        if (typeof ua === OBJ_TYPE) {
+            extensions = ua;
+            ua = undefined;
+        }
+
+        if (!(this instanceof UAParser)) {
+            return new UAParser(ua, extensions).getResult();
+        }
+
+        var _navigator = (typeof window !== UNDEF_TYPE && window.navigator) ? window.navigator : undefined;
+        var _ua = ua || ((_navigator && _navigator.userAgent) ? _navigator.userAgent : EMPTY);
+        var _uach = (_navigator && _navigator.userAgentData) ? _navigator.userAgentData : undefined;
+        var _rgxmap = extensions ? extend(regexes, extensions) : regexes;
+        var _isSelfNav = _navigator && _navigator.userAgent == _ua;
+
+        this.getBrowser = function () {
+            var _browser = {};
+            _browser[NAME] = undefined;
+            _browser[VERSION] = undefined;
+            rgxMapper.call(_browser, _ua, _rgxmap.browser);
+            _browser[MAJOR] = majorize(_browser[VERSION]);
+            // Brave-specific detection
+            if (_isSelfNav && _navigator && _navigator.brave && typeof _navigator.brave.isBrave == FUNC_TYPE) {
+                _browser[NAME] = 'Brave';
+            }
+            return _browser;
+        };
+        this.getCPU = function () {
+            var _cpu = {};
+            _cpu[ARCHITECTURE] = undefined;
+            rgxMapper.call(_cpu, _ua, _rgxmap.cpu);
+            return _cpu;
+        };
+        this.getDevice = function () {
+            var _device = {};
+            _device[VENDOR] = undefined;
+            _device[MODEL] = undefined;
+            _device[TYPE] = undefined;
+            rgxMapper.call(_device, _ua, _rgxmap.device);
+            if (_isSelfNav && !_device[TYPE] && _uach && _uach.mobile) {
+                _device[TYPE] = MOBILE;
+            }
+            // iPadOS-specific detection: identified as Mac, but has some iOS-only properties
+            if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && typeof _navigator.standalone !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
+                _device[MODEL] = 'iPad';
+                _device[TYPE] = TABLET;
+            }
+            return _device;
+        };
+        this.getEngine = function () {
+            var _engine = {};
+            _engine[NAME] = undefined;
+            _engine[VERSION] = undefined;
+            rgxMapper.call(_engine, _ua, _rgxmap.engine);
+            return _engine;
+        };
+        this.getOS = function () {
+            var _os = {};
+            _os[NAME] = undefined;
+            _os[VERSION] = undefined;
+            rgxMapper.call(_os, _ua, _rgxmap.os);
+            if (_isSelfNav && !_os[NAME] && _uach && _uach.platform && _uach.platform != 'Unknown') {
+                _os[NAME] = _uach.platform  
+                                    .replace(/chrome os/i, CHROMIUM_OS)
+                                    .replace(/macos/i, MAC_OS);           // backward compatibility
+            }
+            return _os;
+        };
+        this.getResult = function () {
+            return {
+                ua      : this.getUA(),
+                browser : this.getBrowser(),
+                engine  : this.getEngine(),
+                os      : this.getOS(),
+                device  : this.getDevice(),
+                cpu     : this.getCPU()
+            };
+        };
+        this.getUA = function () {
+            return _ua;
+        };
+        this.setUA = function (ua) {
+            _ua = (typeof ua === STR_TYPE && ua.length > UA_MAX_LENGTH) ? trim(ua, UA_MAX_LENGTH) : ua;
+            return this;
+        };
+        this.setUA(_ua);
+        return this;
+    };
+
+    UAParser.VERSION = LIBVERSION;
+    UAParser.BROWSER =  enumerize([NAME, VERSION, MAJOR]);
+    UAParser.CPU = enumerize([ARCHITECTURE]);
+    UAParser.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
+    UAParser.ENGINE = UAParser.OS = enumerize([NAME, VERSION]);
+
+    ///////////
+    // Export
+    //////////
+
+    // check js environment
+    if (typeof(exports) !== UNDEF_TYPE) {
+        // nodejs env
+        if ("object" !== UNDEF_TYPE && module.exports) {
+            exports = module.exports = UAParser;
+        }
+        exports.UAParser = UAParser;
+    } else {
+        // requirejs env (optional)
+        if ("function" === FUNC_TYPE && __webpack_require__.amdO) {
+            !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+                return UAParser;
+            }).call(exports, __webpack_require__, exports, module),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+        } else if (typeof window !== UNDEF_TYPE) {
+            // browser env
+            window.UAParser = UAParser;
+        }
+    }
+
+    // jQuery/Zepto specific (optional)
+    // Note:
+    //   In AMD env the global scope should be kept clean, but jQuery is an exception.
+    //   jQuery always exports to global scope, unless jQuery.noConflict(true) is used,
+    //   and we should catch that.
+    var $ = typeof window !== UNDEF_TYPE && (window.jQuery || window.Zepto);
+    if ($ && !$.ua) {
+        var parser = new UAParser();
+        $.ua = parser.getResult();
+        $.ua.get = function () {
+            return parser.getUA();
+        };
+        $.ua.set = function (ua) {
+            parser.setUA(ua);
+            var result = parser.getResult();
+            for (var prop in result) {
+                $.ua[prop] = result[prop];
+            }
+        };
+    }
+
+})(typeof window === 'object' ? window : this);
+
+
+/***/ }),
+
 /***/ "./node_modules/nanoid/index.browser.js":
 /*!**********************************************************!*\
   !*** ./node_modules/nanoid/index.browser.js + 1 modules ***!
   \**********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
@@ -6381,13 +8178,18 @@ let nanoid = (size = 21) => {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/amd options */
+/******/ 	(() => {
+/******/ 		__webpack_require__.amdO = {};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -6418,24 +8220,30 @@ let nanoid = (size = 21) => {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it uses a non-standard name for the exports (exports).
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
 var exports = __webpack_exports__;
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deviceType = void 0;
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const ControllerContainer_1 = __webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts");
 const ErrorContainer_1 = __webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts");
 const LoadingContainer_1 = __webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts");
 const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
-__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
-__webpack_require__(/*! ./index.css */ "./src/index.css");
 const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
 const SmApiPlayer_1 = __webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts");
-const classes = (0, style_1.default)();
+__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
+__webpack_require__(/*! ./index.css */ "./src/index.css");
+const deviceType = (0, services_1.detectDevice)();
+exports.deviceType = deviceType;
+const classes = (0, style_1.default)({
+    deviceType,
+});
 class SmUIControls {
     apiPlayer;
     isInit = false;

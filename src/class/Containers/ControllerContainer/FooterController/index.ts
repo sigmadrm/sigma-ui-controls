@@ -11,6 +11,7 @@ interface IConstructorProps extends IConstructorBaseProps {
 class FooterController extends BaseComponent {
   private seekBarController: SeekBarController | undefined;
   private taskbarController: TaskbarController | undefined;
+  private isInside: boolean | null = null;
 
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
@@ -40,12 +41,25 @@ class FooterController extends BaseComponent {
   registerListener() {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handelEventClick(event);
+      this.containerElement.onmouseover = (event) => this.handelOnmouseover(event);
+      this.containerElement.onmouseout = (event) => this.handelOnmouseout(event);
     }
   }
   unregisterListener(): void {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => {};
+      this.containerElement.onmouseover = (event) => {};
+      this.containerElement.onmouseout = (event) => {};
     }
+  }
+  getIsInside() {
+    return this.isInside;
+  }
+  handelOnmouseover(e: MouseEvent) {
+    this.isInside = true;
+  }
+  handelOnmouseout(e: MouseEvent) {
+    this.isInside = false;
   }
   handelEventClick = (e: MouseEvent) => {
     e.preventDefault();

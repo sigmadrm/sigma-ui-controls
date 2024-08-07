@@ -41,7 +41,11 @@ class ButtonPlaySecondary extends BaseComponent {
   }
   show() {
     if (this.containerElement) {
-      this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
+      this.containerElement.className = [
+        this.classes.taskbarGroupBtn,
+        this.classes.taskbarGroupBtnEnable,
+        this.classes.taskbarGroupBtnMobile,
+      ].join(' ');
     }
   }
 }

@@ -1,12 +1,13 @@
 import BaseComponent from '../../../BaseComponent';
-import { IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../../type';
+import { IConstructorBaseProps } from '../../../../type';
 interface IConstructorProps extends IConstructorBaseProps {
-    videoInfo: IConfigureUIPlayerProps['videoInfo'];
 }
 declare class HeadController extends BaseComponent {
-    private videoInfo;
+    private settingIconButton;
     constructor(props: IConstructorProps);
     render(): void;
+    hidden(): void;
+    show(): void;
 }
 export default HeadController;
 //# sourceMappingURL=index.d.ts.map

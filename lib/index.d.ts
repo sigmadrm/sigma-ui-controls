@@ -1,6 +1,7 @@
 import { IConfigureUIPlayerProps, ISmEventEmitter, SmListeners } from './type';
 import 'animate.css';
 import './index.css';
+declare const deviceType: import("./type").EDeviceType;
 declare class SmUIControls implements ISmEventEmitter {
     private apiPlayer;
     private isInit;
@@ -19,6 +20,6 @@ declare class SmUIControls implements ISmEventEmitter {
     listenerCount<E extends keyof SmListeners>(event: E): number;
     destroy(): void;
 }
-export { SmListeners };
+export { SmListeners, deviceType };
 export default SmUIControls;
 //# sourceMappingURL=index.d.ts.map

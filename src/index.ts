@@ -1,18 +1,21 @@
 import { typePlayerDef, versionDef } from './constants';
-import { EEVentName, IConfigureUIPlayerProps, IIds, ISmEventEmitter, SmListeners } from './type';
+import { IConfigureUIPlayerProps, IIds, ISmEventEmitter, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
 
-import { generateIIds } from './services';
-
-import 'animate.css';
-import './index.css';
+import { detectDevice, generateIIds } from './services';
 import generateStyles from './style';
 import SmApiPlayer from './class/SmApiPlayer';
 
-const classes = generateStyles();
+import 'animate.css';
+import './index.css';
+
+const deviceType = detectDevice();
+const classes = generateStyles({
+  deviceType,
+});
 
 class SmUIControls implements ISmEventEmitter {
   private apiPlayer: SmApiPlayer | null;
@@ -25,7 +28,7 @@ class SmUIControls implements ISmEventEmitter {
   constructor(props: IConfigureUIPlayerProps) {
     const { player, video, idVideoContainer, typePlayer = typePlayerDef, version = versionDef, videoInfo } = props;
 
-    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version }));
+    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version, deviceType }));
     const VideoContainerElement = document.getElementById(idVideoContainer);
     this.ids = generateIIds();
     if (!this.isInit) {
@@ -101,5 +104,5 @@ class SmUIControls implements ISmEventEmitter {
   }
 }
 
-export { SmListeners };
+export { SmListeners, deviceType };
 export default SmUIControls;
