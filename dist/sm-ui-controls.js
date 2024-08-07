@@ -5952,7 +5952,6 @@ const generateStyles = (props) => {
         background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
         width: 100%;
         position: absolute;
-        top: -88px;
         right: 0;
         left: 0;
         box-sizing: border-box;
@@ -6119,8 +6118,8 @@ const generateStyles = (props) => {
             footerController: (0, css_1.css) `
         background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
         width: 100%;
-        height: 88px;
-        bottom: -88px;
+        height: 72px;
+        bottom: -72px;
         gap: 0px;
         flex-direction: column-reverse;
         position: absolute;
@@ -6133,7 +6132,7 @@ const generateStyles = (props) => {
         gap: 16px;
         overflow: hidden;
         transition: 0.3s ease-in-out;
-        padding: 24px;
+        padding: 12px;
       `,
             footerControllerEnable: (0, css_1.css) `
         bottom: 0px;
@@ -6145,7 +6144,7 @@ const generateStyles = (props) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 24px;
+        margin-bottom: 12px;
       `,
             progressContainer: (0, css_1.css) `
         height: 8px;

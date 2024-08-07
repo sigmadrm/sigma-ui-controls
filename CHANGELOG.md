@@ -1,5 +1,12 @@
 
 
+## [0.0.29](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.28...v0.0.29) (2024-08-07)
+
+
+### Bug Fixes
+
+* fix css for mobile ([7c36cbd](https://github.com/sigmadrm/sigma-ui-controls/commit/7c36cbd8bfa63bcaf150cbc2a89682c05a286e97))
+
 ## [0.0.28](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.27...v0.0.28) (2024-08-07)
 
 
