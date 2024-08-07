@@ -7,10 +7,12 @@ declare class ControllerContainer extends BaseComponent {
     private headController;
     private bodyController;
     private footerController;
+    private timerId;
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    handleOnMouseMover: () => void;
     handleOnMouseover(): void;
     handleOnMouseout(): void;
     handleClickContainer: (event: MouseEvent) => void;

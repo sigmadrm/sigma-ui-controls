@@ -3399,58 +3399,32 @@ exports["default"] = LiveStream;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
-const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
 class SettingIconButtonMB extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
-        this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
+        // this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
         const { active } = this.state;
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.settingIcon;
-            this.containerElement.style.display = 'block';
-            this.containerElement.style.setProperty('--animate-duration', '1s');
-            if (active) {
-                this.containerElement.className = [
-                    this.classes.taskbarGroupBtn,
-                    this.classes.taskbarIconActive,
-                    this.classes.taskbarGroupBtnMobile,
-                ].join(' ');
-            }
-            else {
-                this.containerElement.className = [
-                    this.classes.taskbarGroupBtn,
-                    this.classes.taskbarIconInactive,
-                    this.classes.taskbarGroupBtnMobile,
-                ].join(' ');
-            }
+            // this.containerElement.style.display = 'block';
+            // this.containerElement.style.setProperty('--animate-duration', '1s');
+            // if (active) {
+            //   this.containerElement.className = [
+            //     this.classes.taskbarGroupBtn,
+            //     this.classes.taskbarIconActive,
+            //     this.classes.taskbarGroupBtnMobile,
+            //   ].join(' ');
+            // } else {
+            //   this.containerElement.className = [
+            //     this.classes.taskbarGroupBtn,
+            //     this.classes.taskbarIconInactive,
+            //     this.classes.taskbarGroupBtnMobile,
+            //   ].join(' ');
+            // }
         }
-    }
-    registerListener() {
-        if (!this.containerElement)
-            return;
-        this.containerElement.onclick = (event) => this.handleContainerClick(event);
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
-    }
-    unregisterListener() {
-        if (!this.containerElement)
-            return;
-        this.containerElement.onclick = () => { };
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.SETTING_PANEL_VISIBLE, this.handleSettingPanelVisible, this);
-    }
-    handleSettingPanelVisible(event, data) {
-        const { visible } = data;
-        this.state = { ...this.state, active: visible };
-    }
-    handleContainerClick(event) {
-        const { apiPlayer } = this;
-        event.preventDefault();
-        event.stopPropagation();
-        const visible = !this.state.active;
-        this.containerElement?.setAttribute('data-state', visible ? type_1.ESettingPanelDataState.OPENED : type_1.ESettingPanelDataState.CLOSED);
-        apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible });
     }
 }
 exports["default"] = SettingIconButtonMB;
@@ -4038,51 +4012,6 @@ class SeekBarController extends BaseComponent_1.default {
           <div class="${classes.progressThumb}" id="${this.ids.smProgressThumb}"></div>
         </div>`;
             this.containerElement.innerHTML = htmlString;
-            const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
-            const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
-            // Xử lý kéo thanh tiến trình
-            if (progressThumbContainer && progressBarbContainer) {
-                progressThumbContainer.addEventListener('mousedown', (e) => {
-                    e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
-                    e.stopPropagation();
-                    // Hàm cập nhật thanh tiến trình và video.currentTime
-                    if (this.apiPlayer.isPlay()) {
-                        this.isPlay = true;
-                        this.apiPlayer.pause();
-                    }
-                    else {
-                        this.isPlay = false;
-                    }
-                    const onMouseMove = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const rect = progressBarbContainer.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
-                        const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
-                        if (percentage >= 0 && percentage <= 100) {
-                            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                            // Xóa timeout cũ nếu có
-                            if (this.timeoutId) {
-                                clearTimeout(this.timeoutId);
-                            }
-                            // Đặt timeout để cập nhật video.currentTime sau 300ms
-                            this.timeoutId = self.setTimeout(() => {
-                                this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-                                if (this.isPlay) {
-                                    this.apiPlayer.play();
-                                }
-                            }, 300);
-                        }
-                    };
-                    // Thêm các sự kiện mousemove và mouseup
-                    document.addEventListener('mousemove', onMouseMove);
-                    document.addEventListener('mouseup', () => {
-                        document.removeEventListener('mousemove', onMouseMove);
-                    }, { once: true });
-                });
-            }
         }
     }
     registerListener() {
@@ -4094,6 +4023,51 @@ class SeekBarController extends BaseComponent_1.default {
                 this.handleEventClick(e);
             };
         }
+        const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
+        const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
+        // Xử lý kéo thanh tiến trình
+        if (progressThumbContainer && progressBarbContainer) {
+            progressThumbContainer.addEventListener('mousedown', (e) => {
+                // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
+                // e.stopPropagation();
+                // Hàm cập nhật thanh tiến trình và video.currentTime
+                if (this.apiPlayer.isPlay()) {
+                    this.isPlay = true;
+                    this.apiPlayer.pause();
+                }
+                else {
+                    this.isPlay = false;
+                }
+                const onMouseMove = (e) => {
+                    // e.preventDefault();
+                    // e.stopPropagation();
+                    const rect = progressBarbContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+                    const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+                    if (percentage >= 0 && percentage <= 100) {
+                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                        // Xóa timeout cũ nếu có
+                        if (this.timeoutId) {
+                            clearTimeout(this.timeoutId);
+                        }
+                        // Đặt timeout để cập nhật video.currentTime sau 300ms
+                        this.timeoutId = self.setTimeout(() => {
+                            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                            if (this.isPlay) {
+                                this.apiPlayer.play();
+                            }
+                        }, 0);
+                    }
+                };
+                // Thêm các sự kiện mousemove và mouseup
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', () => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                }, { once: true });
+            });
+        }
     }
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
@@ -4102,14 +4076,25 @@ class SeekBarController extends BaseComponent_1.default {
         if (this?.containerElement) {
             this.containerElement.onclick = () => { };
         }
+        document.onmousemove = (e) => { };
+        document.onmouseup = (e) => { };
+        const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
+        if (progressThumbContainer) {
+            progressThumbContainer.onmousedown = (e) => { };
+        }
     }
     handleEventClick(e) {
+        e.preventDefault();
         const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
+        const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
         if (progressBarbContainer) {
             const rect = progressBarbContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
             const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+            progressThumbContainer &&
+                progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
             this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
         }
     }
@@ -4632,6 +4617,7 @@ const TaskbarController_1 = __webpack_require__(/*! ./TaskbarController */ "./sr
 class FooterController extends BaseComponent_1.default {
     seekBarController;
     taskbarController;
+    isInside = null;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -4659,12 +4645,25 @@ class FooterController extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handelEventClick(event);
+            this.containerElement.onmouseover = (event) => this.handelOnmouseover(event);
+            this.containerElement.onmouseout = (event) => this.handelOnmouseout(event);
         }
     }
     unregisterListener() {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => { };
+            this.containerElement.onmouseover = (event) => { };
+            this.containerElement.onmouseout = (event) => { };
         }
+    }
+    getIsInside() {
+        return this.isInside;
+    }
+    handelOnmouseover(e) {
+        this.isInside = true;
+    }
+    handelOnmouseout(e) {
+        this.isInside = false;
     }
     handelEventClick = (e) => {
         e.preventDefault();
@@ -4710,13 +4709,26 @@ class HeadController extends BaseComponent_1.default {
         });
     }
     render() {
-        console.log(this.classes.smSettingIconButtonMB, this.containerElement);
         if (this.containerElement) {
             const htmlString = `<div></div>
       <div class="${this.classes.smSettingIconButtonMB}" id="${this.ids.smSettingIconButtonMobile}"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
+    registerListener() {
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => this.handelEventClick(event);
+        }
+    }
+    unregisterListener() {
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => { };
+        }
+    }
+    handelEventClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
     hidden() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.headController;
@@ -4747,10 +4759,12 @@ const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/clas
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const services_1 = __webpack_require__(/*! ../../../services */ "./src/services.ts");
 class ControllerContainer extends BaseComponent_1.default {
     headController;
     bodyController;
     footerController;
+    timerId;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -4774,6 +4788,7 @@ class ControllerContainer extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handleClickContainer(event);
+            this.containerElement.onmousemove = (event) => this.handleOnMouseMover();
         }
         if (this.containerElement) {
             this.containerElement.onmouseover = () => this.handleOnMouseover();
@@ -4783,7 +4798,10 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
     }
     unregisterListener() {
-        this.containerElement?.addEventListener('click', (event) => { });
+        if (this.containerElement) {
+            this.containerElement.onclick = (event) => { };
+            this.containerElement.onmousemove = (event) => { };
+        }
         if (this.containerElement) {
             this.containerElement.onmouseover = () => { };
             this.containerElement.onmouseout = () => { };
@@ -4794,15 +4812,62 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
     }
+    handleOnMouseMover = () => {
+        if (this.footerController) {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+            }
+            this.footerController.show();
+            this.timerId = self.setInterval(() => {
+                if ((0, services_1.checkDeviceIsTouch)(this.apiPlayer.deviceType)) {
+                    if (this.footerController) {
+                        this.footerController.hidden();
+                    }
+                    if (this.headController) {
+                        this.headController.hidden();
+                    }
+                }
+                else {
+                    if (!this.footerController?.getIsInside()) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                        if (this.headController) {
+                            this.headController.hidden();
+                        }
+                    }
+                }
+            }, 3000);
+        }
+        if (this.headController) {
+            this.headController.show();
+        }
+    };
     handleOnMouseover() {
         if (this.footerController) {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+            }
             this.footerController.show();
+            this.timerId = self.setInterval(() => {
+                if (!this.footerController?.getIsInside()) {
+                    if (this.footerController) {
+                        this.footerController.hidden();
+                    }
+                    if (this.headController) {
+                        this.headController.hidden();
+                    }
+                }
+            }, 3000);
         }
         if (this.headController) {
             this.headController.show();
         }
     }
     handleOnMouseout() {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+        }
         if (this.footerController) {
             this.footerController.hidden();
         }
@@ -4815,11 +4880,11 @@ class ControllerContainer extends BaseComponent_1.default {
         event.preventDefault();
         event.stopPropagation();
         if (document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === type_1.ESettingPanelDataState.BLUR) {
-            // prevent event click when setting panel change state opened to blur
             return;
         }
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
+            this.handleOnMouseover();
         }
         else {
             apiPlayer.play();
@@ -4971,7 +5036,9 @@ class SmApiPlayer {
     typePlayer;
     version;
     eventemitter;
+    deviceType;
     constructor(props) {
+        this.deviceType = props.deviceType;
         this.player = props.player;
         this.video = props.video;
         this.typePlayer = props.typePlayer;
@@ -5724,7 +5791,7 @@ exports.playbackSpeedIcon = `
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+exports.checkDeviceIsTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
 const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
@@ -5785,6 +5852,7 @@ const detectDevice = () => {
         const parser = new ua_parser_js_1.UAParser();
         const result = parser.getResult();
         const deviceType = result.device.type;
+        console.log(deviceType);
         if (deviceType) {
             if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
                 return type_1.EDeviceType.MOBILE;
@@ -5807,6 +5875,10 @@ const detectDeviceMobile = (deviceType) => {
     return deviceType === type_1.EDeviceType.MOBILE;
 };
 exports.detectDeviceMobile = detectDeviceMobile;
+const checkDeviceIsTouch = (deviceType) => {
+    return deviceType === type_1.EDeviceType.TABLET || deviceType === type_1.EDeviceType.MOBILE;
+};
+exports.checkDeviceIsTouch = checkDeviceIsTouch;
 
 
 /***/ }),
@@ -5825,563 +5897,583 @@ const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const generateStyles = (props) => {
     const { primaryColor = constants_1.primaryColorDef, logo, deviceType } = props || {};
-    // if (deviceType === 'mobile') {
-    //   return {
-    //     container: css`
-    //       font-family: 'Be Vietnam Pro';
-    //       background: black;
-    //       color: white;
-    //       -webkit-user-select: none; /* Safari */
-    //       -moz-user-select: none; /* Firefox */
-    //       -ms-user-select: none; /* Internet Explorer/Edge */
-    //       user-select: none;
-    //       background: transparent;
-    //       position: absolute;
-    //       top: 0;
-    //       bottom: 0;
-    //       right: 0;
-    //       left: 0;
-    //       overflow: hidden;
-    //       color: white;
-    //       ::-webkit-scrollbar,
-    //       *::-webkit-scrollbar {
-    //         width: 6px;
-    //       }
-    //       ::-webkit-scrollbar-track,
-    //       *::-webkit-scrollbar-track {
-    //         border-radius: 8px;
-    //         background-color: transparent;
-    //         border: 1px solid transparent;
-    //       }
-    //       ::-webkit-scrollbar-thumb,
-    //       *::-webkit-scrollbar-thumb {
-    //         border-radius: 8px;
-    //         background-color: #616161;
-    //       }
-    //     `,
-    //     controllerContent: css`
-    //       position: absolute;
-    //       top: 0;
-    //       bottom: 0;
-    //       right: 0;
-    //       left: 0;
-    //       background: transparent;
-    //       display: none;
-    //     `,
-    //     controllerContentEnable: css`
-    //       display: flex;
-    //       flex-direction: column;
-    //       align-items: center;
-    //       justify-content: center;
-    //     `,
-    //     headController: css`
-    //       background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-    //       width: 100%;
-    //       // height: 16%;
-    //       // min-height: 50px;
-    //       min-height: 60px;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: flex-start;
-    //       box-sizing: border-box;
-    //       padding: 8px 12px;
-    //       overflow: hidden;
-    //       animation-name: fadeInDown;
-    //     `,
-    //     headControllerTitle: css`
-    //       width: 80%;
-    //       font-size: 1.3rem;
-    //       white-space: nowrap;
-    //       overflow: hidden;
-    //       text-overflow: ellipsis;
-    //     `,
-    //     bodyController: css`
-    //       position: absolute;
-    //       top: 0;
-    //       bottom: 0;
-    //       right: 0;
-    //       left: 0;
-    //       background: transparent;
-    //       width: 100%;
-    //       flex: 1;
-    //       box-sizing: border-box;
-    //       overflow: hidden;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //     `,
-    //     settingsContainer: css`
-    //       position: absolute;
-    //       bottom: 80px; // bottomHeight
-    //       right: 12px;
-    //       border-radius: 8px;
-    //       background-color: rgba(0, 0, 0, 0.64);
-    //       backdrop-filter: blur(25px);
-    //       display: flex;
-    //       flex-direction: column;
-    //       gap: 0px;
-    //       max-height: calc(86% - 80px);
-    //       overflow: hidden;
-    //       outline: none;
-    //       border: none;
-    //       box-shadow: none;
-    //     `,
-    //     settingsContainerMask: css`
-    //       position: fixed;
-    //       top: 0;
-    //       left: 0;
-    //       width: 100vw;
-    //       height: 100vh;
-    //       background-color: transparent;
-    //       pointer-events: none;
-    //     `,
-    //     settingsContent: css`
-    //       min-width: 300px;
-    //       max-width: 320px;
-    //       overflow-y: auto;
-    //     `,
-    //     settingHeader: css`
-    //       box-sizing: border-box;
-    //       height: 48px;
-    //       display: flex;
-    //       padding: 8px 12px;
-    //       align-items: center;
-    //       gap: 12px;
-    //       align-self: stretch;
-    //       background-color: rgba(255, 255, 255, 0.04);
-    //     `,
-    //     settingItem: css`
-    //       height: 48px;
-    //       box-sizing: border-box;
-    //       display: flex;
-    //       padding: 8px 12px;
-    //       align-items: center;
-    //       gap: 12px;
-    //       &:hover {
-    //         background-color: rgba(255, 255, 255, 0.08);
-    //         cursor: pointer;
-    //       }
-    //     `,
-    //     settingDetailItem: css`
-    //       height: 40px;
-    //       box-sizing: border-box;
-    //       display: flex;
-    //       padding: 8px 12px;
-    //       align-items: center;
-    //       gap: 12px;
-    //       &:hover {
-    //         background-color: rgba(255, 255, 255, 0.08);
-    //         cursor: pointer;
-    //       }
-    //     `,
-    //     settingItemDivider: css`
-    //       border-top: 1px solid rgba(255, 255, 255, 0.08);
-    //     `,
-    //     settingTitleActive: css`
-    //       font-size: 14px;
-    //       font-style: normal;
-    //       font-weight: 600;
-    //       line-height: 20px;
-    //     `,
-    //     settingTitleNormal: css`
-    //       font-size: 14px;
-    //       font-style: normal;
-    //       font-weight: 400;
-    //       line-height: 20px;
-    //     `,
-    //     settingItemIcon: css`
-    //       width: 24px;
-    //       height: 24px;
-    //       cursor: pointer;
-    //     `,
-    //     settingItemIconSecondary: css`
-    //       width: 20px;
-    //       height: 20px;
-    //       color: rgba(255, 255, 255, 0.64);
-    //     `,
-    //     settingItemTitle: css`
-    //       flex: 1;
-    //       font-size: 14px;
-    //       font-style: normal;
-    //       font-weight: 600;
-    //       line-height: 20px;
-    //       cursor: pointer;
-    //     `,
-    //     settingItemValue: css`
-    //       display: flex;
-    //       align-items: center;
-    //       gap: 8px;
-    //       white-space: nowrap;
-    //       word-wrap: normal;
-    //       text-overflow: ellipsis;
-    //       font-size: 14px;
-    //       font-style: normal;
-    //       font-weight: 400;
-    //       line-height: 20px;
-    //     `,
-    //     buttonPrimary: css`
-    //       color: white;
-    //       background: rgba(0, 0, 0, 0.48);
-    //       backdrop-filter: blur(25px);
-    //       border-radius: 50%;
-    //       width: 56px;
-    //       height: 56px;
-    //       cursor: pointer;
-    //       color: white;
-    //       display: none;
-    //       padding: 8px;
-    //       box-sizing: border-box;
-    //       cursor: pointer;
-    //     `,
-    //     buttonPrimaryEnable: css`
-    //       animation: zoomIn;
-    //       animation-duration: 0.2s;
-    //       display: block;
-    //       // display: flex;
-    //       flex-direction: row;
-    //       align-items: center;
-    //       justify-content: center;
-    //       // &:hover {
-    //       //   box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.3);
-    //       // }
-    //     `,
-    //     footerController: css`
-    //       background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-    //       width: 100%;
-    //       height: 80px;
-    //       position: absolute;
-    //       bottom: -80px;
-    //       right: 0;
-    //       left: 0;
-    //       box-sizing: border-box;
-    //       display: flex;
-    //       flex-direction: column;
-    //       align-items: center;
-    //       justify-content: center;
-    //       gap: 16px;
-    //       overflow: hidden;
-    //       transition: 0.3s ease-in-out;
-    //       padding: 8px 12px;
-    //       overflow: hidden;
-    //     `,
-    //     footerControllerEnable: css`
-    //       min-height: 80px;
-    //       bottom: 0px;
-    //       transition: 0.3s ease-in-out;
-    //     `,
-    //     seekBarController: css`
-    //       width: 100%;
-    //       height: 4px;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //     `,
-    //     progressContainer: css`
-    //       height: 8px;
-    //       width: 100%;
-    //       position: relative;
-    //       background-color: rgba(255, 255, 255, 0.24);
-    //       border-radius: 8px;
-    //       margin-top: 10px;
-    //       cursor: pointer;
-    //     `,
-    //     progressBuffer: css`
-    //       position: absolute;
-    //       width: var(--highlight-width-progress-buffer);
-    //       height: 100%;
-    //       background-color: rgba(255, 255, 255, 0.5);
-    //       border-radius: 8px;
-    //       z-index: 1;
-    //     `,
-    //     progressBar: css`
-    //       position: absolute;
-    //       width: var(--highlight-width-progress-bar);
-    //       height: 100%;
-    //       background-color: ${primaryColor};
-    //       opacity: 1;
-    //       z-index: 1;
-    //       border-radius: 8px 0px 0px 8px;
-    //     `,
-    //     progressThumb: css`
-    //       position: absolute;
-    //       left: calc(var(--highlight-left-progress-thumb) - 8px);
-    //       height: 16px;
-    //       width: 16px;
-    //       background-color: ${primaryColor};
-    //       opacity: 1;
-    //       border-radius: 50%;
-    //       top: -3.5px;
-    //       cursor: pointer;
-    //       z-index: 1;
-    //     `,
-    //     taskbarController: css`
-    //       width: 100%;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: space-between;
-    //     `,
-    //     taskbarGroup: css`
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //       gap: 16px;
-    //     `,
-    //     taskbarGroupBtn: css`
-    //       width: 40px;
-    //       height: 40px;
-    //       padding: 2px;
-    //       box-sizing: border-box;
-    //       display: none;
-    //       border-radius: 50%;
-    //       cursor: pointer;
-    //       &:hover {
-    //         color: ${primaryColor};
-    //       }
-    //     `,
-    //     taskbarIconActive: css`
-    //       color: ${primaryColor};
-    //       rotate: 45deg;
-    //       transition: rotate 1s;
-    //     `,
-    //     taskbarIconInactive: css`
-    //       rotate: 0;
-    //       transition: rotate 1s;
-    //     `,
-    //     taskbarGroupBtnEnable: css`
-    //       display: flex;
-    //       display: block;
-    //       align-items: center;
-    //       justify-content: center;
-    //       cursor: pointer;
-    //     `,
-    //     taskbarVolumeContainer: css`
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //       margin: 0px;
-    //     `,
-    //     taskbarTimeBarContainer: css`
-    //       display: none;
-    //     `,
-    //     taskbarTimeBarContainerEnable: css`
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //       margin: 0px;
-    //       font-size: 12px;
-    //       gap: 4px;
-    //     `,
-    //     taskbarLiveStream: css`
-    //       display: none;
-    //     `,
-    //     liveStreamDot: css`
-    //       width: 8px;
-    //       height: 8px;
-    //       border-radius: 50%;
-    //       background: red;
-    //       margin-right: 4px;
-    //       box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
-    //     `,
-    //     taskbarLiveStreamEnable: css`
-    //       display: none;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //       margin: 0px;
-    //       font-size: 12px;
-    //       gap: 4px;
-    //     `,
-    //     taskbarTimeCurrent: css``,
-    //     taskbarTimeDuration: css``,
-    //     smSelectVolumeRangeContainer: css`
-    //       display: flex;
-    //       flex-direction: row;
-    //       align-items: center;
-    //       justify-content: center;
-    //       padding-left: 8px;
-    //       width: 0px;
-    //       height: 0px;
-    //       overflow: hidden;
-    //       transition: 0.2s ease-in-out;
-    //     `,
-    //     smSelectVolumeRangeContainerEnable: css`
-    //       width: 100px;
-    //       height: 6px;
-    //       overflow: visible;
-    //       transition: 0.2s ease-in-out;
-    //     `,
-    //     taskbarVolumeSlider: css`
-    //       margin-left: 2px;
-    //       height: 4px;
-    //       width: 100%;
-    //       -webkit-appearance: none;
-    //       appearance: none;
-    //       cursor: pointer;
-    //       outline: none;
-    //       border-radius: 15px;
-    //       background: linear-gradient(
-    //         to right,
-    //         white var(--highlight-width),
-    //         rgba(255, 255, 255, 0.24) var(--highlight-width)
-    //       );
-    //       ::-webkit-slider-thumb {
-    //         -webkit-appearance: none;
-    //         appearance: none;
-    //         /* creating a custom design */
-    //         height: 16px;
-    //         width: 16px;
-    //         background-color: white;
-    //         border-radius: 50%;
-    //         border: none;
-    //       }
-    //       ::-moz-range-thumb {
-    //         height: 16px;
-    //         width: 16px;
-    //         background-color: white;
-    //         border-radius: 50%;
-    //         border: none;
-    //       }
-    //     `,
-    //     loadingContainer: css`
-    //       background: rgb(119 119 119 / 50%);
-    //       position: absolute;
-    //       top: 0;
-    //       bottom: 0;
-    //       right: 0;
-    //       left: 0;
-    //       overflow: hidden;
-    //       display: none;
-    //       .sm-loading-ss {
-    //         position: absolute;
-    //         top: 0;
-    //         left: 0;
-    //         right: 0;
-    //         bottom: 0;
-    //         z-index: 0;
-    //         margin: 0;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading {
-    //         display: inline-block;
-    //         position: absolute;
-    //         margin: auto;
-    //         text-align: center;
-    //         top: 50%;
-    //         left: 50%;
-    //         -webkit-transform: translate(-50%, -50%);
-    //         transform: translate(-50%, -50%);
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-container {
-    //         width: 200px;
-    //         height: 100px;
-    //         overflow: hidden;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-circle {
-    //         position: absolute;
-    //         width: 100%;
-    //         height: 200%;
-    //         border-radius: 50%;
-    //         overflow: hidden;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-top {
-    //         -webkit-transform-origin: 50% 100%;
-    //         transform-origin: 50% 100%;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 10px ${primaryColor};
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
-    //         -webkit-transform-origin: 50% 0;
-    //         transform-origin: 50% 0;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 10px ${primaryColor};
-    //         top: -100px !important;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
-    //         width: 96px;
-    //         height: 48px;
-    //         margin-left: -48px;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 6px ${primaryColor};
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 6px ${primaryColor};
-    //         top: -48px !important;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
-    //         width: 24px;
-    //         height: 12px;
-    //         margin-left: -12px;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 2px ${primaryColor};
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 2px ${primaryColor};
-    //         top: -12px !important;
-    //       }
-    //       .sm-loading-ss .sm-ss-medium .sm-ss-container {
-    //         width: 48px;
-    //         height: 24px;
-    //         margin-left: -12px;
-    //       }
-    //       .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 3px ${primaryColor};
-    //       }
-    //       .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
-    //         box-shadow: inset 0 0 0 3px ${primaryColor};
-    //         top: -24px !important;
-    //       }
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
-    //       .sm-loading-ss .sm-ss-loading .sm-ss-top {
-    //         position: relative;
-    //         width: 100%;
-    //         height: 100%;
-    //         overflow: hidden;
-    //         -webkit-animation: 0.8s linear infinite ssrotate;
-    //         animation: 0.8s linear infinite ssrotate;
-    //       }
-    //     `,
-    //     loadingContainerEnable: css`
-    //       display: flex !important;
-    //       flex-direction: row;
-    //       align-items: center;
-    //       justify-content: center;
-    //     `,
-    //     errorContainer: css`
-    //       background: rgb(119 119 119 / 50%);
-    //       position: absolute;
-    //       top: 0;
-    //       bottom: 0;
-    //       right: 0;
-    //       left: 0;
-    //       z-index: 1;
-    //       overflow: hidden;
-    //       display: none;
-    //     `,
-    //     errorContainerEnable: css`
-    //       display: flex;
-    //       flex-direction: row;
-    //       align-items: center;
-    //       justify-content: center;
-    //       gap: 40px;
-    //     `,
-    //     errorIconWrap: css`
-    //       width: 50px;
-    //       height: 50px;
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-    //     `,
-    //     flexColumnStartCenter: css`
-    //       display: column;
-    //       flex-direction: row;
-    //       justify-content: flex-start;
-    //       align-items: center;
-    //     `,
-    //   };
-    // }
+    if (deviceType === type_1.EDeviceType.MOBILE) {
+        return {
+            container: (0, css_1.css) `
+        font-family: 'Be Vietnam Pro';
+        background: black;
+        color: white;
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+        background: transparent;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        overflow: hidden;
+        color: white;
+        ::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+          width: 6px;
+        }
+        ::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-track {
+          border-radius: 8px;
+          background-color: transparent;
+          border: 1px solid transparent;
+        }
+
+        ::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-thumb {
+          border-radius: 8px;
+          background-color: #616161;
+        }
+      `,
+            controllerContent: (0, css_1.css) `
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 1;
+        display: none;
+        background: transparent;
+      `,
+            controllerContentEnable: (0, css_1.css) `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      `,
+            headController: (0, css_1.css) `
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+        width: 100%;
+        position: absolute;
+        top: -88px;
+        right: 0;
+        left: 0;
+        box-sizing: border-box;
+        display: flex;
+        height: 72px;
+        top: -72px;
+        gap: 0px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+        transition: 0.3s ease-in-out;
+        padding: 12px 12px;
+        z-index: 1;
+      `,
+            headControllerEnable: (0, css_1.css) `
+        top: 0;
+        transition: 0.3s ease-in-out;
+      `,
+            smSettingIconButtonMB: (0, css_1.css) `
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        display: block !important;
+      `,
+            bodyController: (0, css_1.css) `
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background: transparent;
+        width: 100%;
+        flex: 1;
+        box-sizing: border-box;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `,
+            settingsContainer: (0, css_1.css) `
+        position: absolute;
+        bottom: 80px; // bottomHeight
+        right: 12px;
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, 0.64);
+        backdrop-filter: blur(25px);
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+        max-height: calc(86% - 80px);
+        overflow: hidden;
+        outline: none;
+        border: none;
+        box-shadow: none;
+      `,
+            settingsContainerMask: (0, css_1.css) `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: transparent;
+        pointer-events: none;
+      `,
+            settingsContent: (0, css_1.css) `
+        min-width: 300px;
+        max-width: 320px;
+        overflow-y: auto;
+      `,
+            settingHeader: (0, css_1.css) `
+        box-sizing: border-box;
+        height: 48px;
+        display: flex;
+        padding: 8px 12px;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        background-color: rgba(255, 255, 255, 0.04);
+      `,
+            settingItem: (0, css_1.css) `
+        height: 48px;
+        box-sizing: border-box;
+        display: flex;
+        padding: 8px 12px;
+        align-items: center;
+        gap: 12px;
+      `,
+            settingDetailItem: (0, css_1.css) `
+        height: 40px;
+        box-sizing: border-box;
+        display: flex;
+        padding: 8px 12px;
+        align-items: center;
+        gap: 12px;
+      `,
+            settingItemDivider: (0, css_1.css) `
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      `,
+            settingTitleActive: (0, css_1.css) `
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+      `,
+            settingTitleNormal: (0, css_1.css) `
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+      `,
+            settingItemIcon: (0, css_1.css) `
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      `,
+            settingItemIconSecondary: (0, css_1.css) `
+        width: 20px;
+        height: 20px;
+        color: rgba(255, 255, 255, 0.64);
+      `,
+            settingItemTitle: (0, css_1.css) `
+        flex: 1;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+        cursor: pointer;
+      `,
+            settingItemValue: (0, css_1.css) `
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        word-wrap: normal;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+      `,
+            buttonPrimary: (0, css_1.css) `
+        color: white;
+        background: rgba(0, 0, 0, 0.48);
+        backdrop-filter: blur(25px);
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        cursor: pointer;
+        color: white;
+        display: none;
+        padding: 8px;
+        box-sizing: border-box;
+        cursor: pointer;
+      `,
+            buttonPrimaryEnable: (0, css_1.css) `
+        animation: zoomIn;
+        animation-duration: 0.2s;
+        display: block;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      `,
+            footerController: (0, css_1.css) `
+        background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+        width: 100%;
+        height: 88px;
+        bottom: -88px;
+        gap: 0px;
+        flex-direction: column-reverse;
+        position: absolute;
+        right: 0;
+        left: 0;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        overflow: hidden;
+        transition: 0.3s ease-in-out;
+        padding: 24px;
+      `,
+            footerControllerEnable: (0, css_1.css) `
+        bottom: 0px;
+        transition: 0.3s ease-in-out;
+      `,
+            seekBarController: (0, css_1.css) `
+        width: 100%;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+      `,
+            progressContainer: (0, css_1.css) `
+        height: 8px;
+        width: 100%;
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.24);
+        border-radius: 8px;
+        cursor: pointer;
+      `,
+            progressBuffer: (0, css_1.css) `
+        position: absolute;
+        width: var(--highlight-width-progress-buffer);
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+        z-index: 1;
+      `,
+            progressBar: (0, css_1.css) `
+        position: absolute;
+        width: var(--highlight-width-progress-bar);
+        height: 100%;
+        background-color: ${primaryColor};
+        opacity: 1;
+        z-index: 1;
+        border-radius: 8px 0px 0px 8px;
+      `,
+            progressThumb: (0, css_1.css) `
+        position: absolute;
+        left: calc(var(--highlight-left-progress-thumb) - 8px);
+        height: 16px;
+        width: 16px;
+        background-color: ${primaryColor};
+        opacity: 1;
+        border-radius: 50%;
+        top: -3.5px;
+        cursor: pointer;
+        z-index: 1;
+      `,
+            taskbarController: (0, css_1.css) `
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      `,
+            taskbarGroup: (0, css_1.css) `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      `,
+            taskbarGroupBtn: (0, css_1.css) `
+        width: 36px;
+        height: 36px;
+        padding: 2px;
+        box-sizing: border-box;
+        display: none;
+        border-radius: 50%;
+        cursor: pointer;
+      `,
+            taskbarIconActive: (0, css_1.css) `
+        color: ${primaryColor};
+        rotate: 45deg;
+        transition: rotate 1s;
+      `,
+            taskbarGroupBtnMobile: (0, css_1.css) `
+        display: none !important;
+      `,
+            taskbarIconInactive: (0, css_1.css) `
+        rotate: 0;
+        transition: rotate 1s;
+      `,
+            taskbarGroupBtnEnable: (0, css_1.css) `
+        display: flex;
+        display: block;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      `,
+            taskbarVolumeContainer: (0, css_1.css) `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0px;
+      `,
+            taskbarTimeBarContainer: (0, css_1.css) `
+        display: none;
+      `,
+            taskbarTimeBarContainerEnable: (0, css_1.css) `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -12px;
+        font-size: 12px;
+        gap: 4px;
+      `,
+            taskbarLiveStream: (0, css_1.css) `
+        display: none;
+      `,
+            liveStreamDot: (0, css_1.css) `
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: red;
+        margin-right: 4px;
+        box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
+      `,
+            taskbarLiveStreamEnable: (0, css_1.css) `
+        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -12px;
+        font-size: 16px;
+        line-height: 24px;
+        gap: 4px;
+      `,
+            taskbarTimeCurrent: (0, css_1.css) `
+        font-size: 16px;
+        line-height: 24px;
+      `,
+            taskbarTimeDuration: (0, css_1.css) `
+        color: rgba(255, 255, 255, 0.64);
+        font-size: 16px;
+        line-height: 24px;
+      `,
+            smSelectVolumeRangeContainer: (0, css_1.css) `
+        display: none;
+        padding-left: 0px;
+        width: 0px;
+        height: 0px;
+        overflow: hidden;
+        transition: 0.2s ease-in-out;
+      `,
+            smSelectVolumeRangeContainerEnable: (0, css_1.css) `
+        width: 100px;
+        height: 6px;
+        overflow: visible;
+        transition: 0.2s ease-in-out;
+      `,
+            taskbarVolumeSlider: (0, css_1.css) `
+        margin-left: 2px;
+        height: 4px;
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        outline: none;
+        border-radius: 15px;
+        background: linear-gradient(
+          to right,
+          white var(--highlight-width),
+          rgba(255, 255, 255, 0.24) var(--highlight-width)
+        );
+        ::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          /* creating a custom design */
+          height: 16px;
+          width: 16px;
+          background-color: white;
+          border-radius: 50%;
+          border: none;
+        }
+        ::-moz-range-thumb {
+          height: 16px;
+          width: 16px;
+          background-color: white;
+          border-radius: 50%;
+          border: none;
+        }
+      `,
+            loadingContainer: (0, css_1.css) `
+        background: rgb(119 119 119 / 50%);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        overflow: hidden;
+        display: none;
+        .sm-loading-ss {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 0;
+          margin: 0;
+        }
+
+        .sm-loading-ss .sm-ss-loading {
+          display: inline-block;
+          position: absolute;
+          margin: auto;
+          text-align: center;
+          top: 50%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-container {
+          width: 200px;
+          height: 100px;
+          overflow: hidden;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-circle {
+          position: absolute;
+          width: 100%;
+          height: 200%;
+          border-radius: 50%;
+          overflow: hidden;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-top {
+          -webkit-transform-origin: 50% 100%;
+          transform-origin: 50% 100%;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
+          box-shadow: inset 0 0 0 10px ${primaryColor};
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
+          -webkit-transform-origin: 50% 0;
+          transform-origin: 50% 0;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
+          box-shadow: inset 0 0 0 10px ${primaryColor};
+          top: -100px !important;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
+          width: 96px;
+          height: 48px;
+          margin-left: -48px;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
+          box-shadow: inset 0 0 0 6px ${primaryColor};
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
+          box-shadow: inset 0 0 0 6px ${primaryColor};
+          top: -48px !important;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
+          width: 24px;
+          height: 12px;
+          margin-left: -12px;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
+          box-shadow: inset 0 0 0 2px ${primaryColor};
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
+          box-shadow: inset 0 0 0 2px ${primaryColor};
+          top: -12px !important;
+        }
+
+        .sm-loading-ss .sm-ss-medium .sm-ss-container {
+          width: 48px;
+          height: 24px;
+          margin-left: -12px;
+        }
+
+        .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
+          box-shadow: inset 0 0 0 3px ${primaryColor};
+        }
+
+        .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
+          box-shadow: inset 0 0 0 3px ${primaryColor};
+          top: -24px !important;
+        }
+
+        .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
+        .sm-loading-ss .sm-ss-loading .sm-ss-top {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          -webkit-animation: 0.8s linear infinite ssrotate;
+          animation: 0.8s linear infinite ssrotate;
+        }
+      `,
+            loadingContainerEnable: (0, css_1.css) `
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      `,
+            errorContainer: (0, css_1.css) `
+        background: rgb(119 119 119 / 50%);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 0;
+        overflow: hidden;
+        display: none;
+      `,
+            errorContainerEnable: (0, css_1.css) `
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+      `,
+            errorIconWrap: (0, css_1.css) `
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `,
+            flexColumnStartCenter: (0, css_1.css) `
+        display: column;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+      `,
+        };
+    }
     return {
         container: (0, css_1.css) `
       font-family: 'Be Vietnam Pro';
@@ -6422,8 +6514,9 @@ const generateStyles = (props) => {
       bottom: 0;
       right: 0;
       left: 0;
-      background: transparent;
+      z-index: 1;
       display: none;
+      background: transparent;
     `,
         controllerContentEnable: (0, css_1.css) `
       display: flex;
@@ -6448,7 +6541,7 @@ const generateStyles = (props) => {
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
-      overflow: hidden;
+      z-index: 1;
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
         display: flex;
         height: 72px;
@@ -6461,8 +6554,13 @@ const generateStyles = (props) => {
       transition: 0.3s ease-in-out;
     `,
         smSettingIconButtonMB: (0, css_1.css) `
-      display: none;
+      cursor: pointer;
+      &:hover {
+        color: ${primaryColor};
+      }
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        width: 36px;
+        height: 36px;
         display: block !important;
       }
     `,
@@ -6635,7 +6733,6 @@ const generateStyles = (props) => {
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
-      overflow: hidden;
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
         height: 72px;
         bottom: -72px;
@@ -6991,7 +7088,7 @@ const generateStyles = (props) => {
       bottom: 0;
       right: 0;
       left: 0;
-      z-index: 1;
+      z-index: 0;
       overflow: hidden;
       display: none;
     `,
@@ -8253,7 +8350,7 @@ class SmUIControls {
     ids;
     constructor(props) {
         const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version }));
+        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType }));
         const VideoContainerElement = document.getElementById(idVideoContainer);
         this.ids = (0, services_1.generateIIds)();
         if (!this.isInit) {

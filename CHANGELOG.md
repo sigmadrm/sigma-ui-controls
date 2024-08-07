@@ -1,5 +1,13 @@
 
 
+## [0.0.27](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.26...v0.0.27) (2024-08-07)
+
+
+### Features
+
+* implement genId ([37b5ee8](https://github.com/sigmadrm/sigma-ui-controls/commit/37b5ee847213990e5f27fe10eb3c568c9d44e69d))
+* **mobile:** implement btn css and handle event by device ([56e71c2](https://github.com/sigmadrm/sigma-ui-controls/commit/56e71c2b075163a5133563ab6d2355acfa894d1a))
+
 ## [0.0.26](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.25...v0.0.26) (2024-08-05)
 
 

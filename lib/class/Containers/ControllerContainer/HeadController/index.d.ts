@@ -6,6 +6,9 @@ declare class HeadController extends BaseComponent {
     private settingIconButton;
     constructor(props: IConstructorProps);
     render(): void;
+    registerListener(): void;
+    unregisterListener(): void;
+    handelEventClick: (e: MouseEvent) => void;
     hidden(): void;
     show(): void;
 }

@@ -1,5 +1,5 @@
 import { ETypePlayer } from '../../constants';
-import { EEVentName, Track } from '../../type';
+import { EDeviceType, EEVentName, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 export default class SmApiPlayer {
     player: any;
@@ -7,11 +7,13 @@ export default class SmApiPlayer {
     typePlayer: ETypePlayer;
     version?: string;
     eventemitter: SmEventEmitter;
+    deviceType: EDeviceType;
     constructor(props: {
         player: any;
         video?: HTMLVideoElement;
         typePlayer: ETypePlayer;
         version?: string;
+        deviceType: EDeviceType;
     });
     registerListener(): void;
     unregisterListener(): void;

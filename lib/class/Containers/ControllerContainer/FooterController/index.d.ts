@@ -7,10 +7,14 @@ interface IConstructorProps extends IConstructorBaseProps {
 declare class FooterController extends BaseComponent {
     private seekBarController;
     private taskbarController;
+    private isInside;
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    getIsInside(): boolean | null;
+    handelOnmouseover(e: MouseEvent): void;
+    handelOnmouseout(e: MouseEvent): void;
     handelEventClick: (e: MouseEvent) => void;
     hidden(): void;
     show(): void;
