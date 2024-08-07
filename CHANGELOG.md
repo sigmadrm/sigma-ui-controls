@@ -1,5 +1,12 @@
 
 
+## [0.0.30](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.29...v0.0.30) (2024-08-07)
+
+
+### Features
+
+* implement event touch in seekbar ([040dde9](https://github.com/sigmadrm/sigma-ui-controls/commit/040dde978b34cba5c6235d20047045d917bcb499))
+
 ## [0.0.29](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.28...v0.0.29) (2024-08-07)
 
 

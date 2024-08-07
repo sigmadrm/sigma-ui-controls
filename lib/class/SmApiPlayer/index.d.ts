@@ -8,12 +8,14 @@ export default class SmApiPlayer {
     version?: string;
     eventemitter: SmEventEmitter;
     deviceType: EDeviceType;
+    hasTouch: boolean;
     constructor(props: {
         player: any;
         video?: HTMLVideoElement;
         typePlayer: ETypePlayer;
         version?: string;
         deviceType: EDeviceType;
+        hasTouch: boolean;
     });
     registerListener(): void;
     unregisterListener(): void;

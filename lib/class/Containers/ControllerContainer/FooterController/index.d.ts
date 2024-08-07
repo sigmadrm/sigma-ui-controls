@@ -13,8 +13,8 @@ declare class FooterController extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     getIsInside(): boolean | null;
-    handelOnmouseover(e: MouseEvent): void;
-    handelOnmouseout(e: MouseEvent): void;
+    handelOnmouseover(): void;
+    handelOnmouseout(): void;
     handelEventClick: (e: MouseEvent) => void;
     hidden(): void;
     show(): void;

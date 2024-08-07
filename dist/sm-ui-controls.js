@@ -4031,13 +4031,12 @@ class SeekBarController extends BaseComponent_1.default {
                 // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
                 // e.stopPropagation();
                 // Hàm cập nhật thanh tiến trình và video.currentTime
-                if (this.apiPlayer.isPlay()) {
-                    this.isPlay = true;
-                    this.apiPlayer.pause();
-                }
-                else {
-                    this.isPlay = false;
-                }
+                // if (this.apiPlayer.isPlay()) {
+                //   this.isPlay = true;
+                //   this.apiPlayer.pause();
+                // } else {
+                //   this.isPlay = false;
+                // }
                 const onMouseMove = (e) => {
                     // e.preventDefault();
                     // e.stopPropagation();
@@ -4055,9 +4054,9 @@ class SeekBarController extends BaseComponent_1.default {
                         // Đặt timeout để cập nhật video.currentTime sau 300ms
                         this.timeoutId = self.setTimeout(() => {
                             this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-                            if (this.isPlay) {
-                                this.apiPlayer.play();
-                            }
+                            // if (this.isPlay) {
+                            //   this.apiPlayer.play();
+                            // }
                         }, 0);
                     }
                 };
@@ -4065,6 +4064,44 @@ class SeekBarController extends BaseComponent_1.default {
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', () => {
                     document.removeEventListener('mousemove', onMouseMove);
+                }, { once: true });
+            });
+            progressThumbContainer.addEventListener('touchmove', (e) => {
+                // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
+                // e.stopPropagation();
+                // Hàm cập nhật thanh tiến trình và video.currentTime
+                // if (this.apiPlayer.isPlay()) {
+                //   this.isPlay = true;
+                //   this.apiPlayer.pause();
+                // } else {
+                //   this.isPlay = false;
+                // }
+                const onTouchMove = (e) => {
+                    const touch = e.touches[0];
+                    const rect = progressBarbContainer.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+                    const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+                    if (percentage >= 0 && percentage <= 100) {
+                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                        // Xóa timeout cũ nếu có
+                        if (this.timeoutId) {
+                            clearTimeout(this.timeoutId);
+                        }
+                        // Đặt timeout để cập nhật video.currentTime sau 300ms
+                        this.timeoutId = self.setTimeout(() => {
+                            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                            // if (this.isPlay) {
+                            //   this.apiPlayer.play();
+                            // }
+                        }, 0);
+                    }
+                };
+                // Thêm các sự kiện mousemove và mouseup
+                document.addEventListener('touchmove', onTouchMove);
+                document.addEventListener('mouseup', () => {
+                    document.removeEventListener('touchmove', onTouchMove);
                 }, { once: true });
             });
         }
@@ -4076,11 +4113,12 @@ class SeekBarController extends BaseComponent_1.default {
         if (this?.containerElement) {
             this.containerElement.onclick = () => { };
         }
-        document.onmousemove = (e) => { };
-        document.onmouseup = (e) => { };
+        document.onmousemove = () => { };
+        document.onmouseup = () => { };
         const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
         if (progressThumbContainer) {
-            progressThumbContainer.onmousedown = (e) => { };
+            progressThumbContainer.onmousedown = () => { };
+            progressThumbContainer.ontouchmove = () => { };
         }
     }
     handleEventClick(e) {
@@ -4645,24 +4683,32 @@ class FooterController extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handelEventClick(event);
-            this.containerElement.onmouseover = (event) => this.handelOnmouseover(event);
-            this.containerElement.onmouseout = (event) => this.handelOnmouseout(event);
+            // mouse
+            this.containerElement.onmouseover = (event) => this.handelOnmouseover();
+            this.containerElement.onmouseout = (event) => this.handelOnmouseout();
+            //touch
+            this.containerElement.ontouchstart = () => this.handelOnmouseover();
+            this.containerElement.ontouchend = () => this.handelOnmouseout();
         }
     }
     unregisterListener() {
         if (this.containerElement) {
-            this.containerElement.onclick = (event) => { };
-            this.containerElement.onmouseover = (event) => { };
-            this.containerElement.onmouseout = (event) => { };
+            this.containerElement.onclick = () => { };
+            // mouse
+            this.containerElement.onmouseover = () => { };
+            this.containerElement.onmouseout = () => { };
+            //touch
+            this.containerElement.ontouchstart = () => { };
+            this.containerElement.ontouchend = () => { };
         }
     }
     getIsInside() {
         return this.isInside;
     }
-    handelOnmouseover(e) {
+    handelOnmouseover() {
         this.isInside = true;
     }
-    handelOnmouseout(e) {
+    handelOnmouseout() {
         this.isInside = false;
     }
     handelEventClick = (e) => {
@@ -4759,7 +4805,6 @@ const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/clas
 const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const services_1 = __webpack_require__(/*! ../../../services */ "./src/services.ts");
 class ControllerContainer extends BaseComponent_1.default {
     headController;
     bodyController;
@@ -4788,62 +4833,34 @@ class ControllerContainer extends BaseComponent_1.default {
     registerListener() {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handleClickContainer(event);
-            this.containerElement.onmousemove = (event) => this.handleOnMouseMover();
-        }
-        if (this.containerElement) {
+            // mouse
+            this.containerElement.onmousemove = () => this.handleOnMouseMover();
             this.containerElement.onmouseover = () => this.handleOnMouseover();
             this.containerElement.onmouseout = () => this.handleOnMouseout();
+            //touch
+            this.containerElement.ontouchmove = () => this.handleOnMouseMover();
+            this.containerElement.ontouchstart = () => this.handleOnMouseover();
+            this.containerElement.ontouchend = () => this.handleOnMouseout();
         }
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
     }
     unregisterListener() {
         if (this.containerElement) {
-            this.containerElement.onclick = (event) => { };
-            this.containerElement.onmousemove = (event) => { };
-        }
-        if (this.containerElement) {
+            this.containerElement.onclick = () => { };
+            // mouse
+            this.containerElement.onmousemove = () => { };
             this.containerElement.onmouseover = () => { };
             this.containerElement.onmouseout = () => { };
-        }
-        if (this.containerElement) {
-            this.containerElement.onclick = (event) => { };
+            // touch
+            this.containerElement.ontouchstart = () => { };
+            this.containerElement.ontouchend = () => { };
+            this.containerElement.ontouchmove = () => { };
         }
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
     }
     handleOnMouseMover = () => {
-        if (this.footerController) {
-            if (this.timerId) {
-                clearTimeout(this.timerId);
-            }
-            this.footerController.show();
-            this.timerId = self.setInterval(() => {
-                if ((0, services_1.checkDeviceIsTouch)(this.apiPlayer.deviceType)) {
-                    if (this.footerController) {
-                        this.footerController.hidden();
-                    }
-                    if (this.headController) {
-                        this.headController.hidden();
-                    }
-                }
-                else {
-                    if (!this.footerController?.getIsInside()) {
-                        if (this.footerController) {
-                            this.footerController.hidden();
-                        }
-                        if (this.headController) {
-                            this.headController.hidden();
-                        }
-                    }
-                }
-            }, 3000);
-        }
-        if (this.headController) {
-            this.headController.show();
-        }
-    };
-    handleOnMouseover() {
         if (this.footerController) {
             if (this.timerId) {
                 clearTimeout(this.timerId);
@@ -4863,17 +4880,44 @@ class ControllerContainer extends BaseComponent_1.default {
         if (this.headController) {
             this.headController.show();
         }
+    };
+    handleOnMouseover() {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+        }
+        if (this.footerController) {
+            this.footerController.show();
+        }
+        if (this.headController) {
+            this.headController.show();
+        }
+        this.timerId = self.setInterval(() => {
+            if (this.footerController) {
+                if (!this.footerController?.getIsInside()) {
+                    if (this.footerController) {
+                        this.footerController.hidden();
+                    }
+                }
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+        }, 3000);
     }
     handleOnMouseout() {
         if (this.timerId) {
             clearTimeout(this.timerId);
         }
-        if (this.footerController) {
-            this.footerController.hidden();
-        }
-        if (this.headController) {
-            this.headController.hidden();
-        }
+        this.timerId = self.setTimeout(() => {
+            if (!this.footerController?.getIsInside()) {
+                if (this.footerController) {
+                    this.footerController.hidden();
+                }
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+        }, 3000);
     }
     handleClickContainer = (event) => {
         const { apiPlayer } = this;
@@ -4884,7 +4928,7 @@ class ControllerContainer extends BaseComponent_1.default {
         }
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
-            this.handleOnMouseover();
+            // this.handleOnMouseover();
         }
         else {
             apiPlayer.play();
@@ -5037,8 +5081,10 @@ class SmApiPlayer {
     version;
     eventemitter;
     deviceType;
+    hasTouch;
     constructor(props) {
         this.deviceType = props.deviceType;
+        this.hasTouch = props.hasTouch;
         this.player = props.player;
         this.video = props.video;
         this.typePlayer = props.typePlayer;
@@ -5791,7 +5837,7 @@ exports.playbackSpeedIcon = `
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkDeviceIsTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+exports.checkHasTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
 const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
@@ -5852,7 +5898,6 @@ const detectDevice = () => {
         const parser = new ua_parser_js_1.UAParser();
         const result = parser.getResult();
         const deviceType = result.device.type;
-        console.log(deviceType);
         if (deviceType) {
             if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
                 return type_1.EDeviceType.MOBILE;
@@ -5875,10 +5920,10 @@ const detectDeviceMobile = (deviceType) => {
     return deviceType === type_1.EDeviceType.MOBILE;
 };
 exports.detectDeviceMobile = detectDeviceMobile;
-const checkDeviceIsTouch = (deviceType) => {
-    return deviceType === type_1.EDeviceType.TABLET || deviceType === type_1.EDeviceType.MOBILE;
+const checkHasTouch = () => {
+    return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
 };
-exports.checkDeviceIsTouch = checkDeviceIsTouch;
+exports.checkHasTouch = checkHasTouch;
 
 
 /***/ }),
@@ -8337,6 +8382,7 @@ __webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css")
 __webpack_require__(/*! ./index.css */ "./src/index.css");
 const deviceType = (0, services_1.detectDevice)();
 exports.deviceType = deviceType;
+const hasTouch = (0, services_1.checkHasTouch)();
 const classes = (0, style_1.default)({
     deviceType,
 });
@@ -8349,7 +8395,7 @@ class SmUIControls {
     ids;
     constructor(props) {
         const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType }));
+        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
         const VideoContainerElement = document.getElementById(idVideoContainer);
         this.ids = (0, services_1.generateIIds)();
         if (!this.isInit) {
