@@ -15,7 +15,6 @@ export interface IConfigureUIPlayerProps {
     primaryColor?: string;
     logo?: string;
   };
-  ids: IIds;
 }
 export type TGenerateStylesProps = IConfigureUIPlayerProps['style'] & { deviceType: EDeviceType };
 

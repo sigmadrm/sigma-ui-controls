@@ -23,7 +23,7 @@ class SmUIControls implements ISmEventEmitter {
   private controllerContainer: ControllerContainer | undefined;
   private errorContainer: ErrorContainer | undefined;
   private loadingContainer: LoadingContainer | undefined;
-  private ids!: IIds;
+  private ids: IIds;
 
   constructor(props: IConfigureUIPlayerProps) {
     const { player, video, idVideoContainer, typePlayer = typePlayerDef, version = versionDef, videoInfo } = props;
