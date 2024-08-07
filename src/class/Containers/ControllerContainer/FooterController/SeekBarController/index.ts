@@ -62,12 +62,12 @@ class SeekBarController extends BaseComponent {
         // e.stopPropagation();
 
         // Hàm cập nhật thanh tiến trình và video.currentTime
-        if (this.apiPlayer.isPlay()) {
-          this.isPlay = true;
-          this.apiPlayer.pause();
-        } else {
-          this.isPlay = false;
-        }
+        // if (this.apiPlayer.isPlay()) {
+        //   this.isPlay = true;
+        //   this.apiPlayer.pause();
+        // } else {
+        //   this.isPlay = false;
+        // }
         const onMouseMove = (e) => {
           // e.preventDefault();
           // e.stopPropagation();
@@ -87,9 +87,9 @@ class SeekBarController extends BaseComponent {
             // Đặt timeout để cập nhật video.currentTime sau 300ms
             this.timeoutId = self.setTimeout(() => {
               this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-              if (this.isPlay) {
-                this.apiPlayer.play();
-              }
+              // if (this.isPlay) {
+              //   this.apiPlayer.play();
+              // }
             }, 0);
           }
         };
@@ -104,6 +104,52 @@ class SeekBarController extends BaseComponent {
           { once: true },
         );
       });
+      progressThumbContainer.addEventListener('touchmove', (e) => {
+        // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
+        // e.stopPropagation();
+
+        // Hàm cập nhật thanh tiến trình và video.currentTime
+        // if (this.apiPlayer.isPlay()) {
+        //   this.isPlay = true;
+        //   this.apiPlayer.pause();
+        // } else {
+        //   this.isPlay = false;
+        // }
+        const onTouchMove = (e: TouchEvent) => {
+          const touch = e.touches[0];
+
+          const rect = progressBarbContainer.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+
+          const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+          if (percentage >= 0 && percentage <= 100) {
+            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+            // Xóa timeout cũ nếu có
+            if (this.timeoutId) {
+              clearTimeout(this.timeoutId);
+            }
+            // Đặt timeout để cập nhật video.currentTime sau 300ms
+            this.timeoutId = self.setTimeout(() => {
+              this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+              // if (this.isPlay) {
+              //   this.apiPlayer.play();
+              // }
+            }, 0);
+          }
+        };
+
+        // Thêm các sự kiện mousemove và mouseup
+        document.addEventListener('touchmove', onTouchMove);
+        document.addEventListener(
+          'mouseup',
+          () => {
+            document.removeEventListener('touchmove', onTouchMove);
+          },
+          { once: true },
+        );
+      });
     }
   }
   unregisterListener(): void {
@@ -113,11 +159,12 @@ class SeekBarController extends BaseComponent {
     if (this?.containerElement) {
       this.containerElement.onclick = () => {};
     }
-    document.onmousemove = (e) => {};
-    document.onmouseup = (e) => {};
+    document.onmousemove = () => {};
+    document.onmouseup = () => {};
     const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
     if (progressThumbContainer) {
-      progressThumbContainer.onmousedown = (e) => {};
+      progressThumbContainer.onmousedown = () => {};
+      progressThumbContainer.ontouchmove = () => {};
     }
   }
   handleEventClick(e: MouseEvent) {

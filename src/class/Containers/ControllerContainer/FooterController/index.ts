@@ -41,24 +41,32 @@ class FooterController extends BaseComponent {
   registerListener() {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handelEventClick(event);
-      this.containerElement.onmouseover = (event) => this.handelOnmouseover(event);
-      this.containerElement.onmouseout = (event) => this.handelOnmouseout(event);
+      // mouse
+      this.containerElement.onmouseover = (event) => this.handelOnmouseover();
+      this.containerElement.onmouseout = (event) => this.handelOnmouseout();
+      //touch
+      this.containerElement.ontouchstart = () => this.handelOnmouseover();
+      this.containerElement.ontouchend = () => this.handelOnmouseout();
     }
   }
   unregisterListener(): void {
     if (this.containerElement) {
-      this.containerElement.onclick = (event) => {};
-      this.containerElement.onmouseover = (event) => {};
-      this.containerElement.onmouseout = (event) => {};
+      this.containerElement.onclick = () => {};
+      // mouse
+      this.containerElement.onmouseover = () => {};
+      this.containerElement.onmouseout = () => {};
+      //touch
+      this.containerElement.ontouchstart = () => {};
+      this.containerElement.ontouchend = () => {};
     }
   }
   getIsInside() {
     return this.isInside;
   }
-  handelOnmouseover(e: MouseEvent) {
+  handelOnmouseover() {
     this.isInside = true;
   }
-  handelOnmouseout(e: MouseEvent) {
+  handelOnmouseout() {
     this.isInside = false;
   }
   handelEventClick = (e: MouseEvent) => {

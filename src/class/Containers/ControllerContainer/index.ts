@@ -4,7 +4,6 @@ import FooterController from './FooterController';
 
 import { EEVentName, ESettingPanelDataState, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
-import { checkDeviceIsTouch } from '../../../services';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];
@@ -40,11 +39,14 @@ class ControllerContainer extends BaseComponent {
   registerListener() {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handleClickContainer(event);
-      this.containerElement.onmousemove = (event) => this.handleOnMouseMover();
-    }
-    if (this.containerElement) {
+      // mouse
+      this.containerElement.onmousemove = () => this.handleOnMouseMover();
       this.containerElement.onmouseover = () => this.handleOnMouseover();
       this.containerElement.onmouseout = () => this.handleOnMouseout();
+      //touch
+      this.containerElement.ontouchmove = () => this.handleOnMouseMover();
+      this.containerElement.ontouchstart = () => this.handleOnMouseover();
+      this.containerElement.ontouchend = () => this.handleOnMouseout();
     }
     this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
@@ -52,50 +54,20 @@ class ControllerContainer extends BaseComponent {
 
   unregisterListener() {
     if (this.containerElement) {
-      this.containerElement.onclick = (event) => {};
-      this.containerElement.onmousemove = (event) => {};
-    }
-    if (this.containerElement) {
+      this.containerElement.onclick = () => {};
+      // mouse
+      this.containerElement.onmousemove = () => {};
       this.containerElement.onmouseover = () => {};
       this.containerElement.onmouseout = () => {};
-    }
-    if (this.containerElement) {
-      this.containerElement.onclick = (event) => {};
+      // touch
+      this.containerElement.ontouchstart = () => {};
+      this.containerElement.ontouchend = () => {};
+      this.containerElement.ontouchmove = () => {};
     }
     this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.show, this);
     this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
   }
   handleOnMouseMover = () => {
-    if (this.footerController) {
-      if (this.timerId) {
-        clearTimeout(this.timerId);
-      }
-      this.footerController.show();
-      this.timerId = self.setInterval(() => {
-        if (checkDeviceIsTouch(this.apiPlayer.deviceType)) {
-          if (this.footerController) {
-            this.footerController.hidden();
-          }
-          if (this.headController) {
-            this.headController.hidden();
-          }
-        } else {
-          if (!this.footerController?.getIsInside()) {
-            if (this.footerController) {
-              this.footerController.hidden();
-            }
-            if (this.headController) {
-              this.headController.hidden();
-            }
-          }
-        }
-      }, 3000);
-    }
-    if (this.headController) {
-      this.headController.show();
-    }
-  };
-  handleOnMouseover() {
     if (this.footerController) {
       if (this.timerId) {
         clearTimeout(this.timerId);
@@ -115,22 +87,50 @@ class ControllerContainer extends BaseComponent {
     if (this.headController) {
       this.headController.show();
     }
+  };
+  handleOnMouseover() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+    }
+    if (this.footerController) {
+      this.footerController.show();
+    }
+    if (this.headController) {
+      this.headController.show();
+    }
+    this.timerId = self.setInterval(() => {
+      if (this.footerController) {
+        if (!this.footerController?.getIsInside()) {
+          if (this.footerController) {
+            this.footerController.hidden();
+          }
+        }
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+    }, 3000);
   }
   handleOnMouseout() {
     if (this.timerId) {
       clearTimeout(this.timerId);
     }
-    if (this.footerController) {
-      this.footerController.hidden();
-    }
-    if (this.headController) {
-      this.headController.hidden();
-    }
+    this.timerId = self.setTimeout(() => {
+      if (!this.footerController?.getIsInside()) {
+        if (this.footerController) {
+          this.footerController.hidden();
+        }
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+    }, 3000);
   }
   handleClickContainer = (event: MouseEvent) => {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
+
     if (
       document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === ESettingPanelDataState.BLUR
     ) {
@@ -138,7 +138,7 @@ class ControllerContainer extends BaseComponent {
     }
     if (apiPlayer.isPlay()) {
       apiPlayer.pause();
-      this.handleOnMouseover();
+      // this.handleOnMouseover();
     } else {
       apiPlayer.play();
     }

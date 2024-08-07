@@ -5,7 +5,7 @@ import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
 
-import { detectDevice, generateIIds } from './services';
+import { checkHasTouch, detectDevice, generateIIds } from './services';
 import generateStyles from './style';
 import SmApiPlayer from './class/SmApiPlayer';
 
@@ -13,6 +13,7 @@ import 'animate.css';
 import './index.css';
 
 const deviceType = detectDevice();
+const hasTouch = checkHasTouch();
 const classes = generateStyles({
   deviceType,
 });
@@ -28,7 +29,7 @@ class SmUIControls implements ISmEventEmitter {
   constructor(props: IConfigureUIPlayerProps) {
     const { player, video, idVideoContainer, typePlayer = typePlayerDef, version = versionDef, videoInfo } = props;
 
-    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version, deviceType }));
+    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version, deviceType, hasTouch }));
     const VideoContainerElement = document.getElementById(idVideoContainer);
     this.ids = generateIIds();
     if (!this.isInit) {

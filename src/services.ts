@@ -60,7 +60,7 @@ export const detectDevice = (): EDeviceType => {
     const parser = new UAParser();
     const result = parser.getResult();
     const deviceType = result.device.type;
-    console.log(deviceType);
+
     if (deviceType) {
       if (deviceType.toLowerCase() === EDeviceType.MOBILE) {
         return EDeviceType.MOBILE;
@@ -78,6 +78,6 @@ export const detectDevice = (): EDeviceType => {
 export const detectDeviceMobile = (deviceType: EDeviceType): boolean => {
   return deviceType === EDeviceType.MOBILE;
 };
-export const checkDeviceIsTouch = (deviceType: EDeviceType): boolean => {
-  return deviceType === EDeviceType.TABLET || deviceType === EDeviceType.MOBILE;
+export const checkHasTouch = (): boolean => {
+  return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
 };

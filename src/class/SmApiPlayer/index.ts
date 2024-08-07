@@ -10,6 +10,7 @@ export default class SmApiPlayer {
   public version?: string;
   public eventemitter: SmEventEmitter;
   public deviceType: EDeviceType;
+  public hasTouch: boolean;
 
   constructor(props: {
     player: any;
@@ -17,8 +18,10 @@ export default class SmApiPlayer {
     typePlayer: ETypePlayer;
     version?: string;
     deviceType: EDeviceType;
+    hasTouch: boolean;
   }) {
     this.deviceType = props.deviceType;
+    this.hasTouch = props.hasTouch;
     this.player = props.player;
     this.video = props.video;
     this.typePlayer = props.typePlayer;
