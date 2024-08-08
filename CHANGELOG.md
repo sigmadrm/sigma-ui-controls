@@ -1,5 +1,12 @@
 
 
+## [0.0.33](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.32...v0.0.33) (2024-08-08)
+
+
+### Bug Fixes
+
+* remove package nosleep.js ([45f10fe](https://github.com/sigmadrm/sigma-ui-controls/commit/45f10fe7e43587b357db6bd2292a24167eddf611))
+
 ## [0.0.32](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.31...v0.0.32) (2024-08-08)
 
 
