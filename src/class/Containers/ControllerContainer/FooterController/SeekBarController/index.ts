@@ -52,103 +52,59 @@ class SeekBarController extends BaseComponent {
         this.handleEventClick(e);
       };
     }
+
+    // Xử lý kéo thanh tiến trình
     const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
     const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
 
-    // Xử lý kéo thanh tiến trình
     if (progressThumbContainer && progressBarbContainer) {
+      const onMove = (e: MouseEvent | TouchEvent) => {
+        e.preventDefault();
+
+        let x: number;
+        if (e.type === 'mousemove') {
+          const mouseEvent = e as MouseEvent;
+          x = mouseEvent.clientX;
+        } else {
+          const touchEvent = e as TouchEvent;
+          x = touchEvent.touches[0].clientX;
+        }
+
+        const rect = progressBarbContainer.getBoundingClientRect();
+        const offsetX = x - rect.left;
+        const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+        const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
+
+        if (percentage >= 0 && percentage <= 100) {
+          progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+          progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+
+          if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+          }
+          this.timeoutId = self.setTimeout(() => {
+            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+          }, 0);
+        }
+      };
+
+      const onEnd = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+      };
+
       progressThumbContainer.addEventListener('mousedown', (e) => {
-        // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
-        // e.stopPropagation();
-
-        // Hàm cập nhật thanh tiến trình và video.currentTime
-        // if (this.apiPlayer.isPlay()) {
-        //   this.isPlay = true;
-        //   this.apiPlayer.pause();
-        // } else {
-        //   this.isPlay = false;
-        // }
-        const onMouseMove = (e) => {
-          // e.preventDefault();
-          // e.stopPropagation();
-
-          const rect = progressBarbContainer.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
-
-          const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
-          if (percentage >= 0 && percentage <= 100) {
-            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-            // Xóa timeout cũ nếu có
-            if (this.timeoutId) {
-              clearTimeout(this.timeoutId);
-            }
-            // Đặt timeout để cập nhật video.currentTime sau 300ms
-            this.timeoutId = self.setTimeout(() => {
-              this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-              // if (this.isPlay) {
-              //   this.apiPlayer.play();
-              // }
-            }, 0);
-          }
-        };
-
-        // Thêm các sự kiện mousemove và mouseup
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener(
-          'mouseup',
-          () => {
-            document.removeEventListener('mousemove', onMouseMove);
-          },
-          { once: true },
-        );
+        e.preventDefault();
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
       });
-      progressThumbContainer.addEventListener('touchmove', (e) => {
-        // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
-        // e.stopPropagation();
 
-        // Hàm cập nhật thanh tiến trình và video.currentTime
-        // if (this.apiPlayer.isPlay()) {
-        //   this.isPlay = true;
-        //   this.apiPlayer.pause();
-        // } else {
-        //   this.isPlay = false;
-        // }
-        const onTouchMove = (e: TouchEvent) => {
-          const touch = e.touches[0];
-
-          const rect = progressBarbContainer.getBoundingClientRect();
-          const x = touch.clientX - rect.left;
-          const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
-
-          const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
-          if (percentage >= 0 && percentage <= 100) {
-            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-            // Xóa timeout cũ nếu có
-            if (this.timeoutId) {
-              clearTimeout(this.timeoutId);
-            }
-            // Đặt timeout để cập nhật video.currentTime sau 300ms
-            this.timeoutId = self.setTimeout(() => {
-              this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-              // if (this.isPlay) {
-              //   this.apiPlayer.play();
-              // }
-            }, 0);
-          }
-        };
-
-        // Thêm các sự kiện mousemove và mouseup
-        document.addEventListener('touchmove', onTouchMove);
-        document.addEventListener(
-          'mouseup',
-          () => {
-            document.removeEventListener('touchmove', onTouchMove);
-          },
-          { once: true },
-        );
+      progressThumbContainer.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        document.addEventListener('touchmove', onMove);
+        document.addEventListener('touchend', onEnd);
       });
     }
   }

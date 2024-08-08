@@ -11,9 +11,9 @@ class SelectVolumeRange extends BaseComponent {
   render() {
     const volume = this.apiPlayer.getVolume();
     if (this.containerElement) {
-      this.containerElement.innerHTML = `<input  id=${this.ids.smInputVolumeRange}
+      this.containerElement.innerHTML = `<input id="${this.ids.smInputVolumeRange}"
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
-       value=${volume}>
+       value="${volume}">
       `;
     }
 
