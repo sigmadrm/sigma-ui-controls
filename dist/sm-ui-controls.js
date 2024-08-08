@@ -5315,7 +5315,7 @@ class SmApiPlayer {
                 videoContainer.msRequestFullscreen ||
                 videoContainer.webkitEnterFullscreen) {
                 if (videoContainer.webkitEnterFullscreen) {
-                    this.play();
+                    videoContainer.webkitEnterFullscreen();
                 }
                 else {
                     requestFullScreen(videoContainer);
@@ -5335,7 +5335,7 @@ class SmApiPlayer {
             videoEle.msRequestFullscreen ||
             videoEle.webkitEnterFullscreen) {
             if (videoEle.webkitEnterFullscreen) {
-                this.play();
+                videoEle.webkitEnterFullscreen();
             }
             else {
                 requestFullScreen(videoEle);

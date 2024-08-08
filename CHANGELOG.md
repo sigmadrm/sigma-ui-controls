@@ -1,5 +1,12 @@
 
 
+## [0.0.35](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.34...v0.0.35) (2024-08-08)
+
+
+### Bug Fixes
+
+* implement full screen in ios ([79babdc](https://github.com/sigmadrm/sigma-ui-controls/commit/79babdcdb359aa82a307ae9acd174a7130c17fbf))
+
 ## [0.0.34](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.33...v0.0.34) (2024-08-08)
 
 
