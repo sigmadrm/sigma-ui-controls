@@ -1,5 +1,12 @@
 
 
+## [0.0.32](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.31...v0.0.32) (2024-08-08)
+
+
+### Bug Fixes
+
+* remove nosleep ([68d6642](https://github.com/sigmadrm/sigma-ui-controls/commit/68d6642ab80c4a7496d7663759384cdf2f0a7361))
+
 ## [0.0.31](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.30...v0.0.31) (2024-08-08)
 
 
