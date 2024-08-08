@@ -1,7 +1,10 @@
 /* eslint-disable no-restricted-properties */
+import NoSleep from 'nosleep.js';
 import { ETypePlayer } from '../../constants';
 import { EDeviceType, EEVentName, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
+
+const noSleep = new NoSleep();
 
 export default class SmApiPlayer {
   public player: any;
@@ -45,7 +48,6 @@ export default class SmApiPlayer {
   }
 
   registerListener() {
-    const { player } = this;
     this.addEventListener(EEVentName.LOADED, this.emitLoaded);
     this.addEventListener(EEVentName.ERROR, this.emitError);
     this.addEventListener(EEVentName.PLAY, this.emitPlay);
@@ -66,7 +68,6 @@ export default class SmApiPlayer {
   }
 
   unregisterListener() {
-    const { player } = this;
     this.addEventListener(EEVentName.LOADED, this.emitLoaded);
     this.addEventListener(EEVentName.ERROR, this.emitError);
     this.addEventListener(EEVentName.PLAY, this.emitPlay);
@@ -94,10 +95,12 @@ export default class SmApiPlayer {
     this.eventemitter.trigger(EEVentName.ERROR, data);
   }
   emitPlay(data: any) {
+    noSleep.enable();
     console.log('addEventListener', EEVentName.PLAY, data);
     this.eventemitter.trigger(EEVentName.PLAY, data);
   }
   emitPause(data: any) {
+    noSleep.disable();
     console.log('addEventListener', EEVentName.PAUSE, data);
     this.eventemitter.trigger(EEVentName.PAUSE, data);
   }
