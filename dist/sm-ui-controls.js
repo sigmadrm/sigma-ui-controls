@@ -2743,6 +2743,175 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/nosleep.js/src/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/nosleep.js/src/index.js ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { webm, mp4 } = __webpack_require__(/*! ./media.js */ "./node_modules/nosleep.js/src/media.js");
+
+// Detect iOS browsers < version 10
+const oldIOS = () =>
+  typeof navigator !== "undefined" &&
+  parseFloat(
+    (
+      "" +
+      (/CPU.*OS ([0-9_]{3,4})[0-9_]{0,1}|(CPU like).*AppleWebKit.*Mobile/i.exec(
+        navigator.userAgent
+      ) || [0, ""])[1]
+    )
+      .replace("undefined", "3_2")
+      .replace("_", ".")
+      .replace("_", "")
+  ) < 10 &&
+  !window.MSStream;
+
+// Detect native Wake Lock API support
+const nativeWakeLock = () => "wakeLock" in navigator;
+
+class NoSleep {
+  constructor() {
+    this.enabled = false;
+    if (nativeWakeLock()) {
+      this._wakeLock = null;
+      const handleVisibilityChange = () => {
+        if (this._wakeLock !== null && document.visibilityState === "visible") {
+          this.enable();
+        }
+      };
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      document.addEventListener("fullscreenchange", handleVisibilityChange);
+    } else if (oldIOS()) {
+      this.noSleepTimer = null;
+    } else {
+      // Set up no sleep video element
+      this.noSleepVideo = document.createElement("video");
+
+      this.noSleepVideo.setAttribute("title", "No Sleep");
+      this.noSleepVideo.setAttribute("playsinline", "");
+
+      this._addSourceToVideo(this.noSleepVideo, "webm", webm);
+      this._addSourceToVideo(this.noSleepVideo, "mp4", mp4);
+
+      this.noSleepVideo.addEventListener("loadedmetadata", () => {
+        if (this.noSleepVideo.duration <= 1) {
+          // webm source
+          this.noSleepVideo.setAttribute("loop", "");
+        } else {
+          // mp4 source
+          this.noSleepVideo.addEventListener("timeupdate", () => {
+            if (this.noSleepVideo.currentTime > 0.5) {
+              this.noSleepVideo.currentTime = Math.random();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  _addSourceToVideo(element, type, dataURI) {
+    var source = document.createElement("source");
+    source.src = dataURI;
+    source.type = `video/${type}`;
+    element.appendChild(source);
+  }
+
+  get isEnabled() {
+    return this.enabled;
+  }
+
+  enable() {
+    if (nativeWakeLock()) {
+      return navigator.wakeLock
+        .request("screen")
+        .then((wakeLock) => {
+          this._wakeLock = wakeLock;
+          this.enabled = true;
+          console.log("Wake Lock active.");
+          this._wakeLock.addEventListener("release", () => {
+            // ToDo: Potentially emit an event for the page to observe since
+            // Wake Lock releases happen when page visibility changes.
+            // (https://web.dev/wakelock/#wake-lock-lifecycle)
+            console.log("Wake Lock released.");
+          });
+        })
+        .catch((err) => {
+          this.enabled = false;
+          console.error(`${err.name}, ${err.message}`);
+          throw err;
+        });
+    } else if (oldIOS()) {
+      this.disable();
+      console.warn(`
+        NoSleep enabled for older iOS devices. This can interrupt
+        active or long-running network requests from completing successfully.
+        See https://github.com/richtr/NoSleep.js/issues/15 for more details.
+      `);
+      this.noSleepTimer = window.setInterval(() => {
+        if (!document.hidden) {
+          window.location.href = window.location.href.split("#")[0];
+          window.setTimeout(window.stop, 0);
+        }
+      }, 15000);
+      this.enabled = true;
+      return Promise.resolve();
+    } else {
+      let playPromise = this.noSleepVideo.play();
+      return playPromise
+        .then((res) => {
+          this.enabled = true;
+          return res;
+        })
+        .catch((err) => {
+          this.enabled = false;
+          throw err;
+        });
+    }
+  }
+
+  disable() {
+    if (nativeWakeLock()) {
+      if (this._wakeLock) {
+        this._wakeLock.release();
+      }
+      this._wakeLock = null;
+    } else if (oldIOS()) {
+      if (this.noSleepTimer) {
+        console.warn(`
+          NoSleep now disabled for older iOS devices.
+        `);
+        window.clearInterval(this.noSleepTimer);
+        this.noSleepTimer = null;
+      }
+    } else {
+      this.noSleepVideo.pause();
+    }
+    this.enabled = false;
+  }
+}
+
+module.exports = NoSleep;
+
+
+/***/ }),
+
+/***/ "./node_modules/nosleep.js/src/media.js":
+/*!**********************************************!*\
+  !*** ./node_modules/nosleep.js/src/media.js ***!
+  \**********************************************/
+/***/ ((module) => {
+
+module.exports = {
+  webm:
+    "data:video/webm;base64,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",
+  mp4:
+    "data:video/mp4;base64,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",
+};
+
+
+/***/ }),
+
 /***/ "./src/class/BaseComponent/index.ts":
 /*!******************************************!*\
   !*** ./src/class/BaseComponent/index.ts ***!
@@ -2753,13 +2922,6 @@ __webpack_require__.r(__webpack_exports__);
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 class BaseComponent {
-    id;
-    apiPlayer;
-    classes;
-    containerElement = null;
-    _state;
-    initiated = false;
-    ids;
     get state() {
         return (this._state || {});
     }
@@ -2773,6 +2935,8 @@ class BaseComponent {
         this.initiated = true;
     }
     constructor(props, initState) {
+        this.containerElement = null;
+        this.initiated = false;
         const { id, classes, apiPlayer, ids } = props;
         this.id = id;
         this.ids = ids;
@@ -2809,13 +2973,16 @@ exports["default"] = BaseComponent;
 /*!************************************************************!*\
   !*** ./src/class/Components/ButtonExitFullScreen/index.ts ***!
   \************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonExitFullScreen extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -2863,16 +3030,30 @@ exports["default"] = ButtonExitFullScreen;
 /*!********************************************************!*\
   !*** ./src/class/Components/ButtonFullScreen/index.ts ***!
   \********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonFullScreen extends BaseComponent_1.default {
     constructor(props) {
         super(props);
+        this.handleContainerClick = (event) => {
+            const { apiPlayer } = this;
+            event.preventDefault();
+            event.stopPropagation();
+            if (apiPlayer.isFullScreen()) {
+                apiPlayer.exitFullScreen();
+            }
+            else {
+                apiPlayer.enterFullScreen();
+            }
+        };
     }
     render() {
         if (this.containerElement) {
@@ -2900,17 +3081,6 @@ class ButtonFullScreen extends BaseComponent_1.default {
             this.containerElement.classList.add(this.classes.taskbarGroupBtnEnable);
         }
     }
-    handleContainerClick = (event) => {
-        const { apiPlayer } = this;
-        event.preventDefault();
-        event.stopPropagation();
-        if (apiPlayer.isFullScreen()) {
-            apiPlayer.exitFullScreen();
-        }
-        else {
-            apiPlayer.enterFullScreen();
-        }
-    };
 }
 exports["default"] = ButtonFullScreen;
 
@@ -2921,15 +3091,17 @@ exports["default"] = ButtonFullScreen;
 /*!**************************************************!*\
   !*** ./src/class/Components/ButtonMute/index.ts ***!
   \**************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonMute extends BaseComponent_1.default {
-    handleButtonClick;
     constructor(props) {
         super(props);
         this.handleButtonClick = props.handleButtonClick;
@@ -2976,12 +3148,15 @@ exports["default"] = ButtonMute;
 /*!************************************************************!*\
   !*** ./src/class/Components/ButtonPauseSecondary/index.ts ***!
   \************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
 class ButtonPauseSecondary extends BaseComponent_1.default {
     constructor(props) {
@@ -3034,13 +3209,16 @@ exports["default"] = ButtonPauseSecondary;
 /*!*********************************************************!*\
   !*** ./src/class/Components/ButtonPlayPrimary/index.ts ***!
   \*********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonPlayPrimary extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3088,13 +3266,16 @@ exports["default"] = ButtonPlayPrimary;
 /*!***********************************************************!*\
   !*** ./src/class/Components/ButtonPlaySecondary/index.ts ***!
   \***********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonPlaySecondary extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3147,13 +3328,16 @@ exports["default"] = ButtonPlaySecondary;
 /*!***********************************************************!*\
   !*** ./src/class/Components/ButtonReplayPrimary/index.ts ***!
   \***********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonReplyPrimary extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3199,13 +3383,16 @@ exports["default"] = ButtonReplyPrimary;
 /*!************************************************************!*\
   !*** ./src/class/Components/ButtonReplySecondary/index.ts ***!
   \************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonReplySecondary extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3255,15 +3442,17 @@ exports["default"] = ButtonReplySecondary;
 /*!****************************************************!*\
   !*** ./src/class/Components/ButtonVolume/index.ts ***!
   \****************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ButtonVolume extends BaseComponent_1.default {
-    handleButtonClick;
     constructor(props) {
         super(props);
         this.handleButtonClick = props.handleButtonClick;
@@ -3310,13 +3499,16 @@ exports["default"] = ButtonVolume;
 /*!***************************************************!*\
   !*** ./src/class/Components/CurrentTime/index.ts ***!
   \***************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const utils_1 = __webpack_require__(/*! ../../../utils */ "./src/utils.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class CurrentTime extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3342,12 +3534,15 @@ exports["default"] = CurrentTime;
 /*!**************************************************!*\
   !*** ./src/class/Components/LiveStream/index.ts ***!
   \**************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class LiveStream extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3393,13 +3588,16 @@ exports["default"] = LiveStream;
 /*!******************************************************************!*\
   !*** ./src/class/Components/Mobile/SettingIconButtonMB/index.ts ***!
   \******************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class SettingIconButtonMB extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
@@ -3436,22 +3634,27 @@ exports["default"] = SettingIconButtonMB;
 /*!*********************************************************!*\
   !*** ./src/class/Components/SelectVolumeRange/index.ts ***!
   \*********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class SelectVolumeRange extends BaseComponent_1.default {
     constructor(props) {
         super(props);
+        this.hide = () => { };
+        this.show = () => { };
     }
     render() {
         const volume = this.apiPlayer.getVolume();
         if (this.containerElement) {
-            this.containerElement.innerHTML = `<input  id=${this.ids.smInputVolumeRange}
+            this.containerElement.innerHTML = `<input id="${this.ids.smInputVolumeRange}"
        class="${this.classes.taskbarVolumeSlider}" type="range" min="0" max="1" step="0.01" 
-       value=${volume}>
+       value="${volume}">
       `;
         }
         this.updateSliderHighlight(volume);
@@ -3484,8 +3687,6 @@ class SelectVolumeRange extends BaseComponent_1.default {
             inputVolRangeEle.oninput = (event) => { };
         }
     }
-    hide = () => { };
-    show = () => { };
 }
 exports["default"] = SelectVolumeRange;
 
@@ -3496,14 +3697,17 @@ exports["default"] = SelectVolumeRange;
 /*!*********************************************************!*\
   !*** ./src/class/Components/SettingIconButton/index.ts ***!
   \*********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class SettingIconButton extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
@@ -3545,14 +3749,15 @@ class SettingIconButton extends BaseComponent_1.default {
     }
     handleSettingPanelVisible(event, data) {
         const { visible } = data;
-        this.state = { ...this.state, active: visible };
+        this.state = Object.assign(Object.assign({}, this.state), { active: visible });
     }
     handleContainerClick(event) {
+        var _a;
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
         const visible = !this.state.active;
-        this.containerElement?.setAttribute('data-state', visible ? type_1.ESettingPanelDataState.OPENED : type_1.ESettingPanelDataState.CLOSED);
+        (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.setAttribute('data-state', visible ? type_1.ESettingPanelDataState.OPENED : type_1.ESettingPanelDataState.CLOSED);
         apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible });
     }
 }
@@ -3565,13 +3770,16 @@ exports["default"] = SettingIconButton;
 /*!****************************************************!*\
   !*** ./src/class/Components/TimeDuration/index.ts ***!
   \****************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const utils_1 = __webpack_require__(/*! ../../../utils */ "./src/utils.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class TimeDuration extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -3596,15 +3804,18 @@ exports["default"] = TimeDuration;
 /*!*********************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts ***!
   \*********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable no-restricted-globals */
 const icons_1 = __webpack_require__(/*! ./../../../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 const autoTrack = { id: -1, label: 'Auto', bandwidth: 0, active: true };
 const initState = {
@@ -3630,6 +3841,7 @@ class SettingsController extends BaseComponent_1.default {
         return `${this.ids.smSettingQualityItemPrefix}-${index}`;
     }
     registerListener() {
+        var _a;
         const { apiPlayer, state, containerElement } = this;
         const smPlaybackSpeedElement = document.getElementById(this.ids.smPlaybackSpeed);
         const smQualityElement = document.getElementById(this.ids.smQuality);
@@ -3654,7 +3866,7 @@ class SettingsController extends BaseComponent_1.default {
                 playbackSpeedValueElement.onclick = (event) => this.changePlaybackRate(pbrValue);
             }
         });
-        state?.tracks?.forEach((track, index) => {
+        (_a = state === null || state === void 0 ? void 0 : state.tracks) === null || _a === void 0 ? void 0 : _a.forEach((track, index) => {
             const id = this.generateQualityItemId(index);
             const qualitiesValueElement = document.getElementById(id);
             if (qualitiesValueElement) {
@@ -3682,17 +3894,18 @@ class SettingsController extends BaseComponent_1.default {
         }
     }
     goToPlaybackSpeedTab(event) {
-        this.state = { ...this.state, currentTab: 'playbackRate' };
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'playbackRate' });
     }
     goToQualityTab(event) {
-        this.state = { ...this.state, currentTab: 'quality' };
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'quality' });
     }
     goToTab(tabName) {
-        this.state = { ...this.state, currentTab: tabName };
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: tabName });
     }
     changeQuality(track) {
+        var _a;
         this.apiPlayer.selectVariantTrack(track);
-        this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
+        (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
         this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
     handleQualityChange(event, data) {
@@ -3708,7 +3921,7 @@ class SettingsController extends BaseComponent_1.default {
                 }
             }
         }
-        this.state = { ...this.state, tracks, activeTrack };
+        this.state = Object.assign(Object.assign({}, this.state), { tracks, activeTrack });
     }
     changePlaybackRate(value) {
         this.apiPlayer.playbackRate = value;
@@ -3718,18 +3931,20 @@ class SettingsController extends BaseComponent_1.default {
         const { playbackRate } = data;
         // playbackRate = 0 is loading...
         if (playbackRate > 0) {
-            this.state = { ...this.state, playbackRate };
+            this.state = Object.assign(Object.assign({}, this.state), { playbackRate });
         }
     }
     handleSettingPanelVisible(event, data) {
         const { visible } = data;
-        this.state = { ...this.state, visible, currentTab: 'default' };
+        this.state = Object.assign(Object.assign({}, this.state), { visible, currentTab: 'default' });
     }
     handleSettingContainerClickOut(event) {
-        this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.BLUR); // flag for prevent event controller container click
+        var _a;
+        (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.setAttribute('data-state', type_1.ESettingPanelDataState.BLUR); // flag for prevent event controller container click
         setTimeout(() => {
+            var _a;
             //  reset state enable event controller container click
-            this.containerElement?.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
+            (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.setAttribute('data-state', type_1.ESettingPanelDataState.CLOSED);
         }, 300);
         this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SETTING_PANEL_VISIBLE, { visible: false });
     }
@@ -3845,7 +4060,8 @@ class SettingsController extends BaseComponent_1.default {
         return header + body;
     }
     renderSettingContent() {
-        switch (this.state?.currentTab) {
+        var _a;
+        switch ((_a = this.state) === null || _a === void 0 ? void 0 : _a.currentTab) {
             case 'playbackRate':
                 return this.renderPlaybackSpeedTab();
             case 'quality':
@@ -3874,20 +4090,20 @@ exports["default"] = SettingsController;
 /*!**************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/BodyController/index.ts ***!
   \**************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
-const ButtonPlayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts");
-const SettingsController_1 = __webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts");
-const ButtonReplayPrimary_1 = __webpack_require__(/*! ../../../Components/ButtonReplayPrimary */ "./src/class/Components/ButtonReplayPrimary/index.ts");
+const ButtonPlayPrimary_1 = __importDefault(__webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts"));
+const SettingsController_1 = __importDefault(__webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts"));
+const ButtonReplayPrimary_1 = __importDefault(__webpack_require__(/*! ../../../Components/ButtonReplayPrimary */ "./src/class/Components/ButtonReplayPrimary/index.ts"));
 class BodyController extends BaseComponent_1.default {
-    buttonPlayPrimary;
-    buttonReplayPrimary;
-    settingsController;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -3967,19 +4183,17 @@ exports["default"] = BodyController;
 /*!**********************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts ***!
   \**********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 class SeekBarController extends BaseComponent_1.default {
-    progressBuffer;
-    progressBar;
-    progressThumb;
-    timeoutId;
-    isPlay;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -4018,91 +4232,56 @@ class SeekBarController extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
-        if (this?.containerElement) {
+        if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = (e) => {
                 this.handleEventClick(e);
             };
         }
+        // Xử lý kéo thanh tiến trình
         const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
         const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
-        // Xử lý kéo thanh tiến trình
         if (progressThumbContainer && progressBarbContainer) {
+            const onMove = (e) => {
+                e.preventDefault();
+                let x;
+                if (e.type === 'mousemove') {
+                    const mouseEvent = e;
+                    x = mouseEvent.clientX;
+                }
+                else {
+                    const touchEvent = e;
+                    x = touchEvent.touches[0].clientX;
+                }
+                const rect = progressBarbContainer.getBoundingClientRect();
+                const offsetX = x - rect.left;
+                const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+                const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
+                if (percentage >= 0 && percentage <= 100) {
+                    progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                    progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                    if (this.timeoutId) {
+                        clearTimeout(this.timeoutId);
+                    }
+                    this.timeoutId = self.setTimeout(() => {
+                        this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                    }, 0);
+                }
+            };
+            const onEnd = () => {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            };
             progressThumbContainer.addEventListener('mousedown', (e) => {
-                // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
-                // e.stopPropagation();
-                // Hàm cập nhật thanh tiến trình và video.currentTime
-                // if (this.apiPlayer.isPlay()) {
-                //   this.isPlay = true;
-                //   this.apiPlayer.pause();
-                // } else {
-                //   this.isPlay = false;
-                // }
-                const onMouseMove = (e) => {
-                    // e.preventDefault();
-                    // e.stopPropagation();
-                    const rect = progressBarbContainer.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
-                    const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
-                    if (percentage >= 0 && percentage <= 100) {
-                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                        // Xóa timeout cũ nếu có
-                        if (this.timeoutId) {
-                            clearTimeout(this.timeoutId);
-                        }
-                        // Đặt timeout để cập nhật video.currentTime sau 300ms
-                        this.timeoutId = self.setTimeout(() => {
-                            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-                            // if (this.isPlay) {
-                            //   this.apiPlayer.play();
-                            // }
-                        }, 0);
-                    }
-                };
-                // Thêm các sự kiện mousemove và mouseup
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                }, { once: true });
+                e.preventDefault();
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onEnd);
             });
-            progressThumbContainer.addEventListener('touchmove', (e) => {
-                // e.preventDefault(); // Ngăn chặn các sự kiện mặc định của trình duyệt
-                // e.stopPropagation();
-                // Hàm cập nhật thanh tiến trình và video.currentTime
-                // if (this.apiPlayer.isPlay()) {
-                //   this.isPlay = true;
-                //   this.apiPlayer.pause();
-                // } else {
-                //   this.isPlay = false;
-                // }
-                const onTouchMove = (e) => {
-                    const touch = e.touches[0];
-                    const rect = progressBarbContainer.getBoundingClientRect();
-                    const x = touch.clientX - rect.left;
-                    const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
-                    const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
-                    if (percentage >= 0 && percentage <= 100) {
-                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                        // Xóa timeout cũ nếu có
-                        if (this.timeoutId) {
-                            clearTimeout(this.timeoutId);
-                        }
-                        // Đặt timeout để cập nhật video.currentTime sau 300ms
-                        this.timeoutId = self.setTimeout(() => {
-                            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-                            // if (this.isPlay) {
-                            //   this.apiPlayer.play();
-                            // }
-                        }, 0);
-                    }
-                };
-                // Thêm các sự kiện mousemove và mouseup
-                document.addEventListener('touchmove', onTouchMove);
-                document.addEventListener('mouseup', () => {
-                    document.removeEventListener('touchmove', onTouchMove);
-                }, { once: true });
+            progressThumbContainer.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                document.addEventListener('touchmove', onMove);
+                document.addEventListener('touchend', onEnd);
             });
         }
     }
@@ -4110,7 +4289,7 @@ class SeekBarController extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
-        if (this?.containerElement) {
+        if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = () => { };
         }
         document.onmousemove = () => { };
@@ -4173,7 +4352,8 @@ class ProgressBuffer extends BaseComponent_1.default {
         super(props);
     }
     render() {
-        this?.containerElement?.style.setProperty('--highlight-width-progress-buffer', `0%`);
+        var _a;
+        (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-width-progress-buffer', `0%`);
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
@@ -4190,7 +4370,8 @@ class ProgressBar extends BaseComponent_1.default {
         super(props);
     }
     render() {
-        this?.containerElement?.style.setProperty('--highlight-width-progress-bar', `0%`);
+        var _a;
+        (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-width-progress-bar', `0%`);
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
@@ -4207,7 +4388,8 @@ class ProgressThumb extends BaseComponent_1.default {
         super(props);
     }
     render() {
-        this?.containerElement?.style.setProperty('--highlight-left-progress-thumb', `0%`);
+        var _a;
+        (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-left-progress-thumb', `0%`);
     }
     updateSliderHighlight(volume) {
         const percentage = volume;
@@ -4227,18 +4409,19 @@ class ProgressThumb extends BaseComponent_1.default {
 /*!***************************************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/TaskbarController/TimeBarContainer/index.ts ***!
   \***************************************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const CurrentTime_1 = __webpack_require__(/*! ../../../../../Components/CurrentTime */ "./src/class/Components/CurrentTime/index.ts");
-const TimeDuration_1 = __webpack_require__(/*! ../../../../../Components/TimeDuration */ "./src/class/Components/TimeDuration/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const CurrentTime_1 = __importDefault(__webpack_require__(/*! ../../../../../Components/CurrentTime */ "./src/class/Components/CurrentTime/index.ts"));
+const TimeDuration_1 = __importDefault(__webpack_require__(/*! ../../../../../Components/TimeDuration */ "./src/class/Components/TimeDuration/index.ts"));
 class TimeBarContainer extends BaseComponent_1.default {
-    currentTime;
-    timeDuration;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -4318,20 +4501,20 @@ exports["default"] = TimeBarContainer;
 /*!**************************************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/TaskbarController/VolumeContainer/index.ts ***!
   \**************************************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../../type */ "./src/type.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const ButtonMute_1 = __webpack_require__(/*! ../../../../../Components/ButtonMute */ "./src/class/Components/ButtonMute/index.ts");
-const ButtonVolume_1 = __webpack_require__(/*! ../../../../../Components/ButtonVolume */ "./src/class/Components/ButtonVolume/index.ts");
-const SelectVolumeRange_1 = __webpack_require__(/*! ../../../../../Components/SelectVolumeRange */ "./src/class/Components/SelectVolumeRange/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const ButtonMute_1 = __importDefault(__webpack_require__(/*! ../../../../../Components/ButtonMute */ "./src/class/Components/ButtonMute/index.ts"));
+const ButtonVolume_1 = __importDefault(__webpack_require__(/*! ../../../../../Components/ButtonVolume */ "./src/class/Components/ButtonVolume/index.ts"));
+const SelectVolumeRange_1 = __importDefault(__webpack_require__(/*! ../../../../../Components/SelectVolumeRange */ "./src/class/Components/SelectVolumeRange/index.ts"));
 class VolumeContainer extends BaseComponent_1.default {
-    buttonVolume;
-    buttonMute;
-    selectVolumeRange;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
@@ -4368,16 +4551,17 @@ class VolumeContainer extends BaseComponent_1.default {
         apiPlayer.updateVolume(1);
     }
     handleEventVolumeChange() {
+        var _a, _b, _c, _d, _e;
         const volume = this.apiPlayer.getVolume();
         if (volume <= 0) {
-            this.buttonMute?.show();
-            this.buttonVolume?.hide();
+            (_a = this.buttonMute) === null || _a === void 0 ? void 0 : _a.show();
+            (_b = this.buttonVolume) === null || _b === void 0 ? void 0 : _b.hide();
         }
         else {
-            this.buttonMute?.hide();
-            this.buttonVolume?.show();
+            (_c = this.buttonMute) === null || _c === void 0 ? void 0 : _c.hide();
+            (_d = this.buttonVolume) === null || _d === void 0 ? void 0 : _d.show();
         }
-        this.selectVolumeRange?.update(volume);
+        (_e = this.selectVolumeRange) === null || _e === void 0 ? void 0 : _e.update(volume);
     }
     render() {
         if (this.containerElement) {
@@ -4438,32 +4622,26 @@ exports["default"] = VolumeContainer;
 /*!**********************************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts ***!
   \**********************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
-const ButtonFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonFullScreen */ "./src/class/Components/ButtonFullScreen/index.ts");
-const ButtonPlaySecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPlaySecondary */ "./src/class/Components/ButtonPlaySecondary/index.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const ButtonPauseSecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonPauseSecondary */ "./src/class/Components/ButtonPauseSecondary/index.ts");
-const ButtonExitFullScreen_1 = __webpack_require__(/*! ../../../../Components/ButtonExitFullScreen */ "./src/class/Components/ButtonExitFullScreen/index.ts");
-const SettingIconButton_1 = __webpack_require__(/*! ../../../../Components/SettingIconButton */ "./src/class/Components/SettingIconButton/index.ts");
-const VolumeContainer_1 = __webpack_require__(/*! ./VolumeContainer */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/VolumeContainer/index.ts");
-const TimeBarContainer_1 = __webpack_require__(/*! ./TimeBarContainer */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/TimeBarContainer/index.ts");
-const LiveStream_1 = __webpack_require__(/*! ../../../../Components/LiveStream */ "./src/class/Components/LiveStream/index.ts");
-const ButtonReplySecondary_1 = __webpack_require__(/*! ../../../../Components/ButtonReplySecondary */ "./src/class/Components/ButtonReplySecondary/index.ts");
+const ButtonFullScreen_1 = __importDefault(__webpack_require__(/*! ../../../../Components/ButtonFullScreen */ "./src/class/Components/ButtonFullScreen/index.ts"));
+const ButtonPlaySecondary_1 = __importDefault(__webpack_require__(/*! ../../../../Components/ButtonPlaySecondary */ "./src/class/Components/ButtonPlaySecondary/index.ts"));
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const ButtonPauseSecondary_1 = __importDefault(__webpack_require__(/*! ../../../../Components/ButtonPauseSecondary */ "./src/class/Components/ButtonPauseSecondary/index.ts"));
+const ButtonExitFullScreen_1 = __importDefault(__webpack_require__(/*! ../../../../Components/ButtonExitFullScreen */ "./src/class/Components/ButtonExitFullScreen/index.ts"));
+const SettingIconButton_1 = __importDefault(__webpack_require__(/*! ../../../../Components/SettingIconButton */ "./src/class/Components/SettingIconButton/index.ts"));
+const VolumeContainer_1 = __importDefault(__webpack_require__(/*! ./VolumeContainer */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/VolumeContainer/index.ts"));
+const TimeBarContainer_1 = __importDefault(__webpack_require__(/*! ./TimeBarContainer */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/TimeBarContainer/index.ts"));
+const LiveStream_1 = __importDefault(__webpack_require__(/*! ../../../../Components/LiveStream */ "./src/class/Components/LiveStream/index.ts"));
+const ButtonReplySecondary_1 = __importDefault(__webpack_require__(/*! ../../../../Components/ButtonReplySecondary */ "./src/class/Components/ButtonReplySecondary/index.ts"));
 class TaskbarController extends BaseComponent_1.default {
-    buttonFullScreen;
-    buttonPlaySecondary;
-    buttonPauseSecondary;
-    buttonReplaySecondary;
-    volumeContainer;
-    buttonExitFullScreen;
-    settingIconButton;
-    timeBarContainer;
-    liveStream;
     constructor(props) {
         super(props);
         const { classes, apiPlayer, ids } = props;
@@ -4644,21 +4822,26 @@ exports["default"] = TaskbarController;
 /*!****************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/FooterController/index.ts ***!
   \****************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const SeekBarController_1 = __webpack_require__(/*! ./SeekBarController */ "./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts");
-const TaskbarController_1 = __webpack_require__(/*! ./TaskbarController */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const SeekBarController_1 = __importDefault(__webpack_require__(/*! ./SeekBarController */ "./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts"));
+const TaskbarController_1 = __importDefault(__webpack_require__(/*! ./TaskbarController */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts"));
 class FooterController extends BaseComponent_1.default {
-    seekBarController;
-    taskbarController;
-    isInside = null;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
+        this.isInside = null;
+        this.handelEventClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
         this.seekBarController = new SeekBarController_1.default({
             id: ids.smSeekBarController,
             classes,
@@ -4711,10 +4894,6 @@ class FooterController extends BaseComponent_1.default {
     handelOnmouseout() {
         this.isInside = false;
     }
-    handelEventClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
     hidden() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.footerController;
@@ -4735,18 +4914,24 @@ exports["default"] = FooterController;
 /*!**************************************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/HeadController/index.ts ***!
   \**************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts");
-const SettingIconButtonMB_1 = __webpack_require__(/*! ../../../Components/Mobile/SettingIconButtonMB */ "./src/class/Components/Mobile/SettingIconButtonMB/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const SettingIconButtonMB_1 = __importDefault(__webpack_require__(/*! ../../../Components/Mobile/SettingIconButtonMB */ "./src/class/Components/Mobile/SettingIconButtonMB/index.ts"));
 class HeadController extends BaseComponent_1.default {
-    settingIconButton;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
+        this.handelEventClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
         this.settingIconButton = new SettingIconButtonMB_1.default({
             id: ids.smSettingIconButtonMobile,
             classes,
@@ -4771,10 +4956,6 @@ class HeadController extends BaseComponent_1.default {
             this.containerElement.onclick = (event) => { };
         }
     }
-    handelEventClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
     hidden() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.headController;
@@ -4795,24 +4976,61 @@ exports["default"] = HeadController;
 /*!***********************************************************!*\
   !*** ./src/class/Containers/ControllerContainer/index.ts ***!
   \***********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const HeadController_1 = __webpack_require__(/*! ./HeadController */ "./src/class/Containers/ControllerContainer/HeadController/index.ts");
-const BodyController_1 = __webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts");
-const FooterController_1 = __webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts");
+const HeadController_1 = __importDefault(__webpack_require__(/*! ./HeadController */ "./src/class/Containers/ControllerContainer/HeadController/index.ts"));
+const BodyController_1 = __importDefault(__webpack_require__(/*! ./BodyController */ "./src/class/Containers/ControllerContainer/BodyController/index.ts"));
+const FooterController_1 = __importDefault(__webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts"));
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ControllerContainer extends BaseComponent_1.default {
-    headController;
-    bodyController;
-    footerController;
-    timerId;
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
+        this.handleOnMouseMover = () => {
+            if (this.footerController) {
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                }
+                this.footerController.show();
+                this.timerId = self.setInterval(() => {
+                    var _a;
+                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                        if (this.headController) {
+                            this.headController.hidden();
+                        }
+                    }
+                }, 3000);
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+        };
+        this.handleClickContainer = (event) => {
+            var _a;
+            const { apiPlayer } = this;
+            event.preventDefault();
+            event.stopPropagation();
+            if (((_a = document.getElementById(this.ids.smSettingsContainer)) === null || _a === void 0 ? void 0 : _a.getAttribute('data-state')) === type_1.ESettingPanelDataState.BLUR) {
+                return;
+            }
+            if (apiPlayer.isPlay()) {
+                apiPlayer.pause();
+                // this.handleOnMouseover();
+            }
+            else {
+                apiPlayer.play();
+            }
+        };
         this.headController = new HeadController_1.default({ id: ids.smHeadController, classes, apiPlayer, ids });
         this.bodyController = new BodyController_1.default({ id: ids.smBodyController, classes, apiPlayer, ids });
         this.footerController = new FooterController_1.default({ id: ids.smFooterController, classes, apiPlayer, ids });
@@ -4860,27 +5078,6 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
     }
-    handleOnMouseMover = () => {
-        if (this.footerController) {
-            if (this.timerId) {
-                clearTimeout(this.timerId);
-            }
-            this.footerController.show();
-            this.timerId = self.setInterval(() => {
-                if (!this.footerController?.getIsInside()) {
-                    if (this.footerController) {
-                        this.footerController.hidden();
-                    }
-                    if (this.headController) {
-                        this.headController.hidden();
-                    }
-                }
-            }, 3000);
-        }
-        if (this.headController) {
-            this.headController.show();
-        }
-    };
     handleOnMouseover() {
         if (this.timerId) {
             clearTimeout(this.timerId);
@@ -4892,8 +5089,9 @@ class ControllerContainer extends BaseComponent_1.default {
             this.headController.show();
         }
         this.timerId = self.setInterval(() => {
+            var _a;
             if (this.footerController) {
-                if (!this.footerController?.getIsInside()) {
+                if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
                     if (this.footerController) {
                         this.footerController.hidden();
                     }
@@ -4909,7 +5107,8 @@ class ControllerContainer extends BaseComponent_1.default {
             clearTimeout(this.timerId);
         }
         this.timerId = self.setTimeout(() => {
-            if (!this.footerController?.getIsInside()) {
+            var _a;
+            if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
                 if (this.footerController) {
                     this.footerController.hidden();
                 }
@@ -4919,21 +5118,6 @@ class ControllerContainer extends BaseComponent_1.default {
             }
         }, 3000);
     }
-    handleClickContainer = (event) => {
-        const { apiPlayer } = this;
-        event.preventDefault();
-        event.stopPropagation();
-        if (document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === type_1.ESettingPanelDataState.BLUR) {
-            return;
-        }
-        if (apiPlayer.isPlay()) {
-            apiPlayer.pause();
-            // this.handleOnMouseover();
-        }
-        else {
-            apiPlayer.play();
-        }
-    };
     hide() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.controllerContent;
@@ -4954,16 +5138,37 @@ exports["default"] = ControllerContainer;
 /*!******************************************************!*\
   !*** ./src/class/Containers/ErrorContainer/index.ts ***!
   \******************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ErrorContainer extends BaseComponent_1.default {
     constructor(props) {
         super(props);
+        this.show = (data) => {
+            if (this.containerElement) {
+                this.containerElement.classList.add(this.classes.errorContainerEnable);
+                const htmlString = this.generateHtml(data);
+                this.containerElement.innerHTML = htmlString;
+            }
+        };
+        this.generateHtml = (dataEvent) => {
+            const htmlString = `<div class="${this.classes.errorIconWrap}">
+        ${icons_1.infoIcon}
+    </div>
+    <div class="${this.classes.flexColumnStartCenter}">
+      <h2 style="margin:0px">${dataEvent.data.errorCode}</h2>
+      <h3 style="margin:0px">${dataEvent.data.message}</h3>
+    </div>
+    `;
+            return htmlString;
+        };
     }
     registerListener() {
         // this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
@@ -4986,24 +5191,6 @@ class ErrorContainer extends BaseComponent_1.default {
             this.containerElement.className = this.classes.errorContainer;
         }
     }
-    show = (data) => {
-        if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.errorContainerEnable);
-            const htmlString = this.generateHtml(data);
-            this.containerElement.innerHTML = htmlString;
-        }
-    };
-    generateHtml = (dataEvent) => {
-        const htmlString = `<div class="${this.classes.errorIconWrap}">
-        ${icons_1.infoIcon}
-    </div>
-    <div class="${this.classes.flexColumnStartCenter}">
-      <h2 style="margin:0px">${dataEvent.data.errorCode}</h2>
-      <h3 style="margin:0px">${dataEvent.data.message}</h3>
-    </div>
-    `;
-        return htmlString;
-    };
 }
 exports["default"] = ErrorContainer;
 
@@ -5014,12 +5201,15 @@ exports["default"] = ErrorContainer;
 /*!********************************************************!*\
   !*** ./src/class/Containers/LoadingContainer/index.ts ***!
   \********************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const BaseComponent_1 = __webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 class LoadingContainer extends BaseComponent_1.default {
@@ -5039,7 +5229,8 @@ class LoadingContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAYING, this.hide, this);
     }
     render() {
-        this.containerElement?.classList.add(this.classes.loadingContainerEnable);
+        var _a;
+        (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.add(this.classes.loadingContainerEnable);
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.loadingIcon;
         }
@@ -5064,24 +5255,22 @@ exports["default"] = LoadingContainer;
 /*!****************************************!*\
   !*** ./src/class/SmApiPlayer/index.ts ***!
   \****************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.convertDataEventPlaying = exports.convertDataEventWaiting = exports.convertDataEventEnded = exports.convertDataEventProgress = exports.convertDataEventLoadedMetaData = exports.convertDataEventFullScreenChange = exports.convertDataEventPause = exports.convertDataEventTimeUpdate = exports.convertDataEventVolumeChange = exports.convertDataEventPlay = exports.convertDataEventError = exports.convertDataEventLoaded = void 0;
 /* eslint-disable no-restricted-properties */
+const nosleep_js_1 = __importDefault(__webpack_require__(/*! nosleep.js */ "./node_modules/nosleep.js/src/index.js"));
 const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
 const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
-const SmEventEmitter_1 = __webpack_require__(/*! ../SmEventEmitter/SmEventEmitter */ "./src/class/SmEventEmitter/SmEventEmitter.ts");
+const SmEventEmitter_1 = __importDefault(__webpack_require__(/*! ../SmEventEmitter/SmEventEmitter */ "./src/class/SmEventEmitter/SmEventEmitter.ts"));
+const noSleep = new nosleep_js_1.default();
 class SmApiPlayer {
-    player;
-    video;
-    typePlayer;
-    version;
-    eventemitter;
-    deviceType;
-    hasTouch;
     constructor(props) {
         this.deviceType = props.deviceType;
         this.hasTouch = props.hasTouch;
@@ -5107,7 +5296,7 @@ class SmApiPlayer {
         this.registerListener();
     }
     registerListener() {
-        const { player } = this;
+        var _a;
         this.addEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
         this.addEventListener(type_1.EEVentName.ERROR, this.emitError);
         this.addEventListener(type_1.EEVentName.PLAY, this.emitPlay);
@@ -5124,10 +5313,10 @@ class SmApiPlayer {
         this.addEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
         this.addEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
         this.addEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
-        this.video?.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
+        (_a = this.video) === null || _a === void 0 ? void 0 : _a.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
     }
     unregisterListener() {
-        const { player } = this;
+        var _a;
         this.addEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
         this.addEventListener(type_1.EEVentName.ERROR, this.emitError);
         this.addEventListener(type_1.EEVentName.PLAY, this.emitPlay);
@@ -5144,7 +5333,7 @@ class SmApiPlayer {
         this.addEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
         this.addEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
         this.addEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
-        this.video?.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
+        (_a = this.video) === null || _a === void 0 ? void 0 : _a.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
     }
     emitLoaded(data) {
         console.log('addEventListener', type_1.EEVentName.LOADED, data);
@@ -5155,10 +5344,12 @@ class SmApiPlayer {
         this.eventemitter.trigger(type_1.EEVentName.ERROR, data);
     }
     emitPlay(data) {
+        noSleep.enable();
         console.log('addEventListener', type_1.EEVentName.PLAY, data);
         this.eventemitter.trigger(type_1.EEVentName.PLAY, data);
     }
     emitPause(data) {
+        noSleep.disable();
         console.log('addEventListener', type_1.EEVentName.PAUSE, data);
         this.eventemitter.trigger(type_1.EEVentName.PAUSE, data);
     }
@@ -5235,16 +5426,17 @@ class SmApiPlayer {
         this.eventemitter.trigger(type_1.EEVentName.TRACKS_CHANGED, data);
     }
     emitRateChange() {
-        const playbackRate = this.video?.playbackRate || 0;
+        var _a;
+        const playbackRate = ((_a = this.video) === null || _a === void 0 ? void 0 : _a.playbackRate) || 0;
         this.eventemitter.trigger(type_1.EEVentName.RATE_CHANGE, { playbackRate });
     }
     play() {
         const { video } = this;
-        return video?.play();
+        return video === null || video === void 0 ? void 0 : video.play();
     }
     pause() {
         const { video } = this;
-        video?.pause();
+        video === null || video === void 0 ? void 0 : video.pause();
     }
     isPlay() {
         const { video } = this;
@@ -5296,7 +5488,8 @@ class SmApiPlayer {
         }
     }
     get playbackRate() {
-        return this.video?.playbackRate || 1;
+        var _a;
+        return ((_a = this.video) === null || _a === void 0 ? void 0 : _a.playbackRate) || 1;
     }
     updateVolume(value) {
         const { video } = this;
@@ -5327,7 +5520,7 @@ class SmApiPlayer {
     }
     isLive() {
         const { player } = this;
-        return player?.isLive();
+        return player === null || player === void 0 ? void 0 : player.isLive();
     }
     getProgress() {
         const { video } = this;
@@ -5359,13 +5552,13 @@ class SmApiPlayer {
         if (typePlayer === constants_1.ETypePlayer.SHAKA) {
             switch (evtName) {
                 case type_1.EEVentName.PLAY:
-                    video?.addEventListener(evtName, (data) => {
+                    video === null || video === void 0 ? void 0 : video.addEventListener(evtName, (data) => {
                         const dataConvert = (0, exports.convertDataEventPlay)(data);
                         clb.call(context, dataConvert);
                     });
                     break;
                 case type_1.EEVentName.PAUSE:
-                    video?.addEventListener(evtName, (data) => {
+                    video === null || video === void 0 ? void 0 : video.addEventListener(evtName, (data) => {
                         const dataConvert = (0, exports.convertDataEventPause)(data);
                         clb.call(context, dataConvert);
                     });
@@ -5486,9 +5679,7 @@ exports["default"] = SmApiPlayer;
 const convertDataEventLoaded = (data) => {
     return {
         event: type_1.EEVentName.LOADED,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventLoaded = convertDataEventLoaded;
@@ -5505,90 +5696,70 @@ exports.convertDataEventError = convertDataEventError;
 const convertDataEventPlay = (data) => {
     return {
         event: type_1.EEVentName.PLAY,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventPlay = convertDataEventPlay;
 const convertDataEventVolumeChange = (data) => {
     return {
         event: type_1.EEVentName.VARIANT_CHANGED,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventVolumeChange = convertDataEventVolumeChange;
 const convertDataEventTimeUpdate = (data) => {
     return {
         event: type_1.EEVentName.TIME_UPDATE,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventTimeUpdate = convertDataEventTimeUpdate;
 const convertDataEventPause = (data) => {
     return {
         event: type_1.EEVentName.PAUSE,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventPause = convertDataEventPause;
 const convertDataEventFullScreenChange = (data) => {
     return {
         event: type_1.EEVentName.FULL_SCREEN_CHANGE,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventFullScreenChange = convertDataEventFullScreenChange;
 const convertDataEventLoadedMetaData = (data) => {
     return {
         event: type_1.EEVentName.LOADED_META_DATA,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventLoadedMetaData = convertDataEventLoadedMetaData;
 const convertDataEventProgress = (data) => {
     return {
         event: type_1.EEVentName.PROGRESS,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventProgress = convertDataEventProgress;
 const convertDataEventEnded = (data) => {
     return {
         event: type_1.EEVentName.ENDED,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventEnded = convertDataEventEnded;
 const convertDataEventWaiting = (data) => {
     return {
         event: type_1.EEVentName.WAITING,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventWaiting = convertDataEventWaiting;
 const convertDataEventPlaying = (data) => {
     return {
         event: type_1.EEVentName.PLAYING,
-        data: {
-            ...data,
-        },
+        data: Object.assign({}, data),
     };
 };
 exports.convertDataEventPlaying = convertDataEventPlaying;
@@ -5607,7 +5778,9 @@ exports.convertDataEventPlaying = convertDataEventPlaying;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const eventemitter3_1 = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
 class SmEventEmitter {
-    eventEmitter = new eventemitter3_1.EventEmitter();
+    constructor() {
+        this.eventEmitter = new eventemitter3_1.EventEmitter();
+    }
     on(event, listener, context) {
         this.eventEmitter.on(event, listener, context);
     }
@@ -5824,6 +5997,120 @@ exports.playbackSpeedIcon = `
     <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
   </svg>
 `;
+
+
+/***/ }),
+
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deviceType = void 0;
+const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
+const ErrorContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts"));
+const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
+const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
+const style_1 = __importDefault(__webpack_require__(/*! ./style */ "./src/style.ts"));
+const SmApiPlayer_1 = __importDefault(__webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts"));
+__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
+__webpack_require__(/*! ./index.css */ "./src/index.css");
+const deviceType = (0, services_1.detectDevice)();
+exports.deviceType = deviceType;
+const hasTouch = (0, services_1.checkHasTouch)();
+const classes = (0, style_1.default)({
+    deviceType,
+});
+class SmUIControls {
+    constructor(props) {
+        this.isInit = false;
+        const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
+        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
+        const VideoContainerElement = document.getElementById(idVideoContainer);
+        this.ids = (0, services_1.generateIIds)();
+        if (!this.isInit) {
+            this.isInit = true;
+            if (VideoContainerElement) {
+                VideoContainerElement.style.position = 'relative';
+                VideoContainerElement.style.overflow = 'hidden';
+                const smControllerContainerEle = document.createElement('div');
+                smControllerContainerEle.className = classes.container;
+                smControllerContainerEle.id = this.ids.smControllerContainer;
+                smControllerContainerEle.innerHTML = `
+          <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
+          <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
+          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
+                VideoContainerElement.appendChild(smControllerContainerEle);
+                this.controllerContainer = new ControllerContainer_1.default({
+                    id: this.ids.smControllerContent,
+                    classes,
+                    videoInfo,
+                    apiPlayer,
+                    ids: this.ids,
+                });
+                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
+                this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
+            }
+        }
+    }
+    on(event, listener, context) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
+        return;
+    }
+    once(event, listener, context) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
+        return;
+    }
+    removeAllListeners(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.removeAllListeners(event);
+        return;
+    }
+    off(event, listener, context, once) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.off(event, listener, context, once);
+        return;
+    }
+    listeners(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listeners(event);
+        return [];
+    }
+    emit(event, name, eventObject) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.emit(event, name, eventObject);
+        return true;
+    }
+    trigger(event, eventObject) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.trigger(event, eventObject);
+        return true;
+    }
+    listenerCount(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listenerCount(event);
+        return 0;
+    }
+    destroy() {
+        var _a, _b, _c;
+        (_a = this.controllerContainer) === null || _a === void 0 ? void 0 : _a.destroy();
+        (_b = this.errorContainer) === null || _b === void 0 ? void 0 : _b.destroy();
+        (_c = this.loadingContainer) === null || _c === void 0 ? void 0 : _c.destroy();
+        this.apiPlayer = null;
+        this.isInit = false;
+    }
+}
+exports["default"] = SmUIControls;
 
 
 /***/ }),
@@ -8360,114 +8647,13 @@ let nanoid = (size = 21) => {
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deviceType = void 0;
-const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-const ControllerContainer_1 = __webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts");
-const ErrorContainer_1 = __webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts");
-const LoadingContainer_1 = __webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts");
-const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
-const style_1 = __webpack_require__(/*! ./style */ "./src/style.ts");
-const SmApiPlayer_1 = __webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts");
-__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
-__webpack_require__(/*! ./index.css */ "./src/index.css");
-const deviceType = (0, services_1.detectDevice)();
-exports.deviceType = deviceType;
-const hasTouch = (0, services_1.checkHasTouch)();
-const classes = (0, style_1.default)({
-    deviceType,
-});
-class SmUIControls {
-    apiPlayer;
-    isInit = false;
-    controllerContainer;
-    errorContainer;
-    loadingContainer;
-    ids;
-    constructor(props) {
-        const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
-        const VideoContainerElement = document.getElementById(idVideoContainer);
-        this.ids = (0, services_1.generateIIds)();
-        if (!this.isInit) {
-            this.isInit = true;
-            if (VideoContainerElement) {
-                VideoContainerElement.style.position = 'relative';
-                VideoContainerElement.style.overflow = 'hidden';
-                const smControllerContainerEle = document.createElement('div');
-                smControllerContainerEle.className = classes.container;
-                smControllerContainerEle.id = this.ids.smControllerContainer;
-                smControllerContainerEle.innerHTML = `
-          <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
-          <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
-          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
-                VideoContainerElement.appendChild(smControllerContainerEle);
-                this.controllerContainer = new ControllerContainer_1.default({
-                    id: this.ids.smControllerContent,
-                    classes,
-                    videoInfo,
-                    apiPlayer,
-                    ids: this.ids,
-                });
-                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
-                this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
-            }
-        }
-    }
-    on(event, listener, context) {
-        this.apiPlayer?.eventemitter.on(event, listener, context);
-        return;
-    }
-    once(event, listener, context) {
-        this.apiPlayer?.eventemitter.on(event, listener, context);
-        return;
-    }
-    removeAllListeners(event) {
-        this.apiPlayer?.eventemitter.removeAllListeners(event);
-        return;
-    }
-    off(event, listener, context, once) {
-        this.apiPlayer?.eventemitter.off(event, listener, context, once);
-        return;
-    }
-    listeners(event) {
-        this.apiPlayer?.eventemitter.listeners(event);
-        return [];
-    }
-    emit(event, name, eventObject) {
-        this.apiPlayer?.eventemitter.emit(event, name, eventObject);
-        return true;
-    }
-    trigger(event, eventObject) {
-        this.apiPlayer?.eventemitter.trigger(event, eventObject);
-        return true;
-    }
-    listenerCount(event) {
-        this.apiPlayer?.eventemitter.listenerCount(event);
-        return 0;
-    }
-    destroy() {
-        this.controllerContainer?.destroy();
-        this.errorContainer?.destroy();
-        this.loadingContainer?.destroy();
-        this.apiPlayer = null;
-        this.isInit = false;
-    }
-}
-exports["default"] = SmUIControls;
-
-})();
-
-__webpack_exports__ = __webpack_exports__["default"];
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
+/******/ 	__webpack_exports__ = __webpack_exports__["default"];
+/******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;

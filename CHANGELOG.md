@@ -1,5 +1,13 @@
 
 
+## [0.0.31](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.30...v0.0.31) (2024-08-08)
+
+
+### Features
+
+* handle event touch move fo mobile ([2488f8c](https://github.com/sigmadrm/sigma-ui-controls/commit/2488f8c82f3294099b3148bc5778622baf9f24c3))
+* implement feature nosleep when playing ([cff550e](https://github.com/sigmadrm/sigma-ui-controls/commit/cff550e571c1fdbe5d58a6b332b84639a2f368c9))
+
 ## [0.0.30](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.29...v0.0.30) (2024-08-07)
 
 
