@@ -246,7 +246,7 @@ export default class SmApiPlayer {
         videoContainer.webkitEnterFullscreen
       ) {
         if (videoContainer.webkitEnterFullscreen) {
-          this.play();
+          videoContainer.webkitEnterFullscreen();
         } else {
           requestFullScreen(videoContainer);
         }
@@ -268,7 +268,7 @@ export default class SmApiPlayer {
       videoEle.webkitEnterFullscreen
     ) {
       if (videoEle.webkitEnterFullscreen) {
-        this.play();
+        videoEle.webkitEnterFullscreen();
       } else {
         requestFullScreen(videoEle);
       }
