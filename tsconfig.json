@@ -1,7 +1,11 @@
 {
   "extends": "./tsconfig-lib.json",
   "compilerOptions": {
-    "emitDeclarationOnly": false
+    "target": "es6",                 // Hoặc phiên bản ECMAScript khác
+    "module": "commonjs",            // Hoặc "esnext" nếu bạn dùng mô-đun ES
+    "esModuleInterop": true,         // Bật tính năng tương thích mô-đun ES
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": false,
   },
   "include": ["src/**/*", "tests/unit/**/*", "demo/**/*"]
 }
