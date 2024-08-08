@@ -40,11 +40,8 @@ class ButtonFullScreen extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
-    if (apiPlayer.isFullScreen()) {
-      apiPlayer.exitFullScreen();
-    } else {
-      apiPlayer.enterFullScreen();
-    }
+
+    apiPlayer.enterFullScreen();
   };
 }
 

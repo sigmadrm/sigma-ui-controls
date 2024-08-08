@@ -87,53 +87,53 @@ export default class SmApiPlayer {
     this.video?.addEventListener(EEVentName.RATE_CHANGE, this.emitRateChange);
   }
   emitLoaded(data: any) {
-    console.log('addEventListener', EEVentName.LOADED, data);
+    // console.log('addEventListener', EEVentName.LOADED, data);
     this.eventemitter.trigger(EEVentName.LOADED, data);
   }
   emitError(data: any) {
-    console.log('addEventListener', EEVentName.ERROR, data);
+    // console.log('addEventListener', EEVentName.ERROR, data);
     this.eventemitter.trigger(EEVentName.ERROR, data);
   }
   emitPlay(data: any) {
     // noSleep.enable();
-    console.log('addEventListener', EEVentName.PLAY, data);
+    // console.log('addEventListener', EEVentName.PLAY, data);
     this.eventemitter.trigger(EEVentName.PLAY, data);
   }
   emitPause(data: any) {
     // noSleep.disable();
-    console.log('addEventListener', EEVentName.PAUSE, data);
+    // console.log('addEventListener', EEVentName.PAUSE, data);
     this.eventemitter.trigger(EEVentName.PAUSE, data);
   }
   emitFullScreenChange(data: any) {
-    console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+    // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
     this.eventemitter.trigger(EEVentName.FULL_SCREEN_CHANGE, data);
   }
   emitVolumeChange(data: any) {
-    console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
+    // console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
     this.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
   }
   emitTimeUpdate(data: any) {
-    console.log('addEventListener', EEVentName.TIME_UPDATE, data);
+    // console.log('addEventListener', EEVentName.TIME_UPDATE, data);
     this.eventemitter.trigger(EEVentName.TIME_UPDATE, data);
   }
   emitLoadedMeteData(data: any) {
-    console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
+    // console.log('addEventListener', EEVentName.LOADED_META_DATA, data);
     this.eventemitter.trigger(EEVentName.LOADED_META_DATA, data);
   }
   emitProgress(data: any) {
-    console.log('addEventListener', EEVentName.PROGRESS, data);
+    // console.log('addEventListener', EEVentName.PROGRESS, data);
     this.eventemitter.trigger(EEVentName.PROGRESS, data);
   }
   emitPlaying(data: any) {
-    console.log('addEventListener', EEVentName.PLAYING, data);
+    // console.log('addEventListener', EEVentName.PLAYING, data);
     this.eventemitter.trigger(EEVentName.PLAYING, data);
   }
   emitEnded(data: any) {
-    console.log('addEventListener', EEVentName.ENDED, data);
+    // console.log('addEventListener', EEVentName.ENDED, data);
     this.eventemitter.trigger(EEVentName.ENDED, data);
   }
   emitWaiting(data: any) {
-    console.log('addEventListener', EEVentName.WAITING, data);
+    // console.log('addEventListener', EEVentName.WAITING, data);
     this.eventemitter.trigger(EEVentName.WAITING, data);
   }
   getVariantTracks(): { tracks: Track[] } {
@@ -201,37 +201,110 @@ export default class SmApiPlayer {
   }
   isFullScreen() {
     const isFullscreen = document.fullscreenElement;
+    console.log(isFullscreen);
     if (isFullscreen) {
       return true;
     } else {
       return false;
     }
   }
+
   enterFullScreen() {
     const { video } = this;
 
-    if (video) {
-      const videoContainer = video.parentElement as any;
-      if (videoContainer) {
-        if (videoContainer.requestFullscreen) {
-          videoContainer.requestFullscreen();
-        } else if (videoContainer.mozRequestFullScreen) {
-          // Firefox
-          videoContainer.mozRequestFullScreen();
-        } else if (videoContainer.webkitRequestFullscreen) {
-          // Chrome, Safari and Opera
-          videoContainer.webkitRequestFullscreen();
-        } else if (videoContainer.msRequestFullscreen) {
-          // IE/Edge
-          videoContainer.msRequestFullscreen();
-        }
+    if (!video) {
+      console.error('Video element is null or undefined.');
+      return;
+    }
+    const videoContainer = video.parentElement as any;
+
+    // Hàm để thực hiện chế độ toàn màn hình
+    const requestFullScreen = (element: any) => {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        // Firefox
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        // Chrome, Safari, and Opera
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        // IE/Edge
+        element.msRequestFullscreen();
+      } else {
+        console.warn('Fullscreen API is not supported.');
       }
+    };
+
+    // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
+    if (videoContainer) {
+      if (
+        videoContainer.requestFullscreen ||
+        videoContainer.mozRequestFullScreen ||
+        videoContainer.webkitRequestFullscreen ||
+        videoContainer.msRequestFullscreen ||
+        videoContainer.webkitEnterFullscreen
+      ) {
+        if (videoContainer.webkitEnterFullscreen) {
+          this.play();
+        } else {
+          requestFullScreen(videoContainer);
+        }
+        return; // Đã thực hiện chế độ toàn màn hình cho phần tử cha
+      }
+    }
+    const videoEle = video as any;
+    if (!videoEle) {
+      console.error('Video element is null or undefined.');
+      return;
+    }
+
+    // Nếu không hỗ trợ phần tử cha, kiểm tra video và thực hiện chế độ toàn màn hình nếu có hỗ trợ
+    if (
+      videoEle.requestFullscreen ||
+      videoEle.mozRequestFullScreen ||
+      videoEle.webkitRequestFullscreen ||
+      videoEle.msRequestFullscreen ||
+      videoEle.webkitEnterFullscreen
+    ) {
+      if (videoEle.webkitEnterFullscreen) {
+        this.play();
+      } else {
+        requestFullScreen(videoEle);
+      }
+    } else {
+      console.warn('Fullscreen API is not supported for video element.');
     }
   }
   exitFullScreen() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
+    // Hàm để thoát chế độ toàn màn hình
+    const doc = document as any;
+    const exitFullScreenMode = () => {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen();
+      } else if (doc.mozCancelFullScreen) {
+        // Firefox
+        doc.mozCancelFullScreen();
+      } else if (doc.webkitExitFullscreen) {
+        // Chrome, Safari, and Opera
+        doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        // IE/Edge
+        doc.msExitFullscreen();
+      } else {
+        console.warn('Fullscreen exit API is not supported.');
+      }
+    };
+    if (doc) {
+      if (doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
+        exitFullScreenMode();
+      } else {
+        console.warn('No element is currently in fullscreen mode.');
+      }
+    } else {
+      console.warn('No element is currently in fullscreen mode.');
     }
+    // Kiểm tra nếu phần tử hiện tại đang ở chế độ toàn màn hình
   }
 
   set playbackRate(value: number) {
