@@ -20,8 +20,10 @@ class ControllerContainer extends BaseComponent {
     this.headController = new HeadController({ id: ids.smHeadController, classes, apiPlayer, ids });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer, ids });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer, ids });
-    this.show = this.show.bind(this);
-    this.hide = this.hide.bind(this);
+    this.handleEvtLoaded = this.handleEvtLoaded.bind(this);
+    this.handleEvtError = this.handleEvtError.bind(this);
+    this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
+    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
   }
 
   render() {
@@ -40,16 +42,18 @@ class ControllerContainer extends BaseComponent {
     if (this.containerElement) {
       this.containerElement.onclick = (event) => this.handleClickContainer(event);
       // mouse
-      this.containerElement.onmousemove = () => this.handleOnMouseMover();
-      this.containerElement.onmouseover = () => this.handleOnMouseover();
-      this.containerElement.onmouseout = () => this.handleOnMouseout();
+      this.containerElement.onmousemove = (e: MouseEvent) => this.handleOnMouseMover(e);
+      this.containerElement.onmouseover = (e: MouseEvent) => this.handleOnMouseover(e);
+      this.containerElement.onmouseout = (e: MouseEvent) => this.handleOnMouseout(e);
       //touch
-      this.containerElement.ontouchmove = () => this.handleOnMouseMover();
-      this.containerElement.ontouchstart = () => this.handleOnMouseover();
-      this.containerElement.ontouchend = () => this.handleOnMouseout();
+      this.containerElement.ontouchmove = (e: TouchEvent) => this.handleOnMouseMover(e);
+      this.containerElement.ontouchstart = (e: TouchEvent) => this.handleOnMouseover(e);
+      this.containerElement.ontouchend = (e: TouchEvent) => this.handleOnMouseout(e);
     }
-    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.show, this);
-    this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.hide, this);
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEvtLoaded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handleEvtError, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
 
   unregisterListener() {
@@ -64,94 +68,196 @@ class ControllerContainer extends BaseComponent {
       this.containerElement.ontouchend = () => {};
       this.containerElement.ontouchmove = () => {};
     }
-    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.show, this);
-    this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.hide, this);
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEvtLoaded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handleEvtError, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
-  handleOnMouseMover = () => {
-    if (this.footerController) {
+  handleOnMouseMover(e: MouseEvent | TouchEvent) {
+    if (e.type === 'mousemove') {
+      if (this.footerController) {
+        if (this.timerId) {
+          clearTimeout(this.timerId);
+          this.timerId = null;
+        }
+        this.footerController.show();
+        this.timerId = self.setTimeout(() => {
+          if (!this.footerController?.getIsInside()) {
+            if (this.footerController) {
+              this.footerController.hidden();
+            }
+            if (this.headController) {
+              this.headController.hidden();
+            }
+          }
+        }, 3000);
+      }
+      if (this.headController) {
+        this.headController.show();
+      }
+    }
+  }
+  handleOnMouseover(e: MouseEvent | TouchEvent) {
+    if (e.type === 'mouseover') {
       if (this.timerId) {
         clearTimeout(this.timerId);
+        this.timerId = null;
       }
-      this.footerController.show();
-      this.timerId = self.setInterval(() => {
+      if (this.footerController) {
+        this.footerController.show();
+      }
+      if (this.headController) {
+        this.headController.show();
+      }
+      this.timerId = self.setTimeout(() => {
+        if (this.footerController) {
+          if (!this.footerController?.getIsInside()) {
+            if (this.footerController) {
+              this.footerController.hidden();
+            }
+          }
+        }
+        if (this.headController) {
+          this.headController.hidden();
+        }
+      }, 3000);
+    }
+  }
+  handleOnMouseout(e: MouseEvent | TouchEvent) {
+    if (e.type === 'mouseout') {
+      if (this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+      }
+      this.timerId = self.setTimeout(() => {
         if (!this.footerController?.getIsInside()) {
           if (this.footerController) {
             this.footerController.hidden();
+          }
+        }
+        if (this.headController) {
+          this.headController.hidden();
+        }
+      }, 3000);
+    }
+    // else {
+    //   if (this.counter >= 1) {
+    //     console.log('aaaaaaaaaaaaaaaa', this.counter);
+    //     if (this.timerId) {
+    //       clearTimeout(this.timerId);
+    //     }
+    //     console.log('run');
+    //     if (this.footerController) {
+    //       console.log('runaaaaa');
+    //       this.footerController.hidden();
+    //     }
+    //     if (this.headController) {
+    //       this.headController.hidden();
+    //     }
+    //   }
+    // }
+  }
+  handleClickContainer(event: MouseEvent) {
+    console.log(event);
+    const evt = event as PointerEvent;
+    if (evt) {
+      const { apiPlayer } = this;
+      event.preventDefault();
+      event.stopPropagation();
+      if (evt.pointerType === 'mouse') {
+        if (
+          document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') ===
+          ESettingPanelDataState.BLUR
+        ) {
+          return;
+        }
+        if (apiPlayer.isPlay()) {
+          apiPlayer.pause();
+        } else {
+          apiPlayer.play();
+        }
+      } else {
+        if (this.timerId) {
+          clearTimeout(this.timerId);
+          this.timerId = null;
+        }
+
+        if (this.footerController) {
+          this.footerController.show();
+        }
+        if (this.headController) {
+          this.headController.show();
+        }
+        if (this.bodyController) {
+          this.bodyController.show();
+        }
+        this.timerId = self.setTimeout(() => {
+          if (!this.footerController?.getIsInside()) {
+            if (this.footerController) {
+              this.footerController.hidden();
+            }
           }
           if (this.headController) {
             this.headController.hidden();
           }
-        }
-      }, 3000);
-    }
-    if (this.headController) {
-      this.headController.show();
-    }
-  };
-  handleOnMouseover() {
-    if (this.timerId) {
-      clearTimeout(this.timerId);
-    }
-    if (this.footerController) {
-      this.footerController.show();
-    }
-    if (this.headController) {
-      this.headController.show();
-    }
-    this.timerId = self.setInterval(() => {
-      if (this.footerController) {
-        if (!this.footerController?.getIsInside()) {
-          if (this.footerController) {
-            this.footerController.hidden();
+          if (this.bodyController) {
+            this.bodyController.hidden();
           }
-        }
+        }, 3000);
       }
-      if (this.headController) {
-        this.headController.hidden();
-      }
-    }, 3000);
+    }
   }
-  handleOnMouseout() {
-    if (this.timerId) {
-      clearTimeout(this.timerId);
+  handleEvtLoaded() {
+    if (this.containerElement) {
+      this.containerElement.classList.add(this.classes.controllerContentEnable);
     }
-    this.timerId = self.setTimeout(() => {
-      if (!this.footerController?.getIsInside()) {
-        if (this.footerController) {
-          this.footerController.hidden();
-        }
-      }
-      if (this.headController) {
-        this.headController.hidden();
-      }
-    }, 3000);
   }
-  handleClickContainer = (event: MouseEvent) => {
-    const { apiPlayer } = this;
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (
-      document.getElementById(this.ids.smSettingsContainer)?.getAttribute('data-state') === ESettingPanelDataState.BLUR
-    ) {
-      return;
-    }
-    if (apiPlayer.isPlay()) {
-      apiPlayer.pause();
-      // this.handleOnMouseover();
-    } else {
-      apiPlayer.play();
-    }
-  };
-
-  hide() {
+  handleEvtError() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.controllerContent;
     }
   }
-  show() {
-    if (this.containerElement) {
-      this.containerElement.classList.add(this.classes.controllerContentEnable);
+  handleEvtSeeking(e, data) {
+    if (data.seeking === false) {
+      // this.counter = 0;
+    }
+  }
+  handleEvtScrubbing(e, data) {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+    if (data.counter > 1) {
+      if (this.footerController) {
+        this.footerController.hidden();
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+      if (this.bodyController) {
+        this.bodyController.hidden();
+      }
+    } else {
+      if (this.footerController) {
+        this.footerController.show();
+      }
+      if (this.headController) {
+        this.headController.show();
+      }
+      if (this.bodyController) {
+        this.bodyController.show();
+      }
+      this.timerId = self.setTimeout(() => {
+        if (this.footerController) {
+          this.footerController.hidden();
+        }
+        if (this.headController) {
+          this.headController.hidden();
+        }
+        if (this.bodyController) {
+          this.bodyController.hidden();
+        }
+      }, 3000);
     }
   }
 }

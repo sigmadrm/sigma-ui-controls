@@ -55,15 +55,14 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         justify-content: center;
       `,
       headController: css`
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
         width: 100%;
+        height: 72px;
         position: absolute;
+        top: 0;
         right: 0;
         left: 0;
         box-sizing: border-box;
         display: flex;
-        height: 72px;
-        top: -72px;
         gap: 0px;
         flex-direction: row;
         align-items: center;
@@ -72,10 +71,24 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         transition: 0.3s ease-in-out;
         padding: 12px 12px;
         z-index: 1;
+        @media (max-width: ${EBreakpoint.SM}px) {
+          height: 0px;
+          top: 0;
+          gap: 0px;
+          display: none;
+          background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+        }
       `,
       headControllerEnable: css`
         top: 0;
         transition: 0.3s ease-in-out;
+        @media (max-width: ${EBreakpoint.SM}px) {
+          height: 72px;
+          top: 0;
+          gap: 0px;
+          background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+          display: flex;
+        }
       `,
       smSettingIconButtonMB: css`
         cursor: pointer;
@@ -127,6 +140,29 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         min-width: 300px;
         max-width: 320px;
         overflow-y: auto;
+      `,
+      scrubbingForward: css`
+        flex: 1;
+        height: 100%;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `,
+      scrubbingRewind: css`
+        flex: 1;
+        height: 100%;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `,
+      bodyControllerCenter: css`
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: red;
       `,
       settingHeader: css`
         box-sizing: border-box;
@@ -222,17 +258,17 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         justify-content: center;
       `,
       footerController: css`
-        background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
         width: 100%;
         height: 72px;
-        bottom: -72px;
+        bottom: 0px;
         gap: 0px;
         flex-direction: column-reverse;
         position: absolute;
         right: 0;
         left: 0;
         box-sizing: border-box;
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
         gap: 16px;
@@ -241,8 +277,11 @@ const generateStyles = (props?: TGenerateStylesProps) => {
         padding: 12px;
       `,
       footerControllerEnable: css`
-        bottom: 0px;
+        height: 72px;
+        display: flex;
+        bottom: 0;
         transition: 0.3s ease-in-out;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       `,
       seekBarController: css`
         width: 100%;
@@ -630,33 +669,41 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
     `,
     headController: css`
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 88px;
+      height: 72px;
       position: absolute;
-      top: -88px;
+      top: -72px;
       right: 0;
       left: 0;
       box-sizing: border-box;
-      display: none;
+      display: flex;
+      gap: 0px;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       z-index: 1;
       @media (max-width: ${EBreakpoint.SM}px) {
-        display: flex;
-        height: 72px;
-        bottom: -72px;
+        height: 0px;
+        top: 0;
         gap: 0px;
+        display: none;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       }
     `,
     headControllerEnable: css`
       top: 0;
       transition: 0.3s ease-in-out;
+      @media (max-width: ${EBreakpoint.SM}px) {
+        height: 72px;
+        top: 0;
+        gap: 0px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+        display: flex;
+      }
     `,
     smSettingIconButtonMB: css`
       cursor: pointer;
@@ -713,6 +760,28 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       min-width: 300px;
       max-width: 320px;
       overflow-y: auto;
+    `,
+    scrubbingForward: css`
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+    scrubbingRewind: css`
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+    bodyControllerCenter: css`
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     `,
     settingHeader: css`
       box-sizing: border-box;
@@ -822,7 +891,7 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       justify-content: center;
     `,
     footerController: css`
-      background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
       height: 88px;
       position: absolute;
@@ -839,15 +908,25 @@ const generateStyles = (props?: TGenerateStylesProps) => {
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       @media (max-width: ${EBreakpoint.SM}px) {
-        height: 72px;
-        bottom: -72px;
+        height: 0px;
+        bottom: 0;
         gap: 0px;
         flex-direction: column-reverse;
+        display: none;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       }
     `,
     footerControllerEnable: css`
       bottom: 0px;
       transition: 0.3s ease-in-out;
+      @media (max-width: ${EBreakpoint.SM}px) {
+        height: 88px;
+        bottom: 0;
+        gap: 0px;
+        flex-direction: column-reverse;
+        display: flex;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+      }
     `,
     seekBarController: css`
       width: 100%;

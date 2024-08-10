@@ -25,14 +25,16 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
       apiPlayer,
       ids,
     });
+    this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
+    this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
   }
 
   render(): void {
     const { classes } = this;
     if (this.containerElement) {
       if (this.containerElement) {
-        const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${this.ids.smTimeCurrent}></div>
-        <div class=${classes.taskbarTimeDuration} id=${this.ids.smTimeDuration}></div>`;
+        const htmlString = `<div class="${classes.taskbarTimeCurrent}" id="${this.ids.smTimeCurrent}"></div>
+        <div class="${classes.taskbarTimeDuration}" id="${this.ids.smTimeDuration}"></div>`;
         this.containerElement.innerHTML = htmlString;
       }
     }

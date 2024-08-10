@@ -1,5 +1,5 @@
 import BaseComponent from '../../../BaseComponent';
-import { IConstructorBaseProps } from '../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../type';
 import SeekBarController from './SeekBarController';
 import TaskbarController from './TaskbarController';
 import SmApiPlayer from '../../../SmApiPlayer';
@@ -29,6 +29,8 @@ class FooterController extends BaseComponent {
       apiPlayer,
       ids,
     });
+    this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
+    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
   }
   render() {
     if (this.containerElement) {
@@ -48,6 +50,9 @@ class FooterController extends BaseComponent {
       this.containerElement.ontouchstart = () => this.handelOnmouseover();
       this.containerElement.ontouchend = () => this.handelOnmouseout();
     }
+
+    this.apiPlayer.eventemitter.on(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
   unregisterListener(): void {
     if (this.containerElement) {
@@ -69,10 +74,19 @@ class FooterController extends BaseComponent {
   handelOnmouseout() {
     this.isInside = false;
   }
-  handelEventClick = (e: MouseEvent) => {
+  handelEventClick(e: MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-  };
+  }
+  handleEvtSeeking(e, data) {
+    // console.log('handleEvtSeeking', { e, data });
+  }
+  handleEvtScrubbing(e, data) {
+    // console.log('handleEvtScrubbing', { e, data });
+    if (data.counter >= 2) {
+      // console.log('ádas');
+    }
+  }
   hidden() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.footerController;

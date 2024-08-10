@@ -1,12 +1,13 @@
+import { pausedIcon } from '../../../icons';
 import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
-import { pausedIcon } from '../../../icons';
 
 interface IConstructorProps extends IConstructorBaseProps {}
-class ButtonPauseSecondary extends BaseComponent {
+class ButtonPausePrimary extends BaseComponent {
   constructor(props: IConstructorProps) {
     super(props);
   }
+
   render() {
     if (this.containerElement) {
       this.containerElement.innerHTML = pausedIcon;
@@ -16,10 +17,12 @@ class ButtonPauseSecondary extends BaseComponent {
     if (!this.containerElement) return;
     this.containerElement.onclick = (event) => this.handleContainerClick(event);
   }
+
   unregisterListener() {
     if (!this.containerElement) return;
     this.containerElement.onclick = () => {};
   }
+
   handleContainerClick(event: MouseEvent) {
     const { apiPlayer } = this;
     event.preventDefault();
@@ -31,18 +34,14 @@ class ButtonPauseSecondary extends BaseComponent {
 
   hide() {
     if (this.containerElement) {
-      this.containerElement.className = this.classes.taskbarGroupBtn;
+      this.containerElement.className = this.classes.buttonPrimary;
     }
   }
   show() {
     if (this.containerElement) {
-      this.containerElement.className = [
-        this.classes.taskbarGroupBtn,
-        this.classes.taskbarGroupBtnEnable,
-        this.classes.taskbarGroupBtnMobile,
-      ].join(' ');
+      this.containerElement.classList.add(this.classes.buttonPrimaryEnable);
     }
   }
 }
 
-export default ButtonPauseSecondary;
+export default ButtonPausePrimary;

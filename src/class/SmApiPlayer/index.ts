@@ -306,7 +306,13 @@ export default class SmApiPlayer {
     }
     // Kiểm tra nếu phần tử hiện tại đang ở chế độ toàn màn hình
   }
-
+  isEnded() {
+    const { video } = this;
+    if (video) {
+      return video.ended;
+    }
+    return false;
+  }
   set playbackRate(value: number) {
     if (this.video) {
       this.video.playbackRate = value;
@@ -478,6 +484,14 @@ export default class SmApiPlayer {
             });
           }
           break;
+        // case EEVentName.SEEKING:
+        //   if (video) {
+        //     video.addEventListener(evtName, (data: any) => {
+        //       const dataConvert = convertDataEventSeeking(data);
+        //       clb.call(context, dataConvert);
+        //     });
+        //   }
+        //   break;
         default:
           break;
       }
@@ -607,3 +621,11 @@ export const convertDataEventPlaying = (data: any) => {
     },
   };
 };
+// export const convertDataEventSeeking = (data: any) => {
+//   return {
+//     event: EEVentName.SEEKING,
+//     data: {
+//       ...data,
+//     },
+//   };
+// };

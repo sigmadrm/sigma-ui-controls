@@ -44,6 +44,8 @@ export enum EEVentName {
   ENDED = 'ended',
   WAITING = 'waiting',
   PLAYING = 'playing',
+  SEEKING = 'seeking',
+  SCRUBBING = 'scrubbing',
 }
 
 export const RESOLUTION_LABEL = {
@@ -97,6 +99,9 @@ export type IIds = {
   smButtonReplaySecondary: string;
   smButtonReplayPrimary: string;
   smSettingIconButtonMobile: string;
+  smButtonPausePrimary: string;
+  smScrubbingForward: string;
+  smScrubbingRewind: string;
 };
 
 export type TClasses = ReturnType<typeof generateStyles>;
@@ -122,6 +127,8 @@ export interface SmListeners {
   [EEVentName.ENDED]: (event: EEVentName.ENDED, data: { [key: string]: any }) => void;
   [EEVentName.WAITING]: (event: EEVentName.WAITING, data: { [key: string]: any }) => void;
   [EEVentName.PLAYING]: (event: EEVentName.PLAYING, data: { [key: string]: any }) => void;
+  [EEVentName.SEEKING]: (event: EEVentName.SEEKING, data: { [key: string]: any }) => void;
+  [EEVentName.SCRUBBING]: (event: EEVentName.SCRUBBING, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',
