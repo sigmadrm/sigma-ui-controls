@@ -2,14 +2,14 @@ import { IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 interface IConstructorProps extends IConstructorBaseProps {
 }
-declare class CurrentTime extends BaseComponent {
+declare class ButtonPausePrimary extends BaseComponent {
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
-    update(value: number): void;
+    handleContainerClick(event: MouseEvent): void;
     hide(): void;
     show(): void;
 }
-export default CurrentTime;
+export default ButtonPausePrimary;
 //# sourceMappingURL=index.d.ts.map

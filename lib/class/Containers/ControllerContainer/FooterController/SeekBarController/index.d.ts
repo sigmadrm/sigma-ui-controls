@@ -7,7 +7,7 @@ declare class SeekBarController extends BaseComponent {
     private progressBar;
     private progressThumb;
     private timeoutId;
-    private isPlay;
+    private duration;
     constructor(props: IConstructorProps);
     render(): void;
     registerListener(): void;
@@ -15,7 +15,8 @@ declare class SeekBarController extends BaseComponent {
     handleEventClick(e: MouseEvent): void;
     handleEventProgress(): void;
     handleEventTimeUpdate(): void;
-    handleEventTimeLoaded(): void;
+    handleEventLoaded(): void;
+    handleEventSeeking(e: any, data: any): void;
 }
 export default SeekBarController;
 //# sourceMappingURL=index.d.ts.map

@@ -1,6 +1,6 @@
 import SmApiPlayer from './class/SmApiPlayer';
 import { ETypePlayer } from './constants';
-import generateStyles from './style';
+import generateStyles from './class/Styles/style';
 export interface IConfigureUIPlayerProps {
     player: any;
     video?: HTMLVideoElement;
@@ -18,6 +18,10 @@ export interface IConfigureUIPlayerProps {
 export type TGenerateStylesProps = IConfigureUIPlayerProps['style'] & {
     deviceType: EDeviceType;
 };
+export declare enum ETypeScrubbing {
+    FORWARD = "forward",
+    REWIND = "rewind"
+}
 export declare enum ESettingPanelDataState {
     BLUR = "blur",
     OPENED = "opened",
@@ -42,7 +46,9 @@ export declare enum EEVentName {
     PROGRESS = "progress",
     ENDED = "ended",
     WAITING = "waiting",
-    PLAYING = "playing"
+    PLAYING = "playing",
+    SEEKING = "seeking",
+    SCRUBBING = "scrubbing"
 }
 export declare const RESOLUTION_LABEL: {
     AUTO: string;
@@ -95,6 +101,9 @@ export type IIds = {
     smButtonReplaySecondary: string;
     smButtonReplayPrimary: string;
     smSettingIconButtonMobile: string;
+    smButtonPausePrimary: string;
+    smScrubbingForward: string;
+    smScrubbingRewind: string;
 };
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
@@ -147,6 +156,12 @@ export interface SmListeners {
         [key: string]: any;
     }) => void;
     [EEVentName.PLAYING]: (event: EEVentName.PLAYING, data: {
+        [key: string]: any;
+    }) => void;
+    [EEVentName.SEEKING]: (event: EEVentName.SEEKING, data: {
+        [key: string]: any;
+    }) => void;
+    [EEVentName.SCRUBBING]: (event: EEVentName.SCRUBBING, data: {
         [key: string]: any;
     }) => void;
 }

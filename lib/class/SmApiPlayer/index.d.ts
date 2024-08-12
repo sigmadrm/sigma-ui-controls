@@ -43,6 +43,7 @@ export default class SmApiPlayer {
     isFullScreen(): boolean;
     enterFullScreen(): void;
     exitFullScreen(): void;
+    isEnded(): boolean;
     set playbackRate(value: number);
     get playbackRate(): number;
     updateVolume(value: number): number | undefined;

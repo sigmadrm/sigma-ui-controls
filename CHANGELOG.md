@@ -1,5 +1,14 @@
 
 
+## [0.0.36](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.35...v0.0.36) (2024-08-12)
+
+
+### Features
+
+* handle sekking when tap body ([3de802d](https://github.com/sigmadrm/sigma-ui-controls/commit/3de802d9938b6db314db39b034990967f078a6f1))
+* implenment feature seeking when click body ([eeef0b3](https://github.com/sigmadrm/sigma-ui-controls/commit/eeef0b3dc172d6ff6f27a5d72bad01cd88baf6e2))
+* update time current and progress when skeeing ([8485594](https://github.com/sigmadrm/sigma-ui-controls/commit/8485594681ad04743f7eceacd97ab6a3d3878c17))
+
 ## [0.0.35](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.34...v0.0.35) (2024-08-08)
 
 

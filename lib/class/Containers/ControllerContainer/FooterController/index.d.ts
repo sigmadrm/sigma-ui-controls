@@ -15,7 +15,9 @@ declare class FooterController extends BaseComponent {
     getIsInside(): boolean | null;
     handelOnmouseover(): void;
     handelOnmouseout(): void;
-    handelEventClick: (e: MouseEvent) => void;
+    handelEventClick(e: MouseEvent): void;
+    handleEvtSeeking(e: any, data: any): void;
+    handleEvtScrubbing(e: any, data: any): void;
     hidden(): void;
     show(): void;
 }

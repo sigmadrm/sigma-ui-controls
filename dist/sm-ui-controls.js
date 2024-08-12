@@ -2968,6 +2968,62 @@ exports["default"] = ButtonMute;
 
 /***/ }),
 
+/***/ "./src/class/Components/ButtonPausePrimary/index.ts":
+/*!**********************************************************!*\
+  !*** ./src/class/Components/ButtonPausePrimary/index.ts ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+class ButtonPausePrimary extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.pausedIcon;
+        }
+    }
+    registerListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        if (apiPlayer.isPlay()) {
+            apiPlayer.pause();
+        }
+    }
+    hide() {
+        if (this.containerElement) {
+            this.containerElement.className = this.classes.buttonPrimary;
+        }
+    }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.buttonPrimaryEnable);
+        }
+    }
+}
+exports["default"] = ButtonPausePrimary;
+
+
+/***/ }),
+
 /***/ "./src/class/Components/ButtonPauseSecondary/index.ts":
 /*!************************************************************!*\
   !*** ./src/class/Components/ButtonPauseSecondary/index.ts ***!
@@ -3004,7 +3060,6 @@ class ButtonPauseSecondary extends BaseComponent_1.default {
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
-        event.stopPropagation();
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
         }
@@ -3346,6 +3401,11 @@ class CurrentTime extends BaseComponent_1.default {
     }
     registerListener() { }
     unregisterListener() { }
+    update(value) {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<spam>${(0, utils_1.formatTime)(value)}</span> `;
+        }
+    }
     hide() { }
     show() { }
 }
@@ -3450,6 +3510,238 @@ class SettingIconButtonMB extends BaseComponent_1.default {
     }
 }
 exports["default"] = SettingIconButtonMB;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ScrubbingForward/index.ts":
+/*!********************************************************!*\
+  !*** ./src/class/Components/ScrubbingForward/index.ts ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+class ScrubbingForward extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+        this.counter = 0;
+    }
+    render() {
+        var _a, _b, _c;
+        const { classes } = this;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<div class="${classes.scrubbingContainer}">
+      <div class="${classes.scrubbingRippleRight}"></div>
+      <div class="${classes.scrubbingIcon}">${icons_1.scrubbingForwardIcon}</div>
+      <div class="${classes.scrubbingText}"></div>
+      </div>`;
+        }
+        this.icon = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName(classes.scrubbingIcon)[0];
+        this.ripple = (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName(classes.scrubbingRippleRight)[0];
+        this.text = (_c = this.containerElement) === null || _c === void 0 ? void 0 : _c.getElementsByClassName(classes.scrubbingText)[0];
+    }
+    registerListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        const evt = event;
+        if (evt) {
+            if (evt.pointerType === 'touch') {
+                this.counter++;
+                if (this.counter >= 2) {
+                    this.show();
+                }
+                if (this.timerId)
+                    clearTimeout(this.timerId);
+                this.timerId = null;
+                this.timerId = self.setTimeout(() => {
+                    if (this.counter - 1 !== 0) {
+                        const timeStep = apiPlayer.getCurrentTime() + (this.counter - 1) * 10;
+                        this.counter = 0;
+                        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                        this.hidden();
+                        if (timeStep <= apiPlayer.getDuration()) {
+                            apiPlayer.setCurrentTime(timeStep);
+                        }
+                        else {
+                            apiPlayer.setCurrentTime(apiPlayer.getDuration());
+                        }
+                    }
+                }, 300);
+                if (this.timerIdScrubbing)
+                    clearTimeout(this.timerIdScrubbing);
+                this.timerIdScrubbing = self.setTimeout(() => {
+                    this.counter = 0;
+                }, 500);
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                if (this.counter - 1 !== 0) {
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                        seeking: true,
+                        time: apiPlayer.getCurrentTime() + (this.counter - 1) * 10,
+                        type: type_1.ETypeScrubbing.FORWARD,
+                    });
+                }
+            }
+        }
+    }
+    show() {
+        if (this.ripple) {
+            this.ripple.classList.add(this.classes.scrubbingRippleRightEnable);
+        }
+        if (this.text) {
+            this.text.innerHTML = `${String((this.counter - 1) * 10)} s`;
+        }
+        if (this.icon) {
+            this.icon.classList.add(this.classes.scrubbingIconEnable);
+        }
+    }
+    hidden() {
+        if (this.ripple) {
+            this.ripple.classList.remove(this.classes.scrubbingRippleRightEnable);
+        }
+        if (this.text) {
+            this.text.innerHTML = '';
+        }
+        if (this.icon) {
+            this.icon.classList.remove(this.classes.scrubbingIconEnable);
+        }
+    }
+}
+exports["default"] = ScrubbingForward;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/ScrubbingRewind/index.ts":
+/*!*******************************************************!*\
+  !*** ./src/class/Components/ScrubbingRewind/index.ts ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+class ScrubbingRewind extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+        this.counter = 0;
+    }
+    render() {
+        var _a, _b, _c;
+        const { classes } = this;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<div class="${classes.scrubbingContainer}">
+      <div class="${classes.scrubbingRippleLeft}"></div>
+      <div class="${classes.scrubbingIcon}">${icons_1.scrubbingRewindIcon}</div>
+      <div class="${classes.scrubbingText}"></div>
+      </div>`;
+        }
+        this.icon = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName(classes.scrubbingIcon)[0];
+        this.ripple = (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName(classes.scrubbingRippleLeft)[0];
+        this.text = (_c = this.containerElement) === null || _c === void 0 ? void 0 : _c.getElementsByClassName(classes.scrubbingText)[0];
+    }
+    registerListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+    }
+    unregisterListener() {
+        if (!this.containerElement)
+            return;
+        this.containerElement.onclick = () => { };
+    }
+    handleContainerClick(event) {
+        const { apiPlayer } = this;
+        event.preventDefault();
+        event.stopPropagation();
+        const evt = event;
+        if (evt) {
+            if (evt.pointerType === 'touch') {
+                this.counter++;
+                if (this.counter >= 2) {
+                    this.show();
+                }
+                if (this.timerId)
+                    clearTimeout(this.timerId);
+                this.timerId = null;
+                this.timerId = self.setTimeout(() => {
+                    if (this.counter - 1 !== 0) {
+                        const timeStep = apiPlayer.getCurrentTime() - (this.counter - 1) * 10;
+                        this.counter = 0;
+                        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                        this.hidden();
+                        if (timeStep > 0) {
+                            apiPlayer.setCurrentTime(timeStep);
+                        }
+                        else {
+                            apiPlayer.setCurrentTime(0);
+                        }
+                    }
+                }, 300);
+                if (this.timerIdScrubbing)
+                    clearTimeout(this.timerIdScrubbing);
+                this.timerIdScrubbing = self.setTimeout(() => {
+                    this.counter = 0;
+                }, 500);
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                if (this.counter - 1 !== 0) {
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                        seeking: true,
+                        time: apiPlayer.getCurrentTime() - (this.counter - 1) * 10,
+                        type: type_1.ETypeScrubbing.REWIND,
+                    });
+                }
+            }
+        }
+    }
+    show() {
+        if (this.ripple) {
+            this.ripple.classList.add(this.classes.scrubbingRippleLeftEnable);
+        }
+        if (this.text) {
+            this.text.innerHTML = `${String((this.counter - 1) * 10)} s`;
+        }
+        if (this.icon) {
+            this.icon.classList.add(this.classes.scrubbingIconEnable);
+        }
+    }
+    hidden() {
+        if (this.ripple) {
+            this.ripple.classList.remove(this.classes.scrubbingRippleLeftEnable);
+        }
+        if (this.text) {
+            this.text.innerHTML = '';
+        }
+        if (this.icon) {
+            this.icon.classList.remove(this.classes.scrubbingIconEnable);
+        }
+    }
+}
+exports["default"] = ScrubbingRewind;
 
 
 /***/ }),
@@ -3927,6 +4219,9 @@ const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const ButtonPlayPrimary_1 = __importDefault(__webpack_require__(/*! ../../../Components/ButtonPlayPrimary */ "./src/class/Components/ButtonPlayPrimary/index.ts"));
 const SettingsController_1 = __importDefault(__webpack_require__(/*! ./SettingsController */ "./src/class/Containers/ControllerContainer/BodyController/SettingsController/index.ts"));
 const ButtonReplayPrimary_1 = __importDefault(__webpack_require__(/*! ../../../Components/ButtonReplayPrimary */ "./src/class/Components/ButtonReplayPrimary/index.ts"));
+const ButtonPausePrimary_1 = __importDefault(__webpack_require__(/*! ../../../Components/ButtonPausePrimary */ "./src/class/Components/ButtonPausePrimary/index.ts"));
+const ScrubbingForward_1 = __importDefault(__webpack_require__(/*! ../../../Components/ScrubbingForward */ "./src/class/Components/ScrubbingForward/index.ts"));
+const ScrubbingRewind_1 = __importDefault(__webpack_require__(/*! ../../../Components/ScrubbingRewind */ "./src/class/Components/ScrubbingRewind/index.ts"));
 class BodyController extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
@@ -3943,39 +4238,73 @@ class BodyController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
+        this.buttonReplayPrimary = new ButtonReplayPrimary_1.default({
+            id: ids.smButtonReplayPrimary,
+            classes,
+            apiPlayer,
+            ids,
+        });
         this.settingsController = new SettingsController_1.default({
             id: ids.smSettingsContainer,
             classes,
             apiPlayer,
             ids,
         });
+        this.buttonPausePrimary = new ButtonPausePrimary_1.default({
+            id: ids.smButtonPausePrimary,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.scrubbingForward = new ScrubbingForward_1.default({
+            id: ids.smScrubbingForward,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.scrubbingRewind = new ScrubbingRewind_1.default({
+            id: ids.smScrubbingRewind,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.handleEventPlay = this.handleEventPlay.bind(this);
+        this.handleEventPause = this.handleEventPause.bind(this);
+        this.handleEventEnded = this.handleEventEnded.bind(this);
+        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
             const { classes, ids } = this;
             const htmlString = `
-      <div class=${classes.buttonPrimary} id=${ids.smButtonPlayPrimary}></div>
-      <div class=${classes.buttonPrimary} id=${ids.smButtonReplayPrimary}></div>
-      <div class=${classes.settingsContainer} id=${ids.smSettingsContainer} tabindex="0"></div>`;
+      <div class="${classes.scrubbingRewind}" id="${ids.smScrubbingRewind}"></div>
+      <div class="${classes.bodyControllerCenter}">
+        <div class="${classes.buttonPrimary}" id="${ids.smButtonPlayPrimary}"></div>
+        <div class="${classes.buttonPrimary}" id="${ids.smButtonPausePrimary}"></div>
+        <div class="${classes.buttonPrimary}" id="${ids.smButtonReplayPrimary}"></div>
+      </div>
+      <div class="${classes.scrubbingForward}" id="${ids.smScrubbingForward}"></div>
+      <div class="${classes.settingsContainer}" id="${ids.smSettingsContainer}" tabindex="0"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
-    }
-    destroy() {
-        this.settingsController.destroy();
     }
     registerListener() {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
     handleEventPlay() {
         if (this.buttonPlayPrimary) {
             this.buttonPlayPrimary.hide();
+        }
+        if (this.buttonReplayPrimary) {
+            this.buttonReplayPrimary.hide();
         }
         if (this.buttonReplayPrimary) {
             this.buttonReplayPrimary.hide();
@@ -3985,6 +4314,9 @@ class BodyController extends BaseComponent_1.default {
         if (this.buttonPlayPrimary) {
             this.buttonPlayPrimary.show();
         }
+        if (this.buttonPausePrimary) {
+            this.buttonPausePrimary.hide();
+        }
         if (this.buttonReplayPrimary) {
             this.buttonReplayPrimary.hide();
         }
@@ -3993,9 +4325,102 @@ class BodyController extends BaseComponent_1.default {
         if (this.buttonPlayPrimary) {
             this.buttonPlayPrimary.hide();
         }
+        if (this.buttonPausePrimary) {
+            this.buttonPausePrimary.hide();
+        }
         if (this.buttonReplayPrimary) {
             this.buttonReplayPrimary.show();
         }
+    }
+    handleEvtSeeking(e, data) {
+        console.log(data);
+        if (data.seeking === false) {
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+    }
+    show() {
+        const { apiPlayer } = this;
+        if (apiPlayer.isEnded()) {
+            if (this.buttonPlayPrimary) {
+                this.buttonPlayPrimary.hide();
+            }
+            if (this.buttonPausePrimary) {
+                this.buttonPausePrimary.hide();
+            }
+            if (this.buttonReplayPrimary) {
+                this.buttonReplayPrimary.show();
+            }
+        }
+        else {
+            if (apiPlayer.isPlay()) {
+                if (this.buttonPlayPrimary) {
+                    this.buttonPlayPrimary.hide();
+                }
+                if (this.buttonPausePrimary) {
+                    this.buttonPausePrimary.show();
+                }
+                if (this.buttonReplayPrimary) {
+                    this.buttonReplayPrimary.hide();
+                }
+            }
+            else {
+                if (this.buttonPlayPrimary) {
+                    this.buttonPlayPrimary.show();
+                }
+                if (this.buttonPausePrimary) {
+                    this.buttonPausePrimary.hide();
+                }
+                if (this.buttonReplayPrimary) {
+                    this.buttonReplayPrimary.hide();
+                }
+            }
+        }
+    }
+    hidden() {
+        const { apiPlayer } = this;
+        if (apiPlayer.isEnded()) {
+            if (this.buttonPlayPrimary) {
+                this.buttonPlayPrimary.hide();
+            }
+            if (this.buttonPausePrimary) {
+                this.buttonPausePrimary.hide();
+            }
+            if (this.buttonReplayPrimary) {
+                this.buttonReplayPrimary.show();
+            }
+        }
+        else {
+            if (apiPlayer.isPlay()) {
+                if (this.buttonPlayPrimary) {
+                    this.buttonPlayPrimary.hide();
+                }
+                if (this.buttonPausePrimary) {
+                    this.buttonPausePrimary.hide();
+                }
+                if (this.buttonReplayPrimary) {
+                    this.buttonReplayPrimary.hide();
+                }
+            }
+            else {
+                if (this.buttonPlayPrimary) {
+                    this.buttonPlayPrimary.show();
+                }
+                if (this.buttonPausePrimary) {
+                    this.buttonPausePrimary.hide();
+                }
+                if (this.buttonReplayPrimary) {
+                    this.buttonReplayPrimary.hide();
+                }
+            }
+        }
+    }
+    destroy() {
+        this.settingsController.destroy();
     }
 }
 exports["default"] = BodyController;
@@ -4021,6 +4446,7 @@ class SeekBarController extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
+        this.duration = 0;
         this.progressBuffer = new ProgressBuffer({
             id: ids.smProgressBuffer,
             classes,
@@ -4039,6 +4465,10 @@ class SeekBarController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
+        this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
+        this.handleEventProgress = this.handleEventProgress.bind(this);
+        this.handleEventLoaded = this.handleEventLoaded.bind(this);
+        this.handleEventSeeking = this.handleEventSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -4055,7 +4485,8 @@ class SeekBarController extends BaseComponent_1.default {
     registerListener() {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
         if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = (e) => {
                 this.handleEventClick(e);
@@ -4112,7 +4543,8 @@ class SeekBarController extends BaseComponent_1.default {
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventTimeLoaded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
         if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = () => { };
         }
@@ -4146,27 +4578,43 @@ class SeekBarController extends BaseComponent_1.default {
         }
     }
     handleEventTimeUpdate() {
-        const progress = this.apiPlayer.getProgress();
+        const progress = this.apiPlayer.getCurrentTime();
         if (!Number.isNaN(progress)) {
             if (this.progressBar) {
-                this.progressBar.updateSliderHighlight(progress);
+                this.progressBar.updateSliderHighlight((progress / this.duration) * 100);
             }
             if (this.progressThumb) {
-                this.progressThumb.updateSliderHighlight(progress);
+                this.progressThumb.updateSliderHighlight((progress / this.duration) * 100);
             }
         }
     }
-    handleEventTimeLoaded() {
-        const progress = this.apiPlayer.getProgress();
+    handleEventLoaded() {
+        this.duration = this.apiPlayer.getDuration();
         if (this.progressBar) {
-            this.progressBar.updateSliderHighlight(progress);
+            this.progressBar.updateSliderHighlight(0);
         }
         const bufferedProgress = this.apiPlayer.getBuffering();
         if (this.progressBuffer) {
             this.progressBuffer.updateSliderHighlight(bufferedProgress);
         }
         if (this.progressThumb) {
-            this.progressThumb.updateSliderHighlight(progress);
+            this.progressThumb.updateSliderHighlight(0);
+        }
+    }
+    handleEventSeeking(e, data) {
+        if (data.seeking) {
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+            const timeStep = data.time;
+            if (this.progressBar) {
+                console.log('run+++++', (timeStep / this.duration) * 100);
+                this.progressBar.updateSliderHighlight((timeStep / this.duration) * 100);
+            }
+            if (this.progressThumb) {
+                this.progressThumb.updateSliderHighlight((timeStep / this.duration) * 100);
+            }
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         }
     }
 }
@@ -4179,8 +4627,8 @@ class ProgressBuffer extends BaseComponent_1.default {
         var _a;
         (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-width-progress-buffer', `0%`);
     }
-    updateSliderHighlight(volume) {
-        const percentage = volume;
+    updateSliderHighlight(value) {
+        const percentage = value;
         const inputVolRangeEle = document.getElementById(this.ids.smProgressBuffer);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
     }
@@ -4197,8 +4645,8 @@ class ProgressBar extends BaseComponent_1.default {
         var _a;
         (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-width-progress-bar', `0%`);
     }
-    updateSliderHighlight(volume) {
-        const percentage = volume;
+    updateSliderHighlight(value) {
+        const percentage = value;
         const inputVolRangeEle = document.getElementById(this.ids.smProgressBar);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
     }
@@ -4215,8 +4663,8 @@ class ProgressThumb extends BaseComponent_1.default {
         var _a;
         (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.style.setProperty('--highlight-left-progress-thumb', `0%`);
     }
-    updateSliderHighlight(volume) {
-        const percentage = volume;
+    updateSliderHighlight(value) {
+        const percentage = value;
         const inputVolRangeEle = document.getElementById(this.ids.smProgressThumb);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
     }
@@ -4261,13 +4709,16 @@ class TimeBarContainer extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
+        this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
+        this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
+        this.handleEventSeeking = this.handleEventSeeking.bind(this);
     }
     render() {
         const { classes } = this;
         if (this.containerElement) {
             if (this.containerElement) {
-                const htmlString = `<div class=${classes.taskbarTimeCurrent} id=${this.ids.smTimeCurrent}></div>
-        <div class=${classes.taskbarTimeDuration} id=${this.ids.smTimeDuration}></div>`;
+                const htmlString = `<div class="${classes.taskbarTimeCurrent}" id="${this.ids.smTimeCurrent}"></div>
+        <div class="${classes.taskbarTimeDuration}" id="${this.ids.smTimeDuration}"></div>`;
                 this.containerElement.innerHTML = htmlString;
             }
         }
@@ -4280,6 +4731,7 @@ class TimeBarContainer extends BaseComponent_1.default {
         }
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -4287,6 +4739,7 @@ class TimeBarContainer extends BaseComponent_1.default {
         }
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
     }
     handleEventClick(event) {
         if (this.currentTime) {
@@ -4303,6 +4756,18 @@ class TimeBarContainer extends BaseComponent_1.default {
     handleEventLoadMetaData() {
         if (this.timeDuration) {
             this.timeDuration.render();
+        }
+    }
+    handleEventSeeking(e, data) {
+        if (data.seeking) {
+            const timeStep = data.time;
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+            if (this.currentTime) {
+                this.currentTime.update(timeStep);
+            }
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         }
     }
     hide() {
@@ -4655,6 +5120,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const SeekBarController_1 = __importDefault(__webpack_require__(/*! ./SeekBarController */ "./src/class/Containers/ControllerContainer/FooterController/SeekBarController/index.ts"));
 const TaskbarController_1 = __importDefault(__webpack_require__(/*! ./TaskbarController */ "./src/class/Containers/ControllerContainer/FooterController/TaskbarController/index.ts"));
 class FooterController extends BaseComponent_1.default {
@@ -4662,10 +5128,6 @@ class FooterController extends BaseComponent_1.default {
         const { classes, apiPlayer, ids } = props;
         super(props);
         this.isInside = null;
-        this.handelEventClick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        };
         this.seekBarController = new SeekBarController_1.default({
             id: ids.smSeekBarController,
             classes,
@@ -4678,6 +5140,8 @@ class FooterController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
+        this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
+        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -4697,6 +5161,8 @@ class FooterController extends BaseComponent_1.default {
             this.containerElement.ontouchstart = () => this.handelOnmouseover();
             this.containerElement.ontouchend = () => this.handelOnmouseout();
         }
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -4717,6 +5183,19 @@ class FooterController extends BaseComponent_1.default {
     }
     handelOnmouseout() {
         this.isInside = false;
+    }
+    handelEventClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    handleEvtSeeking(e, data) {
+        // console.log('handleEvtSeeking', { e, data });
+    }
+    handleEvtScrubbing(e, data) {
+        // console.log('handleEvtScrubbing', { e, data });
+        if (data.counter >= 2) {
+            // console.log('ádas');
+        }
     }
     hidden() {
         if (this.containerElement) {
@@ -4817,49 +5296,13 @@ class ControllerContainer extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
-        this.handleOnMouseMover = () => {
-            if (this.footerController) {
-                if (this.timerId) {
-                    clearTimeout(this.timerId);
-                }
-                this.footerController.show();
-                this.timerId = self.setInterval(() => {
-                    var _a;
-                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
-                        if (this.footerController) {
-                            this.footerController.hidden();
-                        }
-                        if (this.headController) {
-                            this.headController.hidden();
-                        }
-                    }
-                }, 3000);
-            }
-            if (this.headController) {
-                this.headController.show();
-            }
-        };
-        this.handleClickContainer = (event) => {
-            var _a;
-            const { apiPlayer } = this;
-            event.preventDefault();
-            event.stopPropagation();
-            if (((_a = document.getElementById(this.ids.smSettingsContainer)) === null || _a === void 0 ? void 0 : _a.getAttribute('data-state')) === type_1.ESettingPanelDataState.BLUR) {
-                return;
-            }
-            if (apiPlayer.isPlay()) {
-                apiPlayer.pause();
-                // this.handleOnMouseover();
-            }
-            else {
-                apiPlayer.play();
-            }
-        };
         this.headController = new HeadController_1.default({ id: ids.smHeadController, classes, apiPlayer, ids });
         this.bodyController = new BodyController_1.default({ id: ids.smBodyController, classes, apiPlayer, ids });
         this.footerController = new FooterController_1.default({ id: ids.smFooterController, classes, apiPlayer, ids });
-        this.show = this.show.bind(this);
-        this.hide = this.hide.bind(this);
+        this.handleEvtLoaded = this.handleEvtLoaded.bind(this);
+        this.handleEvtError = this.handleEvtError.bind(this);
+        this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
+        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
     }
     render() {
         const { classes, ids } = this;
@@ -4876,16 +5319,18 @@ class ControllerContainer extends BaseComponent_1.default {
         if (this.containerElement) {
             this.containerElement.onclick = (event) => this.handleClickContainer(event);
             // mouse
-            this.containerElement.onmousemove = () => this.handleOnMouseMover();
-            this.containerElement.onmouseover = () => this.handleOnMouseover();
-            this.containerElement.onmouseout = () => this.handleOnMouseout();
+            this.containerElement.onmousemove = (e) => this.handleOnMouseMover(e);
+            this.containerElement.onmouseover = (e) => this.handleOnMouseover(e);
+            this.containerElement.onmouseout = (e) => this.handleOnMouseout(e);
             //touch
-            this.containerElement.ontouchmove = () => this.handleOnMouseMover();
-            this.containerElement.ontouchstart = () => this.handleOnMouseover();
-            this.containerElement.ontouchend = () => this.handleOnMouseout();
+            this.containerElement.ontouchmove = (e) => this.handleOnMouseMover(e);
+            this.containerElement.ontouchstart = (e) => this.handleOnMouseover(e);
+            this.containerElement.ontouchend = (e) => this.handleOnMouseout(e);
         }
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.show, this);
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.hide, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEvtLoaded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.handleEvtError, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -4899,57 +5344,200 @@ class ControllerContainer extends BaseComponent_1.default {
             this.containerElement.ontouchend = () => { };
             this.containerElement.ontouchmove = () => { };
         }
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.show, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.hide, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEvtLoaded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.handleEvtError, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
-    handleOnMouseover() {
-        if (this.timerId) {
-            clearTimeout(this.timerId);
-        }
-        if (this.footerController) {
-            this.footerController.show();
-        }
-        if (this.headController) {
-            this.headController.show();
-        }
-        this.timerId = self.setInterval(() => {
-            var _a;
+    handleOnMouseMover(e) {
+        if (e.type === 'mousemove') {
             if (this.footerController) {
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                    this.timerId = null;
+                }
+                this.footerController.show();
+                this.timerId = self.setTimeout(() => {
+                    var _a;
+                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                        if (this.headController) {
+                            this.headController.hidden();
+                        }
+                    }
+                }, 3000);
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+        }
+    }
+    handleOnMouseover(e) {
+        if (e.type === 'mouseover') {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+            if (this.footerController) {
+                this.footerController.show();
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+            this.timerId = self.setTimeout(() => {
+                var _a;
+                if (this.footerController) {
+                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                    }
+                }
+                if (this.headController) {
+                    this.headController.hidden();
+                }
+            }, 3000);
+        }
+    }
+    handleOnMouseout(e) {
+        if (e.type === 'mouseout') {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+            this.timerId = self.setTimeout(() => {
+                var _a;
                 if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
                     if (this.footerController) {
                         this.footerController.hidden();
                     }
                 }
-            }
-            if (this.headController) {
-                this.headController.hidden();
-            }
-        }, 3000);
-    }
-    handleOnMouseout() {
-        if (this.timerId) {
-            clearTimeout(this.timerId);
+                if (this.headController) {
+                    this.headController.hidden();
+                }
+            }, 3000);
         }
-        this.timerId = self.setTimeout(() => {
-            var _a;
-            if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
-                if (this.footerController) {
-                    this.footerController.hidden();
+        // else {
+        //   if (this.counter >= 1) {
+        //     console.log('aaaaaaaaaaaaaaaa', this.counter);
+        //     if (this.timerId) {
+        //       clearTimeout(this.timerId);
+        //     }
+        //     console.log('run');
+        //     if (this.footerController) {
+        //       console.log('runaaaaa');
+        //       this.footerController.hidden();
+        //     }
+        //     if (this.headController) {
+        //       this.headController.hidden();
+        //     }
+        //   }
+        // }
+    }
+    handleClickContainer(event) {
+        var _a;
+        const evt = event;
+        if (evt) {
+            const { apiPlayer } = this;
+            event.preventDefault();
+            event.stopPropagation();
+            if (evt.pointerType === 'mouse') {
+                if (((_a = document.getElementById(this.ids.smSettingsContainer)) === null || _a === void 0 ? void 0 : _a.getAttribute('data-state')) ===
+                    type_1.ESettingPanelDataState.BLUR) {
+                    return;
+                }
+                if (apiPlayer.isPlay()) {
+                    apiPlayer.pause();
+                }
+                else {
+                    apiPlayer.play();
                 }
             }
-            if (this.headController) {
-                this.headController.hidden();
+            else {
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                    this.timerId = null;
+                }
+                if (this.footerController) {
+                    this.footerController.show();
+                }
+                if (this.headController) {
+                    this.headController.show();
+                }
+                if (this.bodyController) {
+                    this.bodyController.show();
+                }
+                this.timerId = self.setTimeout(() => {
+                    var _a;
+                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                    }
+                    if (this.headController) {
+                        this.headController.hidden();
+                    }
+                    if (this.bodyController) {
+                        this.bodyController.hidden();
+                    }
+                }, 3000);
             }
-        }, 3000);
+        }
     }
-    hide() {
+    handleEvtLoaded() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.controllerContentEnable);
+        }
+    }
+    handleEvtError() {
         if (this.containerElement) {
             this.containerElement.className = this.classes.controllerContent;
         }
     }
-    show() {
-        if (this.containerElement) {
-            this.containerElement.classList.add(this.classes.controllerContentEnable);
+    handleEvtSeeking(e, data) {
+        if (data.seeking === false) {
+            // this.counter = 0;
+        }
+    }
+    handleEvtScrubbing(e, data) {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+        if (data.counter > 1) {
+            if (this.footerController) {
+                this.footerController.hidden();
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+            if (this.bodyController) {
+                this.bodyController.hidden();
+            }
+        }
+        else {
+            if (this.footerController) {
+                this.footerController.show();
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+            if (this.bodyController) {
+                this.bodyController.show();
+            }
+            this.timerId = self.setTimeout(() => {
+                if (this.footerController) {
+                    this.footerController.hidden();
+                }
+                if (this.headController) {
+                    this.headController.hidden();
+                }
+                if (this.bodyController) {
+                    this.bodyController.hidden();
+                }
+            }, 3000);
         }
     }
 }
@@ -5381,6 +5969,13 @@ class SmApiPlayer {
         }
         // Kiểm tra nếu phần tử hiện tại đang ở chế độ toàn màn hình
     }
+    isEnded() {
+        const { video } = this;
+        if (video) {
+            return video.ended;
+        }
+        return false;
+    }
     set playbackRate(value) {
         if (this.video) {
             this.video.playbackRate = value;
@@ -5548,6 +6143,14 @@ class SmApiPlayer {
                         });
                     }
                     break;
+                // case EEVentName.SEEKING:
+                //   if (video) {
+                //     video.addEventListener(evtName, (data: any) => {
+                //       const dataConvert = convertDataEventSeeking(data);
+                //       clb.call(context, dataConvert);
+                //     });
+                //   }
+                //   break;
                 default:
                     break;
             }
@@ -5662,6 +6265,14 @@ const convertDataEventPlaying = (data) => {
     };
 };
 exports.convertDataEventPlaying = convertDataEventPlaying;
+// export const convertDataEventSeeking = (data: any) => {
+//   return {
+//     event: EEVentName.SEEKING,
+//     data: {
+//       ...data,
+//     },
+//   };
+// };
 
 
 /***/ }),
@@ -5710,1000 +6321,20 @@ exports["default"] = SmEventEmitter;
 
 /***/ }),
 
-/***/ "./src/constants.ts":
-/*!**************************!*\
-  !*** ./src/constants.ts ***!
-  \**************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
-exports.versionDef = '4.10.0';
-var ETypePlayer;
-(function (ETypePlayer) {
-    ETypePlayer["SHAKA"] = "SHAKA";
-    ETypePlayer["VIDEOSJS"] = "VIDEOSJS";
-})(ETypePlayer || (exports.ETypePlayer = ETypePlayer = {}));
-exports.typePlayerDef = ETypePlayer.SHAKA;
-exports.primaryColorDef = '#F58220';
-
-
-/***/ }),
-
-/***/ "./src/icons.ts":
-/*!**********************!*\
-  !*** ./src/icons.ts ***!
-  \**********************/
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.playbackSpeedIcon = exports.checkedIcon = exports.chevronRightIcon = exports.chevronLeftIcon = exports.qualityIcon = exports.exitFullScreenIcon = exports.settingIcon = exports.subtitleIcon = exports.speedIcon = exports.fullScreenIcon = exports.muteIcon = exports.volumeIcon = exports.pausedIcon = exports.forwardIcon = exports.replyIcon = exports.infoIcon = exports.loadingIcon = exports.playIcon = void 0;
-exports.playIcon = `
-   <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
-  </svg>`;
-exports.loadingIcon = `
-  <div  class="sm-loading-ss">
-    <div class="sm-ss-loading sm-ss-medium">
-      <div class="sm-ss-container">
-        <div class="sm-ss-top">
-          <div class="sm-ss-circle"></div>
-        </div>
-      </div>
-      <div class="sm-ss-container">
-        <div class="sm-ss-bottom">
-          <div class="sm-ss-circle"></div>
-        </div>
-      </div>
-    </div>
-  </div> `;
-exports.infoIcon = `
-    <svg
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="currentcolor"
-  >
-    <path d="M12 4C13.5 4.02083 14.8438 4.38542 16.0312 5.09375C17.2396 5.80208 18.1979 6.76042 18.9062 7.96875C19.6146 9.15625 19.9792 10.5 20 12C19.9792 13.5 19.6146 14.8438 18.9062 16.0312C18.1979 17.2396 17.2396 18.1979 16.0312 18.9062C14.8438 19.6146 13.5 19.9792 12 20C10.5 19.9792 9.15625 19.6146 7.96875 18.9062C6.76042 18.1979 5.80208 17.2396 5.09375 16.0312C4.38542 14.8438 4.02083 13.5 4 12C4.02083 10.5 4.38542 9.15625 5.09375 7.96875C5.80208 6.76042 6.76042 5.80208 7.96875 5.09375C9.15625 4.38542 10.5 4.02083 12 4ZM12 8C11.7083 8 11.4688 8.09375 11.2812 8.28125C11.0938 8.46875 11 8.70833 11 9C11 9.29167 11.0938 9.53125 11.2812 9.71875C11.4688 9.90625 11.7083 10 12 10C12.2917 10 12.5312 9.90625 12.7188 9.71875C12.9062 9.53125 13 9.29167 13 9C13 8.70833 12.9062 8.46875 12.7188 8.28125C12.5312 8.09375 12.2917 8 12 8ZM13.25 16C13.7083 15.9583 13.9583 15.7083 14 15.25C13.9583 14.7917 13.7083 14.5417 13.25 14.5H12.75V11.75C12.7083 11.2917 12.4583 11.0417 12 11H11C10.5417 11.0417 10.2917 11.2917 10.25 11.75C10.2917 12.2083 10.5417 12.4583 11 12.5H11.25V14.5H10.75C10.2917 14.5417 10.0417 14.7917 10 15.25C10.0417 15.7083 10.2917 15.9583 10.75 16H13.25Z" />
-  </svg>`;
-exports.replyIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M5.5 11H5.25C4.8125 11 4.5 10.6875 4.5 10.25V6.25C4.5 5.96875 4.65625 5.6875 4.9375 5.5625C5.21875 5.46875 5.5625 5.53125 5.78125 5.71875L7.0625 7.03125C9.8125 4.34375 14.2188 4.34375 16.9375 7.0625C19.6562 9.8125 19.6562 14.2188 16.9375 16.9688C14.1875 19.6875 9.78125 19.6875 7.03125 16.9688C6.65625 16.5625 6.65625 15.9375 7.03125 15.5625C7.4375 15.1562 8.0625 15.1562 8.4375 15.5625C10.4062 17.5 13.5625 17.5 15.5312 15.5625C17.4688 13.5938 17.4688 10.4375 15.5312 8.46875C13.5938 6.53125 10.4375 6.53125 8.46875 8.4375L9.78125 9.71875C9.96875 9.9375 10.0312 10.2812 9.9375 10.5625C9.8125 10.8438 9.53125 11 9.25 11H5.5Z"/>
-  </svg>`;
-exports.forwardIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-    >
-    <path d="M18.4688 11H14.75C14.4375 11 14.1562 10.8438 14.0312 10.5625C13.9375 10.2812 14 9.9375 14.2188 9.71875L15.5 8.4375C13.5312 6.53125 10.4062 6.53125 8.4375 8.46875C6.5 10.4375 6.5 13.5938 8.4375 15.5625C10.4062 17.5 13.5625 17.5 15.5312 15.5625C15.9062 15.1562 16.5312 15.1562 16.9375 15.5625C17.3125 15.9375 17.3125 16.5625 16.9375 16.9688C14.1875 19.6875 9.78125 19.6875 7.03125 16.9688C4.3125 14.2188 4.3125 9.8125 7.03125 7.0625C9.75 4.34375 14.1562 4.34375 16.9062 7.03125L18.2188 5.71875C18.4062 5.53125 18.75 5.46875 19.0312 5.5625C19.3125 5.6875 19.5 5.96875 19.5 6.25V10.25C19.5 10.6875 19.1562 11 18.75 11H18.4688Z"/>
-  </svg>`;
-exports.pausedIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-    >
-    <path d="M15.5 5.96875C15.9167 5.98958 16.2708 6.14583 16.5625 6.4375C16.8333 6.72917 16.9792 7.08333 17 7.5V16.5C16.9792 16.9167 16.8333 17.2708 16.5625 17.5625C16.2708 17.8333 15.9167 17.9792 15.5 18L14.5 17.9375C14.0833 17.9375 13.7292 17.7917 13.4375 17.5C13.1667 17.2292 13.0208 16.875 13 16.4375V7.4375C13.0208 7.02083 13.1667 6.67708 13.4375 6.40625C13.7292 6.13542 14.0833 5.98958 14.5 5.96875H15.5ZM9.5 5.96875C9.91667 5.98958 10.2708 6.14583 10.5625 6.4375C10.8333 6.72917 10.9792 7.08333 11 7.5V16.5C10.9792 16.9167 10.8333 17.2708 10.5625 17.5625C10.2708 17.8333 9.91667 17.9792 9.5 18H8.5C8.08333 18 7.72917 17.8542 7.4375 17.5625C7.16667 17.2708 7.02083 16.9062 7 16.4688V7.46875C7.02083 7.05208 7.16667 6.69792 7.4375 6.40625C7.72917 6.13542 8.08333 5.98958 8.5 5.96875H9.5Z"/>
-  </svg>`;
-exports.volumeIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-    >
-    <path d="M13.4062 5.09375C13.75 5.25 14 5.625 14 6V18C14 18.4062 13.75 18.75 13.4062 18.9375C13.0312 19.0938 12.625 19.0312 12.3125 18.75L8.09375 15H6C4.875 15 4 14.125 4 13V11C4 9.90625 4.875 9 6 9H8.09375L12.3125 5.28125C12.625 5 13.0312 4.9375 13.4062 5.09375ZM18.7812 7.34375C20.125 8.46875 21 10.125 21 12C21 13.9062 20.125 15.5625 18.7812 16.6562C18.4375 16.9375 17.9688 16.875 17.7188 16.5625C17.4375 16.25 17.5 15.7812 17.8125 15.5C18.8438 14.6875 19.5 13.4375 19.5 12C19.5 10.5938 18.8438 9.34375 17.8125 8.53125C17.5 8.25 17.4688 7.78125 17.7188 7.46875C17.9688 7.15625 18.4375 7.09375 18.7812 7.34375ZM16.875 9.6875C17.5625 10.25 18 11.0625 18 12C18 12.9688 17.5625 13.7812 16.875 14.3438C16.5625 14.5938 16.0938 14.5625 15.8125 14.2188C15.5625 13.9062 15.625 13.4375 15.9375 13.1875C16.2812 12.9062 16.5 12.4688 16.5 12C16.5 11.5312 16.2812 11.125 15.9375 10.8438C15.625 10.5938 15.5625 10.125 15.8125 9.78125C16.0938 9.46875 16.5625 9.4375 16.875 9.6875Z"/>
-  </svg>`;
-exports.muteIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-    >
-   <path d="M3.1875 4.1875L8.15625 8.0625L11.3125 5.28125C11.625 5 12.0312 4.9375 12.4062 5.09375C12.75 5.25 13 5.625 13 6V11.8438L14.8125 13.2812C14.8438 13.25 14.9062 13.2188 14.9375 13.1875C15.2812 12.9062 15.5 12.4688 15.5 12C15.5 11.5312 15.2812 11.125 14.9375 10.8438C14.625 10.5938 14.5625 10.125 14.8125 9.78125C15.0938 9.46875 15.5625 9.4375 15.875 9.6875C16.5625 10.25 17 11.0625 17 12C17 12.875 16.625 13.6875 16.0312 14.2188L17.2188 15.1562C18 14.3438 18.5 13.25 18.5 12C18.5 10.5938 17.8438 9.34375 16.8125 8.53125C16.5 8.25 16.4375 7.78125 16.7188 7.46875C16.9688 7.15625 17.4375 7.09375 17.7812 7.34375C19.125 8.46875 20 10.125 20 12C20 13.5938 19.375 15 18.4062 16.0938L21.6875 18.6875C22.0312 18.9375 22.0938 19.4062 21.8125 19.7188C21.5625 20.0625 21.0938 20.125 20.7812 19.8438L2.28125 5.34375C1.9375 5.09375 1.875 4.625 2.15625 4.3125C2.40625 3.96875 2.875 3.90625 3.1875 4.1875ZM13 15.6875V18C13 18.4062 12.75 18.7812 12.4062 18.9375C12.0312 19.0938 11.625 19.0312 11.3125 18.75L7.09375 15H5C3.875 15 3 14.125 3 13V11C3 10.0625 3.65625 9.25 4.5625 9.0625L13 15.6875Z"/>
-   </svg>`;
-exports.fullScreenIcon = `
- <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M9.25 5C9.65625 5 10 5.34375 10 5.75C10 6.1875 9.65625 6.5 9.25 6.5H6.5V9.25C6.5 9.6875 6.15625 10 5.75 10C5.3125 10 5 9.6875 5 9.25V5.75C5 5.34375 5.3125 5 5.75 5H9.25ZM5 14.75C5 14.3438 5.3125 14 5.75 14C6.15625 14 6.5 14.3438 6.5 14.75V17.5H9.25C9.65625 17.5 10 17.8438 10 18.25C10 18.6875 9.65625 19 9.25 19H5.75C5.3125 19 5 18.6875 5 18.25V14.75ZM18.25 5C18.6562 5 19 5.34375 19 5.75V9.25C19 9.6875 18.6562 10 18.25 10C17.8125 10 17.5 9.6875 17.5 9.25V6.5H14.75C14.3125 6.5 14 6.1875 14 5.75C14 5.34375 14.3125 5 14.75 5H18.25ZM17.5 14.75C17.5 14.3438 17.8125 14 18.25 14C18.6562 14 19 14.3438 19 14.75V18.25C19 18.6875 18.6562 19 18.25 19H14.75C14.3125 19 14 18.6875 14 18.25C14 17.8438 14.3125 17.5 14.75 17.5H17.5V14.75Z"/>
-  </svg>`;
-exports.speedIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
-  </svg>`;
-exports.subtitleIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-  <path d="M5 6.5C4.71875 6.5 4.5 6.75 4.5 7V17C4.5 17.2812 4.71875 17.5 5 17.5H19C19.25 17.5 19.5 17.2812 19.5 17V7C19.5 6.75 19.25 6.5 19 6.5H5ZM3 7C3 5.90625 3.875 5 5 5H19C20.0938 5 21 5.90625 21 7V17C21 18.125 20.0938 19 19 19H5C3.875 19 3 18.125 3 17V7ZM6.75 11.5H12.25C12.6562 11.5 13 11.8438 13 12.25C13 12.6875 12.6562 13 12.25 13H6.75C6.3125 13 6 12.6875 6 12.25C6 11.8438 6.3125 11.5 6.75 11.5ZM14.75 11.5H17.25C17.6562 11.5 18 11.8438 18 12.25C18 12.6875 17.6562 13 17.25 13H14.75C14.3125 13 14 12.6875 14 12.25C14 11.8438 14.3125 11.5 14.75 11.5ZM6.75 14.5H9.25C9.65625 14.5 10 14.8438 10 15.25C10 15.6875 9.65625 16 9.25 16H6.75C6.3125 16 6 15.6875 6 15.25C6 14.8438 6.3125 14.5 6.75 14.5ZM11.75 14.5H17.25C17.6562 14.5 18 14.8438 18 15.25C18 15.6875 17.6562 16 17.25 16H11.75C11.3125 16 11 15.6875 11 15.25C11 14.8438 11.3125 14.5 11.75 14.5Z"/>
-  </svg>`;
-exports.settingIcon = `
-   <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 4C12.5312 4 13.0312 4.0625 13.5312 4.15625C13.7812 4.21875 14.2188 4.34375 14.4688 4.78125C14.5312 4.90625 14.5625 5.03125 14.5938 5.15625L14.9062 6.375C14.9375 6.53125 15.25 6.71875 15.4375 6.65625L16.625 6.3125C16.75 6.28125 16.875 6.25 17 6.25C17.5 6.25 17.8438 6.5625 18 6.75C18.6875 7.53125 19.2188 8.4375 19.5625 9.4375C19.6562 9.6875 19.75 10.125 19.4688 10.5312C19.4062 10.6562 19.3125 10.75 19.2188 10.8438L18.3438 11.7188C18.1875 11.8438 18.1875 12.1875 18.3438 12.3125L19.2188 13.1875C19.3125 13.2812 19.4062 13.375 19.4688 13.5C19.7188 13.9062 19.625 14.3438 19.5625 14.5938C19.2188 15.5938 18.6875 16.5 18 17.2812C17.8438 17.4688 17.5 17.7812 17 17.7812C16.875 17.7812 16.75 17.75 16.625 17.7188L15.4375 17.3438C15.25 17.3125 14.9375 17.4688 14.9062 17.6562L14.5938 18.875C14.5625 19 14.5312 19.125 14.4688 19.25C14.2188 19.6875 13.7812 19.8125 13.5312 19.875C13.0312 19.9688 12.5312 20 12 20C11.4688 20 10.9375 19.9688 10.4375 19.875C10.1875 19.8125 9.75 19.6875 9.5 19.25C9.4375 19.125 9.40625 19 9.375 18.875L9.0625 17.6562C9.03125 17.4688 8.71875 17.3125 8.5625 17.3438L7.375 17.7188C7.25 17.75 7.09375 17.75 6.96875 17.7812C6.46875 17.7812 6.125 17.4688 5.96875 17.2812C5.28125 16.5 4.75 15.5938 4.40625 14.5938C4.34375 14.3438 4.25 13.9062 4.5 13.4688C4.5625 13.375 4.65625 13.25 4.75 13.1562L5.65625 12.3125C5.78125 12.1875 5.78125 11.8438 5.65625 11.7188L4.75 10.8438C4.65625 10.75 4.5625 10.6562 4.5 10.5312C4.25 10.125 4.34375 9.6875 4.40625 9.4375C4.75 8.4375 5.28125 7.53125 5.96875 6.75C6.125 6.5625 6.46875 6.25 6.96875 6.25C7.09375 6.25 7.25 6.28125 7.375 6.3125L8.5625 6.65625C8.71875 6.71875 9.03125 6.53125 9.0625 6.375L9.375 5.15625C9.40625 5.03125 9.4375 4.90625 9.5 4.78125C9.75 4.34375 10.1875 4.21875 10.4375 4.15625C10.9375 4.0625 11.4688 4 12 4ZM10.8125 5.625L10.5312 6.71875C10.2812 7.71875 9.125 8.40625 8.125 8.125L7.03125 7.78125C6.53125 8.40625 6.125 9.09375 5.84375 9.84375L6.6875 10.625C7.4375 11.3438 7.4375 12.6875 6.6875 13.4062L5.84375 14.1875C6.125 14.9375 6.53125 15.625 7.03125 16.25L8.125 15.9062C9.125 15.625 10.2812 16.3125 10.5312 17.3125L10.8125 18.4062C11.5625 18.5625 12.4062 18.5625 13.1875 18.4062L13.4375 17.3125C13.6875 16.3125 14.8438 15.625 15.8438 15.9062L16.9375 16.25C17.4375 15.625 17.8438 14.9375 18.125 14.1875L17.3125 13.4062C16.5625 12.6875 16.5625 11.3438 17.3125 10.625L18.125 9.84375C17.8438 9.09375 17.4375 8.40625 16.9375 7.78125L15.8438 8.125C14.875 8.40625 13.6875 7.71875 13.4375 6.71875L13.1875 5.625C12.4062 5.46875 11.5625 5.46875 10.8125 5.625ZM10.5 12C10.5 12.5625 10.7812 13.0312 11.25 13.3125C11.6875 13.5938 12.2812 13.5938 12.75 13.3125C13.1875 13.0312 13.5 12.5625 13.5 12C13.5 11.4688 13.1875 11 12.75 10.7188C12.2812 10.4375 11.6875 10.4375 11.25 10.7188C10.7812 11 10.5 11.4688 10.5 12ZM12 15C10.9062 15 9.9375 14.4375 9.375 13.5C8.84375 12.5938 8.84375 11.4375 9.375 10.5C9.9375 9.59375 10.9062 9 12 9C13.0625 9 14.0312 9.59375 14.5938 10.5C15.125 11.4375 15.125 12.5938 14.5938 13.5C14.0312 14.4375 13.0625 15 12 15Z"/>
-  </svg>`;
-exports.exitFullScreenIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M10 5.75V9.25C10 9.6875 9.65625 10 9.25 10H5.75C5.3125 10 5 9.6875 5 9.25C5 8.84375 5.3125 8.5 5.75 8.5H8.5V5.75C8.5 5.34375 8.8125 5 9.25 5C9.65625 5 10 5.34375 10 5.75ZM5.75 14H9.25C9.65625 14 10 14.3438 10 14.75V18.25C10 18.6875 9.65625 19 9.25 19C8.8125 19 8.5 18.6875 8.5 18.25V15.5H5.75C5.3125 15.5 5 15.1875 5 14.75C5 14.3438 5.3125 14 5.75 14ZM15.5 5.75V8.5H18.25C18.6562 8.5 19 8.84375 19 9.25C19 9.6875 18.6562 10 18.25 10H14.75C14.3125 10 14 9.6875 14 9.25V5.75C14 5.34375 14.3125 5 14.75 5C15.1562 5 15.5 5.34375 15.5 5.75ZM14.75 14H18.25C18.6562 14 19 14.3438 19 14.75C19 15.1875 18.6562 15.5 18.25 15.5H15.5V18.25C15.5 18.6875 15.1562 19 14.75 19C14.3125 19 14 18.6875 14 18.25V14.75C14 14.3438 14.3125 14 14.75 14Z"/>
-  </svg>`;
-exports.qualityIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M6.5 14.5C5.9375 14.5 5.5 14.9688 5.5 15.5C5.5 16.0625 5.9375 16.5 6.5 16.5C7.03125 16.5 7.5 16.0625 7.5 15.5C7.5 14.9688 7.03125 14.5 6.5 14.5ZM8.875 14.75H19.25C19.6562 14.75 20 15.0938 20 15.5C20 15.9375 19.6562 16.25 19.25 16.25H8.875C8.5625 17.2812 7.59375 18 6.5 18C5.09375 18 4 16.9062 4 15.5C4 14.125 5.09375 13 6.5 13C7.59375 13 8.5625 13.75 8.875 14.75ZM16.5 8.5C16.5 9.0625 16.9375 9.5 17.5 9.5C18.0312 9.5 18.5 9.0625 18.5 8.5C18.5 7.96875 18.0312 7.5 17.5 7.5C16.9375 7.5 16.5 7.96875 16.5 8.5ZM15.0938 7.75C15.4062 6.75 16.375 6 17.5 6C18.875 6 20 7.125 20 8.5C20 9.90625 18.875 11 17.5 11C16.375 11 15.4062 10.2812 15.0938 9.25H4.75C4.3125 9.25 4 8.9375 4 8.5C4 8.09375 4.3125 7.75 4.75 7.75H15.0938Z"/>
-  </svg>`;
-exports.chevronLeftIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M14 19C13.7292 19 13.4896 18.9062 13.2812 18.7188L7.28125 12.7188C7.09375 12.5104 7 12.2708 7 12C7 11.7292 7.09375 11.4896 7.28125 11.2812L13.2812 5.28125C13.4896 5.09375 13.7292 5 14 5C14.2708 5 14.5104 5.09375 14.7188 5.28125C14.9062 5.48958 15 5.72917 15 6C15 6.27083 14.9062 6.51042 14.7188 6.71875L9.40625 12L14.7188 17.2812C14.9062 17.4896 15 17.7292 15 18C15 18.2708 14.9062 18.5104 14.7188 18.7188C14.5104 18.9062 14.2708 19 14 19Z"/>
-  </svg>`;
-exports.chevronRightIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M16.5312 11.4688C16.8125 11.7812 16.8125 12.25 16.5312 12.5312L10.5312 18.5312C10.2188 18.8438 9.75 18.8438 9.46875 18.5312C9.15625 18.25 9.15625 17.7812 9.46875 17.5L14.9375 12.0312L9.46875 6.53125C9.15625 6.25 9.15625 5.78125 9.46875 5.5C9.75 5.1875 10.2188 5.1875 10.5 5.5L16.5312 11.4688Z"/>
-  </svg>`;
-exports.checkedIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M18.7188 7.28125C18.9062 7.48958 19 7.72917 19 8C19 8.27083 18.9062 8.51042 18.7188 8.71875L10.7188 16.7188C10.5104 16.9062 10.2708 17 10 17C9.72917 17 9.48958 16.9062 9.28125 16.7188L5.28125 12.7188C5.09375 12.5104 5 12.2708 5 12C5 11.7292 5.09375 11.4896 5.28125 11.2812C5.48958 11.0938 5.72917 11 6 11C6.27083 11 6.51042 11.0938 6.71875 11.2812L9.96875 14.5938L17.2812 7.28125C17.4896 7.09375 17.7292 7 18 7C18.2708 7 18.5104 7.09375 18.7188 7.28125Z"
-    />
-  </svg>`;
-exports.playbackSpeedIcon = `
-  <svg
-    viewBox="0 0 24 24"
-    fill="currentcolor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
-  </svg>
-`;
-
-
-/***/ }),
-
-/***/ "./src/index.ts":
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deviceType = void 0;
-const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
-const ErrorContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts"));
-const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
-const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
-const style_1 = __importDefault(__webpack_require__(/*! ./style */ "./src/style.ts"));
-const SmApiPlayer_1 = __importDefault(__webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts"));
-__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
-__webpack_require__(/*! ./index.css */ "./src/index.css");
-const deviceType = (0, services_1.detectDevice)();
-exports.deviceType = deviceType;
-const hasTouch = (0, services_1.checkHasTouch)();
-const classes = (0, style_1.default)({
-    deviceType,
-});
-class SmUIControls {
-    constructor(props) {
-        this.isInit = false;
-        const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
-        const VideoContainerElement = document.getElementById(idVideoContainer);
-        this.ids = (0, services_1.generateIIds)();
-        if (!this.isInit) {
-            this.isInit = true;
-            if (VideoContainerElement) {
-                VideoContainerElement.style.position = 'relative';
-                VideoContainerElement.style.overflow = 'hidden';
-                const smControllerContainerEle = document.createElement('div');
-                smControllerContainerEle.className = classes.container;
-                smControllerContainerEle.id = this.ids.smControllerContainer;
-                smControllerContainerEle.innerHTML = `
-          <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
-          <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
-          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
-                VideoContainerElement.appendChild(smControllerContainerEle);
-                this.controllerContainer = new ControllerContainer_1.default({
-                    id: this.ids.smControllerContent,
-                    classes,
-                    videoInfo,
-                    apiPlayer,
-                    ids: this.ids,
-                });
-                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
-                this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
-            }
-        }
-    }
-    on(event, listener, context) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
-        return;
-    }
-    once(event, listener, context) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
-        return;
-    }
-    removeAllListeners(event) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.removeAllListeners(event);
-        return;
-    }
-    off(event, listener, context, once) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.off(event, listener, context, once);
-        return;
-    }
-    listeners(event) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listeners(event);
-        return [];
-    }
-    emit(event, name, eventObject) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.emit(event, name, eventObject);
-        return true;
-    }
-    trigger(event, eventObject) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.trigger(event, eventObject);
-        return true;
-    }
-    listenerCount(event) {
-        var _a;
-        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listenerCount(event);
-        return 0;
-    }
-    destroy() {
-        var _a, _b, _c;
-        (_a = this.controllerContainer) === null || _a === void 0 ? void 0 : _a.destroy();
-        (_b = this.errorContainer) === null || _b === void 0 ? void 0 : _b.destroy();
-        (_c = this.loadingContainer) === null || _c === void 0 ? void 0 : _c.destroy();
-        this.apiPlayer = null;
-        this.isInit = false;
-    }
-}
-exports["default"] = SmUIControls;
-
-
-/***/ }),
-
-/***/ "./src/services.ts":
-/*!*************************!*\
-  !*** ./src/services.ts ***!
-  \*************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkHasTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
-const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
-const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
-const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
-const createElementFromHTML = (htmlString) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlString.trim();
-    return tempDiv.firstChild;
-};
-exports.createElementFromHTML = createElementFromHTML;
-const generateIIds = () => {
-    return {
-        smControllerContainer: (0, nanoid_1.nanoid)(4),
-        smControllerContent: (0, nanoid_1.nanoid)(4),
-        smLoading: (0, nanoid_1.nanoid)(4),
-        smError: (0, nanoid_1.nanoid)(4),
-        smHeadController: (0, nanoid_1.nanoid)(4),
-        smBodyController: (0, nanoid_1.nanoid)(4),
-        smButtonPlayPrimary: (0, nanoid_1.nanoid)(4),
-        smSettingsContainer: (0, nanoid_1.nanoid)(4),
-        smSettingsContainerMask: (0, nanoid_1.nanoid)(4),
-        smSettingDetailTitle: (0, nanoid_1.nanoid)(4),
-        smSettingDetailGoBackIcon: (0, nanoid_1.nanoid)(4),
-        smSettingPlaybackSpeedItemPrefix: (0, nanoid_1.nanoid)(4),
-        smSettingQualityItemPrefix: (0, nanoid_1.nanoid)(4),
-        smFooterController: (0, nanoid_1.nanoid)(4),
-        smTaskbarController: (0, nanoid_1.nanoid)(4),
-        smSeekBarController: (0, nanoid_1.nanoid)(4),
-        smButtonFullScreen: (0, nanoid_1.nanoid)(4),
-        smButtonPlaySecondary: (0, nanoid_1.nanoid)(4),
-        smButtonPauseSecondary: (0, nanoid_1.nanoid)(4),
-        smButtonForward: (0, nanoid_1.nanoid)(4),
-        smButtonExitFullScreen: (0, nanoid_1.nanoid)(4),
-        smButtonVolume: (0, nanoid_1.nanoid)(4),
-        smButtonMute: (0, nanoid_1.nanoid)(4),
-        smSelectVolumeRangeContainer: (0, nanoid_1.nanoid)(4),
-        smSelectVolumeRange: (0, nanoid_1.nanoid)(4),
-        smInputVolumeRange: (0, nanoid_1.nanoid)(4),
-        smVolumeContainer: (0, nanoid_1.nanoid)(4),
-        smPlaybackSpeed: (0, nanoid_1.nanoid)(4),
-        smQuality: (0, nanoid_1.nanoid)(4),
-        smSettingIconButton: (0, nanoid_1.nanoid)(4),
-        smTimeBarContainer: (0, nanoid_1.nanoid)(4),
-        smTaskbarLiveStream: (0, nanoid_1.nanoid)(4),
-        smTimeCurrent: (0, nanoid_1.nanoid)(4),
-        smTimeDuration: (0, nanoid_1.nanoid)(4),
-        smProgressBar: (0, nanoid_1.nanoid)(4),
-        smProgressThumb: (0, nanoid_1.nanoid)(4),
-        smProgressBarContainer: (0, nanoid_1.nanoid)(4),
-        smProgressBuffer: (0, nanoid_1.nanoid)(4),
-        smButtonReplaySecondary: (0, nanoid_1.nanoid)(4),
-        smButtonReplayPrimary: (0, nanoid_1.nanoid)(4),
-        smSettingIconButtonMobile: (0, nanoid_1.nanoid)(4),
-    };
-};
-exports.generateIIds = generateIIds;
-const detectDevice = () => {
-    try {
-        const parser = new ua_parser_js_1.UAParser();
-        const result = parser.getResult();
-        const deviceType = result.device.type;
-        if (deviceType) {
-            if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
-                return type_1.EDeviceType.MOBILE;
-            }
-            else if (deviceType.toLowerCase() === type_1.EDeviceType.TABLET) {
-                return type_1.EDeviceType.TABLET;
-            }
-            else {
-                return type_1.EDeviceType.DESKTOP;
-            }
-        }
-        return type_1.EDeviceType.DESKTOP;
-    }
-    catch (error) {
-        return type_1.EDeviceType.DESKTOP;
-    }
-};
-exports.detectDevice = detectDevice;
-const detectDeviceMobile = (deviceType) => {
-    return deviceType === type_1.EDeviceType.MOBILE;
-};
-exports.detectDeviceMobile = detectDeviceMobile;
-const checkHasTouch = () => {
-    return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
-};
-exports.checkHasTouch = checkHasTouch;
-
-
-/***/ }),
-
-/***/ "./src/style.ts":
-/*!**********************!*\
-  !*** ./src/style.ts ***!
-  \**********************/
+/***/ "./src/class/Styles/desktop.style.ts":
+/*!*******************************************!*\
+  !*** ./src/class/Styles/desktop.style.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const css_1 = __webpack_require__(/*! @emotion/css */ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js");
-const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
-const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-const generateStyles = (props) => {
+const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
+const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
+const generateStylesDesktop = (props) => {
     const { primaryColor = constants_1.primaryColorDef, logo, deviceType } = props || {};
-    if (deviceType === type_1.EDeviceType.MOBILE) {
-        return {
-            container: (0, css_1.css) `
-        font-family: 'Be Vietnam Pro';
-        background: black;
-        color: white;
-        -webkit-user-select: none; /* Safari */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-        user-select: none;
-        background: transparent;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        overflow: hidden;
-        color: white;
-        ::-webkit-scrollbar,
-        *::-webkit-scrollbar {
-          width: 6px;
-        }
-        ::-webkit-scrollbar-track,
-        *::-webkit-scrollbar-track {
-          border-radius: 8px;
-          background-color: transparent;
-          border: 1px solid transparent;
-        }
-
-        ::-webkit-scrollbar-thumb,
-        *::-webkit-scrollbar-thumb {
-          border-radius: 8px;
-          background-color: #616161;
-        }
-      `,
-            controllerContent: (0, css_1.css) `
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        z-index: 1;
-        display: none;
-        background: transparent;
-      `,
-            controllerContentEnable: (0, css_1.css) `
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      `,
-            headController: (0, css_1.css) `
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-        width: 100%;
-        position: absolute;
-        right: 0;
-        left: 0;
-        box-sizing: border-box;
-        display: flex;
-        height: 72px;
-        top: -72px;
-        gap: 0px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        overflow: hidden;
-        transition: 0.3s ease-in-out;
-        padding: 12px 12px;
-        z-index: 1;
-      `,
-            headControllerEnable: (0, css_1.css) `
-        top: 0;
-        transition: 0.3s ease-in-out;
-      `,
-            smSettingIconButtonMB: (0, css_1.css) `
-        cursor: pointer;
-        width: 36px;
-        height: 36px;
-        display: block !important;
-      `,
-            bodyController: (0, css_1.css) `
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        background: transparent;
-        width: 100%;
-        flex: 1;
-        box-sizing: border-box;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `,
-            settingsContainer: (0, css_1.css) `
-        position: absolute;
-        bottom: 80px; // bottomHeight
-        right: 12px;
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.64);
-        backdrop-filter: blur(25px);
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-        max-height: calc(86% - 80px);
-        overflow: hidden;
-        outline: none;
-        border: none;
-        box-shadow: none;
-      `,
-            settingsContainerMask: (0, css_1.css) `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: transparent;
-        pointer-events: none;
-      `,
-            settingsContent: (0, css_1.css) `
-        min-width: 300px;
-        max-width: 320px;
-        overflow-y: auto;
-      `,
-            settingHeader: (0, css_1.css) `
-        box-sizing: border-box;
-        height: 48px;
-        display: flex;
-        padding: 8px 12px;
-        align-items: center;
-        gap: 12px;
-        align-self: stretch;
-        background-color: rgba(255, 255, 255, 0.04);
-      `,
-            settingItem: (0, css_1.css) `
-        height: 48px;
-        box-sizing: border-box;
-        display: flex;
-        padding: 8px 12px;
-        align-items: center;
-        gap: 12px;
-      `,
-            settingDetailItem: (0, css_1.css) `
-        height: 40px;
-        box-sizing: border-box;
-        display: flex;
-        padding: 8px 12px;
-        align-items: center;
-        gap: 12px;
-      `,
-            settingItemDivider: (0, css_1.css) `
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-      `,
-            settingTitleActive: (0, css_1.css) `
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-      `,
-            settingTitleNormal: (0, css_1.css) `
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 20px;
-      `,
-            settingItemIcon: (0, css_1.css) `
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
-      `,
-            settingItemIconSecondary: (0, css_1.css) `
-        width: 20px;
-        height: 20px;
-        color: rgba(255, 255, 255, 0.64);
-      `,
-            settingItemTitle: (0, css_1.css) `
-        flex: 1;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        cursor: pointer;
-      `,
-            settingItemValue: (0, css_1.css) `
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
-        word-wrap: normal;
-        text-overflow: ellipsis;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 20px;
-      `,
-            buttonPrimary: (0, css_1.css) `
-        color: white;
-        background: rgba(0, 0, 0, 0.48);
-        backdrop-filter: blur(25px);
-        border-radius: 50%;
-        width: 56px;
-        height: 56px;
-        cursor: pointer;
-        color: white;
-        display: none;
-        padding: 8px;
-        box-sizing: border-box;
-        cursor: pointer;
-      `,
-            buttonPrimaryEnable: (0, css_1.css) `
-        animation: zoomIn;
-        animation-duration: 0.2s;
-        display: block;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-      `,
-            footerController: (0, css_1.css) `
-        background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-        width: 100%;
-        height: 72px;
-        bottom: -72px;
-        gap: 0px;
-        flex-direction: column-reverse;
-        position: absolute;
-        right: 0;
-        left: 0;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        overflow: hidden;
-        transition: 0.3s ease-in-out;
-        padding: 12px;
-      `,
-            footerControllerEnable: (0, css_1.css) `
-        bottom: 0px;
-        transition: 0.3s ease-in-out;
-      `,
-            seekBarController: (0, css_1.css) `
-        width: 100%;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 12px;
-      `,
-            progressContainer: (0, css_1.css) `
-        height: 8px;
-        width: 100%;
-        position: relative;
-        background-color: rgba(255, 255, 255, 0.24);
-        border-radius: 8px;
-        cursor: pointer;
-      `,
-            progressBuffer: (0, css_1.css) `
-        position: absolute;
-        width: var(--highlight-width-progress-buffer);
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.5);
-        border-radius: 8px;
-        z-index: 1;
-      `,
-            progressBar: (0, css_1.css) `
-        position: absolute;
-        width: var(--highlight-width-progress-bar);
-        height: 100%;
-        background-color: ${primaryColor};
-        opacity: 1;
-        z-index: 1;
-        border-radius: 8px 0px 0px 8px;
-      `,
-            progressThumb: (0, css_1.css) `
-        position: absolute;
-        left: calc(var(--highlight-left-progress-thumb) - 8px);
-        height: 16px;
-        width: 16px;
-        background-color: ${primaryColor};
-        opacity: 1;
-        border-radius: 50%;
-        top: -3.5px;
-        cursor: pointer;
-        z-index: 1;
-      `,
-            taskbarController: (0, css_1.css) `
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      `,
-            taskbarGroup: (0, css_1.css) `
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-      `,
-            taskbarGroupBtn: (0, css_1.css) `
-        width: 36px;
-        height: 36px;
-        padding: 2px;
-        box-sizing: border-box;
-        display: none;
-        border-radius: 50%;
-        cursor: pointer;
-      `,
-            taskbarIconActive: (0, css_1.css) `
-        color: ${primaryColor};
-        rotate: 45deg;
-        transition: rotate 1s;
-      `,
-            taskbarGroupBtnMobile: (0, css_1.css) `
-        display: none !important;
-      `,
-            taskbarIconInactive: (0, css_1.css) `
-        rotate: 0;
-        transition: rotate 1s;
-      `,
-            taskbarGroupBtnEnable: (0, css_1.css) `
-        display: flex;
-        display: block;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      `,
-            taskbarVolumeContainer: (0, css_1.css) `
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0px;
-      `,
-            taskbarTimeBarContainer: (0, css_1.css) `
-        display: none;
-      `,
-            taskbarTimeBarContainerEnable: (0, css_1.css) `
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: -12px;
-        font-size: 12px;
-        gap: 4px;
-      `,
-            taskbarLiveStream: (0, css_1.css) `
-        display: none;
-      `,
-            liveStreamDot: (0, css_1.css) `
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: red;
-        margin-right: 4px;
-        box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
-      `,
-            taskbarLiveStreamEnable: (0, css_1.css) `
-        display: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: -12px;
-        font-size: 16px;
-        line-height: 24px;
-        gap: 4px;
-      `,
-            taskbarTimeCurrent: (0, css_1.css) `
-        font-size: 16px;
-        line-height: 24px;
-      `,
-            taskbarTimeDuration: (0, css_1.css) `
-        color: rgba(255, 255, 255, 0.64);
-        font-size: 16px;
-        line-height: 24px;
-      `,
-            smSelectVolumeRangeContainer: (0, css_1.css) `
-        display: none;
-        padding-left: 0px;
-        width: 0px;
-        height: 0px;
-        overflow: hidden;
-        transition: 0.2s ease-in-out;
-      `,
-            smSelectVolumeRangeContainerEnable: (0, css_1.css) `
-        width: 100px;
-        height: 6px;
-        overflow: visible;
-        transition: 0.2s ease-in-out;
-      `,
-            taskbarVolumeSlider: (0, css_1.css) `
-        margin-left: 2px;
-        height: 4px;
-        width: 100%;
-        -webkit-appearance: none;
-        appearance: none;
-        cursor: pointer;
-        outline: none;
-        border-radius: 15px;
-        background: linear-gradient(
-          to right,
-          white var(--highlight-width),
-          rgba(255, 255, 255, 0.24) var(--highlight-width)
-        );
-        ::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          /* creating a custom design */
-          height: 16px;
-          width: 16px;
-          background-color: white;
-          border-radius: 50%;
-          border: none;
-        }
-        ::-moz-range-thumb {
-          height: 16px;
-          width: 16px;
-          background-color: white;
-          border-radius: 50%;
-          border: none;
-        }
-      `,
-            loadingContainer: (0, css_1.css) `
-        background: rgb(119 119 119 / 50%);
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        overflow: hidden;
-        display: none;
-        .sm-loading-ss {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 0;
-          margin: 0;
-        }
-
-        .sm-loading-ss .sm-ss-loading {
-          display: inline-block;
-          position: absolute;
-          margin: auto;
-          text-align: center;
-          top: 50%;
-          left: 50%;
-          -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-container {
-          width: 200px;
-          height: 100px;
-          overflow: hidden;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-circle {
-          position: absolute;
-          width: 100%;
-          height: 200%;
-          border-radius: 50%;
-          overflow: hidden;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-top {
-          -webkit-transform-origin: 50% 100%;
-          transform-origin: 50% 100%;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
-          box-shadow: inset 0 0 0 10px ${primaryColor};
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
-          -webkit-transform-origin: 50% 0;
-          transform-origin: 50% 0;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
-          box-shadow: inset 0 0 0 10px ${primaryColor};
-          top: -100px !important;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
-          width: 96px;
-          height: 48px;
-          margin-left: -48px;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
-          box-shadow: inset 0 0 0 6px ${primaryColor};
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
-          box-shadow: inset 0 0 0 6px ${primaryColor};
-          top: -48px !important;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
-          width: 24px;
-          height: 12px;
-          margin-left: -12px;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
-          box-shadow: inset 0 0 0 2px ${primaryColor};
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
-          box-shadow: inset 0 0 0 2px ${primaryColor};
-          top: -12px !important;
-        }
-
-        .sm-loading-ss .sm-ss-medium .sm-ss-container {
-          width: 48px;
-          height: 24px;
-          margin-left: -12px;
-        }
-
-        .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
-          box-shadow: inset 0 0 0 3px ${primaryColor};
-        }
-
-        .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
-          box-shadow: inset 0 0 0 3px ${primaryColor};
-          top: -24px !important;
-        }
-
-        .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
-        .sm-loading-ss .sm-ss-loading .sm-ss-top {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          -webkit-animation: 0.8s linear infinite ssrotate;
-          animation: 0.8s linear infinite ssrotate;
-        }
-      `,
-            loadingContainerEnable: (0, css_1.css) `
-        display: flex !important;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-      `,
-            errorContainer: (0, css_1.css) `
-        background: rgb(119 119 119 / 50%);
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        z-index: 0;
-        overflow: hidden;
-        display: none;
-      `,
-            errorContainerEnable: (0, css_1.css) `
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 40px;
-      `,
-            errorIconWrap: (0, css_1.css) `
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `,
-            flexColumnStartCenter: (0, css_1.css) `
-        display: column;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-      `,
-        };
-    }
     return {
         container: (0, css_1.css) `
       font-family: 'Be Vietnam Pro';
@@ -6721,6 +6352,10 @@ const generateStyles = (props) => {
       left: 0;
       overflow: hidden;
       color: white;
+      *:focus {
+        outline: none;
+      }
+      -webkit-tap-highlight-color: transparent;
       ::-webkit-scrollbar,
       *::-webkit-scrollbar {
         width: 6px;
@@ -6731,7 +6366,6 @@ const generateStyles = (props) => {
         background-color: transparent;
         border: 1px solid transparent;
       }
-
       ::-webkit-scrollbar-thumb,
       *::-webkit-scrollbar-thumb {
         border-radius: 8px;
@@ -6755,33 +6389,41 @@ const generateStyles = (props) => {
       justify-content: center;
     `,
         headController: (0, css_1.css) `
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 88px;
+      height: 72px;
       position: absolute;
-      top: -88px;
+      top: -72px;
       right: 0;
       left: 0;
       box-sizing: border-box;
-      display: none;
+      display: flex;
+      gap: 0px;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       z-index: 1;
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
-        display: flex;
-        height: 72px;
-        bottom: -72px;
+        height: 0px;
+        top: 0;
         gap: 0px;
+        display: none;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       }
     `,
         headControllerEnable: (0, css_1.css) `
       top: 0;
       transition: 0.3s ease-in-out;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        height: 72px;
+        top: 0;
+        gap: 0px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+        display: flex;
+      }
     `,
         smSettingIconButtonMB: (0, css_1.css) `
       cursor: pointer;
@@ -6811,7 +6453,7 @@ const generateStyles = (props) => {
     `,
         settingsContainer: (0, css_1.css) `
       position: absolute;
-      bottom: 80px; // bottomHeight
+      bottom: 80px;
       right: 12px;
       border-radius: 8px;
       background-color: rgba(0, 0, 0, 0.64);
@@ -6839,6 +6481,81 @@ const generateStyles = (props) => {
       max-width: 320px;
       overflow-y: auto;
     `,
+        bodyControllerCenter: (0, css_1.css) `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    `,
+        scrubbingContainer: (0, css_1.css) `
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `,
+        scrubbingForward: (0, css_1.css) `
+      position: relative;
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+        scrubbingRippleRight: (0, css_1.css) `
+      display: none;
+      position: absolute;
+      top: -30px;
+      right: 0;
+      bottom: -30px;
+      left: 20%;
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    `,
+        scrubbingRippleRightEnable: (0, css_1.css) `
+      display: block;
+    `,
+        scrubbingRewind: (0, css_1.css) `
+      position: relative;
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+        scrubbingRippleLeft: (0, css_1.css) `
+      display: none;
+      position: absolute;
+      top: -30px;
+      left: 0;
+      bottom: -30px;
+      right: 20%;
+      border-top-right-radius: 50%;
+      border-bottom-right-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    `,
+        scrubbingRippleLeftEnable: (0, css_1.css) `
+      display: block !important;
+    `,
+        scrubbingIcon: (0, css_1.css) `
+      width: 0px;
+      height: 0px;
+      z-index: 1;
+    `,
+        scrubbingIconEnable: (0, css_1.css) `
+      display: block;
+      width: 24px;
+      height: 24px;
+    `,
+        scrubbingText: (0, css_1.css) `
+      z-index: 1;
+      text-shadow: 1px 1px rgba(255, 255, 255, 0.2);
+    `,
         settingHeader: (0, css_1.css) `
       box-sizing: border-box;
       height: 48px;
@@ -6856,7 +6573,6 @@ const generateStyles = (props) => {
       padding: 8px 12px;
       align-items: center;
       gap: 12px;
-
       &:hover {
         background-color: rgba(255, 255, 255, 0.08);
         cursor: pointer;
@@ -6947,7 +6663,7 @@ const generateStyles = (props) => {
       justify-content: center;
     `,
         footerController: (0, css_1.css) `
-      background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
       height: 88px;
       position: absolute;
@@ -6964,15 +6680,25 @@ const generateStyles = (props) => {
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
-        height: 72px;
-        bottom: -72px;
+        height: 0px;
+        bottom: 0;
         gap: 0px;
         flex-direction: column-reverse;
+        display: none;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       }
     `,
         footerControllerEnable: (0, css_1.css) `
       bottom: 0px;
       transition: 0.3s ease-in-out;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        height: 88px;
+        bottom: 0;
+        gap: 0px;
+        flex-direction: column-reverse;
+        display: flex;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+      }
     `,
         seekBarController: (0, css_1.css) `
       width: 100%;
@@ -7188,7 +6914,7 @@ const generateStyles = (props) => {
       }
     `,
         loadingContainer: (0, css_1.css) `
-      background: rgb(119 119 119 / 50%);
+      // background: rgb(119 119 119 / 50%);
       position: absolute;
       top: 0;
       bottom: 0;
@@ -7196,6 +6922,7 @@ const generateStyles = (props) => {
       left: 0;
       overflow: hidden;
       display: none;
+      pointer-events: none;
       .sm-loading-ss {
         position: absolute;
         top: 0;
@@ -7268,7 +6995,6 @@ const generateStyles = (props) => {
       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
         width: 24px;
         height: 12px;
-        margin-left: -12px;
       }
 
       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
@@ -7283,7 +7009,6 @@ const generateStyles = (props) => {
       .sm-loading-ss .sm-ss-medium .sm-ss-container {
         width: 48px;
         height: 24px;
-        margin-left: -12px;
       }
 
       .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
@@ -7310,6 +7035,7 @@ const generateStyles = (props) => {
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      z-index: 1;
     `,
         errorContainer: (0, css_1.css) `
       background: rgb(119 119 119 / 50%);
@@ -7344,7 +7070,1148 @@ const generateStyles = (props) => {
     `,
     };
 };
+exports["default"] = generateStylesDesktop;
+
+
+/***/ }),
+
+/***/ "./src/class/Styles/mobile.style.ts":
+/*!******************************************!*\
+  !*** ./src/class/Styles/mobile.style.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const css_1 = __webpack_require__(/*! @emotion/css */ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js");
+const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
+const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
+const generateStylesMobile = (props) => {
+    const { primaryColor = constants_1.primaryColorDef, logo, deviceType } = props || {};
+    return {
+        container: (0, css_1.css) `
+      font-family: 'Be Vietnam Pro';
+      background: black;
+      color: white;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none;
+      background: transparent;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      overflow: hidden;
+      color: white;
+      *:focus {
+        outline: none;
+      }
+      -webkit-tap-highlight-color: transparent;
+      ::-webkit-scrollbar,
+      *::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track,
+      *::-webkit-scrollbar-track {
+        border-radius: 8px;
+        background-color: transparent;
+        border: 1px solid transparent;
+      }
+      ::-webkit-scrollbar-thumb,
+      *::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        background-color: #616161;
+      }
+    `,
+        controllerContent: (0, css_1.css) `
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 1;
+      display: none;
+      background: transparent;
+    `,
+        controllerContentEnable: (0, css_1.css) `
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `,
+        headController: (0, css_1.css) `
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+      width: 100%;
+      height: 72px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      box-sizing: border-box;
+      display: flex;
+      gap: 0px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+      transition: 0.3s ease-in-out;
+      padding: 12px 12px;
+      z-index: 1;
+      //   @media (max-width: ${type_1.EBreakpoint.SM}px) {
+      //     height: 0px;
+      //     top: 0;
+      //     gap: 0px;
+      //     display: none;
+      //     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+      //   }
+    `,
+        headControllerEnable: (0, css_1.css) `
+      top: 0;
+      transition: 0.3s ease-in-out;
+      @media (max-width: ${type_1.EBreakpoint.SM}px) {
+        height: 72px;
+        // top: 0;
+        // gap: 0px;
+        // background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+        // display: flex;
+      }
+    `,
+        smSettingIconButtonMB: (0, css_1.css) `
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: block !important;
+    `,
+        bodyController: (0, css_1.css) `
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background: transparent;
+      width: 100%;
+      flex: 1;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `,
+        settingsContainer: (0, css_1.css) `
+      position: absolute;
+      bottom: 80px;
+      right: 12px;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.64);
+      backdrop-filter: blur(25px);
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+      max-height: calc(86% - 80px);
+      overflow: hidden;
+      outline: none;
+      border: none;
+      box-shadow: none;
+    `,
+        settingsContainerMask: (0, css_1.css) `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: transparent;
+      pointer-events: none;
+    `,
+        settingsContent: (0, css_1.css) `
+      min-width: 300px;
+      max-width: 320px;
+      overflow-y: auto;
+    `,
+        bodyControllerCenter: (0, css_1.css) `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    `,
+        scrubbingContainer: (0, css_1.css) `
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    `,
+        scrubbingForward: (0, css_1.css) `
+      position: relative;
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+        scrubbingRippleRight: (0, css_1.css) `
+      display: none;
+      position: absolute;
+      top: -30px;
+      right: 0;
+      bottom: -30px;
+      left: 20%;
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    `,
+        scrubbingRippleRightEnable: (0, css_1.css) `
+      display: block;
+    `,
+        scrubbingRewind: (0, css_1.css) `
+      position: relative;
+      flex: 1;
+      height: 100%;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    `,
+        scrubbingRippleLeft: (0, css_1.css) `
+      display: none;
+      position: absolute;
+      top: -30px;
+      left: 0;
+      bottom: -30px;
+      right: 20%;
+      border-top-right-radius: 50%;
+      border-bottom-right-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    `,
+        scrubbingRippleLeftEnable: (0, css_1.css) `
+      display: block !important;
+    `,
+        scrubbingIcon: (0, css_1.css) `
+      width: 0px;
+      height: 0px;
+      z-index: 1;
+    `,
+        scrubbingIconEnable: (0, css_1.css) `
+      display: block;
+      width: 24px;
+      height: 24px;
+    `,
+        scrubbingText: (0, css_1.css) `
+      z-index: 1;
+      text-shadow: 1px 1px rgba(255, 255, 255, 0.2);
+    `,
+        settingHeader: (0, css_1.css) `
+      box-sizing: border-box;
+      height: 48px;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+      align-self: stretch;
+      background-color: rgba(255, 255, 255, 0.04);
+    `,
+        settingItem: (0, css_1.css) `
+      height: 48px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+    `,
+        settingDetailItem: (0, css_1.css) `
+      height: 40px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 8px 12px;
+      align-items: center;
+      gap: 12px;
+    `,
+        settingItemDivider: (0, css_1.css) `
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    `,
+        settingTitleActive: (0, css_1.css) `
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+    `,
+        settingTitleNormal: (0, css_1.css) `
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    `,
+        settingItemIcon: (0, css_1.css) `
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    `,
+        settingItemIconSecondary: (0, css_1.css) `
+      width: 20px;
+      height: 20px;
+      color: rgba(255, 255, 255, 0.64);
+    `,
+        settingItemTitle: (0, css_1.css) `
+      flex: 1;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 20px;
+      cursor: pointer;
+    `,
+        settingItemValue: (0, css_1.css) `
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      word-wrap: normal;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    `,
+        buttonPrimary: (0, css_1.css) `
+      color: white;
+      background: rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(25px);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      color: white;
+      display: none;
+      padding: 8px;
+      box-sizing: border-box;
+      cursor: pointer;
+    `,
+        buttonPrimaryEnable: (0, css_1.css) `
+      animation: zoomIn;
+      animation-duration: 0.2s;
+      display: block;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    `,
+        footerController: (0, css_1.css) `
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+      width: 100%;
+      height: 72px;
+      bottom: 0px;
+      gap: 0px;
+      flex-direction: column-reverse;
+      position: absolute;
+      right: 0;
+      left: 0;
+      box-sizing: border-box;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      overflow: hidden;
+      transition: 0.3s ease-in-out;
+      padding: 12px;
+    `,
+        footerControllerEnable: (0, css_1.css) `
+      height: 72px;
+      display: flex;
+      bottom: 0;
+      transition: 0.3s ease-in-out;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    `,
+        seekBarController: (0, css_1.css) `
+      width: 100%;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    `,
+        progressContainer: (0, css_1.css) `
+      height: 8px;
+      width: 100%;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      cursor: pointer;
+    `,
+        progressBuffer: (0, css_1.css) `
+      position: absolute;
+      width: var(--highlight-width-progress-buffer);
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      z-index: 1;
+    `,
+        progressBar: (0, css_1.css) `
+      position: absolute;
+      width: var(--highlight-width-progress-bar);
+      height: 100%;
+      background-color: ${primaryColor};
+      opacity: 1;
+      z-index: 1;
+      border-radius: 8px 0px 0px 8px;
+    `,
+        progressThumb: (0, css_1.css) `
+      position: absolute;
+      left: calc(var(--highlight-left-progress-thumb) - 8px);
+      height: 16px;
+      width: 16px;
+      background-color: ${primaryColor};
+      opacity: 1;
+      border-radius: 50%;
+      top: -3.5px;
+      cursor: pointer;
+      z-index: 1;
+    `,
+        taskbarController: (0, css_1.css) `
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    `,
+        taskbarGroup: (0, css_1.css) `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    `,
+        taskbarGroupBtn: (0, css_1.css) `
+      width: 36px;
+      height: 36px;
+      padding: 2px;
+      box-sizing: border-box;
+      display: none;
+      border-radius: 50%;
+      cursor: pointer;
+    `,
+        taskbarIconActive: (0, css_1.css) `
+      color: ${primaryColor};
+      rotate: 45deg;
+      transition: rotate 1s;
+    `,
+        taskbarGroupBtnMobile: (0, css_1.css) `
+      display: none !important;
+    `,
+        taskbarIconInactive: (0, css_1.css) `
+      rotate: 0;
+      transition: rotate 1s;
+    `,
+        taskbarGroupBtnEnable: (0, css_1.css) `
+      display: flex;
+      display: block;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    `,
+        taskbarVolumeContainer: (0, css_1.css) `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px;
+    `,
+        taskbarTimeBarContainer: (0, css_1.css) `
+      display: none;
+    `,
+        taskbarTimeBarContainerEnable: (0, css_1.css) `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -12px;
+      font-size: 12px;
+      gap: 4px;
+    `,
+        taskbarLiveStream: (0, css_1.css) `
+      display: none;
+    `,
+        liveStreamDot: (0, css_1.css) `
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: red;
+      margin-right: 4px;
+      box-shadow: 0px 0px 4px 4px rgba(255, 0, 0, 0.2);
+    `,
+        taskbarLiveStreamEnable: (0, css_1.css) `
+      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -12px;
+      font-size: 16px;
+      line-height: 24px;
+      gap: 4px;
+    `,
+        taskbarTimeCurrent: (0, css_1.css) `
+      font-size: 16px;
+      line-height: 24px;
+    `,
+        taskbarTimeDuration: (0, css_1.css) `
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 16px;
+      line-height: 24px;
+    `,
+        smSelectVolumeRangeContainer: (0, css_1.css) `
+      display: none;
+      padding-left: 0px;
+      width: 0px;
+      height: 0px;
+      overflow: hidden;
+      transition: 0.2s ease-in-out;
+    `,
+        smSelectVolumeRangeContainerEnable: (0, css_1.css) `
+      width: 100px;
+      height: 6px;
+      overflow: visible;
+      transition: 0.2s ease-in-out;
+    `,
+        taskbarVolumeSlider: (0, css_1.css) `
+      margin-left: 2px;
+      height: 4px;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+      border-radius: 15px;
+      background: linear-gradient(
+        to right,
+        white var(--highlight-width),
+        rgba(255, 255, 255, 0.24) var(--highlight-width)
+      );
+      ::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        /* creating a custom design */
+        height: 16px;
+        width: 16px;
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+      }
+      ::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+      }
+    `,
+        loadingContainer: (0, css_1.css) `
+      // background: rgb(119 119 119 / 50%);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      overflow: hidden;
+      display: none;
+      pointer-events: none;
+      .sm-loading-ss {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        margin: 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading {
+        display: inline-block;
+        position: absolute;
+        margin: auto;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-container {
+        width: 200px;
+        height: 100px;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-circle {
+        position: absolute;
+        width: 100%;
+        height: 200%;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom {
+        -webkit-transform-origin: 50% 0;
+        transform-origin: 50% 0;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 10px ${primaryColor};
+        top: -100px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-container {
+        width: 96px;
+        height: 48px;
+        margin-left: -48px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-large .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 6px ${primaryColor};
+        top: -48px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
+        width: 24px;
+        height: 12px;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 2px ${primaryColor};
+        top: -12px !important;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-container {
+        width: 48px;
+        height: 24px;
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+      }
+
+      .sm-loading-ss .sm-ss-medium .sm-ss-bottom .sm-ss-circle {
+        box-shadow: inset 0 0 0 3px ${primaryColor};
+        top: -24px !important;
+      }
+
+      .sm-loading-ss .sm-ss-loading .sm-ss-bottom,
+      .sm-loading-ss .sm-ss-loading .sm-ss-top {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        -webkit-animation: 0.8s linear infinite ssrotate;
+        animation: 0.8s linear infinite ssrotate;
+      }
+    `,
+        loadingContainerEnable: (0, css_1.css) `
+      display: flex !important;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    `,
+        errorContainer: (0, css_1.css) `
+      background: rgb(119 119 119 / 50%);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 0;
+      overflow: hidden;
+      display: none;
+    `,
+        errorContainerEnable: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    `,
+        errorIconWrap: (0, css_1.css) `
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `,
+        flexColumnStartCenter: (0, css_1.css) `
+      display: column;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+    `,
+    };
+};
+exports["default"] = generateStylesMobile;
+
+
+/***/ }),
+
+/***/ "./src/class/Styles/style.ts":
+/*!***********************************!*\
+  !*** ./src/class/Styles/style.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
+const mobile_style_1 = __importDefault(__webpack_require__(/*! ./mobile.style */ "./src/class/Styles/mobile.style.ts"));
+const desktop_style_1 = __importDefault(__webpack_require__(/*! ./desktop.style */ "./src/class/Styles/desktop.style.ts"));
+const generateStyles = (props) => {
+    const { deviceType } = props || {};
+    if (deviceType === type_1.EDeviceType.MOBILE) {
+        return (0, mobile_style_1.default)(props);
+    }
+    return (0, desktop_style_1.default)(props);
+};
 exports["default"] = generateStyles;
+
+
+/***/ }),
+
+/***/ "./src/constants.ts":
+/*!**************************!*\
+  !*** ./src/constants.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
+exports.versionDef = '4.10.0';
+var ETypePlayer;
+(function (ETypePlayer) {
+    ETypePlayer["SHAKA"] = "SHAKA";
+    ETypePlayer["VIDEOSJS"] = "VIDEOSJS";
+})(ETypePlayer || (exports.ETypePlayer = ETypePlayer = {}));
+exports.typePlayerDef = ETypePlayer.SHAKA;
+exports.primaryColorDef = '#F58220';
+
+
+/***/ }),
+
+/***/ "./src/icons.ts":
+/*!**********************!*\
+  !*** ./src/icons.ts ***!
+  \**********************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.scrubbingRewindIcon = exports.scrubbingForwardIcon = exports.playbackSpeedIcon = exports.checkedIcon = exports.chevronRightIcon = exports.chevronLeftIcon = exports.qualityIcon = exports.exitFullScreenIcon = exports.settingIcon = exports.subtitleIcon = exports.speedIcon = exports.fullScreenIcon = exports.muteIcon = exports.volumeIcon = exports.pausedIcon = exports.forwardIcon = exports.replyIcon = exports.infoIcon = exports.loadingIcon = exports.playIcon = void 0;
+exports.playIcon = `
+   <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M17.2812 10.7188C17.7396 11.0312 17.9792 11.4583 18 12C17.9792 12.5625 17.7396 12.9792 17.2812 13.25L8.28125 18.75C7.78125 19.0625 7.28125 19.0833 6.78125 18.8125C6.28125 18.5208 6.02083 18.0833 6 17.5V6.5C6.02083 5.91667 6.28125 5.47917 6.78125 5.1875C7.28125 4.91667 7.78125 4.92708 8.28125 5.21875L17.2812 10.7188Z" />
+  </svg>`;
+exports.loadingIcon = `
+  <div  class="sm-loading-ss">
+    <div class="sm-ss-loading sm-ss-medium">
+      <div class="sm-ss-container">
+        <div class="sm-ss-top">
+          <div class="sm-ss-circle"></div>
+        </div>
+      </div>
+      <div class="sm-ss-container">
+        <div class="sm-ss-bottom">
+          <div class="sm-ss-circle"></div>
+        </div>
+      </div>
+    </div>
+  </div> `;
+exports.infoIcon = `
+    <svg
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentcolor"
+  >
+    <path d="M12 4C13.5 4.02083 14.8438 4.38542 16.0312 5.09375C17.2396 5.80208 18.1979 6.76042 18.9062 7.96875C19.6146 9.15625 19.9792 10.5 20 12C19.9792 13.5 19.6146 14.8438 18.9062 16.0312C18.1979 17.2396 17.2396 18.1979 16.0312 18.9062C14.8438 19.6146 13.5 19.9792 12 20C10.5 19.9792 9.15625 19.6146 7.96875 18.9062C6.76042 18.1979 5.80208 17.2396 5.09375 16.0312C4.38542 14.8438 4.02083 13.5 4 12C4.02083 10.5 4.38542 9.15625 5.09375 7.96875C5.80208 6.76042 6.76042 5.80208 7.96875 5.09375C9.15625 4.38542 10.5 4.02083 12 4ZM12 8C11.7083 8 11.4688 8.09375 11.2812 8.28125C11.0938 8.46875 11 8.70833 11 9C11 9.29167 11.0938 9.53125 11.2812 9.71875C11.4688 9.90625 11.7083 10 12 10C12.2917 10 12.5312 9.90625 12.7188 9.71875C12.9062 9.53125 13 9.29167 13 9C13 8.70833 12.9062 8.46875 12.7188 8.28125C12.5312 8.09375 12.2917 8 12 8ZM13.25 16C13.7083 15.9583 13.9583 15.7083 14 15.25C13.9583 14.7917 13.7083 14.5417 13.25 14.5H12.75V11.75C12.7083 11.2917 12.4583 11.0417 12 11H11C10.5417 11.0417 10.2917 11.2917 10.25 11.75C10.2917 12.2083 10.5417 12.4583 11 12.5H11.25V14.5H10.75C10.2917 14.5417 10.0417 14.7917 10 15.25C10.0417 15.7083 10.2917 15.9583 10.75 16H13.25Z" />
+  </svg>`;
+exports.replyIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M5.5 11H5.25C4.8125 11 4.5 10.6875 4.5 10.25V6.25C4.5 5.96875 4.65625 5.6875 4.9375 5.5625C5.21875 5.46875 5.5625 5.53125 5.78125 5.71875L7.0625 7.03125C9.8125 4.34375 14.2188 4.34375 16.9375 7.0625C19.6562 9.8125 19.6562 14.2188 16.9375 16.9688C14.1875 19.6875 9.78125 19.6875 7.03125 16.9688C6.65625 16.5625 6.65625 15.9375 7.03125 15.5625C7.4375 15.1562 8.0625 15.1562 8.4375 15.5625C10.4062 17.5 13.5625 17.5 15.5312 15.5625C17.4688 13.5938 17.4688 10.4375 15.5312 8.46875C13.5938 6.53125 10.4375 6.53125 8.46875 8.4375L9.78125 9.71875C9.96875 9.9375 10.0312 10.2812 9.9375 10.5625C9.8125 10.8438 9.53125 11 9.25 11H5.5Z"/>
+  </svg>`;
+exports.forwardIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+    <path d="M18.4688 11H14.75C14.4375 11 14.1562 10.8438 14.0312 10.5625C13.9375 10.2812 14 9.9375 14.2188 9.71875L15.5 8.4375C13.5312 6.53125 10.4062 6.53125 8.4375 8.46875C6.5 10.4375 6.5 13.5938 8.4375 15.5625C10.4062 17.5 13.5625 17.5 15.5312 15.5625C15.9062 15.1562 16.5312 15.1562 16.9375 15.5625C17.3125 15.9375 17.3125 16.5625 16.9375 16.9688C14.1875 19.6875 9.78125 19.6875 7.03125 16.9688C4.3125 14.2188 4.3125 9.8125 7.03125 7.0625C9.75 4.34375 14.1562 4.34375 16.9062 7.03125L18.2188 5.71875C18.4062 5.53125 18.75 5.46875 19.0312 5.5625C19.3125 5.6875 19.5 5.96875 19.5 6.25V10.25C19.5 10.6875 19.1562 11 18.75 11H18.4688Z"/>
+  </svg>`;
+exports.pausedIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+    <path d="M15.5 5.96875C15.9167 5.98958 16.2708 6.14583 16.5625 6.4375C16.8333 6.72917 16.9792 7.08333 17 7.5V16.5C16.9792 16.9167 16.8333 17.2708 16.5625 17.5625C16.2708 17.8333 15.9167 17.9792 15.5 18L14.5 17.9375C14.0833 17.9375 13.7292 17.7917 13.4375 17.5C13.1667 17.2292 13.0208 16.875 13 16.4375V7.4375C13.0208 7.02083 13.1667 6.67708 13.4375 6.40625C13.7292 6.13542 14.0833 5.98958 14.5 5.96875H15.5ZM9.5 5.96875C9.91667 5.98958 10.2708 6.14583 10.5625 6.4375C10.8333 6.72917 10.9792 7.08333 11 7.5V16.5C10.9792 16.9167 10.8333 17.2708 10.5625 17.5625C10.2708 17.8333 9.91667 17.9792 9.5 18H8.5C8.08333 18 7.72917 17.8542 7.4375 17.5625C7.16667 17.2708 7.02083 16.9062 7 16.4688V7.46875C7.02083 7.05208 7.16667 6.69792 7.4375 6.40625C7.72917 6.13542 8.08333 5.98958 8.5 5.96875H9.5Z"/>
+  </svg>`;
+exports.volumeIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+    <path d="M13.4062 5.09375C13.75 5.25 14 5.625 14 6V18C14 18.4062 13.75 18.75 13.4062 18.9375C13.0312 19.0938 12.625 19.0312 12.3125 18.75L8.09375 15H6C4.875 15 4 14.125 4 13V11C4 9.90625 4.875 9 6 9H8.09375L12.3125 5.28125C12.625 5 13.0312 4.9375 13.4062 5.09375ZM18.7812 7.34375C20.125 8.46875 21 10.125 21 12C21 13.9062 20.125 15.5625 18.7812 16.6562C18.4375 16.9375 17.9688 16.875 17.7188 16.5625C17.4375 16.25 17.5 15.7812 17.8125 15.5C18.8438 14.6875 19.5 13.4375 19.5 12C19.5 10.5938 18.8438 9.34375 17.8125 8.53125C17.5 8.25 17.4688 7.78125 17.7188 7.46875C17.9688 7.15625 18.4375 7.09375 18.7812 7.34375ZM16.875 9.6875C17.5625 10.25 18 11.0625 18 12C18 12.9688 17.5625 13.7812 16.875 14.3438C16.5625 14.5938 16.0938 14.5625 15.8125 14.2188C15.5625 13.9062 15.625 13.4375 15.9375 13.1875C16.2812 12.9062 16.5 12.4688 16.5 12C16.5 11.5312 16.2812 11.125 15.9375 10.8438C15.625 10.5938 15.5625 10.125 15.8125 9.78125C16.0938 9.46875 16.5625 9.4375 16.875 9.6875Z"/>
+  </svg>`;
+exports.muteIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+   <path d="M3.1875 4.1875L8.15625 8.0625L11.3125 5.28125C11.625 5 12.0312 4.9375 12.4062 5.09375C12.75 5.25 13 5.625 13 6V11.8438L14.8125 13.2812C14.8438 13.25 14.9062 13.2188 14.9375 13.1875C15.2812 12.9062 15.5 12.4688 15.5 12C15.5 11.5312 15.2812 11.125 14.9375 10.8438C14.625 10.5938 14.5625 10.125 14.8125 9.78125C15.0938 9.46875 15.5625 9.4375 15.875 9.6875C16.5625 10.25 17 11.0625 17 12C17 12.875 16.625 13.6875 16.0312 14.2188L17.2188 15.1562C18 14.3438 18.5 13.25 18.5 12C18.5 10.5938 17.8438 9.34375 16.8125 8.53125C16.5 8.25 16.4375 7.78125 16.7188 7.46875C16.9688 7.15625 17.4375 7.09375 17.7812 7.34375C19.125 8.46875 20 10.125 20 12C20 13.5938 19.375 15 18.4062 16.0938L21.6875 18.6875C22.0312 18.9375 22.0938 19.4062 21.8125 19.7188C21.5625 20.0625 21.0938 20.125 20.7812 19.8438L2.28125 5.34375C1.9375 5.09375 1.875 4.625 2.15625 4.3125C2.40625 3.96875 2.875 3.90625 3.1875 4.1875ZM13 15.6875V18C13 18.4062 12.75 18.7812 12.4062 18.9375C12.0312 19.0938 11.625 19.0312 11.3125 18.75L7.09375 15H5C3.875 15 3 14.125 3 13V11C3 10.0625 3.65625 9.25 4.5625 9.0625L13 15.6875Z"/>
+   </svg>`;
+exports.fullScreenIcon = `
+ <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M9.25 5C9.65625 5 10 5.34375 10 5.75C10 6.1875 9.65625 6.5 9.25 6.5H6.5V9.25C6.5 9.6875 6.15625 10 5.75 10C5.3125 10 5 9.6875 5 9.25V5.75C5 5.34375 5.3125 5 5.75 5H9.25ZM5 14.75C5 14.3438 5.3125 14 5.75 14C6.15625 14 6.5 14.3438 6.5 14.75V17.5H9.25C9.65625 17.5 10 17.8438 10 18.25C10 18.6875 9.65625 19 9.25 19H5.75C5.3125 19 5 18.6875 5 18.25V14.75ZM18.25 5C18.6562 5 19 5.34375 19 5.75V9.25C19 9.6875 18.6562 10 18.25 10C17.8125 10 17.5 9.6875 17.5 9.25V6.5H14.75C14.3125 6.5 14 6.1875 14 5.75C14 5.34375 14.3125 5 14.75 5H18.25ZM17.5 14.75C17.5 14.3438 17.8125 14 18.25 14C18.6562 14 19 14.3438 19 14.75V18.25C19 18.6875 18.6562 19 18.25 19H14.75C14.3125 19 14 18.6875 14 18.25C14 17.8438 14.3125 17.5 14.75 17.5H17.5V14.75Z"/>
+  </svg>`;
+exports.speedIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
+  </svg>`;
+exports.subtitleIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+  <path d="M5 6.5C4.71875 6.5 4.5 6.75 4.5 7V17C4.5 17.2812 4.71875 17.5 5 17.5H19C19.25 17.5 19.5 17.2812 19.5 17V7C19.5 6.75 19.25 6.5 19 6.5H5ZM3 7C3 5.90625 3.875 5 5 5H19C20.0938 5 21 5.90625 21 7V17C21 18.125 20.0938 19 19 19H5C3.875 19 3 18.125 3 17V7ZM6.75 11.5H12.25C12.6562 11.5 13 11.8438 13 12.25C13 12.6875 12.6562 13 12.25 13H6.75C6.3125 13 6 12.6875 6 12.25C6 11.8438 6.3125 11.5 6.75 11.5ZM14.75 11.5H17.25C17.6562 11.5 18 11.8438 18 12.25C18 12.6875 17.6562 13 17.25 13H14.75C14.3125 13 14 12.6875 14 12.25C14 11.8438 14.3125 11.5 14.75 11.5ZM6.75 14.5H9.25C9.65625 14.5 10 14.8438 10 15.25C10 15.6875 9.65625 16 9.25 16H6.75C6.3125 16 6 15.6875 6 15.25C6 14.8438 6.3125 14.5 6.75 14.5ZM11.75 14.5H17.25C17.6562 14.5 18 14.8438 18 15.25C18 15.6875 17.6562 16 17.25 16H11.75C11.3125 16 11 15.6875 11 15.25C11 14.8438 11.3125 14.5 11.75 14.5Z"/>
+  </svg>`;
+exports.settingIcon = `
+   <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 4C12.5312 4 13.0312 4.0625 13.5312 4.15625C13.7812 4.21875 14.2188 4.34375 14.4688 4.78125C14.5312 4.90625 14.5625 5.03125 14.5938 5.15625L14.9062 6.375C14.9375 6.53125 15.25 6.71875 15.4375 6.65625L16.625 6.3125C16.75 6.28125 16.875 6.25 17 6.25C17.5 6.25 17.8438 6.5625 18 6.75C18.6875 7.53125 19.2188 8.4375 19.5625 9.4375C19.6562 9.6875 19.75 10.125 19.4688 10.5312C19.4062 10.6562 19.3125 10.75 19.2188 10.8438L18.3438 11.7188C18.1875 11.8438 18.1875 12.1875 18.3438 12.3125L19.2188 13.1875C19.3125 13.2812 19.4062 13.375 19.4688 13.5C19.7188 13.9062 19.625 14.3438 19.5625 14.5938C19.2188 15.5938 18.6875 16.5 18 17.2812C17.8438 17.4688 17.5 17.7812 17 17.7812C16.875 17.7812 16.75 17.75 16.625 17.7188L15.4375 17.3438C15.25 17.3125 14.9375 17.4688 14.9062 17.6562L14.5938 18.875C14.5625 19 14.5312 19.125 14.4688 19.25C14.2188 19.6875 13.7812 19.8125 13.5312 19.875C13.0312 19.9688 12.5312 20 12 20C11.4688 20 10.9375 19.9688 10.4375 19.875C10.1875 19.8125 9.75 19.6875 9.5 19.25C9.4375 19.125 9.40625 19 9.375 18.875L9.0625 17.6562C9.03125 17.4688 8.71875 17.3125 8.5625 17.3438L7.375 17.7188C7.25 17.75 7.09375 17.75 6.96875 17.7812C6.46875 17.7812 6.125 17.4688 5.96875 17.2812C5.28125 16.5 4.75 15.5938 4.40625 14.5938C4.34375 14.3438 4.25 13.9062 4.5 13.4688C4.5625 13.375 4.65625 13.25 4.75 13.1562L5.65625 12.3125C5.78125 12.1875 5.78125 11.8438 5.65625 11.7188L4.75 10.8438C4.65625 10.75 4.5625 10.6562 4.5 10.5312C4.25 10.125 4.34375 9.6875 4.40625 9.4375C4.75 8.4375 5.28125 7.53125 5.96875 6.75C6.125 6.5625 6.46875 6.25 6.96875 6.25C7.09375 6.25 7.25 6.28125 7.375 6.3125L8.5625 6.65625C8.71875 6.71875 9.03125 6.53125 9.0625 6.375L9.375 5.15625C9.40625 5.03125 9.4375 4.90625 9.5 4.78125C9.75 4.34375 10.1875 4.21875 10.4375 4.15625C10.9375 4.0625 11.4688 4 12 4ZM10.8125 5.625L10.5312 6.71875C10.2812 7.71875 9.125 8.40625 8.125 8.125L7.03125 7.78125C6.53125 8.40625 6.125 9.09375 5.84375 9.84375L6.6875 10.625C7.4375 11.3438 7.4375 12.6875 6.6875 13.4062L5.84375 14.1875C6.125 14.9375 6.53125 15.625 7.03125 16.25L8.125 15.9062C9.125 15.625 10.2812 16.3125 10.5312 17.3125L10.8125 18.4062C11.5625 18.5625 12.4062 18.5625 13.1875 18.4062L13.4375 17.3125C13.6875 16.3125 14.8438 15.625 15.8438 15.9062L16.9375 16.25C17.4375 15.625 17.8438 14.9375 18.125 14.1875L17.3125 13.4062C16.5625 12.6875 16.5625 11.3438 17.3125 10.625L18.125 9.84375C17.8438 9.09375 17.4375 8.40625 16.9375 7.78125L15.8438 8.125C14.875 8.40625 13.6875 7.71875 13.4375 6.71875L13.1875 5.625C12.4062 5.46875 11.5625 5.46875 10.8125 5.625ZM10.5 12C10.5 12.5625 10.7812 13.0312 11.25 13.3125C11.6875 13.5938 12.2812 13.5938 12.75 13.3125C13.1875 13.0312 13.5 12.5625 13.5 12C13.5 11.4688 13.1875 11 12.75 10.7188C12.2812 10.4375 11.6875 10.4375 11.25 10.7188C10.7812 11 10.5 11.4688 10.5 12ZM12 15C10.9062 15 9.9375 14.4375 9.375 13.5C8.84375 12.5938 8.84375 11.4375 9.375 10.5C9.9375 9.59375 10.9062 9 12 9C13.0625 9 14.0312 9.59375 14.5938 10.5C15.125 11.4375 15.125 12.5938 14.5938 13.5C14.0312 14.4375 13.0625 15 12 15Z"/>
+  </svg>`;
+exports.exitFullScreenIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10 5.75V9.25C10 9.6875 9.65625 10 9.25 10H5.75C5.3125 10 5 9.6875 5 9.25C5 8.84375 5.3125 8.5 5.75 8.5H8.5V5.75C8.5 5.34375 8.8125 5 9.25 5C9.65625 5 10 5.34375 10 5.75ZM5.75 14H9.25C9.65625 14 10 14.3438 10 14.75V18.25C10 18.6875 9.65625 19 9.25 19C8.8125 19 8.5 18.6875 8.5 18.25V15.5H5.75C5.3125 15.5 5 15.1875 5 14.75C5 14.3438 5.3125 14 5.75 14ZM15.5 5.75V8.5H18.25C18.6562 8.5 19 8.84375 19 9.25C19 9.6875 18.6562 10 18.25 10H14.75C14.3125 10 14 9.6875 14 9.25V5.75C14 5.34375 14.3125 5 14.75 5C15.1562 5 15.5 5.34375 15.5 5.75ZM14.75 14H18.25C18.6562 14 19 14.3438 19 14.75C19 15.1875 18.6562 15.5 18.25 15.5H15.5V18.25C15.5 18.6875 15.1562 19 14.75 19C14.3125 19 14 18.6875 14 18.25V14.75C14 14.3438 14.3125 14 14.75 14Z"/>
+  </svg>`;
+exports.qualityIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M6.5 14.5C5.9375 14.5 5.5 14.9688 5.5 15.5C5.5 16.0625 5.9375 16.5 6.5 16.5C7.03125 16.5 7.5 16.0625 7.5 15.5C7.5 14.9688 7.03125 14.5 6.5 14.5ZM8.875 14.75H19.25C19.6562 14.75 20 15.0938 20 15.5C20 15.9375 19.6562 16.25 19.25 16.25H8.875C8.5625 17.2812 7.59375 18 6.5 18C5.09375 18 4 16.9062 4 15.5C4 14.125 5.09375 13 6.5 13C7.59375 13 8.5625 13.75 8.875 14.75ZM16.5 8.5C16.5 9.0625 16.9375 9.5 17.5 9.5C18.0312 9.5 18.5 9.0625 18.5 8.5C18.5 7.96875 18.0312 7.5 17.5 7.5C16.9375 7.5 16.5 7.96875 16.5 8.5ZM15.0938 7.75C15.4062 6.75 16.375 6 17.5 6C18.875 6 20 7.125 20 8.5C20 9.90625 18.875 11 17.5 11C16.375 11 15.4062 10.2812 15.0938 9.25H4.75C4.3125 9.25 4 8.9375 4 8.5C4 8.09375 4.3125 7.75 4.75 7.75H15.0938Z"/>
+  </svg>`;
+exports.chevronLeftIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M14 19C13.7292 19 13.4896 18.9062 13.2812 18.7188L7.28125 12.7188C7.09375 12.5104 7 12.2708 7 12C7 11.7292 7.09375 11.4896 7.28125 11.2812L13.2812 5.28125C13.4896 5.09375 13.7292 5 14 5C14.2708 5 14.5104 5.09375 14.7188 5.28125C14.9062 5.48958 15 5.72917 15 6C15 6.27083 14.9062 6.51042 14.7188 6.71875L9.40625 12L14.7188 17.2812C14.9062 17.4896 15 17.7292 15 18C15 18.2708 14.9062 18.5104 14.7188 18.7188C14.5104 18.9062 14.2708 19 14 19Z"/>
+  </svg>`;
+exports.chevronRightIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M16.5312 11.4688C16.8125 11.7812 16.8125 12.25 16.5312 12.5312L10.5312 18.5312C10.2188 18.8438 9.75 18.8438 9.46875 18.5312C9.15625 18.25 9.15625 17.7812 9.46875 17.5L14.9375 12.0312L9.46875 6.53125C9.15625 6.25 9.15625 5.78125 9.46875 5.5C9.75 5.1875 10.2188 5.1875 10.5 5.5L16.5312 11.4688Z"/>
+  </svg>`;
+exports.checkedIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M18.7188 7.28125C18.9062 7.48958 19 7.72917 19 8C19 8.27083 18.9062 8.51042 18.7188 8.71875L10.7188 16.7188C10.5104 16.9062 10.2708 17 10 17C9.72917 17 9.48958 16.9062 9.28125 16.7188L5.28125 12.7188C5.09375 12.5104 5 12.2708 5 12C5 11.7292 5.09375 11.4896 5.28125 11.2812C5.48958 11.0938 5.72917 11 6 11C6.27083 11 6.51042 11.0938 6.71875 11.2812L9.96875 14.5938L17.2812 7.28125C17.4896 7.09375 17.7292 7 18 7C18.2708 7 18.5104 7.09375 18.7188 7.28125Z"
+    />
+  </svg>`;
+exports.playbackSpeedIcon = `
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentcolor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 5.5C9.65625 5.5 7.53125 6.75 6.34375 8.75C5.1875 10.7812 5.1875 13.25 6.34375 15.25C7.53125 17.2812 9.65625 18.5 12 18.5C14.3125 18.5 16.4375 17.2812 17.625 15.25C18.7812 13.25 18.7812 10.7812 17.625 8.75C16.4375 6.75 14.3125 5.5 12 5.5ZM12 20C9.125 20 6.5 18.5 5.0625 16C3.625 13.5312 3.625 10.5 5.0625 8C6.5 5.53125 9.125 4 12 4C14.8438 4 17.4688 5.53125 18.9062 8C20.3438 10.5 20.3438 13.5312 18.9062 16C17.4688 18.5 14.8438 20 12 20ZM13 7.5C13 8.0625 12.5312 8.5 12 8.5C11.4375 8.5 11 8.0625 11 7.5C11 6.96875 11.4375 6.5 12 6.5C12.5312 6.5 13 6.96875 13 7.5ZM12 16.75C11.0312 16.75 10.25 15.9688 10.25 15C10.25 14.0625 11 13.2812 11.9375 13.25L14.0625 8.46875C14.2188 8.09375 14.6562 7.90625 15.0312 8.09375C15.4062 8.25 15.5938 8.6875 15.4375 9.0625L13.3125 13.875C13.5625 14.1875 13.75 14.5625 13.75 15C13.75 15.9688 12.9375 16.75 12 16.75ZM10 9C10 9.5625 9.53125 10 9 10C8.4375 10 8 9.5625 8 9C8 8.46875 8.4375 8 9 8C9.53125 8 10 8.46875 10 9ZM7.5 13C6.9375 13 6.5 12.5625 6.5 12C6.5 11.4688 6.9375 11 7.5 11C8.03125 11 8.5 11.4688 8.5 12C8.5 12.5625 8.03125 13 7.5 13ZM17.5 12C17.5 12.5625 17.0312 13 16.5 13C15.9375 13 15.5 12.5625 15.5 12C15.5 11.4688 15.9375 11 16.5 11C17.0312 11 17.5 11.4688 17.5 12Z"/>
+  </svg>
+`;
+exports.scrubbingForwardIcon = `
+  <svg 
+  xmlns="http://www.w3.org/2000/svg" 
+  fill="currentcolor"
+  viewBox="0 0 512 512"
+  >
+  <path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416L0 96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3l0 41.7 0 41.7L52.5 440.6zM256 352l0-96 0-128 0-32c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29l0-64z"/>
+  </svg>
+`;
+exports.scrubbingRewindIcon = `
+  <svg 
+  xmlns="http://www.w3.org/2000/svg" 
+  fill="currentcolor"
+  viewBox="0 0 512 512"
+  >
+  <path d="M459.5 440.6c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29l0-320c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4L288 214.3l0 41.7 0 41.7L459.5 440.6zM256 352l0-96 0-128 0-32c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4l-192 160C4.2 237.5 0 246.5 0 256s4.2 18.5 11.5 24.6l192 160c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29l0-64z"/>
+  </svg>
+`;
+
+
+/***/ }),
+
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deviceType = void 0;
+const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
+const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
+const ErrorContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts"));
+const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
+const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
+const style_1 = __importDefault(__webpack_require__(/*! ./class/Styles/style */ "./src/class/Styles/style.ts"));
+const SmApiPlayer_1 = __importDefault(__webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts"));
+__webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
+__webpack_require__(/*! ./index.css */ "./src/index.css");
+const deviceType = (0, services_1.detectDevice)();
+exports.deviceType = deviceType;
+const hasTouch = (0, services_1.checkHasTouch)();
+const classes = (0, style_1.default)({
+    deviceType,
+});
+class SmUIControls {
+    constructor(props) {
+        this.isInit = false;
+        const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
+        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
+        const VideoContainerElement = document.getElementById(idVideoContainer);
+        this.ids = (0, services_1.generateIIds)();
+        if (!this.isInit) {
+            this.isInit = true;
+            if (VideoContainerElement) {
+                VideoContainerElement.style.position = 'relative';
+                VideoContainerElement.style.overflow = 'hidden';
+                const smControllerContainerEle = document.createElement('div');
+                smControllerContainerEle.className = classes.container;
+                smControllerContainerEle.id = this.ids.smControllerContainer;
+                smControllerContainerEle.innerHTML = `
+          <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
+          <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
+          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
+                VideoContainerElement.appendChild(smControllerContainerEle);
+                this.controllerContainer = new ControllerContainer_1.default({
+                    id: this.ids.smControllerContent,
+                    classes,
+                    videoInfo,
+                    apiPlayer,
+                    ids: this.ids,
+                });
+                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
+                this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
+            }
+        }
+    }
+    on(event, listener, context) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
+        return;
+    }
+    once(event, listener, context) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.on(event, listener, context);
+        return;
+    }
+    removeAllListeners(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.removeAllListeners(event);
+        return;
+    }
+    off(event, listener, context, once) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.off(event, listener, context, once);
+        return;
+    }
+    listeners(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listeners(event);
+        return [];
+    }
+    emit(event, name, eventObject) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.emit(event, name, eventObject);
+        return true;
+    }
+    trigger(event, eventObject) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.trigger(event, eventObject);
+        return true;
+    }
+    listenerCount(event) {
+        var _a;
+        (_a = this.apiPlayer) === null || _a === void 0 ? void 0 : _a.eventemitter.listenerCount(event);
+        return 0;
+    }
+    destroy() {
+        var _a, _b, _c;
+        (_a = this.controllerContainer) === null || _a === void 0 ? void 0 : _a.destroy();
+        (_b = this.errorContainer) === null || _b === void 0 ? void 0 : _b.destroy();
+        (_c = this.loadingContainer) === null || _c === void 0 ? void 0 : _c.destroy();
+        this.apiPlayer = null;
+        this.isInit = false;
+    }
+}
+exports["default"] = SmUIControls;
+
+
+/***/ }),
+
+/***/ "./src/services.ts":
+/*!*************************!*\
+  !*** ./src/services.ts ***!
+  \*************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkHasTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
+const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
+const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
+const createElementFromHTML = (htmlString) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString.trim();
+    return tempDiv.firstChild;
+};
+exports.createElementFromHTML = createElementFromHTML;
+const generateIIds = () => {
+    return {
+        smControllerContainer: (0, nanoid_1.nanoid)(4),
+        smControllerContent: (0, nanoid_1.nanoid)(4),
+        smLoading: (0, nanoid_1.nanoid)(4),
+        smError: (0, nanoid_1.nanoid)(4),
+        smHeadController: (0, nanoid_1.nanoid)(4),
+        smBodyController: (0, nanoid_1.nanoid)(4),
+        smButtonPlayPrimary: (0, nanoid_1.nanoid)(4),
+        smSettingsContainer: (0, nanoid_1.nanoid)(4),
+        smSettingsContainerMask: (0, nanoid_1.nanoid)(4),
+        smSettingDetailTitle: (0, nanoid_1.nanoid)(4),
+        smSettingDetailGoBackIcon: (0, nanoid_1.nanoid)(4),
+        smSettingPlaybackSpeedItemPrefix: (0, nanoid_1.nanoid)(4),
+        smSettingQualityItemPrefix: (0, nanoid_1.nanoid)(4),
+        smFooterController: (0, nanoid_1.nanoid)(4),
+        smTaskbarController: (0, nanoid_1.nanoid)(4),
+        smSeekBarController: (0, nanoid_1.nanoid)(4),
+        smButtonFullScreen: (0, nanoid_1.nanoid)(4),
+        smButtonPlaySecondary: (0, nanoid_1.nanoid)(4),
+        smButtonPauseSecondary: (0, nanoid_1.nanoid)(4),
+        smButtonForward: (0, nanoid_1.nanoid)(4),
+        smButtonExitFullScreen: (0, nanoid_1.nanoid)(4),
+        smButtonVolume: (0, nanoid_1.nanoid)(4),
+        smButtonMute: (0, nanoid_1.nanoid)(4),
+        smSelectVolumeRangeContainer: (0, nanoid_1.nanoid)(4),
+        smSelectVolumeRange: (0, nanoid_1.nanoid)(4),
+        smInputVolumeRange: (0, nanoid_1.nanoid)(4),
+        smVolumeContainer: (0, nanoid_1.nanoid)(4),
+        smPlaybackSpeed: (0, nanoid_1.nanoid)(4),
+        smQuality: (0, nanoid_1.nanoid)(4),
+        smSettingIconButton: (0, nanoid_1.nanoid)(4),
+        smTimeBarContainer: (0, nanoid_1.nanoid)(4),
+        smTaskbarLiveStream: (0, nanoid_1.nanoid)(4),
+        smTimeCurrent: (0, nanoid_1.nanoid)(4),
+        smTimeDuration: (0, nanoid_1.nanoid)(4),
+        smProgressBar: (0, nanoid_1.nanoid)(4),
+        smProgressThumb: (0, nanoid_1.nanoid)(4),
+        smProgressBarContainer: (0, nanoid_1.nanoid)(4),
+        smProgressBuffer: (0, nanoid_1.nanoid)(4),
+        smButtonReplaySecondary: (0, nanoid_1.nanoid)(4),
+        smButtonReplayPrimary: (0, nanoid_1.nanoid)(4),
+        smSettingIconButtonMobile: (0, nanoid_1.nanoid)(4),
+        smButtonPausePrimary: (0, nanoid_1.nanoid)(4),
+        smScrubbingForward: (0, nanoid_1.nanoid)(4),
+        smScrubbingRewind: (0, nanoid_1.nanoid)(4),
+    };
+};
+exports.generateIIds = generateIIds;
+const detectDevice = () => {
+    try {
+        const parser = new ua_parser_js_1.UAParser();
+        const result = parser.getResult();
+        const deviceType = result.device.type;
+        if (deviceType) {
+            if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
+                return type_1.EDeviceType.MOBILE;
+            }
+            else if (deviceType.toLowerCase() === type_1.EDeviceType.TABLET) {
+                return type_1.EDeviceType.TABLET;
+            }
+            else {
+                return type_1.EDeviceType.DESKTOP;
+            }
+        }
+        return type_1.EDeviceType.DESKTOP;
+    }
+    catch (error) {
+        return type_1.EDeviceType.DESKTOP;
+    }
+};
+exports.detectDevice = detectDevice;
+const detectDeviceMobile = (deviceType) => {
+    return deviceType === type_1.EDeviceType.MOBILE;
+};
+exports.detectDeviceMobile = detectDeviceMobile;
+const checkHasTouch = () => {
+    return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
+};
+exports.checkHasTouch = checkHasTouch;
 
 
 /***/ }),
@@ -7358,7 +8225,12 @@ exports["default"] = generateStyles;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EBreakpoint = exports.EDeviceType = exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = void 0;
+exports.EBreakpoint = exports.EDeviceType = exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = exports.ETypeScrubbing = void 0;
+var ETypeScrubbing;
+(function (ETypeScrubbing) {
+    ETypeScrubbing["FORWARD"] = "forward";
+    ETypeScrubbing["REWIND"] = "rewind";
+})(ETypeScrubbing || (exports.ETypeScrubbing = ETypeScrubbing = {}));
 var ESettingPanelDataState;
 (function (ESettingPanelDataState) {
     ESettingPanelDataState["BLUR"] = "blur";
@@ -7386,6 +8258,8 @@ var EEVentName;
     EEVentName["ENDED"] = "ended";
     EEVentName["WAITING"] = "waiting";
     EEVentName["PLAYING"] = "playing";
+    EEVentName["SEEKING"] = "seeking";
+    EEVentName["SCRUBBING"] = "scrubbing";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 exports.RESOLUTION_LABEL = {
     AUTO: 'Auto',

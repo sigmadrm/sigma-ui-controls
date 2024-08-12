@@ -12,12 +12,14 @@ declare class ControllerContainer extends BaseComponent {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
-    handleOnMouseMover: () => void;
-    handleOnMouseover(): void;
-    handleOnMouseout(): void;
-    handleClickContainer: (event: MouseEvent) => void;
-    hide(): void;
-    show(): void;
+    handleOnMouseMover(e: MouseEvent | TouchEvent): void;
+    handleOnMouseover(e: MouseEvent | TouchEvent): void;
+    handleOnMouseout(e: MouseEvent | TouchEvent): void;
+    handleClickContainer(event: MouseEvent): void;
+    handleEvtLoaded(): void;
+    handleEvtError(): void;
+    handleEvtSeeking(e: any, data: any): void;
+    handleEvtScrubbing(e: any, data: any): void;
 }
 export default ControllerContainer;
 //# sourceMappingURL=index.d.ts.map
