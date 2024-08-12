@@ -59,7 +59,7 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
     headController: css`
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 72px;
+      height: 0px;
       position: absolute;
       top: -72px;
       right: 0;
@@ -75,7 +75,7 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       padding: 12px 12px;
       z-index: 1;
       @media (max-width: ${EBreakpoint.SM}px) {
-        height: 0px;
+        height: 72px;
         top: 0;
         gap: 0px;
         display: none;

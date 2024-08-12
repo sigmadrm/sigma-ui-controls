@@ -57,6 +57,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       justify-content: center;
     `,
     headController: css`
+      display: none;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
       height: 72px;
@@ -65,7 +66,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       right: 0;
       left: 0;
       box-sizing: border-box;
-      display: flex;
+
       gap: 0px;
       flex-direction: row;
       align-items: center;
@@ -74,24 +75,12 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       z-index: 1;
-      //   @media (max-width: ${EBreakpoint.SM}px) {
-      //     height: 0px;
-      //     top: 0;
-      //     gap: 0px;
-      //     display: none;
-      //     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
-      //   }
     `,
     headControllerEnable: css`
+      display: flex;
       top: 0;
       transition: 0.3s ease-in-out;
-      @media (max-width: ${EBreakpoint.SM}px) {
-        height: 72px;
-        // top: 0;
-        // gap: 0px;
-        // background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
-        // display: flex;
-      }
+      height: 72px;
     `,
     smSettingIconButtonMB: css`
       cursor: pointer;
