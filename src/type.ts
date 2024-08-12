@@ -1,6 +1,6 @@
 import SmApiPlayer from './class/SmApiPlayer';
 import { ETypePlayer } from './constants';
-import generateStyles from './style';
+import generateStyles from './class/Styles/style';
 
 export interface IConfigureUIPlayerProps {
   player: any;

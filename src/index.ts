@@ -6,7 +6,7 @@ import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
 
 import { checkHasTouch, detectDevice, generateIIds } from './services';
-import generateStyles from './style';
+import generateStyles from './class/Styles/style';
 import SmApiPlayer from './class/SmApiPlayer';
 
 import 'animate.css';

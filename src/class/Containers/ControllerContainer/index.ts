@@ -158,7 +158,6 @@ class ControllerContainer extends BaseComponent {
     // }
   }
   handleClickContainer(event: MouseEvent) {
-    console.log(event);
     const evt = event as PointerEvent;
     if (evt) {
       const { apiPlayer } = this;
