@@ -1,5 +1,5 @@
 import { scrubbingRewindIcon } from '../../../icons';
-import { EEVentName, IConstructorBaseProps } from '../../../type';
+import { EEVentName, ETypeScrubbing, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 interface IConstructorProps extends IConstructorBaseProps {}
@@ -37,7 +37,7 @@ class ScrubbingRewind extends BaseComponent {
     this.containerElement.onclick = () => {};
   }
 
-  handleContainerClick(event: MouseEvent | ToggleEvent) {
+  handleContainerClick(event: MouseEvent | TouchEvent) {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
@@ -53,15 +53,14 @@ class ScrubbingRewind extends BaseComponent {
         this.timerId = self.setTimeout(() => {
           if (this.counter - 1 !== 0) {
             const timeStep = apiPlayer.getCurrentTime() - (this.counter - 1) * 10;
+            this.counter = 0;
+            this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
+            this.hidden();
             if (timeStep > 0) {
               apiPlayer.setCurrentTime(timeStep);
             } else {
               apiPlayer.setCurrentTime(0);
             }
-            this.counter = 0;
-            this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
-            this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, { seeking: false });
-            this.hidden();
           }
         }, 300);
         if (this.timerIdScrubbing) clearTimeout(this.timerIdScrubbing);
@@ -69,7 +68,13 @@ class ScrubbingRewind extends BaseComponent {
           this.counter = 0;
         }, 500);
         this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
-        this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, { seeking: true });
+        if (this.counter - 1 !== 0) {
+          this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, {
+            seeking: true,
+            time: apiPlayer.getCurrentTime() - (this.counter - 1) * 10,
+            type: ETypeScrubbing.REWIND,
+          });
+        }
       }
     }
   }

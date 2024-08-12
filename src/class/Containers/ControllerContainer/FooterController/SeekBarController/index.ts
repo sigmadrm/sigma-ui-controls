@@ -8,7 +8,7 @@ class SeekBarController extends BaseComponent {
   private progressBar: ProgressBar | undefined;
   private progressThumb: ProgressThumb | undefined;
   private timeoutId: number | null | undefined;
-  private isPlay: boolean | undefined;
+  private duration: number = 0;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
     super(props);
@@ -30,6 +30,10 @@ class SeekBarController extends BaseComponent {
       apiPlayer,
       ids,
     });
+    this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
+    this.handleEventProgress = this.handleEventProgress.bind(this);
+    this.handleEventLoaded = this.handleEventLoaded.bind(this);
+    this.handleEventSeeking = this.handleEventSeeking.bind(this);
   }
   render(): void {
     if (this.containerElement) {
@@ -46,7 +50,8 @@ class SeekBarController extends BaseComponent {
   registerListener(): void {
     this.apiPlayer.eventemitter.on(EEVentName.PROGRESS, this.handleEventProgress, this);
     this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
-    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEventTimeLoaded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEventLoaded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEventSeeking, this);
     if (this?.containerElement) {
       this.containerElement.onclick = (e: MouseEvent) => {
         this.handleEventClick(e);
@@ -111,7 +116,8 @@ class SeekBarController extends BaseComponent {
   unregisterListener(): void {
     this.apiPlayer.eventemitter.off(EEVentName.PROGRESS, this.handleEventProgress, this);
     this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
-    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEventTimeLoaded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEventLoaded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEventSeeking, this);
     if (this?.containerElement) {
       this.containerElement.onclick = () => {};
     }
@@ -146,28 +152,43 @@ class SeekBarController extends BaseComponent {
     }
   }
   handleEventTimeUpdate() {
-    const progress = this.apiPlayer.getProgress();
+    const progress = this.apiPlayer.getCurrentTime();
     if (!Number.isNaN(progress)) {
       if (this.progressBar) {
-        this.progressBar.updateSliderHighlight(progress);
+        this.progressBar.updateSliderHighlight((progress / this.duration) * 100);
       }
       if (this.progressThumb) {
-        this.progressThumb.updateSliderHighlight(progress);
+        this.progressThumb.updateSliderHighlight((progress / this.duration) * 100);
       }
     }
   }
-  handleEventTimeLoaded() {
-    const progress = this.apiPlayer.getProgress();
+  handleEventLoaded() {
+    this.duration = this.apiPlayer.getDuration();
 
     if (this.progressBar) {
-      this.progressBar.updateSliderHighlight(progress);
+      this.progressBar.updateSliderHighlight(0);
     }
     const bufferedProgress = this.apiPlayer.getBuffering();
     if (this.progressBuffer) {
       this.progressBuffer.updateSliderHighlight(bufferedProgress);
     }
     if (this.progressThumb) {
-      this.progressThumb.updateSliderHighlight(progress);
+      this.progressThumb.updateSliderHighlight(0);
+    }
+  }
+  handleEventSeeking(e, data) {
+    if (data.seeking) {
+      this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+      const timeStep = data.time;
+      if (this.progressBar) {
+        console.log('run+++++', (timeStep / this.duration) * 100);
+        this.progressBar.updateSliderHighlight((timeStep / this.duration) * 100);
+      }
+      if (this.progressThumb) {
+        this.progressThumb.updateSliderHighlight((timeStep / this.duration) * 100);
+      }
+    } else {
+      this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     }
   }
 }
@@ -181,8 +202,8 @@ class ProgressBuffer extends BaseComponent {
   render(): void {
     this?.containerElement?.style.setProperty('--highlight-width-progress-buffer', `0%`);
   }
-  updateSliderHighlight(volume: number) {
-    const percentage = volume;
+  updateSliderHighlight(value: number) {
+    const percentage = value;
     const inputVolRangeEle = document.getElementById(this.ids.smProgressBuffer);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
   }
@@ -198,8 +219,8 @@ class ProgressBar extends BaseComponent {
   render(): void {
     this?.containerElement?.style.setProperty('--highlight-width-progress-bar', `0%`);
   }
-  updateSliderHighlight(volume: number) {
-    const percentage = volume;
+  updateSliderHighlight(value: number) {
+    const percentage = value;
     const inputVolRangeEle = document.getElementById(this.ids.smProgressBar);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
   }
@@ -215,8 +236,8 @@ class ProgressThumb extends BaseComponent {
   render(): void {
     this?.containerElement?.style.setProperty('--highlight-left-progress-thumb', `0%`);
   }
-  updateSliderHighlight(volume: number) {
-    const percentage = volume;
+  updateSliderHighlight(value: number) {
+    const percentage = value;
     const inputVolRangeEle = document.getElementById(this.ids.smProgressThumb);
     inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
   }

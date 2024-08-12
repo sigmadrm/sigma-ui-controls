@@ -18,6 +18,10 @@ export interface IConfigureUIPlayerProps {
 }
 export type TGenerateStylesProps = IConfigureUIPlayerProps['style'] & { deviceType: EDeviceType };
 
+export enum ETypeScrubbing {
+  FORWARD = 'forward',
+  REWIND = 'rewind',
+}
 export enum ESettingPanelDataState {
   BLUR = 'blur',
   OPENED = 'opened',

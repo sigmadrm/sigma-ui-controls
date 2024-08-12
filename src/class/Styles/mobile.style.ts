@@ -518,7 +518,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       }
     `,
     loadingContainer: css`
-      background: rgb(119 119 119 / 50%);
+      // background: rgb(119 119 119 / 50%);
       position: absolute;
       top: 0;
       bottom: 0;
@@ -526,6 +526,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       left: 0;
       overflow: hidden;
       display: none;
+      pointer-events: none;
       .sm-loading-ss {
         position: absolute;
         top: 0;
@@ -598,7 +599,6 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-container {
         width: 24px;
         height: 12px;
-        margin-left: -12px;
       }
 
       .sm-loading-ss .sm-ss-loading .sm-ss-small .sm-ss-top .sm-ss-circle {
@@ -613,7 +613,6 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       .sm-loading-ss .sm-ss-medium .sm-ss-container {
         width: 48px;
         height: 24px;
-        margin-left: -12px;
       }
 
       .sm-loading-ss .sm-ss-medium .sm-ss-top .sm-ss-circle {
@@ -640,6 +639,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      z-index: 1;
     `,
     errorContainer: css`
       background: rgb(119 119 119 / 50%);

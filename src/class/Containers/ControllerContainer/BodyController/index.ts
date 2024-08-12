@@ -68,6 +68,7 @@ class BodyController extends BaseComponent {
     this.handleEventPlay = this.handleEventPlay.bind(this);
     this.handleEventPause = this.handleEventPause.bind(this);
     this.handleEventEnded = this.handleEventEnded.bind(this);
+    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
   }
   render() {
     if (this.containerElement) {
@@ -89,11 +90,12 @@ class BodyController extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.PLAY, this.handleEventPlay, this);
     this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
     this.apiPlayer.eventemitter.on(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
   unregisterListener(): void {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
     this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
-    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
   handleEventPlay(): void {
     if (this.buttonPlayPrimary) {
@@ -126,6 +128,16 @@ class BodyController extends BaseComponent {
     }
     if (this.buttonReplayPrimary) {
       this.buttonReplayPrimary.show();
+    }
+  }
+  handleEvtSeeking(e, data) {
+    console.log(data);
+    if (data.seeking === false) {
+      this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
+    } else {
+      this.apiPlayer.eventemitter.on(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
     }
   }
   show(): void {

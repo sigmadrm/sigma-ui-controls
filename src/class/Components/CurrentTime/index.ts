@@ -18,7 +18,11 @@ class CurrentTime extends BaseComponent {
   }
   registerListener() {}
   unregisterListener() {}
-
+  update(value: number) {
+    if (this.containerElement) {
+      this.containerElement.innerHTML = `<spam>${formatTime(value)}</span> `;
+    }
+  }
   hide() {}
   show() {}
 }
