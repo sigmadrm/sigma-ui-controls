@@ -6391,7 +6391,7 @@ const generateStylesDesktop = (props) => {
         headController: (0, css_1.css) `
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 72px;
+      height: 0px;
       position: absolute;
       top: -72px;
       right: 0;
@@ -6407,7 +6407,7 @@ const generateStylesDesktop = (props) => {
       padding: 12px 12px;
       z-index: 1;
       @media (max-width: ${type_1.EBreakpoint.SM}px) {
-        height: 0px;
+        height: 72px;
         top: 0;
         gap: 0px;
         display: none;
@@ -7085,7 +7085,6 @@ exports["default"] = generateStylesDesktop;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const css_1 = __webpack_require__(/*! @emotion/css */ "./node_modules/@emotion/css/dist/emotion-css.development.esm.js");
-const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
 const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
 const generateStylesMobile = (props) => {
     const { primaryColor = constants_1.primaryColorDef, logo, deviceType } = props || {};
@@ -7143,6 +7142,7 @@ const generateStylesMobile = (props) => {
       justify-content: center;
     `,
         headController: (0, css_1.css) `
+      display: none;
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
       height: 72px;
@@ -7151,7 +7151,7 @@ const generateStylesMobile = (props) => {
       right: 0;
       left: 0;
       box-sizing: border-box;
-      display: flex;
+
       gap: 0px;
       flex-direction: row;
       align-items: center;
@@ -7160,24 +7160,12 @@ const generateStylesMobile = (props) => {
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
       z-index: 1;
-      //   @media (max-width: ${type_1.EBreakpoint.SM}px) {
-      //     height: 0px;
-      //     top: 0;
-      //     gap: 0px;
-      //     display: none;
-      //     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
-      //   }
     `,
         headControllerEnable: (0, css_1.css) `
+      display: flex;
       top: 0;
       transition: 0.3s ease-in-out;
-      @media (max-width: ${type_1.EBreakpoint.SM}px) {
-        height: 72px;
-        // top: 0;
-        // gap: 0px;
-        // background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
-        // display: flex;
-      }
+      height: 72px;
     `,
         smSettingIconButtonMB: (0, css_1.css) `
       cursor: pointer;

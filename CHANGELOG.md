@@ -1,5 +1,12 @@
 
 
+## [0.0.37](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.36...v0.0.37) (2024-08-12)
+
+
+### Bug Fixes
+
+* show header in mobile ([aa7d31e](https://github.com/sigmadrm/sigma-ui-controls/commit/aa7d31e4af4bc642c670fe4fbe01e1e5ced3f8db))
+
 ## [0.0.36](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.35...v0.0.36) (2024-08-12)
 
 
