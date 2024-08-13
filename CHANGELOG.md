@@ -1,5 +1,12 @@
 
 
+## [0.0.39](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.38...v0.0.39) (2024-08-13)
+
+
+### Bug Fixes
+
+* update get time step Scrubbing ([b1e577a](https://github.com/sigmadrm/sigma-ui-controls/commit/b1e577a9134b7df45744e7b716310de8c03e6b75))
+
 ## [0.0.38](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.37...v0.0.38) (2024-08-13)
 
 
