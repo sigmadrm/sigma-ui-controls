@@ -1,5 +1,12 @@
 
 
+## [0.0.40](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.39...v0.0.40) (2024-08-13)
+
+
+### Bug Fixes
+
+* spelling error ([0e57e8f](https://github.com/sigmadrm/sigma-ui-controls/commit/0e57e8f00c52cd01d20b42a29b7b80a90fd309b4))
+
 ## [0.0.39](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.38...v0.0.39) (2024-08-13)
 
 

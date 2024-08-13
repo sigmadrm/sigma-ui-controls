@@ -3593,12 +3593,8 @@ class ScrubbingForward extends BaseComponent_1.default {
                     this.counter = 0;
                     this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
                     this.hidden();
-                    if (timeStep <= durationTime) {
-                        apiPlayer.setCurrentTime(timeStep);
-                    }
-                    else {
-                        apiPlayer.setCurrentTime(durationTime);
-                    }
+                    console.log('setCurrentTime', currentTime, durationTime, timeStep);
+                    apiPlayer.setCurrentTime(timeStep <= durationTime ? timeStep : durationTime);
                 }
             }, 300);
             if (this.timerIdScrubbing)
@@ -3609,6 +3605,7 @@ class ScrubbingForward extends BaseComponent_1.default {
             this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
             if (this.counter - 1 !== 0) {
                 const timeStep = currentTime + (this.counter - 1) * 10;
+                console.log('EEVentName.SCRUBBING', currentTime, durationTime, timeStep);
                 this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
                     seeking: true,
                     time: timeStep <= durationTime ? timeStep : durationTime,
@@ -3771,12 +3768,8 @@ class ScrubbingRewind extends BaseComponent_1.default {
                     this.counter = 0;
                     this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
                     this.hidden();
-                    if (timeStep > 0) {
-                        apiPlayer.setCurrentTime(timeStep);
-                    }
-                    else {
-                        apiPlayer.setCurrentTime(0);
-                    }
+                    console.log('setCurrentTime', currentTime, timeStep);
+                    apiPlayer.setCurrentTime(timeStep > 0 ? timeStep : 0);
                 }
             }, 300);
             if (this.timerIdScrubbing)
@@ -3787,6 +3780,7 @@ class ScrubbingRewind extends BaseComponent_1.default {
             this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
             if (this.counter - 1 !== 0) {
                 const timeStep = currentTime - (this.counter - 1) * 10;
+                console.log(type_1.EEVentName.SEEKING, currentTime, timeStep);
                 this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
                     seeking: true,
                     time: timeStep > 0 ? timeStep : 0,
@@ -4246,7 +4240,7 @@ class SettingsController extends BaseComponent_1.default {
             if (selectedTrack && selectedTrack !== track && !ignoreSelectedTrack) {
                 selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
             }
-            return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
+            return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự động';
         }
         const trackHeight = track.height || 0;
         const trackWidth = track.width || 0;
