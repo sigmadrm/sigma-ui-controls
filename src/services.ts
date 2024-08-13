@@ -54,7 +54,13 @@ export const generateIIds = (): IIds => {
     smSettingIconButtonMobile: nanoid(4),
     smButtonPausePrimary: nanoid(4),
     smScrubbingForward: nanoid(4),
+    smScrubbingForwardRippleRight: nanoid(4),
+    smScrubbingForwardIcon: nanoid(4),
+    smScrubbingForwardText: nanoid(4),
     smScrubbingRewind: nanoid(4),
+    smScrubbingRewindRippleLeft: nanoid(4),
+    smScrubbingRewindIcon: nanoid(4),
+    smScrubbingRewindText: nanoid(4),
   };
 };
 

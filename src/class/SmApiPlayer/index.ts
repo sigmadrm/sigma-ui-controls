@@ -201,7 +201,7 @@ export default class SmApiPlayer {
   }
   isFullScreen() {
     const isFullscreen = document.fullscreenElement;
-    console.log(isFullscreen);
+
     if (isFullscreen) {
       return true;
     } else {

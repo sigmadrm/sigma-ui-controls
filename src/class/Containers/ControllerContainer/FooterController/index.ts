@@ -78,13 +78,10 @@ class FooterController extends BaseComponent {
     e.preventDefault();
     e.stopPropagation();
   }
-  handleEvtSeeking(e, data) {
-    // console.log('handleEvtSeeking', { e, data });
-  }
+  handleEvtSeeking(e, data) {}
   handleEvtScrubbing(e, data) {
-    // console.log('handleEvtScrubbing', { e, data });
     if (data.counter >= 2) {
-      // console.log('ádas');
+      /* empty */
     }
   }
   hidden() {

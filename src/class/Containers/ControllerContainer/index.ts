@@ -140,22 +140,6 @@ class ControllerContainer extends BaseComponent {
         }
       }, 3000);
     }
-    // else {
-    //   if (this.counter >= 1) {
-    //     console.log('aaaaaaaaaaaaaaaa', this.counter);
-    //     if (this.timerId) {
-    //       clearTimeout(this.timerId);
-    //     }
-    //     console.log('run');
-    //     if (this.footerController) {
-    //       console.log('runaaaaa');
-    //       this.footerController.hidden();
-    //     }
-    //     if (this.headController) {
-    //       this.headController.hidden();
-    //     }
-    //   }
-    // }
   }
   handleClickContainer(event: MouseEvent) {
     const evt = event as PointerEvent;

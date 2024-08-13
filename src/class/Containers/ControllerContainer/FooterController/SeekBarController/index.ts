@@ -181,7 +181,6 @@ class SeekBarController extends BaseComponent {
       this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
       const timeStep = data.time;
       if (this.progressBar) {
-        console.log('run+++++', (timeStep / this.duration) * 100);
         this.progressBar.updateSliderHighlight((timeStep / this.duration) * 100);
       }
       if (this.progressThumb) {
