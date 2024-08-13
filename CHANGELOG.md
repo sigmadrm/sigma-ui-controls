@@ -1,5 +1,12 @@
 
 
+## [0.0.41](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.40...v0.0.41) (2024-08-13)
+
+
+### Features
+
+* fix set current time when scrubbing ([59369cd](https://github.com/sigmadrm/sigma-ui-controls/commit/59369cdcd3d7587ce0c49597cfd2f196ad55e904))
+
 ## [0.0.40](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.39...v0.0.40) (2024-08-13)
 
 
