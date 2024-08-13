@@ -72,11 +72,8 @@ class ScrubbingForward extends BaseComponent {
           this.counter = 0;
           this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
           this.hidden();
-          if (timeStep <= durationTime) {
-            apiPlayer.setCurrentTime(timeStep);
-          } else {
-            apiPlayer.setCurrentTime(durationTime);
-          }
+          console.log('setCurrentTime', currentTime, durationTime, timeStep);
+          apiPlayer.setCurrentTime(timeStep <= durationTime ? timeStep : durationTime);
         }
       }, 300);
       if (this.timerIdScrubbing) clearTimeout(this.timerIdScrubbing);
@@ -86,6 +83,7 @@ class ScrubbingForward extends BaseComponent {
       this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
       if (this.counter - 1 !== 0) {
         const timeStep = currentTime + (this.counter - 1) * 10;
+        console.log('EEVentName.SCRUBBING', currentTime, durationTime, timeStep);
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, {
           seeking: true,
           time: timeStep <= durationTime ? timeStep : durationTime,

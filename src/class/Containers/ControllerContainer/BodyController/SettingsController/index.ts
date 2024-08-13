@@ -222,7 +222,7 @@ export default class SettingsController extends BaseComponent<TSettingState> {
       if (selectedTrack && selectedTrack !== track && !ignoreSelectedTrack) {
         selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
       }
-      return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự dộng';
+      return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự động';
     }
     const trackHeight = track.height || 0;
     const trackWidth = track.width || 0;
