@@ -57,6 +57,7 @@ class ScrubbingRewind extends BaseComponent {
     const { apiPlayer } = this;
     event.preventDefault();
     event.stopPropagation();
+    const currentTime = apiPlayer.getCurrentTime();
     if (event) {
       this.counter++;
       if (this.counter >= 2) {
@@ -66,7 +67,7 @@ class ScrubbingRewind extends BaseComponent {
       this.timerId = null;
       this.timerId = self.setTimeout(() => {
         if (this.counter - 1 !== 0) {
-          const timeStep = apiPlayer.getCurrentTime() - (this.counter - 1) * 10;
+          const timeStep = currentTime - (this.counter - 1) * 10;
           this.counter = 0;
           this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
           this.hidden();
@@ -83,9 +84,10 @@ class ScrubbingRewind extends BaseComponent {
       }, 500);
       this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
       if (this.counter - 1 !== 0) {
+        const timeStep = currentTime - (this.counter - 1) * 10;
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, {
           seeking: true,
-          time: apiPlayer.getCurrentTime() - (this.counter - 1) * 10,
+          time: timeStep > 0 ? timeStep : 0,
           type: ETypeScrubbing.REWIND,
         });
       }
