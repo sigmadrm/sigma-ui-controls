@@ -1,5 +1,12 @@
 
 
+## [0.0.38](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.37...v0.0.38) (2024-08-13)
+
+
+### Bug Fixes
+
+* handle tap scrubbing  in ios ([f6c2bed](https://github.com/sigmadrm/sigma-ui-controls/commit/f6c2bed0cec2df1fd346033f21abac093c0e259b))
+
 ## [0.0.37](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.36...v0.0.37) (2024-08-12)
 
 

@@ -3531,97 +3531,157 @@ const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ScrubbingForward extends BaseComponent_1.default {
     constructor(props) {
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.counter = 0;
+        this.ripple = new ScrubbingRippleRight({
+            id: ids.smScrubbingForwardRippleRight,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.icon = new ScrubbingIcon({
+            id: ids.smScrubbingForwardIcon,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.text = new ScrubbingText({
+            id: ids.smScrubbingForwardText,
+            classes,
+            apiPlayer,
+            ids,
+        });
     }
     render() {
-        var _a, _b, _c;
-        const { classes } = this;
+        const { classes, ids } = this;
         if (this.containerElement) {
             this.containerElement.innerHTML = `<div class="${classes.scrubbingContainer}">
-      <div class="${classes.scrubbingRippleRight}"></div>
-      <div class="${classes.scrubbingIcon}">${icons_1.scrubbingForwardIcon}</div>
-      <div class="${classes.scrubbingText}"></div>
+      <div class="${classes.scrubbingRippleRight}" id="${ids.smScrubbingForwardRippleRight}"></div>
+      <div class="${classes.scrubbingIcon}" id="${ids.smScrubbingForwardIcon}"></div>
+      <div class="${classes.scrubbingText}" id="${ids.smScrubbingForwardText}"></div>
       </div>`;
         }
-        this.icon = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName(classes.scrubbingIcon)[0];
-        this.ripple = (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName(classes.scrubbingRippleRight)[0];
-        this.text = (_c = this.containerElement) === null || _c === void 0 ? void 0 : _c.getElementsByClassName(classes.scrubbingText)[0];
     }
     registerListener() {
         if (!this.containerElement)
             return;
-        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+        this.containerElement.ontouchend = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
         if (!this.containerElement)
             return;
-        this.containerElement.onclick = () => { };
+        this.containerElement.ontouchend = () => { };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        const evt = event;
-        if (evt) {
-            if (evt.pointerType === 'touch') {
-                this.counter++;
-                if (this.counter >= 2) {
-                    this.show();
-                }
-                if (this.timerId)
-                    clearTimeout(this.timerId);
-                this.timerId = null;
-                this.timerId = self.setTimeout(() => {
-                    if (this.counter - 1 !== 0) {
-                        const timeStep = apiPlayer.getCurrentTime() + (this.counter - 1) * 10;
-                        this.counter = 0;
-                        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
-                        this.hidden();
-                        if (timeStep <= apiPlayer.getDuration()) {
-                            apiPlayer.setCurrentTime(timeStep);
-                        }
-                        else {
-                            apiPlayer.setCurrentTime(apiPlayer.getDuration());
-                        }
-                    }
-                }, 300);
-                if (this.timerIdScrubbing)
-                    clearTimeout(this.timerIdScrubbing);
-                this.timerIdScrubbing = self.setTimeout(() => {
-                    this.counter = 0;
-                }, 500);
-                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+        if (event) {
+            this.counter++;
+            if (this.counter >= 2) {
+                this.show();
+            }
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = null;
+            this.timerId = self.setTimeout(() => {
                 if (this.counter - 1 !== 0) {
-                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
-                        seeking: true,
-                        time: apiPlayer.getCurrentTime() + (this.counter - 1) * 10,
-                        type: type_1.ETypeScrubbing.FORWARD,
-                    });
+                    const timeStep = apiPlayer.getCurrentTime() + (this.counter - 1) * 10;
+                    this.counter = 0;
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                    this.hidden();
+                    if (timeStep <= apiPlayer.getDuration()) {
+                        apiPlayer.setCurrentTime(timeStep);
+                    }
+                    else {
+                        apiPlayer.setCurrentTime(apiPlayer.getDuration());
+                    }
                 }
+            }, 300);
+            if (this.timerIdScrubbing)
+                clearTimeout(this.timerIdScrubbing);
+            this.timerIdScrubbing = self.setTimeout(() => {
+                this.counter = 0;
+            }, 500);
+            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+            if (this.counter - 1 !== 0) {
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                    seeking: true,
+                    time: apiPlayer.getCurrentTime() + (this.counter - 1) * 10,
+                    type: type_1.ETypeScrubbing.FORWARD,
+                });
             }
         }
     }
     show() {
         if (this.ripple) {
-            this.ripple.classList.add(this.classes.scrubbingRippleRightEnable);
+            this.ripple.show();
         }
         if (this.text) {
-            this.text.innerHTML = `${String((this.counter - 1) * 10)} s`;
+            this.text.update(`${String((this.counter - 1) * 10)} s`);
         }
         if (this.icon) {
-            this.icon.classList.add(this.classes.scrubbingIconEnable);
+            this.icon.show();
         }
     }
     hidden() {
         if (this.ripple) {
-            this.ripple.classList.remove(this.classes.scrubbingRippleRightEnable);
+            this.ripple.hidden();
         }
         if (this.text) {
-            this.text.innerHTML = '';
+            this.text.update('');
         }
         if (this.icon) {
-            this.icon.classList.remove(this.classes.scrubbingIconEnable);
+            this.icon.hidden();
+        }
+    }
+}
+class ScrubbingRippleRight extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() { }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.scrubbingRippleRightEnable);
+        }
+    }
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.classList.remove(this.classes.scrubbingRippleRightEnable);
+        }
+    }
+}
+class ScrubbingIcon extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.scrubbingForwardIcon;
+        }
+    }
+    show() {
+        console.log(this.containerElement);
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.scrubbingIconEnable);
+        }
+    }
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.classList.remove(this.classes.scrubbingIconEnable);
+        }
+    }
+}
+class ScrubbingText extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() { }
+    update(value) {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = value;
         }
     }
 }
@@ -3647,97 +3707,156 @@ const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class ScrubbingRewind extends BaseComponent_1.default {
     constructor(props) {
+        const { classes, apiPlayer, ids } = props;
         super(props);
         this.counter = 0;
+        this.ripple = new ScrubbingRippleLeft({
+            id: ids.smScrubbingRewindRippleLeft,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.icon = new ScrubbingIcon({
+            id: ids.smScrubbingRewindIcon,
+            classes,
+            apiPlayer,
+            ids,
+        });
+        this.text = new ScrubbingText({
+            id: ids.smScrubbingRewindText,
+            classes,
+            apiPlayer,
+            ids,
+        });
     }
     render() {
-        var _a, _b, _c;
-        const { classes } = this;
+        const { classes, ids } = this;
         if (this.containerElement) {
             this.containerElement.innerHTML = `<div class="${classes.scrubbingContainer}">
-      <div class="${classes.scrubbingRippleLeft}"></div>
-      <div class="${classes.scrubbingIcon}">${icons_1.scrubbingRewindIcon}</div>
-      <div class="${classes.scrubbingText}"></div>
+      <div class="${classes.scrubbingRippleLeft}" id="${ids.smScrubbingRewindRippleLeft}"></div>
+      <div class="${classes.scrubbingIcon}" id="${ids.smScrubbingRewindIcon}">${icons_1.scrubbingRewindIcon}</div>
+      <div class="${classes.scrubbingText}" id="${ids.smScrubbingRewindText}"></div>
       </div>`;
         }
-        this.icon = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName(classes.scrubbingIcon)[0];
-        this.ripple = (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName(classes.scrubbingRippleLeft)[0];
-        this.text = (_c = this.containerElement) === null || _c === void 0 ? void 0 : _c.getElementsByClassName(classes.scrubbingText)[0];
     }
     registerListener() {
         if (!this.containerElement)
             return;
-        this.containerElement.onclick = (event) => this.handleContainerClick(event);
+        this.containerElement.ontouchend = (event) => this.handleContainerClick(event);
     }
     unregisterListener() {
         if (!this.containerElement)
             return;
-        this.containerElement.onclick = () => { };
+        this.containerElement.ontouchend = () => { };
     }
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
         event.stopPropagation();
-        const evt = event;
-        if (evt) {
-            if (evt.pointerType === 'touch') {
-                this.counter++;
-                if (this.counter >= 2) {
-                    this.show();
-                }
-                if (this.timerId)
-                    clearTimeout(this.timerId);
-                this.timerId = null;
-                this.timerId = self.setTimeout(() => {
-                    if (this.counter - 1 !== 0) {
-                        const timeStep = apiPlayer.getCurrentTime() - (this.counter - 1) * 10;
-                        this.counter = 0;
-                        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
-                        this.hidden();
-                        if (timeStep > 0) {
-                            apiPlayer.setCurrentTime(timeStep);
-                        }
-                        else {
-                            apiPlayer.setCurrentTime(0);
-                        }
-                    }
-                }, 300);
-                if (this.timerIdScrubbing)
-                    clearTimeout(this.timerIdScrubbing);
-                this.timerIdScrubbing = self.setTimeout(() => {
-                    this.counter = 0;
-                }, 500);
-                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+        if (event) {
+            this.counter++;
+            if (this.counter >= 2) {
+                this.show();
+            }
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = null;
+            this.timerId = self.setTimeout(() => {
                 if (this.counter - 1 !== 0) {
-                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
-                        seeking: true,
-                        time: apiPlayer.getCurrentTime() - (this.counter - 1) * 10,
-                        type: type_1.ETypeScrubbing.REWIND,
-                    });
+                    const timeStep = apiPlayer.getCurrentTime() - (this.counter - 1) * 10;
+                    this.counter = 0;
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+                    this.hidden();
+                    if (timeStep > 0) {
+                        apiPlayer.setCurrentTime(timeStep);
+                    }
+                    else {
+                        apiPlayer.setCurrentTime(0);
+                    }
                 }
+            }, 300);
+            if (this.timerIdScrubbing)
+                clearTimeout(this.timerIdScrubbing);
+            this.timerIdScrubbing = self.setTimeout(() => {
+                this.counter = 0;
+            }, 500);
+            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
+            if (this.counter - 1 !== 0) {
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                    seeking: true,
+                    time: apiPlayer.getCurrentTime() - (this.counter - 1) * 10,
+                    type: type_1.ETypeScrubbing.REWIND,
+                });
             }
         }
     }
     show() {
         if (this.ripple) {
-            this.ripple.classList.add(this.classes.scrubbingRippleLeftEnable);
+            this.ripple.show();
         }
         if (this.text) {
-            this.text.innerHTML = `${String((this.counter - 1) * 10)} s`;
+            this.text.update(`${String((this.counter - 1) * 10)} s`);
         }
         if (this.icon) {
-            this.icon.classList.add(this.classes.scrubbingIconEnable);
+            this.icon.show();
         }
     }
     hidden() {
         if (this.ripple) {
-            this.ripple.classList.remove(this.classes.scrubbingRippleLeftEnable);
+            this.ripple.hidden();
         }
         if (this.text) {
-            this.text.innerHTML = '';
+            this.text.update('');
         }
         if (this.icon) {
-            this.icon.classList.remove(this.classes.scrubbingIconEnable);
+            this.icon.hidden();
+        }
+    }
+}
+class ScrubbingRippleLeft extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() { }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.scrubbingRippleLeftEnable);
+        }
+    }
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.classList.remove(this.classes.scrubbingRippleLeftEnable);
+        }
+    }
+}
+class ScrubbingIcon extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = icons_1.scrubbingRewindIcon;
+        }
+    }
+    show() {
+        if (this.containerElement) {
+            this.containerElement.classList.add(this.classes.scrubbingIconEnable);
+        }
+    }
+    hidden() {
+        if (this.containerElement) {
+            this.containerElement.classList.remove(this.classes.scrubbingIconEnable);
+        }
+    }
+}
+class ScrubbingText extends BaseComponent_1.default {
+    constructor(props) {
+        super(props);
+    }
+    render() { }
+    update(value) {
+        if (this.containerElement) {
+            this.containerElement.innerHTML = value;
         }
     }
 }
@@ -4606,7 +4725,6 @@ class SeekBarController extends BaseComponent_1.default {
             this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
             const timeStep = data.time;
             if (this.progressBar) {
-                console.log('run+++++', (timeStep / this.duration) * 100);
                 this.progressBar.updateSliderHighlight((timeStep / this.duration) * 100);
             }
             if (this.progressThumb) {
@@ -5188,13 +5306,10 @@ class FooterController extends BaseComponent_1.default {
         e.preventDefault();
         e.stopPropagation();
     }
-    handleEvtSeeking(e, data) {
-        // console.log('handleEvtSeeking', { e, data });
-    }
+    handleEvtSeeking(e, data) { }
     handleEvtScrubbing(e, data) {
-        // console.log('handleEvtScrubbing', { e, data });
         if (data.counter >= 2) {
-            // console.log('ádas');
+            /* empty */
         }
     }
     hidden() {
@@ -5419,22 +5534,6 @@ class ControllerContainer extends BaseComponent_1.default {
                 }
             }, 3000);
         }
-        // else {
-        //   if (this.counter >= 1) {
-        //     console.log('aaaaaaaaaaaaaaaa', this.counter);
-        //     if (this.timerId) {
-        //       clearTimeout(this.timerId);
-        //     }
-        //     console.log('run');
-        //     if (this.footerController) {
-        //       console.log('runaaaaa');
-        //       this.footerController.hidden();
-        //     }
-        //     if (this.headController) {
-        //       this.headController.hidden();
-        //     }
-        //   }
-        // }
     }
     handleClickContainer(event) {
         var _a;
@@ -5859,7 +5958,6 @@ class SmApiPlayer {
     }
     isFullScreen() {
         const isFullscreen = document.fullscreenElement;
-        console.log(isFullscreen);
         if (isFullscreen) {
             return true;
         }
@@ -8165,7 +8263,13 @@ const generateIIds = () => {
         smSettingIconButtonMobile: (0, nanoid_1.nanoid)(4),
         smButtonPausePrimary: (0, nanoid_1.nanoid)(4),
         smScrubbingForward: (0, nanoid_1.nanoid)(4),
+        smScrubbingForwardRippleRight: (0, nanoid_1.nanoid)(4),
+        smScrubbingForwardIcon: (0, nanoid_1.nanoid)(4),
+        smScrubbingForwardText: (0, nanoid_1.nanoid)(4),
         smScrubbingRewind: (0, nanoid_1.nanoid)(4),
+        smScrubbingRewindRippleLeft: (0, nanoid_1.nanoid)(4),
+        smScrubbingRewindIcon: (0, nanoid_1.nanoid)(4),
+        smScrubbingRewindText: (0, nanoid_1.nanoid)(4),
     };
 };
 exports.generateIIds = generateIIds;

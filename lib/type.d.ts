@@ -103,7 +103,13 @@ export type IIds = {
     smSettingIconButtonMobile: string;
     smButtonPausePrimary: string;
     smScrubbingForward: string;
+    smScrubbingForwardRippleRight: string;
+    smScrubbingForwardIcon: string;
+    smScrubbingForwardText: string;
     smScrubbingRewind: string;
+    smScrubbingRewindRippleLeft: string;
+    smScrubbingRewindIcon: string;
+    smScrubbingRewindText: string;
 };
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
