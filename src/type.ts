@@ -50,6 +50,7 @@ export enum EEVentName {
   PLAYING = 'playing',
   SEEKING = 'seeking',
   SCRUBBING = 'scrubbing',
+  SEEK_BAR_SEEKING = 'seekbarseeking',
 }
 
 export const RESOLUTION_LABEL = {
@@ -139,6 +140,7 @@ export interface SmListeners {
   [EEVentName.PLAYING]: (event: EEVentName.PLAYING, data: { [key: string]: any }) => void;
   [EEVentName.SEEKING]: (event: EEVentName.SEEKING, data: { [key: string]: any }) => void;
   [EEVentName.SCRUBBING]: (event: EEVentName.SCRUBBING, data: { [key: string]: any }) => void;
+  [EEVentName.SEEK_BAR_SEEKING]: (event: EEVentName.SEEK_BAR_SEEKING, data: { [key: string]: any }) => void;
 }
 enum AccessibilityPurpose {
   HARD_OF_HEARING = 'hard of hearing',

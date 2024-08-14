@@ -64,6 +64,8 @@ class FooterController extends BaseComponent {
       this.containerElement.ontouchstart = () => {};
       this.containerElement.ontouchend = () => {};
     }
+    this.apiPlayer.eventemitter.off(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
   }
   getIsInside() {
     return this.isInside;
@@ -84,6 +86,7 @@ class FooterController extends BaseComponent {
       /* empty */
     }
   }
+
   hidden() {
     if (this.containerElement) {
       this.containerElement.className = this.classes.footerController;

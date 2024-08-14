@@ -1,4 +1,4 @@
-import { EEVentName, ETypeScrubbing, IConstructorBaseProps } from '../../../../../../type';
+import { EEVentName, IConstructorBaseProps } from '../../../../../../type';
 import BaseComponent from '../../../../../BaseComponent';
 import CurrentTime from '../../../../../Components/CurrentTime';
 import TimeDuration from '../../../../../Components/TimeDuration';
@@ -28,6 +28,7 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
     this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
     this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
     this.handleEventSeeking = this.handleEventSeeking.bind(this);
+    this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
   }
 
   render(): void {
@@ -49,6 +50,7 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
     this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.on(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEventSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
   unregisterListener(): void {
     if (this.containerElement) {
@@ -57,6 +59,7 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
     this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.off(EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEventSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
   handleEventClick(event: MouseEvent) {
     if (this.currentTime) {
@@ -76,6 +79,18 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
     }
   }
   handleEventSeeking(e, data) {
+    if (data.seeking) {
+      const timeStep = data.time;
+      this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+
+      if (this.currentTime) {
+        this.currentTime.update(timeStep);
+      }
+    } else {
+      this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+    }
+  }
+  handleEventSeekBarSeeking(e, data) {
     if (data.seeking) {
       const timeStep = data.time;
       this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);

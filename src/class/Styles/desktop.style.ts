@@ -344,7 +344,7 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 8px;
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
@@ -385,9 +385,9 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       position: relative;
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
-
       cursor: pointer;
     `,
+
     progressBuffer: css`
       position: absolute;
       width: var(--highlight-width-progress-buffer);
@@ -395,6 +395,9 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       background-color: rgba(255, 255, 255, 0.5);
       border-radius: 8px;
       z-index: 1;
+    `,
+    progressContainerActive: css`
+      height: 12px;
     `,
     progressBar: css`
       position: absolute;
@@ -416,6 +419,10 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       top: -3.5px;
       cursor: pointer;
       z-index: 1;
+    `,
+    smProgressThumbActive: css`
+      height: 20px;
+      width: 20px;
     `,
     taskbarController: css`
       width: 100%;

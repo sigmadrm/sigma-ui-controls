@@ -305,7 +305,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
     footerController: css`
       background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 72px;
+      height: 78px;
       bottom: 0px;
       gap: 0px;
       flex-direction: column-reverse;
@@ -322,7 +322,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       padding: 12px;
     `,
     footerControllerEnable: css`
-      height: 72px;
+      height: 78px;
       display: flex;
       bottom: 0;
       transition: 0.3s ease-in-out;
@@ -330,7 +330,7 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
     `,
     seekBarController: css`
       width: 100%;
-      height: 20px;
+      height: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -344,6 +344,10 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       border-radius: 8px;
       cursor: pointer;
     `,
+    progressContainerActive: css`
+      height: 12px;
+    `,
+
     progressBuffer: css`
       position: absolute;
       width: var(--highlight-width-progress-buffer);
@@ -372,6 +376,10 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       top: -3.5px;
       cursor: pointer;
       z-index: 1;
+    `,
+    smProgressThumbActive: css`
+      height: 20px;
+      width: 20px;
     `,
     taskbarController: css`
       width: 100%;

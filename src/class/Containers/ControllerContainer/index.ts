@@ -25,6 +25,7 @@ class ControllerContainer extends BaseComponent {
     this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
     this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
     this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
+    this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
   }
 
   render() {
@@ -56,6 +57,7 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
     this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
 
   unregisterListener() {
@@ -75,6 +77,7 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
     this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+    this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEventSeekBarSeeking, this);
   }
   handleEvtFullScreenChange() {
     // const width = document.body.clientWidth;
@@ -93,6 +96,43 @@ class ControllerContainer extends BaseComponent {
     //     parentElement.classList.remove('sm-control-rotate-90');
     //   }
     // }
+  }
+  handleEventSeekBarSeeking(e, data) {
+    if (data.seeking) {
+      if (this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+        if (this.footerController) {
+          this.footerController.show();
+        }
+      }
+    } else {
+      if (this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+      }
+
+      if (this.footerController) {
+        this.footerController.show();
+      }
+      if (this.headController) {
+        this.headController.show();
+      }
+      if (this.bodyController) {
+        this.bodyController.show();
+      }
+      this.timerId = self.setTimeout(() => {
+        if (this.footerController) {
+          this.footerController.hidden();
+        }
+        if (this.headController) {
+          this.headController.hidden();
+        }
+        if (this.bodyController) {
+          this.bodyController.hidden();
+        }
+      }, 3000);
+    }
   }
   handleOnMouseMover(e: MouseEvent | TouchEvent) {
     if (e.type === 'mousemove') {
