@@ -1,5 +1,12 @@
 
 
+## [0.0.43](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.42...v0.0.43) (2024-08-14)
+
+
+### Features
+
+* remove class css rostate ([4e1a074](https://github.com/sigmadrm/sigma-ui-controls/commit/4e1a074f93d2ae0c8278708fd8e27b826e264718))
+
 ## [0.0.42](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.41...v0.0.42) (2024-08-14)
 
 
