@@ -114,6 +114,7 @@ class ProgressBarContainer extends BaseComponent {
           progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
           timeStep = this.duration;
         }
+
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
         this.apiPlayer.setCurrentTime(timeStep);
       };
@@ -149,6 +150,9 @@ class ProgressBarContainer extends BaseComponent {
             progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
             timeStep = this.duration;
           }
+
+          this.apiPlayer.eventemitter.off(EEVentName.PROGRESS, this.handleEventProgress, this);
+          this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
           this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
           this.apiPlayer.setCurrentTime(timeStep);
         });
@@ -171,6 +175,8 @@ class ProgressBarContainer extends BaseComponent {
       });
       progressBarContainerEle.addEventListener('touchend', (e) => {
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: false });
+        this.apiPlayer.eventemitter.on(EEVentName.PROGRESS, this.handleEventProgress, this);
+        this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
         progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
       });
