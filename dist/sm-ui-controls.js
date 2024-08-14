@@ -4598,6 +4598,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         const { classes, apiPlayer, ids } = props;
         super(props);
         this.duration = 0;
+        this.timeStep = null;
         this.progressBuffer = new ProgressBuffer({
             id: ids.smProgressBuffer,
             classes,
@@ -4678,7 +4679,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
                     timeStep = this.duration;
                 }
                 this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
-                this.apiPlayer.setCurrentTime(timeStep);
+                this.timeStep = timeStep;
             };
             const onEnd = () => {
                 this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: false });
@@ -4711,10 +4712,12 @@ class ProgressBarContainer extends BaseComponent_1.default {
                         progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
                         timeStep = this.duration;
                     }
+                    progressBarContainerEle.classList.add(this.classes.progressContainerActive);
+                    progressThumbEle.classList.add(this.classes.smProgressThumbActive);
                     this.apiPlayer.eventemitter.off(type_1.EEVentName.PROGRESS, this.handleEventProgress, this);
                     this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
                     this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
-                    this.apiPlayer.setCurrentTime(timeStep);
+                    this.timeStep = timeStep;
                 });
             }
             progressThumbEle.addEventListener('mousedown', (e) => {
@@ -4727,6 +4730,12 @@ class ProgressBarContainer extends BaseComponent_1.default {
                 document.addEventListener('touchmove', onMove);
                 document.addEventListener('touchend', onEnd);
             });
+            progressThumbEle.addEventListener('mouseup', (e) => {
+                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+            });
+            progressThumbEle.addEventListener('touchend', (e) => {
+                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+            });
             progressBarContainerEle.addEventListener('touchstart', (e) => {
                 progressBarContainerEle.classList.add(this.classes.progressContainerActive);
                 progressThumbEle.classList.add(this.classes.smProgressThumbActive);
@@ -4737,6 +4746,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
                 this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
                 progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
                 progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
+                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
             });
         }
     }

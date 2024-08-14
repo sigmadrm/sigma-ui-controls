@@ -1,5 +1,12 @@
 
 
+## [0.2.2](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.1...v0.2.2) (2024-08-14)
+
+
+### Bug Fixes
+
+* set current time progress mouse uo or touch end ([b2ee05f](https://github.com/sigmadrm/sigma-ui-controls/commit/b2ee05f3c5907f1274868797c655cb8b507b12bb))
+
 ## [0.2.1](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.0...v0.2.1) (2024-08-14)
 
 
