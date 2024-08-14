@@ -30,6 +30,7 @@ class ProgressBarContainer extends BaseComponent {
   private progressBar: ProgressBar | undefined;
   private progressThumb: ProgressThumb | undefined;
   private duration: number = 0;
+  private timeStep: number | null = null;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
     super(props);
@@ -116,7 +117,7 @@ class ProgressBarContainer extends BaseComponent {
         }
 
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
-        this.apiPlayer.setCurrentTime(timeStep);
+        this.timeStep = timeStep;
       };
 
       const onEnd = () => {
@@ -150,11 +151,12 @@ class ProgressBarContainer extends BaseComponent {
             progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
             timeStep = this.duration;
           }
-
+          progressBarContainerEle.classList.add(this.classes.progressContainerActive);
+          progressThumbEle.classList.add(this.classes.smProgressThumbActive);
           this.apiPlayer.eventemitter.off(EEVentName.PROGRESS, this.handleEventProgress, this);
           this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
           this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
-          this.apiPlayer.setCurrentTime(timeStep);
+          this.timeStep = timeStep;
         });
       }
 
@@ -169,6 +171,13 @@ class ProgressBarContainer extends BaseComponent {
         document.addEventListener('touchmove', onMove);
         document.addEventListener('touchend', onEnd);
       });
+      progressThumbEle.addEventListener('mouseup', (e) => {
+        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+      });
+      progressThumbEle.addEventListener('touchend', (e) => {
+        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+      });
+
       progressBarContainerEle.addEventListener('touchstart', (e) => {
         progressBarContainerEle.classList.add(this.classes.progressContainerActive);
         progressThumbEle.classList.add(this.classes.smProgressThumbActive);
@@ -179,6 +188,7 @@ class ProgressBarContainer extends BaseComponent {
         this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
         progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
+        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
       });
     }
   }
