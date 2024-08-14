@@ -1,5 +1,7 @@
 
 
+* feat: update handle progress bar move (a3d50b0)
+
 ## [0.0.44](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.43...v0.0.44) (2024-08-14)
 
 
