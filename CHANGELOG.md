@@ -1,5 +1,12 @@
 
 
+## [0.0.44](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.43...v0.0.44) (2024-08-14)
+
+
+### Bug Fixes
+
+* remove login when rotate full screen ([8ccb45b](https://github.com/sigmadrm/sigma-ui-controls/commit/8ccb45b793c37f62523a5ed40393bb3e42fef722))
+
 ## [0.0.43](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.42...v0.0.43) (2024-08-14)
 
 

@@ -4620,11 +4620,13 @@ class SeekBarController extends BaseComponent_1.default {
                 let x;
                 if (e.type === 'mousemove') {
                     const mouseEvent = e;
-                    x = this.apiPlayer.isFullScreen() ? mouseEvent.clientY : mouseEvent.clientX;
+                    // x = this.apiPlayer.isFullScreen() ? mouseEvent.clientY : mouseEvent.clientX;
+                    x = mouseEvent.clientX;
                 }
                 else {
                     const touchEvent = e;
-                    x = this.apiPlayer.isFullScreen() ? touchEvent.touches[0].clientY : touchEvent.touches[0].clientX;
+                    // x = this.apiPlayer.isFullScreen() ? touchEvent.touches[0].clientY : touchEvent.touches[0].clientX;
+                    x = touchEvent.touches[0].clientX;
                 }
                 const rect = progressBarbContainer.getBoundingClientRect();
                 const offsetX = x - rect.left;
@@ -5468,24 +5470,22 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     }
     handleEvtFullScreenChange() {
-        var _a;
-        const width = document.body.clientWidth;
-        const height = document.body.clientHeight;
-        const parentElement = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
-        if (this.apiPlayer.isFullScreen()) {
-            if (width < height) {
-                this.apiPlayer.rotateVideo();
-                if (parentElement) {
-                    parentElement.classList.add('sm-control-rotate-90');
-                }
-            }
-        }
-        else {
-            this.apiPlayer.resetRotation();
-            if (parentElement) {
-                parentElement.classList.remove('sm-control-rotate-90');
-            }
-        }
+        // const width = document.body.clientWidth;
+        // const height = document.body.clientHeight;
+        // const parentElement = this.containerElement?.parentElement;
+        // if (this.apiPlayer.isFullScreen()) {
+        //   if (width < height) {
+        //     this.apiPlayer.rotateVideo();
+        //     if (parentElement) {
+        //       parentElement.classList.add('sm-control-rotate-90');
+        //     }
+        //   }
+        // } else {
+        //   this.apiPlayer.resetRotation();
+        //   if (parentElement) {
+        //     parentElement.classList.remove('sm-control-rotate-90');
+        //   }
+        // }
     }
     handleOnMouseMover(e) {
         if (e.type === 'mousemove') {
@@ -6099,26 +6099,26 @@ class SmApiPlayer {
         return false;
     }
     rotateVideo() {
-        if (!this.video) {
-            console.error('Video element is null or undefined.');
-            return;
-        }
-        const videoContainer = this.video.parentElement;
-        if (videoContainer) {
-            videoContainer.classList.add('sm-container-rotate-90');
-        }
-        this.video.classList.add('sm-rotate-90');
+        // if (!this.video) {
+        //   console.error('Video element is null or undefined.');
+        //   return;
+        // }
+        // const videoContainer = this.video.parentElement as any;
+        // if (videoContainer) {
+        //   videoContainer.classList.add('sm-container-rotate-90');
+        // }
+        // this.video.classList.add('sm-rotate-90');
     }
     resetRotation() {
-        if (!this.video) {
-            console.error('Video element is null or undefined.');
-            return;
-        }
-        const videoContainer = this.video.parentElement;
-        if (videoContainer) {
-            videoContainer.classList.remove('sm-container-rotate-90');
-        }
-        this.video.classList.remove('sm-rotate-90');
+        // if (!this.video) {
+        //   console.error('Video element is null or undefined.');
+        //   return;
+        // }
+        // const videoContainer = this.video.parentElement as any;
+        // if (videoContainer) {
+        //   videoContainer.classList.remove('sm-container-rotate-90');
+        // }
+        // this.video.classList.remove('sm-rotate-90');
     }
     set playbackRate(value) {
         if (this.video) {
