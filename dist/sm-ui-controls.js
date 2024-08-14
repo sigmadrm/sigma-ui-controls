@@ -3584,12 +3584,14 @@ class ScrubbingForward extends BaseComponent_1.default {
             if (this.counter >= 2) {
                 this.show();
             }
-            if (this.timerId)
+            if (this.timerId) {
                 clearTimeout(this.timerId);
-            this.timerId = null;
+                this.timerId = null;
+            }
             this.timerId = self.setTimeout(() => {
                 if (this.counter - 1 !== 0) {
                     const timeStep = currentTime + (this.counter - 1) * 10;
+                    console.log('setCurrentTime', currentTime, durationTime, timeStep);
                     this.counter = 0;
                     this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
                     this.hidden();
@@ -4618,11 +4620,11 @@ class SeekBarController extends BaseComponent_1.default {
                 let x;
                 if (e.type === 'mousemove') {
                     const mouseEvent = e;
-                    x = mouseEvent.clientX;
+                    x = this.apiPlayer.isFullScreen() ? mouseEvent.clientY : mouseEvent.clientX;
                 }
                 else {
                     const touchEvent = e;
-                    x = touchEvent.touches[0].clientX;
+                    x = this.apiPlayer.isFullScreen() ? touchEvent.touches[0].clientY : touchEvent.touches[0].clientX;
                 }
                 const rect = progressBarbContainer.getBoundingClientRect();
                 const offsetX = x - rect.left;
@@ -5416,6 +5418,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.handleEvtError = this.handleEvtError.bind(this);
         this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
         this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
+        this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
     }
     render() {
         const { classes, ids } = this;
@@ -5444,6 +5447,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ERROR, this.handleEvtError, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -5461,6 +5465,27 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ERROR, this.handleEvtError, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+    }
+    handleEvtFullScreenChange() {
+        var _a;
+        const width = document.body.clientWidth;
+        const height = document.body.clientHeight;
+        const parentElement = (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
+        if (this.apiPlayer.isFullScreen()) {
+            if (width < height) {
+                this.apiPlayer.rotateVideo();
+                if (parentElement) {
+                    parentElement.classList.add('sm-control-rotate-90');
+                }
+            }
+        }
+        else {
+            this.apiPlayer.resetRotation();
+            if (parentElement) {
+                parentElement.classList.remove('sm-control-rotate-90');
+            }
+        }
     }
     handleOnMouseMover(e) {
         if (e.type === 'mousemove') {
@@ -6055,6 +6080,7 @@ class SmApiPlayer {
         if (doc) {
             if (doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
                 exitFullScreenMode();
+                this.resetRotation();
             }
             else {
                 console.warn('No element is currently in fullscreen mode.');
@@ -6071,6 +6097,28 @@ class SmApiPlayer {
             return video.ended;
         }
         return false;
+    }
+    rotateVideo() {
+        if (!this.video) {
+            console.error('Video element is null or undefined.');
+            return;
+        }
+        const videoContainer = this.video.parentElement;
+        if (videoContainer) {
+            videoContainer.classList.add('sm-container-rotate-90');
+        }
+        this.video.classList.add('sm-rotate-90');
+    }
+    resetRotation() {
+        if (!this.video) {
+            console.error('Video element is null or undefined.');
+            return;
+        }
+        const videoContainer = this.video.parentElement;
+        if (videoContainer) {
+            videoContainer.classList.remove('sm-container-rotate-90');
+        }
+        this.video.classList.remove('sm-rotate-90');
     }
     set playbackRate(value) {
         if (this.video) {

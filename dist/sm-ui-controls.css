@@ -4084,6 +4084,24 @@
 body {
   margin: 0;
 }
+.sm-rotate-90 {
+  transform: rotate(90deg) !important;
+}
+.sm-control-rotate-90 {
+  transform: rotate(90deg) !important;
+  width: 100vh !important;
+  height: 100vw !important;
+  position: fixed !important;
+  top: unset !important;
+  bottom: unset !important;
+  right: unset !important;
+  left: unset !important;
+}
+.sm-container-rotate-90 {
+  width: 100vh !important;
+  height: 100vw !important;
+  transform: rotate(90deg) !important;
+}
 
 @-webkit-keyframes ssrotate {
   0% {

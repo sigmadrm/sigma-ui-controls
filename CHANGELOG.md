@@ -1,5 +1,12 @@
 
 
+## [0.0.42](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.41...v0.0.42) (2024-08-14)
+
+
+### Features
+
+* handle rostate when full screen ([1bf9d81](https://github.com/sigmadrm/sigma-ui-controls/commit/1bf9d812a76aa3bece94a300f6d3414ff2139a29))
+
 ## [0.0.41](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.40...v0.0.41) (2024-08-13)
 
 
