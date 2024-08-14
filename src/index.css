@@ -3,22 +3,22 @@ body {
   margin: 0;
 }
 .sm-rotate-90 {
-  transform: rotate(90deg) !important;
+  /* transform: rotate(90deg) !important; */
 }
 .sm-control-rotate-90 {
-  transform: rotate(90deg) !important;
+  /* transform: rotate(90deg) !important;
   width: 100vh !important;
   height: 100vw !important;
   position: fixed !important;
-  top: unset !important;
-  bottom: unset !important;
-  right: unset !important;
-  left: unset !important;
+  top: auto !important;
+  bottom: 50vh !important;
+  right: auto !important;
+  left: -50vw !important; */
 }
 .sm-container-rotate-90 {
-  width: 100vh !important;
+  /* width: 100vh !important;
   height: 100vw !important;
-  transform: rotate(90deg) !important;
+  transform: rotate(90deg) !important; */
 }
 
 @-webkit-keyframes ssrotate {
