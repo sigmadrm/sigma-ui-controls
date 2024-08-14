@@ -13,6 +13,7 @@ declare class TimeBarContainer extends BaseComponent<IConstructorProps> {
     handleEventTimeUpdate(): void;
     handleEventLoadMetaData(): void;
     handleEventSeeking(e: any, data: any): void;
+    handleEventSeekBarSeeking(e: any, data: any): void;
     hide(): void;
     show(): void;
 }

@@ -37,9 +37,11 @@ declare const generateStyles: (props?: TGenerateStylesProps) => {
     footerControllerEnable: string;
     seekBarController: string;
     progressContainer: string;
+    progressContainerActive: string;
     progressBuffer: string;
     progressBar: string;
     progressThumb: string;
+    smProgressThumbActive: string;
     taskbarController: string;
     taskbarGroup: string;
     taskbarGroupBtn: string;

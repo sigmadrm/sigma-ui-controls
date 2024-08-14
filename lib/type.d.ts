@@ -48,7 +48,8 @@ export declare enum EEVentName {
     WAITING = "waiting",
     PLAYING = "playing",
     SEEKING = "seeking",
-    SCRUBBING = "scrubbing"
+    SCRUBBING = "scrubbing",
+    SEEK_BAR_SEEKING = "seekbarseeking"
 }
 export declare const RESOLUTION_LABEL: {
     AUTO: string;
@@ -168,6 +169,9 @@ export interface SmListeners {
         [key: string]: any;
     }) => void;
     [EEVentName.SCRUBBING]: (event: EEVentName.SCRUBBING, data: {
+        [key: string]: any;
+    }) => void;
+    [EEVentName.SEEK_BAR_SEEKING]: (event: EEVentName.SEEK_BAR_SEEKING, data: {
         [key: string]: any;
     }) => void;
 }

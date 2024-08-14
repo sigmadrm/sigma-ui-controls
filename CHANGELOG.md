@@ -1,5 +1,12 @@
 
 
+# [0.2.0](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.1.0...v0.2.0) (2024-08-14)
+
+
+### Features
+
+* update ui and logic seeking progress move ([44684eb](https://github.com/sigmadrm/sigma-ui-controls/commit/44684eb9230728959b6276afb600177891c0adb4))
+
 * feat: update handle progress bar move (a3d50b0)
 
 ## [0.0.44](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.0.43...v0.0.44) (2024-08-14)

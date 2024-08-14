@@ -13,6 +13,7 @@ declare class ControllerContainer extends BaseComponent {
     registerListener(): void;
     unregisterListener(): void;
     handleEvtFullScreenChange(): void;
+    handleEventSeekBarSeeking(e: any, data: any): void;
     handleOnMouseMover(e: MouseEvent | TouchEvent): void;
     handleOnMouseover(e: MouseEvent | TouchEvent): void;
     handleOnMouseout(e: MouseEvent | TouchEvent): void;

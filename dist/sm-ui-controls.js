@@ -4391,6 +4391,7 @@ class BodyController extends BaseComponent_1.default {
         this.handleEventPause = this.handleEventPause.bind(this);
         this.handleEventEnded = this.handleEventEnded.bind(this);
         this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
+        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -4412,11 +4413,12 @@ class BodyController extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
     }
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
     }
     handleEventPlay() {
         if (this.buttonPlayPrimary) {
@@ -4453,6 +4455,16 @@ class BodyController extends BaseComponent_1.default {
     }
     handleEvtSeeking(e, data) {
         console.log(data);
+        if (data.seeking === false) {
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+    }
+    handleEventSeekBarSeeking(e, data) {
         if (data.seeking === false) {
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
@@ -4565,7 +4577,26 @@ class SeekBarController extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
         super(props);
-        // private timeoutId: number | null | undefined;
+        this.progressBarContainer = new ProgressBarContainer({
+            id: ids.smProgressBarContainer,
+            classes,
+            apiPlayer,
+            ids,
+        });
+    }
+    render() {
+        if (this.containerElement) {
+            const { classes } = this;
+            const htmlString = `
+          <div class="${classes.progressContainer}" id="${this.ids.smProgressBarContainer}"></div>`;
+            this.containerElement.innerHTML = htmlString;
+        }
+    }
+}
+class ProgressBarContainer extends BaseComponent_1.default {
+    constructor(props) {
+        const { classes, apiPlayer, ids } = props;
+        super(props);
         this.duration = 0;
         this.progressBuffer = new ProgressBuffer({
             id: ids.smProgressBuffer,
@@ -4594,11 +4625,9 @@ class SeekBarController extends BaseComponent_1.default {
         if (this.containerElement) {
             const { classes } = this;
             const htmlString = `
-        <div class="${classes.progressContainer}" id="${this.ids.smProgressBarContainer}">
           <div class="${classes.progressBuffer}" id="${this.ids.smProgressBuffer}"></div>
           <div class="${classes.progressBar}" id="${this.ids.smProgressBar}"></div>
-          <div class="${classes.progressThumb}" id="${this.ids.smProgressThumb}"></div>
-        </div>`;
+          <div class="${classes.progressThumb}" id="${this.ids.smProgressThumb}"></div>`;
             this.containerElement.innerHTML = htmlString;
         }
     }
@@ -4613,9 +4642,10 @@ class SeekBarController extends BaseComponent_1.default {
             };
         }
         // Xử lý kéo thanh tiến trình
-        const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
-        const progressBarbContainer = document.getElementById(this.ids.smProgressBar);
-        if (progressThumbContainer && progressBarbContainer) {
+        const progressThumbEle = document.getElementById(this.ids.smProgressThumb);
+        const progressBarEle = document.getElementById(this.ids.smProgressBar);
+        const progressBarContainerEle = this.containerElement;
+        if (progressThumbEle && progressBarEle && progressBarContainerEle) {
             const onMove = (e) => {
                 e.preventDefault();
                 let x;
@@ -4627,27 +4657,31 @@ class SeekBarController extends BaseComponent_1.default {
                     const touchEvent = e;
                     x = touchEvent.touches[0].clientX;
                 }
-                const rect = progressBarbContainer.getBoundingClientRect();
+                const rect = progressBarEle.getBoundingClientRect();
                 const offsetX = x - rect.left;
                 const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
                 const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
+                let timeStep;
                 if (percentage >= 0 && percentage <= 100) {
-                    progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                    progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                    this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                    progressBarEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                    progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                    timeStep = (percentage / 100) * this.duration;
                 }
                 else if (percentage < 0) {
-                    progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${0}%`);
-                    progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
-                    this.apiPlayer.setCurrentTime(0);
+                    progressBarEle.style.setProperty('--highlight-width-progress-bar', `${0}%`);
+                    progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
+                    timeStep = 0;
                 }
                 else {
-                    progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${100}%`);
-                    progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
-                    this.apiPlayer.setCurrentTime(this.apiPlayer.getDuration());
+                    progressBarEle.style.setProperty('--highlight-width-progress-bar', `${100}%`);
+                    progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
+                    timeStep = this.duration;
                 }
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
+                this.apiPlayer.setCurrentTime(timeStep);
             };
             const onEnd = () => {
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: false });
                 document.removeEventListener('mousemove', onMove);
                 document.removeEventListener('mouseup', onEnd);
                 document.removeEventListener('touchmove', onMove);
@@ -4657,36 +4691,48 @@ class SeekBarController extends BaseComponent_1.default {
                 this.containerElement.addEventListener('touchmove', (e) => {
                     e.preventDefault();
                     const x = e.touches[0].clientX;
-                    const rect = progressBarbContainer.getBoundingClientRect();
+                    const rect = progressBarEle.getBoundingClientRect();
                     const offsetX = x - rect.left;
                     const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
                     const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
+                    let timeStep;
                     if (percentage >= 0 && percentage <= 100) {
-                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
-                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-                        this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+                        progressBarEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+                        progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+                        timeStep = (percentage / 100) * this.duration;
                     }
                     else if (percentage < 0) {
-                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${0}%`);
-                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
-                        this.apiPlayer.setCurrentTime(0);
+                        progressBarEle.style.setProperty('--highlight-width-progress-bar', `${0}%`);
+                        progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
+                        timeStep = 0;
                     }
                     else {
-                        progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${100}%`);
-                        progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
-                        this.apiPlayer.setCurrentTime(this.apiPlayer.getDuration());
+                        progressBarEle.style.setProperty('--highlight-width-progress-bar', `${100}%`);
+                        progressThumbEle.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
+                        timeStep = this.duration;
                     }
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
+                    this.apiPlayer.setCurrentTime(timeStep);
                 });
             }
-            progressThumbContainer.addEventListener('mousedown', (e) => {
+            progressThumbEle.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 document.addEventListener('mousemove', onMove);
                 document.addEventListener('mouseup', onEnd);
             });
-            progressThumbContainer.addEventListener('touchstart', (e) => {
+            progressThumbEle.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 document.addEventListener('touchmove', onMove);
                 document.addEventListener('touchend', onEnd);
+            });
+            progressBarContainerEle.addEventListener('touchstart', (e) => {
+                progressBarContainerEle.classList.add(this.classes.progressContainerActive);
+                progressThumbEle.classList.add(this.classes.smProgressThumbActive);
+            });
+            progressBarContainerEle.addEventListener('touchend', (e) => {
+                this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: false });
+                progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
+                progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
             });
         }
     }
@@ -4707,6 +4753,8 @@ class SeekBarController extends BaseComponent_1.default {
         }
         if (this.containerElement) {
             this.containerElement.ontouchmove = () => { };
+            this.containerElement.ontouchstart = () => { };
+            this.containerElement.ontouchend = () => { };
         }
     }
     handleEventClick(e) {
@@ -4718,10 +4766,12 @@ class SeekBarController extends BaseComponent_1.default {
             const x = e.clientX - rect.left;
             const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
             const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
+            const timeStep = (percentage / 100) * this.duration;
             progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
             progressThumbContainer &&
                 progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
-            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+            this.apiPlayer.setCurrentTime(timeStep);
+            this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: false });
         }
     }
     handleEventProgress() {
@@ -4770,7 +4820,6 @@ class SeekBarController extends BaseComponent_1.default {
         }
     }
 }
-exports["default"] = SeekBarController;
 class ProgressBuffer extends BaseComponent_1.default {
     constructor(props) {
         super(props);
@@ -4783,10 +4832,6 @@ class ProgressBuffer extends BaseComponent_1.default {
         const percentage = value;
         const inputVolRangeEle = document.getElementById(this.ids.smProgressBuffer);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-buffer', `${percentage}%`);
-    }
-    getElementContainer() {
-        const containerElement = this.containerElement;
-        return containerElement;
     }
 }
 class ProgressBar extends BaseComponent_1.default {
@@ -4802,10 +4847,6 @@ class ProgressBar extends BaseComponent_1.default {
         const inputVolRangeEle = document.getElementById(this.ids.smProgressBar);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
     }
-    getElementContainer() {
-        const containerElement = this.containerElement;
-        return containerElement;
-    }
 }
 class ProgressThumb extends BaseComponent_1.default {
     constructor(props) {
@@ -4820,11 +4861,8 @@ class ProgressThumb extends BaseComponent_1.default {
         const inputVolRangeEle = document.getElementById(this.ids.smProgressThumb);
         inputVolRangeEle && inputVolRangeEle.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
     }
-    getElementContainer() {
-        const containerElement = this.containerElement;
-        return containerElement;
-    }
 }
+exports["default"] = SeekBarController;
 
 
 /***/ }),
@@ -4864,6 +4902,7 @@ class TimeBarContainer extends BaseComponent_1.default {
         this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
         this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
         this.handleEventSeeking = this.handleEventSeeking.bind(this);
+        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         const { classes } = this;
@@ -4884,6 +4923,7 @@ class TimeBarContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -4892,6 +4932,7 @@ class TimeBarContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED_META_DATA, this.handleEventLoadMetaData, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     handleEventClick(event) {
         if (this.currentTime) {
@@ -4911,6 +4952,18 @@ class TimeBarContainer extends BaseComponent_1.default {
         }
     }
     handleEventSeeking(e, data) {
+        if (data.seeking) {
+            const timeStep = data.time;
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+            if (this.currentTime) {
+                this.currentTime.update(timeStep);
+            }
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
+        }
+    }
+    handleEventSeekBarSeeking(e, data) {
         if (data.seeking) {
             const timeStep = data.time;
             this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
@@ -5326,6 +5379,8 @@ class FooterController extends BaseComponent_1.default {
             this.containerElement.ontouchstart = () => { };
             this.containerElement.ontouchend = () => { };
         }
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
     }
     getIsInside() {
         return this.isInside;
@@ -5453,6 +5508,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
         this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
         this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
+        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         const { classes, ids } = this;
@@ -5482,6 +5538,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -5500,6 +5557,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEventSeekBarSeeking, this);
     }
     handleEvtFullScreenChange() {
         // const width = document.body.clientWidth;
@@ -5518,6 +5576,43 @@ class ControllerContainer extends BaseComponent_1.default {
         //     parentElement.classList.remove('sm-control-rotate-90');
         //   }
         // }
+    }
+    handleEventSeekBarSeeking(e, data) {
+        if (data.seeking) {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+                if (this.footerController) {
+                    this.footerController.show();
+                }
+            }
+        }
+        else {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+            if (this.footerController) {
+                this.footerController.show();
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+            if (this.bodyController) {
+                this.bodyController.show();
+            }
+            this.timerId = self.setTimeout(() => {
+                if (this.footerController) {
+                    this.footerController.hidden();
+                }
+                if (this.headController) {
+                    this.headController.hidden();
+                }
+                if (this.bodyController) {
+                    this.bodyController.hidden();
+                }
+            }, 3000);
+        }
     }
     handleOnMouseMover(e) {
         if (e.type === 'mousemove') {
@@ -6851,7 +6946,7 @@ const generateStylesDesktop = (props) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 8px;
       overflow: hidden;
       transition: 0.3s ease-in-out;
       padding: 12px 12px;
@@ -6892,7 +6987,6 @@ const generateStylesDesktop = (props) => {
       position: relative;
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
-
       cursor: pointer;
     `,
         progressBuffer: (0, css_1.css) `
@@ -6902,6 +6996,9 @@ const generateStylesDesktop = (props) => {
       background-color: rgba(255, 255, 255, 0.5);
       border-radius: 8px;
       z-index: 1;
+    `,
+        progressContainerActive: (0, css_1.css) `
+      height: 12px;
     `,
         progressBar: (0, css_1.css) `
       position: absolute;
@@ -6923,6 +7020,10 @@ const generateStylesDesktop = (props) => {
       top: -3.5px;
       cursor: pointer;
       z-index: 1;
+    `,
+        smProgressThumbActive: (0, css_1.css) `
+      height: 20px;
+      width: 20px;
     `,
         taskbarController: (0, css_1.css) `
       width: 100%;
@@ -7565,7 +7666,7 @@ const generateStylesMobile = (props) => {
         footerController: (0, css_1.css) `
       background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
       width: 100%;
-      height: 72px;
+      height: 78px;
       bottom: 0px;
       gap: 0px;
       flex-direction: column-reverse;
@@ -7582,7 +7683,7 @@ const generateStylesMobile = (props) => {
       padding: 12px;
     `,
         footerControllerEnable: (0, css_1.css) `
-      height: 72px;
+      height: 78px;
       display: flex;
       bottom: 0;
       transition: 0.3s ease-in-out;
@@ -7590,7 +7691,7 @@ const generateStylesMobile = (props) => {
     `,
         seekBarController: (0, css_1.css) `
       width: 100%;
-      height: 20px;
+      height: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -7603,6 +7704,9 @@ const generateStylesMobile = (props) => {
       background-color: rgba(255, 255, 255, 0.24);
       border-radius: 8px;
       cursor: pointer;
+    `,
+        progressContainerActive: (0, css_1.css) `
+      height: 12px;
     `,
         progressBuffer: (0, css_1.css) `
       position: absolute;
@@ -7632,6 +7736,10 @@ const generateStylesMobile = (props) => {
       top: -3.5px;
       cursor: pointer;
       z-index: 1;
+    `,
+        smProgressThumbActive: (0, css_1.css) `
+      height: 20px;
+      width: 20px;
     `,
         taskbarController: (0, css_1.css) `
       width: 100%;
@@ -8430,6 +8538,7 @@ var EEVentName;
     EEVentName["PLAYING"] = "playing";
     EEVentName["SEEKING"] = "seeking";
     EEVentName["SCRUBBING"] = "scrubbing";
+    EEVentName["SEEK_BAR_SEEKING"] = "seekbarseeking";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 exports.RESOLUTION_LABEL = {
     AUTO: 'Auto',

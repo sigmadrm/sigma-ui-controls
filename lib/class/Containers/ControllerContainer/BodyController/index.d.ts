@@ -17,6 +17,7 @@ declare class BodyController extends BaseComponent {
     handleEventPause(): void;
     handleEventEnded(): void;
     handleEvtSeeking(e: any, data: any): void;
+    handleEventSeekBarSeeking(e: any, data: any): void;
     show(): void;
     hidden(): void;
     destroy(): void;

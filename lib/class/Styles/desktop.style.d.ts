@@ -38,8 +38,10 @@ declare const generateStylesDesktop: (props?: TGenerateStylesProps) => {
     seekBarController: string;
     progressContainer: string;
     progressBuffer: string;
+    progressContainerActive: string;
     progressBar: string;
     progressThumb: string;
+    smProgressThumbActive: string;
     taskbarController: string;
     taskbarGroup: string;
     taskbarGroupBtn: string;
