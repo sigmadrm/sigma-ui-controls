@@ -64,11 +64,14 @@ class ScrubbingForward extends BaseComponent {
       if (this.counter >= 2) {
         this.show();
       }
-      if (this.timerId) clearTimeout(this.timerId);
-      this.timerId = null;
+      if (this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+      }
       this.timerId = self.setTimeout(() => {
         if (this.counter - 1 !== 0) {
           const timeStep = currentTime + (this.counter - 1) * 10;
+          console.log('setCurrentTime', currentTime, durationTime, timeStep);
           this.counter = 0;
           this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
           this.hidden();

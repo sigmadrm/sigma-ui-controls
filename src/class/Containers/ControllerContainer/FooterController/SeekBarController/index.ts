@@ -69,10 +69,10 @@ class SeekBarController extends BaseComponent {
         let x: number;
         if (e.type === 'mousemove') {
           const mouseEvent = e as MouseEvent;
-          x = mouseEvent.clientX;
+          x = this.apiPlayer.isFullScreen() ? mouseEvent.clientY : mouseEvent.clientX;
         } else {
           const touchEvent = e as TouchEvent;
-          x = touchEvent.touches[0].clientX;
+          x = this.apiPlayer.isFullScreen() ? touchEvent.touches[0].clientY : touchEvent.touches[0].clientX;
         }
 
         const rect = progressBarbContainer.getBoundingClientRect();

@@ -298,6 +298,7 @@ export default class SmApiPlayer {
     if (doc) {
       if (doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
         exitFullScreenMode();
+        this.resetRotation();
       } else {
         console.warn('No element is currently in fullscreen mode.');
       }
@@ -312,6 +313,29 @@ export default class SmApiPlayer {
       return video.ended;
     }
     return false;
+  }
+  rotateVideo() {
+    if (!this.video) {
+      console.error('Video element is null or undefined.');
+      return;
+    }
+    const videoContainer = this.video.parentElement as any;
+    if (videoContainer) {
+      videoContainer.classList.add('sm-container-rotate-90');
+    }
+    this.video.classList.add('sm-rotate-90');
+  }
+
+  resetRotation() {
+    if (!this.video) {
+      console.error('Video element is null or undefined.');
+      return;
+    }
+    const videoContainer = this.video.parentElement as any;
+    if (videoContainer) {
+      videoContainer.classList.remove('sm-container-rotate-90');
+    }
+    this.video.classList.remove('sm-rotate-90');
   }
   set playbackRate(value: number) {
     if (this.video) {

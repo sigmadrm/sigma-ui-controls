@@ -24,6 +24,7 @@ class ControllerContainer extends BaseComponent {
     this.handleEvtError = this.handleEvtError.bind(this);
     this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
     this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
+    this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
   }
 
   render() {
@@ -54,6 +55,7 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handleEvtError, this);
     this.apiPlayer.eventemitter.on(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
   }
 
   unregisterListener() {
@@ -72,6 +74,25 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handleEvtError, this);
     this.apiPlayer.eventemitter.off(EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
+  }
+  handleEvtFullScreenChange() {
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+    const parentElement = this.containerElement?.parentElement;
+    if (this.apiPlayer.isFullScreen()) {
+      if (width < height) {
+        this.apiPlayer.rotateVideo();
+        if (parentElement) {
+          parentElement.classList.add('sm-control-rotate-90');
+        }
+      }
+    } else {
+      this.apiPlayer.resetRotation();
+      if (parentElement) {
+        parentElement.classList.remove('sm-control-rotate-90');
+      }
+    }
   }
   handleOnMouseMover(e: MouseEvent | TouchEvent) {
     if (e.type === 'mousemove') {
