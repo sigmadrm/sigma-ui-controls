@@ -1,5 +1,12 @@
 
 
+## [0.2.1](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.0...v0.2.1) (2024-08-14)
+
+
+### Bug Fixes
+
+* emitter off event progress, timeupdate  when progress move ([c06ea80](https://github.com/sigmadrm/sigma-ui-controls/commit/c06ea80a10195c5be4f29783c9ddc282158d85c1))
+
 # [0.2.0](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.1.0...v0.2.0) (2024-08-14)
 
 
