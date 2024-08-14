@@ -7,7 +7,7 @@ class SeekBarController extends BaseComponent {
   private progressBuffer: ProgressBuffer | undefined;
   private progressBar: ProgressBar | undefined;
   private progressThumb: ProgressThumb | undefined;
-  private timeoutId: number | null | undefined;
+  // private timeoutId: number | null | undefined;
   private duration: number = 0;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
@@ -69,11 +69,9 @@ class SeekBarController extends BaseComponent {
         let x: number;
         if (e.type === 'mousemove') {
           const mouseEvent = e as MouseEvent;
-          // x = this.apiPlayer.isFullScreen() ? mouseEvent.clientY : mouseEvent.clientX;
           x = mouseEvent.clientX;
         } else {
           const touchEvent = e as TouchEvent;
-          // x = this.apiPlayer.isFullScreen() ? touchEvent.touches[0].clientY : touchEvent.touches[0].clientX;
           x = touchEvent.touches[0].clientX;
         }
 
@@ -85,13 +83,16 @@ class SeekBarController extends BaseComponent {
         if (percentage >= 0 && percentage <= 100) {
           progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
           progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+          this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+        } else if (percentage < 0) {
+          progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${0}%`);
+          progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
 
-          if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-          }
-          this.timeoutId = self.setTimeout(() => {
-            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
-          }, 0);
+          this.apiPlayer.setCurrentTime(0);
+        } else {
+          progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${100}%`);
+          progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
+          this.apiPlayer.setCurrentTime(this.apiPlayer.getDuration());
         }
       };
 
@@ -101,6 +102,32 @@ class SeekBarController extends BaseComponent {
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend', onEnd);
       };
+
+      if (this.containerElement) {
+        this.containerElement.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          const x = e.touches[0].clientX;
+          const rect = progressBarbContainer.getBoundingClientRect();
+          const offsetX = x - rect.left;
+          const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
+          const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
+
+          if (percentage >= 0 && percentage <= 100) {
+            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
+            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+            this.apiPlayer.setCurrentTime((percentage / 100) * this.apiPlayer.getDuration());
+          } else if (percentage < 0) {
+            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${0}%`);
+            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${0}%`);
+
+            this.apiPlayer.setCurrentTime(0);
+          } else {
+            progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${100}%`);
+            progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${100}%`);
+            this.apiPlayer.setCurrentTime(this.apiPlayer.getDuration());
+          }
+        });
+      }
 
       progressThumbContainer.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -129,6 +156,9 @@ class SeekBarController extends BaseComponent {
     if (progressThumbContainer) {
       progressThumbContainer.onmousedown = () => {};
       progressThumbContainer.ontouchmove = () => {};
+    }
+    if (this.containerElement) {
+      this.containerElement.ontouchmove = () => {};
     }
   }
   handleEventClick(e: MouseEvent) {
