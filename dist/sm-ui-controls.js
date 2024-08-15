@@ -4413,6 +4413,8 @@ class BodyController extends BaseComponent_1.default {
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
     }
     handleEventPlay() {
@@ -4450,7 +4452,7 @@ class BodyController extends BaseComponent_1.default {
     }
     handleEvtSeeking(e, data) {
         console.log(data);
-        if (data.seeking === false) {
+        if (data.seeking === true) {
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         }
@@ -4460,7 +4462,7 @@ class BodyController extends BaseComponent_1.default {
         }
     }
     handleEventSeekBarSeeking(e, data) {
-        if (data.seeking === false) {
+        if (data.seeking === true) {
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         }
@@ -4593,7 +4595,6 @@ class ProgressBarContainer extends BaseComponent_1.default {
         const { classes, apiPlayer, ids } = props;
         super(props);
         this.duration = 0;
-        this.timeStep = null;
         this.progressBuffer = new ProgressBuffer({
             id: ids.smProgressBuffer,
             classes,
@@ -4726,13 +4727,13 @@ class ProgressBarContainer extends BaseComponent_1.default {
             });
             progressThumbEle.addEventListener('mouseup', (e) => {
                 e.preventDefault();
-                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+                this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
             });
             progressThumbEle.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
                 progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
-                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+                this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
             });
             progressBarContainerEle.addEventListener('touchstart', (e) => {
                 progressBarContainerEle.classList.add(this.classes.progressContainerActive);
@@ -4744,7 +4745,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
                 this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
                 progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
                 progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
-                this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+                this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
             });
         }
     }
@@ -5227,23 +5228,83 @@ class TaskbarController extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventFullScreen, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
+    }
+    handleEvtSeeking(e, data) {
+        console.log(data);
+        if (data.seeking === true) {
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+    }
+    handleEventSeekBarSeeking(e, data) {
+        if (data.seeking === true) {
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+        }
+        else {
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
+            this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
+            if (this.apiPlayer.isEnded()) {
+                if (this.buttonPlaySecondary) {
+                    this.buttonPlaySecondary.hide();
+                }
+                if (this.buttonReplaySecondary) {
+                    this.buttonReplaySecondary.show();
+                }
+                if (this.buttonPauseSecondary) {
+                    this.buttonPauseSecondary.hide();
+                }
+            }
+            else {
+                if (this.apiPlayer.isPlay()) {
+                    if (this.buttonPlaySecondary) {
+                        this.buttonPlaySecondary.hide();
+                    }
+                    if (this.buttonReplaySecondary) {
+                        this.buttonReplaySecondary.hide();
+                    }
+                    if (this.buttonPauseSecondary) {
+                        this.buttonPauseSecondary.show();
+                    }
+                }
+                else {
+                    if (this.buttonPlaySecondary) {
+                        this.buttonPlaySecondary.show();
+                    }
+                    if (this.buttonReplaySecondary) {
+                        this.buttonReplaySecondary.hide();
+                    }
+                    if (this.buttonPauseSecondary) {
+                        this.buttonPauseSecondary.hide();
+                    }
+                }
+            }
+        }
     }
     handleEventPlay() {
-        if (this.buttonPauseSecondary) {
-            this.buttonPauseSecondary.show();
-        }
         if (this.buttonPlaySecondary) {
             this.buttonPlaySecondary.hide();
         }
         if (this.buttonReplaySecondary) {
             this.buttonReplaySecondary.hide();
+        }
+        if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.show();
         }
     }
     handleEventPause() {
@@ -5539,6 +5600,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -5558,6 +5620,8 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEventSeekBarSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
     }
     handleEvtFullScreenChange() {
         // const width = document.body.clientWidth;
@@ -5576,6 +5640,47 @@ class ControllerContainer extends BaseComponent_1.default {
         //     parentElement.classList.remove('sm-control-rotate-90');
         //   }
         // }
+    }
+    handleEventEnded() {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+        if (this.footerController) {
+            this.footerController.show();
+        }
+        if (this.headController) {
+            this.headController.show();
+        }
+        if (this.bodyController) {
+            this.bodyController.show();
+        }
+    }
+    handleEventPlay() {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+        if (this.footerController) {
+            this.footerController.show();
+        }
+        if (this.headController) {
+            this.headController.show();
+        }
+        if (this.bodyController) {
+            this.bodyController.show();
+        }
+        this.timerId = self.setTimeout(() => {
+            if (this.footerController) {
+                this.footerController.hidden();
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+            if (this.bodyController) {
+                this.bodyController.hidden();
+            }
+        }, 3000);
     }
     handleEventSeekBarSeeking(e, data) {
         if (data.seeking) {

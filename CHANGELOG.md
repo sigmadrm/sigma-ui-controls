@@ -1,5 +1,12 @@
 
 
+## [0.2.4](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.3...v0.2.4) (2024-08-15)
+
+
+### Bug Fixes
+
+* update logic emit seeking ([2cb3854](https://github.com/sigmadrm/sigma-ui-controls/commit/2cb3854fe69b1a9a4d61dde6b0a651147054e226))
+
 ## [0.2.3](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.2...v0.2.3) (2024-08-15)
 
 

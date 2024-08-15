@@ -16,6 +16,8 @@ declare class TaskbarController extends BaseComponent {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
+    handleEvtSeeking(e: any, data: any): void;
+    handleEventSeekBarSeeking(e: any, data: any): void;
     handleEventPlay(): void;
     handleEventPause(): void;
     handleEventLoaded(): void;
