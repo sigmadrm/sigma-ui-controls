@@ -20,12 +20,6 @@ class ControllerContainer extends BaseComponent {
     this.headController = new HeadController({ id: ids.smHeadController, classes, apiPlayer, ids });
     this.bodyController = new BodyController({ id: ids.smBodyController, classes, apiPlayer, ids });
     this.footerController = new FooterController({ id: ids.smFooterController, classes, apiPlayer, ids });
-    this.handleEvtLoaded = this.handleEvtLoaded.bind(this);
-    this.handleEvtError = this.handleEvtError.bind(this);
-    this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
-    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
-    this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
-    this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
   }
 
   render() {

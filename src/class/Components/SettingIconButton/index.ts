@@ -9,7 +9,6 @@ type TSettingIconButtonState = {
 class SettingIconButton extends BaseComponent<TSettingIconButtonState> {
   constructor(props: IConstructorProps) {
     super(props, { active: false });
-    this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
   }
 
   render() {

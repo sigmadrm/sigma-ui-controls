@@ -65,11 +65,6 @@ class BodyController extends BaseComponent {
       apiPlayer,
       ids,
     });
-    this.handleEventPlay = this.handleEventPlay.bind(this);
-    this.handleEventPause = this.handleEventPause.bind(this);
-    this.handleEventEnded = this.handleEventEnded.bind(this);
-    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
-    this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
   }
   render() {
     if (this.containerElement) {

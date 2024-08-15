@@ -76,6 +76,9 @@ class ScrubbingForward extends BaseComponent {
           this.apiPlayer.eventemitter.trigger(EEVentName.SCRUBBING, { counter: this.counter });
           this.hidden();
           apiPlayer.setCurrentTime(timeStep < durationTime ? timeStep : durationTime);
+          this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, {
+            seeking: false,
+          });
         }
       }, 300);
       if (this.timerIdScrubbing) clearTimeout(this.timerIdScrubbing);

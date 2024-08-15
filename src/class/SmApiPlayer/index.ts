@@ -68,23 +68,23 @@ export default class SmApiPlayer {
   }
 
   unregisterListener() {
-    this.addEventListener(EEVentName.LOADED, this.emitLoaded);
-    this.addEventListener(EEVentName.ERROR, this.emitError);
-    this.addEventListener(EEVentName.PLAY, this.emitPlay);
-    this.addEventListener(EEVentName.PAUSE, this.emitPause);
-    this.addEventListener(EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
-    this.addEventListener(EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
-    this.addEventListener(EEVentName.TIME_UPDATE, this.emitTimeUpdate);
-    this.addEventListener(EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
-    this.addEventListener(EEVentName.PROGRESS, this.emitProgress);
-    this.addEventListener(EEVentName.ENDED, this.emitEnded);
-    this.addEventListener(EEVentName.WAITING, this.emitWaiting);
-    this.addEventListener(EEVentName.PLAYING, this.emitPlaying);
-    this.addEventListener(EEVentName.ADAPTATION, this.emitTracksChangeEvent);
-    this.addEventListener(EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
-    this.addEventListener(EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
-    this.addEventListener(EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
-    this.video?.addEventListener(EEVentName.RATE_CHANGE, this.emitRateChange);
+    this.removeEventListener(EEVentName.LOADED, this.emitLoaded);
+    this.removeEventListener(EEVentName.ERROR, this.emitError);
+    this.removeEventListener(EEVentName.PLAY, this.emitPlay);
+    this.removeEventListener(EEVentName.PAUSE, this.emitPause);
+    this.removeEventListener(EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+    this.removeEventListener(EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+    this.removeEventListener(EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+    this.removeEventListener(EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+    this.removeEventListener(EEVentName.PROGRESS, this.emitProgress);
+    this.removeEventListener(EEVentName.ENDED, this.emitEnded);
+    this.removeEventListener(EEVentName.WAITING, this.emitWaiting);
+    this.removeEventListener(EEVentName.PLAYING, this.emitPlaying);
+    this.removeEventListener(EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+    this.removeEventListener(EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+    this.removeEventListener(EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+    this.removeEventListener(EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+    this.video?.removeEventListener(EEVentName.RATE_CHANGE, this.emitRateChange);
   }
   emitLoaded(data: any) {
     // console.log('addEventListener', EEVentName.LOADED, data);

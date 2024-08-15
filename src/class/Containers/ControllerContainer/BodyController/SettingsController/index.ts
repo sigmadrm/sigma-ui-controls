@@ -27,10 +27,6 @@ const initState: TSettingState = {
 export default class SettingsController extends BaseComponent<TSettingState> {
   constructor(props: IConstructorBaseProps) {
     super(props, initState);
-    this.handleSettingContainerClickOut = this.handleSettingContainerClickOut.bind(this);
-    this.handleQualityChange = this.handleQualityChange.bind(this);
-    this.handleRateChange = this.handleRateChange.bind(this);
-    this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
   }
 
   generatePlaybackItemId(index: number) {

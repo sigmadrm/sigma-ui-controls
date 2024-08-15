@@ -52,10 +52,6 @@ class ProgressBarContainer extends BaseComponent {
       apiPlayer,
       ids,
     });
-    this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
-    this.handleEventProgress = this.handleEventProgress.bind(this);
-    this.handleEventLoaded = this.handleEventLoaded.bind(this);
-    this.handleEventSeeking = this.handleEventSeeking.bind(this);
   }
   render(): void {
     if (this.containerElement) {

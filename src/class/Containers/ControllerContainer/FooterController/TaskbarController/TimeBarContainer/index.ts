@@ -25,10 +25,6 @@ class TimeBarContainer extends BaseComponent<IConstructorProps> {
       apiPlayer,
       ids,
     });
-    this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
-    this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
-    this.handleEventSeeking = this.handleEventSeeking.bind(this);
-    this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
   }
 
   render(): void {

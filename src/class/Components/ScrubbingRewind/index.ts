@@ -73,6 +73,9 @@ class ScrubbingRewind extends BaseComponent {
           this.hidden();
           console.log('setCurrentTime', currentTime, timeStep);
           apiPlayer.setCurrentTime(timeStep > 0 ? timeStep : 0);
+          this.apiPlayer.eventemitter.trigger(EEVentName.SEEKING, {
+            seeking: false,
+          });
         }
       }, 300);
       if (this.timerIdScrubbing) clearTimeout(this.timerIdScrubbing);

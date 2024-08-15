@@ -29,8 +29,6 @@ class FooterController extends BaseComponent {
       apiPlayer,
       ids,
     });
-    this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
-    this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
   }
   render() {
     if (this.containerElement) {
