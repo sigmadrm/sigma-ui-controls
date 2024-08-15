@@ -92,6 +92,8 @@ class BodyController extends BaseComponent {
   unregisterListener(): void {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
     this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
   }
   handleEventPlay(): void {
@@ -129,7 +131,7 @@ class BodyController extends BaseComponent {
   }
   handleEvtSeeking(e, data) {
     console.log(data);
-    if (data.seeking === false) {
+    if (data.seeking === true) {
       this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
       this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
     } else {
@@ -138,7 +140,7 @@ class BodyController extends BaseComponent {
     }
   }
   handleEventSeekBarSeeking(e, data) {
-    if (data.seeking === false) {
+    if (data.seeking === true) {
       this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
       this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
     } else {

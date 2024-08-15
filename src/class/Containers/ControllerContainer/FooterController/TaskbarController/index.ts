@@ -107,23 +107,79 @@ class TaskbarController extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEventLoaded, this);
     this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
     this.apiPlayer.eventemitter.on(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
   unregisterListener() {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
     this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
     this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEventLoaded, this);
     this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEventFullScreen, this);
-    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventFullScreen, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
+  }
+  handleEvtSeeking(e, data) {
+    console.log(data);
+    if (data.seeking === true) {
+      this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
+    } else {
+      this.apiPlayer.eventemitter.on(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
+    }
+  }
+  handleEventSeekBarSeeking(e, data) {
+    if (data.seeking === true) {
+      this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
+    } else {
+      this.apiPlayer.eventemitter.on(EEVentName.PLAY, this.handleEventPlay, this);
+      this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
+      if (this.apiPlayer.isEnded()) {
+        if (this.buttonPlaySecondary) {
+          this.buttonPlaySecondary.hide();
+        }
+        if (this.buttonReplaySecondary) {
+          this.buttonReplaySecondary.show();
+        }
+        if (this.buttonPauseSecondary) {
+          this.buttonPauseSecondary.hide();
+        }
+      } else {
+        if (this.apiPlayer.isPlay()) {
+          if (this.buttonPlaySecondary) {
+            this.buttonPlaySecondary.hide();
+          }
+          if (this.buttonReplaySecondary) {
+            this.buttonReplaySecondary.hide();
+          }
+          if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.show();
+          }
+        } else {
+          if (this.buttonPlaySecondary) {
+            this.buttonPlaySecondary.show();
+          }
+          if (this.buttonReplaySecondary) {
+            this.buttonReplaySecondary.hide();
+          }
+          if (this.buttonPauseSecondary) {
+            this.buttonPauseSecondary.hide();
+          }
+        }
+      }
+    }
   }
   handleEventPlay() {
-    if (this.buttonPauseSecondary) {
-      this.buttonPauseSecondary.show();
-    }
     if (this.buttonPlaySecondary) {
       this.buttonPlaySecondary.hide();
     }
     if (this.buttonReplaySecondary) {
       this.buttonReplaySecondary.hide();
+    }
+    if (this.buttonPauseSecondary) {
+      this.buttonPauseSecondary.show();
     }
   }
   handleEventPause() {

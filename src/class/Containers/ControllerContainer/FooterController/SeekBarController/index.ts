@@ -30,7 +30,7 @@ class ProgressBarContainer extends BaseComponent {
   private progressBar: ProgressBar | undefined;
   private progressThumb: ProgressThumb | undefined;
   private duration: number = 0;
-  private timeStep: number | null = null;
+  private timeStep?: number;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
     super(props);
@@ -172,13 +172,13 @@ class ProgressBarContainer extends BaseComponent {
       });
       progressThumbEle.addEventListener('mouseup', (e) => {
         e.preventDefault();
-        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+        this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
       });
       progressThumbEle.addEventListener('touchend', (e) => {
         e.preventDefault();
         progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
         progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
-        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+        this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
       });
 
       progressBarContainerEle.addEventListener('touchstart', (e) => {
@@ -191,7 +191,7 @@ class ProgressBarContainer extends BaseComponent {
         this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
         progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
-        this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
+        this.timeStep !== undefined && this.apiPlayer.setCurrentTime(this.timeStep);
       });
     }
   }

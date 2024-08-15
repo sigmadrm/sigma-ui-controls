@@ -52,6 +52,7 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
     this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.ENDED, this.handleEventEnded, this);
   }
 
   unregisterListener() {
@@ -72,6 +73,8 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
     this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEventSeekBarSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
+    this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
   }
   handleEvtFullScreenChange() {
     // const width = document.body.clientWidth;
@@ -90,6 +93,48 @@ class ControllerContainer extends BaseComponent {
     //     parentElement.classList.remove('sm-control-rotate-90');
     //   }
     // }
+  }
+  handleEventEnded() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+
+    if (this.footerController) {
+      this.footerController.show();
+    }
+    if (this.headController) {
+      this.headController.show();
+    }
+    if (this.bodyController) {
+      this.bodyController.show();
+    }
+  }
+  handleEventPlay() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+    if (this.footerController) {
+      this.footerController.show();
+    }
+    if (this.headController) {
+      this.headController.show();
+    }
+    if (this.bodyController) {
+      this.bodyController.show();
+    }
+    this.timerId = self.setTimeout(() => {
+      if (this.footerController) {
+        this.footerController.hidden();
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+      if (this.bodyController) {
+        this.bodyController.hidden();
+      }
+    }, 3000);
   }
   handleEventSeekBarSeeking(e, data) {
     if (data.seeking) {
