@@ -3485,7 +3485,6 @@ const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseCom
 class SettingIconButtonMB extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
-        // this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
         const { active } = this.state;
@@ -3596,6 +3595,9 @@ class ScrubbingForward extends BaseComponent_1.default {
                     this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SCRUBBING, { counter: this.counter });
                     this.hidden();
                     apiPlayer.setCurrentTime(timeStep < durationTime ? timeStep : durationTime);
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                        seeking: false,
+                    });
                 }
             }, 300);
             if (this.timerIdScrubbing)
@@ -3771,6 +3773,9 @@ class ScrubbingRewind extends BaseComponent_1.default {
                     this.hidden();
                     console.log('setCurrentTime', currentTime, timeStep);
                     apiPlayer.setCurrentTime(timeStep > 0 ? timeStep : 0);
+                    this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEKING, {
+                        seeking: false,
+                    });
                 }
             }, 300);
             if (this.timerIdScrubbing)
@@ -3946,7 +3951,6 @@ const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseCompon
 class SettingIconButton extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
-        this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     render() {
         const { active } = this.state;
@@ -4064,10 +4068,6 @@ const initState = {
 class SettingsController extends BaseComponent_1.default {
     constructor(props) {
         super(props, initState);
-        this.handleSettingContainerClickOut = this.handleSettingContainerClickOut.bind(this);
-        this.handleQualityChange = this.handleQualityChange.bind(this);
-        this.handleRateChange = this.handleRateChange.bind(this);
-        this.handleSettingPanelVisible = this.handleSettingPanelVisible.bind(this);
     }
     generatePlaybackItemId(index) {
         return `${this.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
@@ -4387,11 +4387,6 @@ class BodyController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
-        this.handleEventPlay = this.handleEventPlay.bind(this);
-        this.handleEventPause = this.handleEventPause.bind(this);
-        this.handleEventEnded = this.handleEventEnded.bind(this);
-        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
-        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -4617,10 +4612,6 @@ class ProgressBarContainer extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
-        this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
-        this.handleEventProgress = this.handleEventProgress.bind(this);
-        this.handleEventLoaded = this.handleEventLoaded.bind(this);
-        this.handleEventSeeking = this.handleEventSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -4679,6 +4670,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
                     timeStep = this.duration;
                 }
                 this.apiPlayer.eventemitter.trigger(type_1.EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
+                this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
                 this.timeStep = timeStep;
             };
             const onEnd = () => {
@@ -4727,13 +4719,19 @@ class ProgressBarContainer extends BaseComponent_1.default {
             });
             progressThumbEle.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                progressBarContainerEle.classList.add(this.classes.progressContainerActive);
+                progressThumbEle.classList.add(this.classes.smProgressThumbActive);
                 document.addEventListener('touchmove', onMove);
                 document.addEventListener('touchend', onEnd);
             });
             progressThumbEle.addEventListener('mouseup', (e) => {
+                e.preventDefault();
                 this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
             });
             progressThumbEle.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
+                progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
                 this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
             });
             progressBarContainerEle.addEventListener('touchstart', (e) => {
@@ -4913,10 +4911,6 @@ class TimeBarContainer extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
-        this.handleEventTimeUpdate = this.handleEventTimeUpdate.bind(this);
-        this.handleEventLoadMetaData = this.handleEventLoadMetaData.bind(this);
-        this.handleEventSeeking = this.handleEventSeeking.bind(this);
-        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         const { classes } = this;
@@ -5359,8 +5353,6 @@ class FooterController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
-        this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
-        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
     }
     render() {
         if (this.containerElement) {
@@ -5517,12 +5509,6 @@ class ControllerContainer extends BaseComponent_1.default {
         this.headController = new HeadController_1.default({ id: ids.smHeadController, classes, apiPlayer, ids });
         this.bodyController = new BodyController_1.default({ id: ids.smBodyController, classes, apiPlayer, ids });
         this.footerController = new FooterController_1.default({ id: ids.smFooterController, classes, apiPlayer, ids });
-        this.handleEvtLoaded = this.handleEvtLoaded.bind(this);
-        this.handleEvtError = this.handleEvtError.bind(this);
-        this.handleEvtScrubbing = this.handleEvtScrubbing.bind(this);
-        this.handleEvtSeeking = this.handleEvtSeeking.bind(this);
-        this.handleEvtFullScreenChange = this.handleEvtFullScreenChange.bind(this);
-        this.handleEventSeekBarSeeking = this.handleEventSeekBarSeeking.bind(this);
     }
     render() {
         const { classes, ids } = this;
@@ -5992,23 +5978,23 @@ class SmApiPlayer {
     }
     unregisterListener() {
         var _a;
-        this.addEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
-        this.addEventListener(type_1.EEVentName.ERROR, this.emitError);
-        this.addEventListener(type_1.EEVentName.PLAY, this.emitPlay);
-        this.addEventListener(type_1.EEVentName.PAUSE, this.emitPause);
-        this.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
-        this.addEventListener(type_1.EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
-        this.addEventListener(type_1.EEVentName.TIME_UPDATE, this.emitTimeUpdate);
-        this.addEventListener(type_1.EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
-        this.addEventListener(type_1.EEVentName.PROGRESS, this.emitProgress);
-        this.addEventListener(type_1.EEVentName.ENDED, this.emitEnded);
-        this.addEventListener(type_1.EEVentName.WAITING, this.emitWaiting);
-        this.addEventListener(type_1.EEVentName.PLAYING, this.emitPlaying);
-        this.addEventListener(type_1.EEVentName.ADAPTATION, this.emitTracksChangeEvent);
-        this.addEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
-        this.addEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
-        this.addEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
-        (_a = this.video) === null || _a === void 0 ? void 0 : _a.addEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
+        this.removeEventListener(type_1.EEVentName.LOADED, this.emitLoaded);
+        this.removeEventListener(type_1.EEVentName.ERROR, this.emitError);
+        this.removeEventListener(type_1.EEVentName.PLAY, this.emitPlay);
+        this.removeEventListener(type_1.EEVentName.PAUSE, this.emitPause);
+        this.removeEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, this.emitFullScreenChange);
+        this.removeEventListener(type_1.EEVentName.VOLUME_CHANGE, this.emitVolumeChange);
+        this.removeEventListener(type_1.EEVentName.TIME_UPDATE, this.emitTimeUpdate);
+        this.removeEventListener(type_1.EEVentName.LOADED_META_DATA, this.emitLoadedMeteData);
+        this.removeEventListener(type_1.EEVentName.PROGRESS, this.emitProgress);
+        this.removeEventListener(type_1.EEVentName.ENDED, this.emitEnded);
+        this.removeEventListener(type_1.EEVentName.WAITING, this.emitWaiting);
+        this.removeEventListener(type_1.EEVentName.PLAYING, this.emitPlaying);
+        this.removeEventListener(type_1.EEVentName.ADAPTATION, this.emitTracksChangeEvent);
+        this.removeEventListener(type_1.EEVentName.VARIANT_CHANGED, this.emitTracksChangeEvent);
+        this.removeEventListener(type_1.EEVentName.ABR_STATUS_CHANGED, this.emitTracksChangeEvent);
+        this.removeEventListener(type_1.EEVentName.TRACKS_CHANGED, this.emitTracksChangeEvent);
+        (_a = this.video) === null || _a === void 0 ? void 0 : _a.removeEventListener(type_1.EEVentName.RATE_CHANGE, this.emitRateChange);
     }
     emitLoaded(data) {
         // console.log('addEventListener', EEVentName.LOADED, data);

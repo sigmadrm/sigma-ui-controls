@@ -1,5 +1,13 @@
 
 
+## [0.2.3](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.2...v0.2.3) (2024-08-15)
+
+
+### Bug Fixes
+
+* active class for progress bar when onmove ([8c93333](https://github.com/sigmadrm/sigma-ui-controls/commit/8c933337a59002fb5c410de23fb136075c267a1d))
+* remove bind for fnc emeitter ([f68b480](https://github.com/sigmadrm/sigma-ui-controls/commit/f68b480a3d7f2fb71dd0a8fd9115170281a33a6e))
+
 ## [0.2.2](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.1...v0.2.2) (2024-08-14)
 
 
