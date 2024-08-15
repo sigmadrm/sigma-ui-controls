@@ -113,6 +113,7 @@ class ProgressBarContainer extends BaseComponent {
         }
 
         this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
+        this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.timeStep = timeStep;
       };
 
@@ -164,13 +165,19 @@ class ProgressBarContainer extends BaseComponent {
 
       progressThumbEle.addEventListener('touchstart', (e) => {
         e.preventDefault();
+        progressBarContainerEle.classList.add(this.classes.progressContainerActive);
+        progressThumbEle.classList.add(this.classes.smProgressThumbActive);
         document.addEventListener('touchmove', onMove);
         document.addEventListener('touchend', onEnd);
       });
       progressThumbEle.addEventListener('mouseup', (e) => {
+        e.preventDefault();
         this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
       });
       progressThumbEle.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        progressBarContainerEle.classList.remove(this.classes.progressContainerActive);
+        progressThumbEle.classList.remove(this.classes.smProgressThumbActive);
         this.timeStep !== null && this.apiPlayer.setCurrentTime(this.timeStep);
       });
 
