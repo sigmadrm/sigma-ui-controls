@@ -3481,34 +3481,350 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ../../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 class SettingIconButtonMB extends BaseComponent_1.default {
     constructor(props) {
         super(props, { active: false });
     }
     render() {
-        const { active } = this.state;
         if (this.containerElement) {
             this.containerElement.innerHTML = icons_1.settingIcon;
-            // this.containerElement.style.display = 'block';
-            // this.containerElement.style.setProperty('--animate-duration', '1s');
-            // if (active) {
-            //   this.containerElement.className = [
-            //     this.classes.taskbarGroupBtn,
-            //     this.classes.taskbarIconActive,
-            //     this.classes.taskbarGroupBtnMobile,
-            //   ].join(' ');
-            // } else {
-            //   this.containerElement.className = [
-            //     this.classes.taskbarGroupBtn,
-            //     this.classes.taskbarIconInactive,
-            //     this.classes.taskbarGroupBtnMobile,
-            //   ].join(' ');
-            // }
         }
+    }
+    registerListener() {
+        if (this.containerElement) {
+            this.containerElement.ontouchend = (event) => this.handleEventTouchEnd(event);
+            this.containerElement.onmouseup = (event) => this.handleEventMouseup(event);
+        }
+    }
+    unregisterListener() {
+        if (this.containerElement) {
+            this.containerElement.ontouchstart = () => { };
+            this.containerElement.onmouseup = () => { };
+        }
+    }
+    handleEventTouchEnd(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: true });
+    }
+    handleEventMouseup(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: true });
     }
 }
 exports["default"] = SettingIconButtonMB;
+
+
+/***/ }),
+
+/***/ "./src/class/Components/PopupSetting/index.ts":
+/*!****************************************************!*\
+  !*** ./src/class/Components/PopupSetting/index.ts ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
+const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
+const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const initState = {
+    visible: false,
+    playbackRate: 1,
+    currentTab: 'default',
+    previousTab: 'default',
+    tracks: [constants_1.autoTrack],
+    activeTrack: constants_1.autoTrack,
+};
+class PopupSetting extends BaseComponent_1.default {
+    constructor(props) {
+        super(props, initState);
+    }
+    generatePlaybackItemId(index) {
+        return `${this.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
+    }
+    generateQualityItemId(index) {
+        return `${this.ids.smSettingQualityItemPrefix}-${index}`;
+    }
+    registerListener() {
+        var _a;
+        const { apiPlayer, state } = this;
+        const smPlaybackSpeedElement = document.getElementById(this.ids.smPopupSettingPlaybackSpeed);
+        const smQualityElement = document.getElementById(this.ids.smPopupSettingQuality);
+        const smPopupSettingItemHeader = document.getElementById(this.ids.smPopupSettingItemHeader);
+        const smPopupSettingItemContent = document.getElementById(this.ids.smPopupSettingsContent);
+        if (this.containerElement) {
+            this.containerElement.onmouseup = (event) => this.handleEvtClickContainer(event);
+            this.containerElement.ontouchend = (event) => this.handleEvtClickContainer(event);
+        }
+        if (smPopupSettingItemContent) {
+            smPopupSettingItemContent.onmouseup = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            };
+            smPopupSettingItemContent.ontouchend = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            };
+        }
+        if (smPlaybackSpeedElement) {
+            smPlaybackSpeedElement.ontouchend = (event) => this.goToPlaybackSpeedTab(event);
+            smPlaybackSpeedElement.onmouseup = (event) => this.goToPlaybackSpeedTab(event);
+        }
+        if (smQualityElement) {
+            smQualityElement.ontouchend = (event) => this.goToQualityTab(event);
+            smQualityElement.onmouseup = (event) => this.goToQualityTab(event);
+        }
+        if (smPopupSettingItemHeader) {
+            smPopupSettingItemHeader.ontouchend = (event) => this.goToTab('default');
+            smPopupSettingItemHeader.onmouseup = (event) => this.goToTab('default');
+        }
+        constants_1.PLAYBACK_SPEEDS.forEach((pbrValue, index) => {
+            const id = this.generatePlaybackItemId(index);
+            const playbackSpeedValueElement = document.getElementById(id);
+            if (playbackSpeedValueElement) {
+                // Khi người dùng nhả chuột
+                playbackSpeedValueElement.onmouseup = (event) => this.changePlaybackRate(pbrValue);
+                // Khi người dùng nhấc ngón tay
+                playbackSpeedValueElement.ontouchend = (event) => this.changePlaybackRate(pbrValue);
+                // Khi người dùng di chuyển ngón tay
+                playbackSpeedValueElement.ontouchmove = (event) => {
+                    // Vô hiệu hóa sự kiện onmouseup và ontouchend để ngăn chặn việc thay đổi tốc độ phát lại
+                    playbackSpeedValueElement.onmouseup = null;
+                    playbackSpeedValueElement.ontouchend = null;
+                };
+            }
+        });
+        (_a = state === null || state === void 0 ? void 0 : state.tracks) === null || _a === void 0 ? void 0 : _a.forEach((track, index) => {
+            const id = this.generateQualityItemId(index);
+            const qualitiesValueElement = document.getElementById(id);
+            if (qualitiesValueElement) {
+                // Khi người dùng nhả chuột
+                qualitiesValueElement.onmouseup = (event) => this.changeQuality(track);
+                // Khi người dùng nhấc ngón tay
+                qualitiesValueElement.ontouchend = (event) => this.changeQuality(track);
+                // Khi người dùng di chuyển ngón tay
+                qualitiesValueElement.ontouchmove = (event) => {
+                    // Vô hiệu hóa sự kiện onmouseup và ontouchend để ngăn chặn việc thay đổi tốc độ phát lại
+                    qualitiesValueElement.onmouseup = (event) => { };
+                    qualitiesValueElement.ontouchend = (event) => { };
+                };
+            }
+        });
+        apiPlayer.eventemitter.on(type_1.EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
+        apiPlayer.eventemitter.on(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
+        apiPlayer.eventemitter.on(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+    }
+    unregisterListener() {
+        const { apiPlayer } = this;
+        apiPlayer.eventemitter.off(type_1.EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
+        apiPlayer.eventemitter.off(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
+        apiPlayer.eventemitter.off(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+        if (this.containerElement) {
+            this.containerElement.onmouseup = () => { };
+            this.containerElement.ontouchend = () => { };
+        }
+    }
+    goToPlaybackSpeedTab(event) {
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'playbackRate' });
+    }
+    goToQualityTab(event) {
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'quality' });
+    }
+    goToTab(tabName) {
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: tabName });
+    }
+    changeQuality(track) {
+        this.apiPlayer.selectVariantTrack(track);
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: false });
+    }
+    handleQualityChange(event, data) {
+        const { tracks } = data;
+        const isAuto = tracks[tracks.length - 1].active;
+        let activeTrack = tracks[tracks.length - 1];
+        if (!isAuto) {
+            for (let index = 0; index < tracks.length - 1; index += 1) {
+                const track = tracks[index];
+                if (track.active) {
+                    activeTrack = track;
+                    break;
+                }
+            }
+        }
+        this.state = Object.assign(Object.assign({}, this.state), { tracks, activeTrack });
+    }
+    changePlaybackRate(value) {
+        this.apiPlayer.playbackRate = value;
+        this.goToTab('default');
+    }
+    handleRateChange(event, data) {
+        const { playbackRate } = data;
+        // playbackRate = 0 is loading...
+        if (playbackRate > 0) {
+            this.state = Object.assign(Object.assign({}, this.state), { playbackRate });
+        }
+    }
+    handleEvtPopupSetting(event, data) {
+        var _a, _b;
+        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'default' });
+        if (data.open) {
+            (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.add(this.classes.popupSettingsEnable);
+            document.body.classList.add('no-scroll');
+        }
+        else {
+            (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.classList.remove(this.classes.popupSettingsEnable);
+            document.body.classList.remove('no-scroll');
+        }
+    }
+    handleEvtClickContainer(event) {
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: false });
+    }
+    renderDefaultTab() {
+        const { classes, state } = this;
+        const settingItems = [
+            {
+                title: 'Tốc độ phát',
+                id: this.ids.smPopupSettingPlaybackSpeed,
+                icon: icons_1.playbackSpeedIcon,
+                value: `<div class=${classes.popupSettingsItemValue}>
+          <div>${state.playbackRate === 1 ? 'Bình thường' : state.playbackRate}</div>
+          <div class=${classes.popupSettingsItemIconSecondary}>${icons_1.chevronRightIcon}</div>
+        </div>`,
+            },
+            {
+                title: 'Chất lượng',
+                id: this.ids.smPopupSettingQuality,
+                icon: icons_1.qualityIcon,
+                value: `<div class=${classes.popupSettingsItemValue}>
+          <div>${this.getQualityLabel(this.state.activeTrack, state.tracks)}</div>
+          <div class=${classes.popupSettingsItemIconSecondary}>${icons_1.chevronRightIcon}</div>
+        </div>`,
+            },
+        ];
+        return settingItems
+            .map(({ title, id, icon, value }) => {
+            return `<div class=${classes.popupSettingsItem} id=${id}>
+        <div class=${classes.popupSettingsItemIcon}>${icon}</div>
+        <div class=${classes.popupSettingsItemTitle}>${title}</div>
+        <div class=${classes.popupSettingsItemIconValue}>${value}</div>
+      </div>`;
+        })
+            .join('');
+    }
+    renderPlaybackSpeedTab() {
+        const { classes, state } = this;
+        const header = `
+    <div class=${classes.popupSettingItemHeader} id=${this.ids.smPopupSettingItemHeader} >
+      <div class=${classes.popupSettingItemHeaderIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.popupSettingItemHeaderTitle}>Tốc độ phát</div>
+    </div>`;
+        const body = constants_1.PLAYBACK_SPEEDS.map((pbrValue, index) => {
+            const id = this.generatePlaybackItemId(index);
+            const isActive = state.playbackRate === pbrValue;
+            return `<div class="${classes.popupSettingDetailItem}" id=${id}>
+        <div class=${classes.popupSettingDetailItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
+        <div class=${isActive ? classes.popupSettingDetailItemTitleActive : classes.popupSettingDetailItemTitleNormal}>${pbrValue === 1 ? 'Bình thường' : `${pbrValue}`}</div>
+      </div>`;
+        }).join('');
+        return (header +
+            `<div class="${classes.popupSettingDetailContainer}">
+        ${body}
+      </div>`);
+    }
+    getQualityLabel(track, tracks, ignoreSelectedTrack = false) {
+        if (track.id === -1) {
+            // eslint-disable-next-line no-restricted-properties
+            const selectedTrack = tracks.find((track) => track.active);
+            let selectedTrackLabel = '';
+            if (selectedTrack && selectedTrack !== track && !ignoreSelectedTrack) {
+                selectedTrackLabel = this.getQualityLabel(selectedTrack, tracks);
+            }
+            return selectedTrackLabel ? `Tự động (${selectedTrackLabel})` : 'Tự động';
+        }
+        const trackHeight = track.height || 0;
+        const trackWidth = track.width || 0;
+        let height = trackHeight;
+        const aspectRatio = trackWidth / trackHeight;
+        if (aspectRatio > 16 / 9) {
+            height = Math.round((trackWidth * 9) / 16);
+        }
+        let text = height + 'p';
+        if (height == 2160) {
+            text = '4K';
+        }
+        const frameRate = track.frameRate;
+        if (frameRate && (frameRate >= 50 || frameRate <= 20)) {
+            text += Math.round(track.frameRate || 0);
+        }
+        if (track.hdr == 'PQ' || track.hdr == 'HLG') {
+            text += ' (HDR)';
+        }
+        if (track.videoLayout == 'CH-STEREO') {
+            text += ' (3D)';
+        }
+        const hasDuplicateResolution = tracks.some((otherTrack) => {
+            return otherTrack != track && otherTrack.id !== -1 && otherTrack.height == track.height;
+        });
+        if (hasDuplicateResolution) {
+            const bandwidth = track.videoBandwidth || track.bandwidth;
+            text += ' (' + Math.round(bandwidth / 1000) + ' kbits/s)';
+        }
+        return text;
+    }
+    renderQualityTab() {
+        const { classes, state } = this;
+        const { tracks } = state;
+        const header = `
+    <div class=${classes.popupSettingItemHeader} id=${this.ids.smPopupSettingItemHeader}>
+      <div class=${classes.popupSettingItemHeaderIcon}>${icons_1.chevronLeftIcon}</div>
+      <div class=${classes.popupSettingItemHeaderTitle}>Chất lượng</div>
+    </div>`;
+        const body = tracks
+            .map((track, index) => {
+            const id = this.generateQualityItemId(index);
+            const isActive = track === state.activeTrack;
+            const label = this.getQualityLabel(track, tracks, true);
+            return `<div class="${classes.popupSettingDetailItem}" id=${id}>
+        <div class=${classes.popupSettingDetailItemIcon}>${isActive ? icons_1.checkedIcon : ''}</div>
+        <div class=${isActive ? classes.popupSettingDetailItemTitleActive : classes.popupSettingDetailItemTitleNormal}>${label}</div>
+      </div>`;
+        })
+            .join('');
+        return (header +
+            `<div class=${classes.popupSettingDetailContainer}>
+        ${body}
+        </div>`);
+    }
+    renderSettingContent() {
+        var _a;
+        switch ((_a = this.state) === null || _a === void 0 ? void 0 : _a.currentTab) {
+            case 'playbackRate':
+                return this.renderPlaybackSpeedTab();
+            case 'quality':
+                return this.renderQualityTab();
+            default:
+                return this.renderDefaultTab();
+        }
+    }
+    render() {
+        const { classes } = this;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<div class="${classes.popupSettingsContent}" id="${this.ids.smPopupSettingsContent}">
+        <div class="${classes.popupSettingsHeader}"></div>
+        ${this.renderSettingContent()}
+      </div>`;
+        }
+    }
+}
+exports["default"] = PopupSetting;
 
 
 /***/ }),
@@ -4055,15 +4371,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const icons_1 = __webpack_require__(/*! ./../../../../../icons */ "./src/icons.ts");
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
-const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-const autoTrack = { id: -1, label: 'Auto', bandwidth: 0, active: true };
+const constants_1 = __webpack_require__(/*! ../../../../../constants */ "./src/constants.ts");
 const initState = {
     visible: false,
     playbackRate: 1,
     currentTab: 'default',
     previousTab: 'default',
-    tracks: [autoTrack],
-    activeTrack: autoTrack,
+    tracks: [constants_1.autoTrack],
+    activeTrack: constants_1.autoTrack,
 };
 class SettingsController extends BaseComponent_1.default {
     constructor(props) {
@@ -4094,7 +4409,7 @@ class SettingsController extends BaseComponent_1.default {
         if (smSettingDetailTitleElement) {
             smSettingDetailTitleElement.onclick = (event) => this.goToTab('default');
         }
-        PLAYBACK_SPEEDS.forEach((pbrValue, index) => {
+        constants_1.PLAYBACK_SPEEDS.forEach((pbrValue, index) => {
             const id = this.generatePlaybackItemId(index);
             const playbackSpeedValueElement = document.getElementById(id);
             if (playbackSpeedValueElement) {
@@ -4222,7 +4537,7 @@ class SettingsController extends BaseComponent_1.default {
       <div class=${classes.settingItemIcon} id=${this.ids.smSettingDetailGoBackIcon}>${icons_1.chevronLeftIcon}</div>
       <div class=${classes.settingItemTitle} id=${this.ids.smSettingDetailTitle}>Tốc độ phát</div>
     </div>`;
-        const body = PLAYBACK_SPEEDS.map((pbrValue, index) => {
+        const body = constants_1.PLAYBACK_SPEEDS.map((pbrValue, index) => {
             const id = this.generatePlaybackItemId(index);
             const isActive = state.playbackRate === pbrValue;
             return `<div class="${`${classes.settingDetailItem} ${classes.settingItemDivider}`}" id=${id}>
@@ -7450,6 +7765,156 @@ const generateStylesDesktop = (props) => {
       justify-content: flex-start;
       align-items: center;
     `,
+        popupSettings: (0, css_1.css) `
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.5);
+      visibility: hidden;
+      transition:
+        opacity 1s ease,
+        visibility 1s ease;
+      z-index: 9999;
+    `,
+        popupSettingsEnable: (0, css_1.css) `
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      opacity: 1;
+      visibility: visible;
+    `,
+        popupSettingsContent: (0, css_1.css) `
+      width: 360px;
+      animation: fadeInUp;
+      animation-duration: 0.3s;
+      background: white;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: black;
+      overflow: hidden;
+    `,
+        popupSettingsHeader: (0, css_1.css) `
+      margin-top: 12px;
+      width: 48px;
+      height: 4px;
+      background: rgba(217, 217, 217, 1);
+      border-radius: 12px;
+    `,
+        popupSettingsItem: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingsItemIcon: (0, css_1.css) `
+      width: 32px;
+      height: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingsItemTitle: (0, css_1.css) `
+      flex: 1;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingsItemIconValue: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    `,
+        popupSettingsItemValue: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+        popupSettingsItemIconSecondary: (0, css_1.css) `
+      width: 24px;
+      height: 24px;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+        popupSettingItemHeader: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingItemHeaderIcon: (0, css_1.css) `
+      height: 32px;
+      width: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingItemHeaderTitle: (0, css_1.css) `
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailItem: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 12px 12px 12px 32px;
+      border-top: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingDetailItemIcon: (0, css_1.css) `
+      height: 32px;
+      width: 32px;
+      margin-left: -12px;
+      font-weight: 400;
+    `,
+        popupSettingDetailItemTitleActive: (0, css_1.css) `
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailItemTitleNormal: (0, css_1.css) `
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailContainer: (0, css_1.css) `
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      max-height: 60vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    `,
     };
 };
 exports["default"] = generateStylesDesktop;
@@ -8134,6 +8599,156 @@ const generateStylesMobile = (props) => {
       justify-content: flex-start;
       align-items: center;
     `,
+        popupSettings: (0, css_1.css) `
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.5);
+      visibility: hidden;
+      transition:
+        opacity 1s ease,
+        visibility 1s ease;
+      z-index: 9999;
+    `,
+        popupSettingsEnable: (0, css_1.css) `
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      opacity: 1;
+      visibility: visible;
+    `,
+        popupSettingsContent: (0, css_1.css) `
+      width: 360px;
+      animation: fadeInUp;
+      animation-duration: 0.3s;
+      background: white;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: black;
+      overflow: hidden;
+    `,
+        popupSettingsHeader: (0, css_1.css) `
+      margin-top: 12px;
+      width: 48px;
+      height: 4px;
+      background: rgba(217, 217, 217, 1);
+      border-radius: 12px;
+    `,
+        popupSettingsItem: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingsItemIcon: (0, css_1.css) `
+      width: 32px;
+      height: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingsItemTitle: (0, css_1.css) `
+      flex: 1;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingsItemIconValue: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    `,
+        popupSettingsItemValue: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+        popupSettingsItemIconSecondary: (0, css_1.css) `
+      width: 24px;
+      height: 24px;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+        popupSettingItemHeader: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingItemHeaderIcon: (0, css_1.css) `
+      height: 32px;
+      width: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingItemHeaderTitle: (0, css_1.css) `
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailItem: (0, css_1.css) `
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 12px 12px 12px 32px;
+      border-top: 1px solid rgba(217, 217, 217, 1);
+    `,
+        popupSettingDetailItemIcon: (0, css_1.css) `
+      height: 32px;
+      width: 32px;
+      margin-left: -12px;
+      font-weight: 400;
+    `,
+        popupSettingDetailItemTitleActive: (0, css_1.css) `
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailItemTitleNormal: (0, css_1.css) `
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 1);
+    `,
+        popupSettingDetailContainer: (0, css_1.css) `
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      max-height: 60vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    `,
     };
 };
 exports["default"] = generateStylesMobile;
@@ -8177,7 +8792,7 @@ exports["default"] = generateStyles;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
+exports.autoTrack = exports.PLAYBACK_SPEEDS = exports.primaryColorDef = exports.typePlayerDef = exports.ETypePlayer = exports.versionDef = void 0;
 exports.versionDef = '4.10.0';
 var ETypePlayer;
 (function (ETypePlayer) {
@@ -8186,6 +8801,8 @@ var ETypePlayer;
 })(ETypePlayer || (exports.ETypePlayer = ETypePlayer = {}));
 exports.typePlayerDef = ETypePlayer.SHAKA;
 exports.primaryColorDef = '#F58220';
+exports.PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+exports.autoTrack = { id: -1, label: 'Auto', bandwidth: 0, active: true };
 
 
 /***/ }),
@@ -8393,6 +9010,7 @@ const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts")
 const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
 const ErrorContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts"));
 const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
+const PopupSetting_1 = __importDefault(__webpack_require__(/*! ./class/Components/PopupSetting */ "./src/class/Components/PopupSetting/index.ts"));
 const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
 const style_1 = __importDefault(__webpack_require__(/*! ./class/Styles/style */ "./src/class/Styles/style.ts"));
 const SmApiPlayer_1 = __importDefault(__webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts"));
@@ -8422,7 +9040,9 @@ class SmUIControls {
                 smControllerContainerEle.innerHTML = `
           <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
           <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
-          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
+          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>
+          <div class="${classes.popupSettings}" id="${this.ids.smPopupSettings}"></div>
+          `;
                 VideoContainerElement.appendChild(smControllerContainerEle);
                 this.controllerContainer = new ControllerContainer_1.default({
                     id: this.ids.smControllerContent,
@@ -8433,6 +9053,7 @@ class SmUIControls {
                 });
                 this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
                 this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
+                this.popupSetting = new PopupSetting_1.default({ id: this.ids.smPopupSettings, classes, apiPlayer, ids: this.ids });
             }
         }
     }
@@ -8561,6 +9182,11 @@ const generateIIds = () => {
         smScrubbingRewindRippleLeft: (0, nanoid_1.nanoid)(4),
         smScrubbingRewindIcon: (0, nanoid_1.nanoid)(4),
         smScrubbingRewindText: (0, nanoid_1.nanoid)(4),
+        smPopupSettings: (0, nanoid_1.nanoid)(4),
+        smPopupSettingQuality: (0, nanoid_1.nanoid)(4),
+        smPopupSettingPlaybackSpeed: (0, nanoid_1.nanoid)(4),
+        smPopupSettingItemHeader: (0, nanoid_1.nanoid)(4),
+        smPopupSettingsContent: (0, nanoid_1.nanoid)(4),
     };
 };
 exports.generateIIds = generateIIds;
@@ -8644,6 +9270,7 @@ var EEVentName;
     EEVentName["SEEKING"] = "seeking";
     EEVentName["SCRUBBING"] = "scrubbing";
     EEVentName["SEEK_BAR_SEEKING"] = "seekbarseeking";
+    EEVentName["POPUP_SETTING"] = "popupsetting";
 })(EEVentName || (exports.EEVentName = EEVentName = {}));
 exports.RESOLUTION_LABEL = {
     AUTO: 'Auto',

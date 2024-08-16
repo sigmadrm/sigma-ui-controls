@@ -1,5 +1,12 @@
 
 
+## [0.2.5](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.4...v0.2.5) (2024-08-16)
+
+
+### Features
+
+* implemet popup setting ([e23d4c1](https://github.com/sigmadrm/sigma-ui-controls/commit/e23d4c1af634b1763acb19d5c1a41be2455e0bfb))
+
 ## [0.2.4](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.3...v0.2.4) (2024-08-15)
 
 

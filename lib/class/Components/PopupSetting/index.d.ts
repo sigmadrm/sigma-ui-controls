@@ -1,5 +1,5 @@
-import { IConstructorBaseProps, Track, TTabName } from '../../../../../type';
-import BaseComponent from '../../../../BaseComponent';
+import { IConstructorBaseProps, Track, TTabName } from '../../../type';
+import BaseComponent from '../../BaseComponent';
 type TSettingState = {
     visible: boolean;
     playbackRate: number;
@@ -8,21 +8,21 @@ type TSettingState = {
     tracks: Track[];
     activeTrack: Track;
 };
-export default class SettingsController extends BaseComponent<TSettingState> {
+declare class PopupSetting extends BaseComponent<TSettingState> {
     constructor(props: IConstructorBaseProps);
     generatePlaybackItemId(index: number): string;
     generateQualityItemId(index: number): string;
     registerListener(): void;
     unregisterListener(): void;
-    goToPlaybackSpeedTab(event: MouseEvent): void;
-    goToQualityTab(event: MouseEvent): void;
+    goToPlaybackSpeedTab(event: MouseEvent | TouchEvent): void;
+    goToQualityTab(event: MouseEvent | TouchEvent): void;
     goToTab(tabName: TTabName): void;
     changeQuality(track: Track): void;
     handleQualityChange(event: any, data: any): void;
     changePlaybackRate(value: number): void;
     handleRateChange(event: any, data: any): void;
-    handleSettingPanelVisible(event: any, data: any): void;
-    handleSettingContainerClickOut(event: any): void;
+    handleEvtPopupSetting(event: any, data: any): void;
+    handleEvtClickContainer(event: TouchEvent | MouseEvent): void;
     renderDefaultTab(): string;
     renderPlaybackSpeedTab(): string;
     getQualityLabel(track: Track, tracks: Track[], ignoreSelectedTrack?: boolean): string;
@@ -30,5 +30,5 @@ export default class SettingsController extends BaseComponent<TSettingState> {
     renderSettingContent(): string;
     render(): void;
 }
-export {};
+export default PopupSetting;
 //# sourceMappingURL=index.d.ts.map

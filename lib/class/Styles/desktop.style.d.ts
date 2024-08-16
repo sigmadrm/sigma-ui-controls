@@ -66,6 +66,24 @@ declare const generateStylesDesktop: (props?: TGenerateStylesProps) => {
     errorContainerEnable: string;
     errorIconWrap: string;
     flexColumnStartCenter: string;
+    popupSettings: string;
+    popupSettingsEnable: string;
+    popupSettingsContent: string;
+    popupSettingsHeader: string;
+    popupSettingsItem: string;
+    popupSettingsItemIcon: string;
+    popupSettingsItemTitle: string;
+    popupSettingsItemIconValue: string;
+    popupSettingsItemValue: string;
+    popupSettingsItemIconSecondary: string;
+    popupSettingItemHeader: string;
+    popupSettingItemHeaderIcon: string;
+    popupSettingItemHeaderTitle: string;
+    popupSettingDetailItem: string;
+    popupSettingDetailItemIcon: string;
+    popupSettingDetailItemTitleActive: string;
+    popupSettingDetailItemTitleNormal: string;
+    popupSettingDetailContainer: string;
 };
 export default generateStylesDesktop;
 //# sourceMappingURL=desktop.style.d.ts.map

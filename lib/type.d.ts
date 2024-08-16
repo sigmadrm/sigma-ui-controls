@@ -49,7 +49,8 @@ export declare enum EEVentName {
     PLAYING = "playing",
     SEEKING = "seeking",
     SCRUBBING = "scrubbing",
-    SEEK_BAR_SEEKING = "seekbarseeking"
+    SEEK_BAR_SEEKING = "seekbarseeking",
+    POPUP_SETTING = "popupsetting"
 }
 export declare const RESOLUTION_LABEL: {
     AUTO: string;
@@ -111,6 +112,11 @@ export type IIds = {
     smScrubbingRewindRippleLeft: string;
     smScrubbingRewindIcon: string;
     smScrubbingRewindText: string;
+    smPopupSettings: string;
+    smPopupSettingQuality: string;
+    smPopupSettingPlaybackSpeed: string;
+    smPopupSettingItemHeader: string;
+    smPopupSettingsContent: string;
 };
 export type TClasses = ReturnType<typeof generateStyles>;
 export interface IConstructorBaseProps {
@@ -172,6 +178,9 @@ export interface SmListeners {
         [key: string]: any;
     }) => void;
     [EEVentName.SEEK_BAR_SEEKING]: (event: EEVentName.SEEK_BAR_SEEKING, data: {
+        [key: string]: any;
+    }) => void;
+    [EEVentName.POPUP_SETTING]: (event: EEVentName.POPUP_SETTING, data: {
         [key: string]: any;
     }) => void;
 }
@@ -240,5 +249,6 @@ export declare enum EBreakpoint {
     LG = 1280,
     XL = 1441
 }
+export type TTabName = 'default' | 'playbackRate' | 'quality';
 export {};
 //# sourceMappingURL=type.d.ts.map

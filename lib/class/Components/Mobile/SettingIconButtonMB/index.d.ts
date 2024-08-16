@@ -8,6 +8,10 @@ type TSettingIconButtonMBState = {
 declare class SettingIconButtonMB extends BaseComponent<TSettingIconButtonMBState> {
     constructor(props: IConstructorProps);
     render(): void;
+    registerListener(): void;
+    unregisterListener(): void;
+    handleEventTouchEnd(event: TouchEvent): void;
+    handleEventMouseup(event: MouseEvent): void;
 }
 export default SettingIconButtonMB;
 //# sourceMappingURL=index.d.ts.map
