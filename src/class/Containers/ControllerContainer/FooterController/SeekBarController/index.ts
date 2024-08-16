@@ -230,6 +230,7 @@ class ProgressBarContainer extends BaseComponent {
       progressBarbContainer.style.setProperty('--highlight-width-progress-bar', `${percentage}%`);
       progressThumbContainer &&
         progressThumbContainer.style.setProperty('--highlight-left-progress-thumb', `${percentage}%`);
+      this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: true, time: timeStep });
       this.apiPlayer.setCurrentTime(timeStep);
       this.apiPlayer.eventemitter.trigger(EEVentName.SEEK_BAR_SEEKING, { seeking: false });
     }
