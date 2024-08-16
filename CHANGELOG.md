@@ -1,5 +1,12 @@
 
 
+## [0.2.6](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.5...v0.2.6) (2024-08-16)
+
+
+### Features
+
+* update ui popup setting ([1277e78](https://github.com/sigmadrm/sigma-ui-controls/commit/1277e7835a1c4ca1dd78c33524b456565467cde6))
+
 ## [0.2.5](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.4...v0.2.5) (2024-08-16)
 
 

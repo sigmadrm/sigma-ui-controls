@@ -3546,6 +3546,54 @@ const initState = {
 };
 class PopupSetting extends BaseComponent_1.default {
     constructor(props) {
+        const { classes, apiPlayer, ids } = props;
+        super(props);
+        this.popupSettingContent = new PopupSettingContent({
+            id: ids.smPopupSettingsContent,
+            classes,
+            apiPlayer,
+            ids,
+        });
+    }
+    registerListener() {
+        const { apiPlayer } = this;
+        apiPlayer.eventemitter.on(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+        if (this.containerElement) {
+            this.containerElement.onmouseup = (event) => this.handleEvtClickContainer(event);
+            this.containerElement.ontouchend = (event) => this.handleEvtClickContainer(event);
+        }
+    }
+    unregisterListener() {
+        const { apiPlayer } = this;
+        apiPlayer.eventemitter.off(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+        if (this.containerElement) {
+            this.containerElement.onmouseup = () => { };
+            this.containerElement.ontouchend = () => { };
+        }
+    }
+    handleEvtPopupSetting(event, data) {
+        var _a, _b;
+        if (data.open) {
+            (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.add(this.classes.popupSettingsEnable);
+            document.body.classList.add('no-scroll');
+        }
+        else {
+            (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.classList.remove(this.classes.popupSettingsEnable);
+            document.body.classList.remove('no-scroll');
+        }
+    }
+    handleEvtClickContainer(event) {
+        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: false });
+    }
+    render() {
+        const { classes } = this;
+        if (this.containerElement) {
+            this.containerElement.innerHTML = `<div class="${classes.popupSettingsContent}" id="${this.ids.smPopupSettingsContent}"></div>`;
+        }
+    }
+}
+class PopupSettingContent extends BaseComponent_1.default {
+    constructor(props) {
         super(props, initState);
     }
     generatePlaybackItemId(index) {
@@ -3561,10 +3609,6 @@ class PopupSetting extends BaseComponent_1.default {
         const smQualityElement = document.getElementById(this.ids.smPopupSettingQuality);
         const smPopupSettingItemHeader = document.getElementById(this.ids.smPopupSettingItemHeader);
         const smPopupSettingItemContent = document.getElementById(this.ids.smPopupSettingsContent);
-        if (this.containerElement) {
-            this.containerElement.onmouseup = (event) => this.handleEvtClickContainer(event);
-            this.containerElement.ontouchend = (event) => this.handleEvtClickContainer(event);
-        }
         if (smPopupSettingItemContent) {
             smPopupSettingItemContent.onmouseup = (event) => {
                 event.preventDefault();
@@ -3628,10 +3672,6 @@ class PopupSetting extends BaseComponent_1.default {
         apiPlayer.eventemitter.off(type_1.EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
         apiPlayer.eventemitter.off(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
         apiPlayer.eventemitter.off(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
-        if (this.containerElement) {
-            this.containerElement.onmouseup = () => { };
-            this.containerElement.ontouchend = () => { };
-        }
     }
     goToPlaybackSpeedTab(event) {
         this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'playbackRate' });
@@ -3671,21 +3711,6 @@ class PopupSetting extends BaseComponent_1.default {
         if (playbackRate > 0) {
             this.state = Object.assign(Object.assign({}, this.state), { playbackRate });
         }
-    }
-    handleEvtPopupSetting(event, data) {
-        var _a, _b;
-        this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'default' });
-        if (data.open) {
-            (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.add(this.classes.popupSettingsEnable);
-            document.body.classList.add('no-scroll');
-        }
-        else {
-            (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.classList.remove(this.classes.popupSettingsEnable);
-            document.body.classList.remove('no-scroll');
-        }
-    }
-    handleEvtClickContainer(event) {
-        this.apiPlayer.eventemitter.trigger(type_1.EEVentName.POPUP_SETTING, { open: false });
     }
     renderDefaultTab() {
         const { classes, state } = this;
@@ -3814,13 +3839,18 @@ class PopupSetting extends BaseComponent_1.default {
                 return this.renderDefaultTab();
         }
     }
+    handleEvtPopupSetting(event, data) {
+        if (data.open) {
+            this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'default' });
+        }
+    }
     render() {
         const { classes } = this;
         if (this.containerElement) {
-            this.containerElement.innerHTML = `<div class="${classes.popupSettingsContent}" id="${this.ids.smPopupSettingsContent}">
+            this.containerElement.innerHTML = `
         <div class="${classes.popupSettingsHeader}"></div>
         ${this.renderSettingContent()}
-      </div>`;
+     `;
         }
     }
 }
