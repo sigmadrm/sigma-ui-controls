@@ -1,6 +1,6 @@
 import { autoTrack, PLAYBACK_SPEEDS } from '../../../constants';
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, playbackSpeedIcon, qualityIcon } from '../../../icons';
-import { EEVentName, ESettingPanelDataState, IConstructorBaseProps, Track, TTabName } from '../../../type';
+import { EEVentName, IConstructorBaseProps, Track, TTabName } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 type TSettingState = {
@@ -19,7 +19,55 @@ const initState: TSettingState = {
   tracks: [autoTrack],
   activeTrack: autoTrack,
 };
-class PopupSetting extends BaseComponent<TSettingState> {
+class PopupSetting extends BaseComponent {
+  private popupSettingContent: PopupSettingContent | undefined;
+  constructor(props: IConstructorBaseProps) {
+    const { classes, apiPlayer, ids } = props;
+    super(props);
+    this.popupSettingContent = new PopupSettingContent({
+      id: ids.smPopupSettingsContent,
+      classes,
+      apiPlayer,
+      ids,
+    });
+  }
+
+  registerListener() {
+    const { apiPlayer } = this;
+    apiPlayer.eventemitter.on(EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+    if (this.containerElement) {
+      this.containerElement.onmouseup = (event: MouseEvent) => this.handleEvtClickContainer(event);
+      this.containerElement.ontouchend = (event: TouchEvent) => this.handleEvtClickContainer(event);
+    }
+  }
+  unregisterListener() {
+    const { apiPlayer } = this;
+    apiPlayer.eventemitter.off(EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+    if (this.containerElement) {
+      this.containerElement.onmouseup = () => {};
+      this.containerElement.ontouchend = () => {};
+    }
+  }
+  handleEvtPopupSetting(event, data) {
+    if (data.open) {
+      this.containerElement?.classList.add(this.classes.popupSettingsEnable);
+      document.body.classList.add('no-scroll');
+    } else {
+      this.containerElement?.classList.remove(this.classes.popupSettingsEnable);
+      document.body.classList.remove('no-scroll');
+    }
+  }
+  handleEvtClickContainer(event: TouchEvent | MouseEvent) {
+    this.apiPlayer.eventemitter.trigger(EEVentName.POPUP_SETTING, { open: false });
+  }
+  render() {
+    const { classes } = this;
+    if (this.containerElement) {
+      this.containerElement.innerHTML = `<div class="${classes.popupSettingsContent}" id="${this.ids.smPopupSettingsContent}"></div>`;
+    }
+  }
+}
+class PopupSettingContent extends BaseComponent<TSettingState> {
   constructor(props: IConstructorBaseProps) {
     super(props, initState);
   }
@@ -39,10 +87,6 @@ class PopupSetting extends BaseComponent<TSettingState> {
     const smPopupSettingItemHeader = document.getElementById(this.ids.smPopupSettingItemHeader);
     const smPopupSettingItemContent = document.getElementById(this.ids.smPopupSettingsContent);
 
-    if (this.containerElement) {
-      this.containerElement.onmouseup = (event: MouseEvent) => this.handleEvtClickContainer(event);
-      this.containerElement.ontouchend = (event: TouchEvent) => this.handleEvtClickContainer(event);
-    }
     if (smPopupSettingItemContent) {
       smPopupSettingItemContent.onmouseup = (event: MouseEvent) => {
         event.preventDefault();
@@ -113,10 +157,6 @@ class PopupSetting extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.off(EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
-    if (this.containerElement) {
-      this.containerElement.onmouseup = () => {};
-      this.containerElement.ontouchend = () => {};
-    }
   }
 
   goToPlaybackSpeedTab(event: MouseEvent | TouchEvent) {
@@ -166,19 +206,6 @@ class PopupSetting extends BaseComponent<TSettingState> {
     }
   }
 
-  handleEvtPopupSetting(event, data) {
-    this.state = { ...this.state, currentTab: 'default' };
-    if (data.open) {
-      this.containerElement?.classList.add(this.classes.popupSettingsEnable);
-      document.body.classList.add('no-scroll');
-    } else {
-      this.containerElement?.classList.remove(this.classes.popupSettingsEnable);
-      document.body.classList.remove('no-scroll');
-    }
-  }
-  handleEvtClickContainer(event: TouchEvent | MouseEvent) {
-    this.apiPlayer.eventemitter.trigger(EEVentName.POPUP_SETTING, { open: false });
-  }
   renderDefaultTab() {
     const { classes, state } = this;
     const settingItems = [
@@ -320,14 +347,18 @@ class PopupSetting extends BaseComponent<TSettingState> {
         return this.renderDefaultTab();
     }
   }
-
+  handleEvtPopupSetting(event, data) {
+    if (data.open) {
+      this.state = { ...this.state, currentTab: 'default' };
+    }
+  }
   render() {
     const { classes } = this;
     if (this.containerElement) {
-      this.containerElement.innerHTML = `<div class="${classes.popupSettingsContent}" id="${this.ids.smPopupSettingsContent}">
+      this.containerElement.innerHTML = `
         <div class="${classes.popupSettingsHeader}"></div>
         ${this.renderSettingContent()}
-      </div>`;
+     `;
     }
   }
 }
