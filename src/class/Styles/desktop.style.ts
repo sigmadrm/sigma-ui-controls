@@ -744,6 +744,157 @@ const generateStylesDesktop = (props?: TGenerateStylesProps) => {
       justify-content: flex-start;
       align-items: center;
     `,
+    popupSettings: css`
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.5);
+      visibility: hidden;
+      transition:
+        opacity 1s ease,
+        visibility 1s ease;
+      z-index: 9999;
+    `,
+    popupSettingsEnable: css`
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      opacity: 1;
+      visibility: visible;
+    `,
+    popupSettingsContent: css`
+      width: 360px;
+      animation: fadeInUp;
+      animation-duration: 0.3s;
+      background: white;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: black;
+      overflow: hidden;
+    `,
+    popupSettingsHeader: css`
+      margin-top: 12px;
+      width: 48px;
+      height: 4px;
+      background: rgba(217, 217, 217, 1);
+      border-radius: 12px;
+    `,
+    popupSettingsItem: css`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+    popupSettingsItemIcon: css`
+      width: 32px;
+      height: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+    popupSettingsItemTitle: css`
+      flex: 1;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+    popupSettingsItemIconValue: css`
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    `,
+    popupSettingsItemValue: css`
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+    popupSettingsItemIconSecondary: css`
+      width: 24px;
+      height: 24px;
+      color: rgba(33, 33, 33, 0.8);
+    `,
+    popupSettingItemHeader: css`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      border-bottom: 1px solid rgba(217, 217, 217, 1);
+    `,
+    popupSettingItemHeaderIcon: css`
+      height: 32px;
+      width: 32px;
+      color: rgba(33, 33, 33, 1);
+    `,
+    popupSettingItemHeaderTitle: css`
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+
+    popupSettingDetailItem: css`
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+      gap: 12px;
+      padding: 12px 12px 12px 32px;
+      border-top: 1px solid rgba(217, 217, 217, 1);
+    `,
+    popupSettingDetailItemIcon: css`
+      height: 32px;
+      width: 32px;
+      margin-left: -12px;
+      font-weight: 400;
+    `,
+    popupSettingDetailItemTitleActive: css`
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(33, 33, 33, 1);
+    `,
+    popupSettingDetailItemTitleNormal: css`
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(33, 33, 33, 1);
+    `,
+    popupSettingDetailContainer: css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+      max-height: 60vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    `,
   };
 };
 export default generateStylesDesktop;

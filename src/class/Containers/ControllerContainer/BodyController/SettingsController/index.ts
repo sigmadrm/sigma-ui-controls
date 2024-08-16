@@ -1,11 +1,9 @@
 /* eslint-disable no-restricted-globals */
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, qualityIcon, playbackSpeedIcon } from './../../../../../icons';
-import { EEVentName, ESettingPanelDataState, IConstructorBaseProps, Track } from '../../../../../type';
+import { EEVentName, ESettingPanelDataState, IConstructorBaseProps, Track, TTabName } from '../../../../../type';
 import BaseComponent from '../../../../BaseComponent';
+import { autoTrack, PLAYBACK_SPEEDS } from '../../../../../constants';
 
-const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-
-type TTabName = 'default' | 'playbackRate' | 'quality';
 type TSettingState = {
   visible: boolean;
   playbackRate: number;
@@ -14,7 +12,6 @@ type TSettingState = {
   tracks: Track[];
   activeTrack: Track;
 };
-const autoTrack: Track = { id: -1, label: 'Auto', bandwidth: 0, active: true };
 const initState: TSettingState = {
   visible: false,
   playbackRate: 1,

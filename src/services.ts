@@ -61,6 +61,11 @@ export const generateIIds = (): IIds => {
     smScrubbingRewindRippleLeft: nanoid(4),
     smScrubbingRewindIcon: nanoid(4),
     smScrubbingRewindText: nanoid(4),
+    smPopupSettings: nanoid(4),
+    smPopupSettingQuality: nanoid(4),
+    smPopupSettingPlaybackSpeed: nanoid(4),
+    smPopupSettingItemHeader: nanoid(4),
+    smPopupSettingsContent: nanoid(4),
   };
 };
 

@@ -20,6 +20,9 @@ body {
   height: 100vw !important;
   transform: rotate(90deg) !important; */
 }
+.no-scroll {
+  overflow: hidden;
+}
 
 @-webkit-keyframes ssrotate {
   0% {

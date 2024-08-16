@@ -4,6 +4,7 @@ import { IConfigureUIPlayerProps, IIds, ISmEventEmitter, SmListeners } from './t
 import ControllerContainer from './class/Containers/ControllerContainer';
 import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
+import PopupSetting from './class/Components/PopupSetting';
 
 import { checkHasTouch, detectDevice, generateIIds } from './services';
 import generateStyles from './class/Styles/style';
@@ -24,6 +25,7 @@ class SmUIControls implements ISmEventEmitter {
   private controllerContainer: ControllerContainer | undefined;
   private errorContainer: ErrorContainer | undefined;
   private loadingContainer: LoadingContainer | undefined;
+  private popupSetting: PopupSetting | undefined;
   private ids: IIds;
 
   constructor(props: IConfigureUIPlayerProps) {
@@ -43,7 +45,9 @@ class SmUIControls implements ISmEventEmitter {
         smControllerContainerEle.innerHTML = `
           <div class="${classes.controllerContent}" id="${this.ids.smControllerContent}"></div>
           <div class="${classes.loadingContainer}" id="${this.ids.smLoading}"></div>
-          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>`;
+          <div class="${classes.errorContainer}" id="${this.ids.smError}"></div>
+          <div class="${classes.popupSettings}" id="${this.ids.smPopupSettings}"></div>
+          `;
         VideoContainerElement.appendChild(smControllerContainerEle);
 
         this.controllerContainer = new ControllerContainer({
@@ -55,6 +59,7 @@ class SmUIControls implements ISmEventEmitter {
         });
         this.errorContainer = new ErrorContainer({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
         this.loadingContainer = new LoadingContainer({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
+        this.popupSetting = new PopupSetting({ id: this.ids.smPopupSettings, classes, apiPlayer, ids: this.ids });
       }
     }
   }
