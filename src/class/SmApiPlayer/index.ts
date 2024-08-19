@@ -219,6 +219,7 @@ export default class SmApiPlayer {
     const videoContainer = video.parentElement as any;
 
     // Hàm để thực hiện chế độ toàn màn hình
+
     const requestFullScreen = (element: any) => {
       if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -250,6 +251,7 @@ export default class SmApiPlayer {
         } else {
           requestFullScreen(videoContainer);
         }
+        this.resetRotation();
         return; // Đã thực hiện chế độ toàn màn hình cho phần tử cha
       }
     }
@@ -272,11 +274,13 @@ export default class SmApiPlayer {
       } else {
         requestFullScreen(videoEle);
       }
+      this.resetRotation();
     } else {
       console.warn('Fullscreen API is not supported for video element.');
     }
   }
   exitFullScreen() {
+    this.resetRotation();
     // Hàm để thoát chế độ toàn màn hình
     const doc = document as any;
     const exitFullScreenMode = () => {
@@ -315,27 +319,19 @@ export default class SmApiPlayer {
     return false;
   }
   rotateVideo() {
-    // if (!this.video) {
-    //   console.error('Video element is null or undefined.');
-    //   return;
-    // }
-    // const videoContainer = this.video.parentElement as any;
-    // if (videoContainer) {
-    //   videoContainer.classList.add('sm-container-rotate-90');
-    // }
-    // this.video.classList.add('sm-rotate-90');
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+    if (this.video) {
+      if (width < height) {
+        this.video.classList.add('sm-rotate-90');
+      }
+    }
   }
 
   resetRotation() {
-    // if (!this.video) {
-    //   console.error('Video element is null or undefined.');
-    //   return;
-    // }
-    // const videoContainer = this.video.parentElement as any;
-    // if (videoContainer) {
-    //   videoContainer.classList.remove('sm-container-rotate-90');
-    // }
-    // this.video.classList.remove('sm-rotate-90');
+    if (this.video) {
+      this.video.classList.remove('sm-rotate-90');
+    }
   }
   set playbackRate(value: number) {
     if (this.video) {

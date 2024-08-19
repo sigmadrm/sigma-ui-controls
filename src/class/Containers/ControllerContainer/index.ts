@@ -77,22 +77,21 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
   }
   handleEvtFullScreenChange() {
-    // const width = document.body.clientWidth;
-    // const height = document.body.clientHeight;
-    // const parentElement = this.containerElement?.parentElement;
-    // if (this.apiPlayer.isFullScreen()) {
-    //   if (width < height) {
-    //     this.apiPlayer.rotateVideo();
-    //     if (parentElement) {
-    //       parentElement.classList.add('sm-control-rotate-90');
-    //     }
-    //   }
-    // } else {
-    //   this.apiPlayer.resetRotation();
-    //   if (parentElement) {
-    //     parentElement.classList.remove('sm-control-rotate-90');
-    //   }
-    // }
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+    if (this.apiPlayer.isFullScreen()) {
+      if (width < height) {
+        this.apiPlayer.rotateVideo();
+        if (this.containerElement) {
+          this.containerElement.classList.add('sm-control-rotate-90');
+        }
+      }
+    } else {
+      this.apiPlayer.resetRotation();
+      if (this.containerElement) {
+        this.containerElement.classList.remove('sm-control-rotate-90');
+      }
+    }
   }
   handleEventEnded() {
     if (this.timerId) {

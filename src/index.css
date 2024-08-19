@@ -3,23 +3,26 @@ body {
   margin: 0;
 }
 .sm-rotate-90 {
-  /* transform: rotate(90deg) !important; */
+  transform: rotate(90deg) !important;
+  width: 100vh !important;
 }
 .sm-control-rotate-90 {
-  /* transform: rotate(90deg) !important;
+  translate: -25% 52%;
+  top: 0;
+  left: 0;
+  position: fixed;
   width: 100vh !important;
   height: 100vw !important;
-  position: fixed !important;
-  top: auto !important;
-  bottom: 50vh !important;
-  right: auto !important;
-  left: -50vw !important; */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  transform-origin: center !important;
+  transition: transform 0.3s ease;
+  transform: rotate(90deg) !important;
+  right: 0;
+  bottom: 0;
 }
-.sm-container-rotate-90 {
-  /* width: 100vh !important;
-  height: 100vw !important;
-  transform: rotate(90deg) !important; */
-}
+
 .no-scroll {
   overflow: hidden;
 }
