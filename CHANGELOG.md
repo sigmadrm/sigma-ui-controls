@@ -1,5 +1,17 @@
 
 
+## [0.2.7](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.6...v0.2.7) (2024-08-19)
+
+
+### Bug Fixes
+
+* trigger event seekbar seeking when progress click ([8776ee2](https://github.com/sigmadrm/sigma-ui-controls/commit/8776ee2ec9c9b7b3b4649d7472622a0481f768be))
+
+
+### Features
+
+* implement rostation full screend ([a956639](https://github.com/sigmadrm/sigma-ui-controls/commit/a956639fb2312a5eef1b6539a1d891012d43d9f5))
+
 ## [0.2.6](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.5...v0.2.6) (2024-08-16)
 
 
