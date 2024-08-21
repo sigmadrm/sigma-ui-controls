@@ -251,7 +251,7 @@ export default class SmApiPlayer {
         } else {
           requestFullScreen(videoContainer);
         }
-        this.resetRotation();
+
         return; // Đã thực hiện chế độ toàn màn hình cho phần tử cha
       }
     }
@@ -274,13 +274,11 @@ export default class SmApiPlayer {
       } else {
         requestFullScreen(videoEle);
       }
-      this.resetRotation();
     } else {
       console.warn('Fullscreen API is not supported for video element.');
     }
   }
   exitFullScreen() {
-    this.resetRotation();
     // Hàm để thoát chế độ toàn màn hình
     const doc = document as any;
     const exitFullScreenMode = () => {
@@ -302,7 +300,6 @@ export default class SmApiPlayer {
     if (doc) {
       if (doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
         exitFullScreenMode();
-        this.resetRotation();
       } else {
         console.warn('No element is currently in fullscreen mode.');
       }
@@ -318,19 +315,25 @@ export default class SmApiPlayer {
     }
     return false;
   }
-  rotateVideo() {
-    const width = document.body.clientWidth;
-    const height = document.body.clientHeight;
+  rotateVideo(controllerEle: HTMLElement | null | undefined) {
     if (this.video) {
+      const width = document.body.clientWidth;
+      const height = document.body.clientHeight;
       if (width < height) {
         this.video.classList.add('sm-rotate-90');
+        if (controllerEle) {
+          controllerEle.classList.add('sm-control-rotate-90');
+        }
       }
     }
   }
 
-  resetRotation() {
+  resetRotation(controllerEle: HTMLElement | null | undefined) {
     if (this.video) {
       this.video.classList.remove('sm-rotate-90');
+      if (controllerEle) {
+        controllerEle.classList.remove('sm-control-rotate-90');
+      }
     }
   }
   set playbackRate(value: number) {

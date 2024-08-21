@@ -224,3 +224,7 @@ export enum EBreakpoint {
 }
 
 export type TTabName = 'default' | 'playbackRate' | 'quality';
+export enum EOrientation {
+  'VERTICAL' = 'vertical',
+  'HORIZONTAL' = 'horizontal',
+}

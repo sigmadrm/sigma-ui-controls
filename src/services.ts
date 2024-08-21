@@ -92,6 +92,9 @@ export const detectDevice = (): EDeviceType => {
 export const detectDeviceMobile = (deviceType: EDeviceType): boolean => {
   return deviceType === EDeviceType.MOBILE;
 };
+export const detectDeviceDesktop = (deviceType: EDeviceType): boolean => {
+  return !(deviceType === EDeviceType.TABLET || deviceType === EDeviceType.MOBILE);
+};
 export const checkHasTouch = (): boolean => {
   return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
 };

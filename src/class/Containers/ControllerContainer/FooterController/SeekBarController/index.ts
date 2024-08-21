@@ -1,12 +1,15 @@
 import BaseComponent from '../../../../BaseComponent';
-import { EEVentName, IConstructorBaseProps } from '../../../../../type';
+import { EEVentName, EOrientation, IConstructorBaseProps } from '../../../../../type';
+import { detectDeviceDesktop } from '../../../../../services';
 
 interface IConstructorProps extends IConstructorBaseProps {}
 
 class SeekBarController extends BaseComponent {
   private progressBarContainer: ProgressBarContainer | undefined;
+
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
+
     super(props);
     this.progressBarContainer = new ProgressBarContainer({
       id: ids.smProgressBarContainer,
@@ -31,6 +34,7 @@ class ProgressBarContainer extends BaseComponent {
   private progressThumb: ProgressThumb | undefined;
   private duration: number = 0;
   private timeStep?: number;
+  private orientation: EOrientation = EOrientation.HORIZONTAL;
   constructor(props: IConstructorProps) {
     const { classes, apiPlayer, ids } = props;
     super(props);
@@ -52,6 +56,7 @@ class ProgressBarContainer extends BaseComponent {
       apiPlayer,
       ids,
     });
+    // this.handelWindowResize();
   }
   render(): void {
     if (this.containerElement) {
@@ -69,6 +74,7 @@ class ProgressBarContainer extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handleEventLoaded, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEventSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     if (this?.containerElement) {
       this.containerElement.onclick = (e: MouseEvent) => {
         this.handleEventClick(e);
@@ -83,18 +89,20 @@ class ProgressBarContainer extends BaseComponent {
     if (progressThumbEle && progressBarEle && progressBarContainerEle) {
       const onMove = (e: MouseEvent | TouchEvent) => {
         e.preventDefault();
-
         let x: number;
         if (e.type === 'mousemove') {
           const mouseEvent = e as MouseEvent;
-          x = mouseEvent.clientX;
+          x = this.orientation === EOrientation.HORIZONTAL ? mouseEvent.clientX : mouseEvent.clientY;
         } else {
           const touchEvent = e as TouchEvent;
-          x = touchEvent.touches[0].clientX;
+          x =
+            this.orientation === EOrientation.HORIZONTAL
+              ? touchEvent.touches[0].clientX
+              : touchEvent.touches[0].clientY;
         }
 
         const rect = progressBarEle.getBoundingClientRect();
-        const offsetX = x - rect.left;
+        const offsetX = x - (this.orientation === EOrientation.HORIZONTAL ? rect.left : rect.top);
         const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
         const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
         let timeStep;
@@ -128,9 +136,9 @@ class ProgressBarContainer extends BaseComponent {
       if (this.containerElement) {
         this.containerElement.addEventListener('touchmove', (e) => {
           e.preventDefault();
-          const x = e.touches[0].clientX;
+          const x = this.orientation === EOrientation.HORIZONTAL ? e.touches[0].clientX : e.touches[0].clientY;
           const rect = progressBarEle.getBoundingClientRect();
-          const offsetX = x - rect.left;
+          const offsetX = x - (this.orientation === EOrientation.HORIZONTAL ? rect.left : rect.top);
           const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
           const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
 
@@ -200,6 +208,7 @@ class ProgressBarContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handleEventLoaded, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEventSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     if (this?.containerElement) {
       this.containerElement.onclick = () => {};
     }
@@ -215,6 +224,24 @@ class ProgressBarContainer extends BaseComponent {
       this.containerElement.ontouchstart = () => {};
       this.containerElement.ontouchend = () => {};
     }
+    self.onresize = () => {};
+  }
+  handleEvtFullScreenChange() {
+    if (detectDeviceDesktop(this.apiPlayer.deviceType)) {
+      this.orientation = EOrientation.HORIZONTAL;
+    } else {
+      const width = self.innerWidth;
+      const height = self.innerHeight;
+      if (this.apiPlayer.isFullScreen()) {
+        if (width < height) {
+          this.orientation = EOrientation.VERTICAL;
+        }
+      } else {
+        if (width < height) {
+          this.orientation = EOrientation.HORIZONTAL;
+        }
+      }
+    }
   }
   handleEventClick(e: MouseEvent) {
     e.preventDefault();
@@ -223,7 +250,7 @@ class ProgressBarContainer extends BaseComponent {
     const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
     if (progressBarbContainer) {
       const rect = progressBarbContainer.getBoundingClientRect();
-      const x = e.clientX - rect.left;
+      const x = this.orientation === EOrientation.HORIZONTAL ? e.clientX - rect.left : e.clientY - rect.top;
       const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
       const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
       const timeStep = (percentage / 100) * this.duration;
@@ -280,6 +307,13 @@ class ProgressBarContainer extends BaseComponent {
       this.apiPlayer.eventemitter.on(EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
     }
   }
+  // handelWindowResize() {
+  //   if (this.apiPlayer.deviceType === EDeviceType.DESKTOP) {
+  //     this.orientation = EOrientation.HORIZONTAL;
+  //   } else {
+  //     this.orientation = EOrientation.HORIZONTAL;
+  //   }
+  // }
 }
 
 class ProgressBuffer extends BaseComponent {
