@@ -6642,6 +6642,10 @@ class SmApiPlayer {
     }
     rotateVideo(controllerEle) {
         if (this.video) {
+            const videoContainer = this.video.parentElement;
+            if (videoContainer) {
+                videoContainer.classList.add('sm-container-video');
+            }
             const width = document.body.clientWidth;
             const height = document.body.clientHeight;
             if (width < height) {
@@ -6654,6 +6658,10 @@ class SmApiPlayer {
     }
     resetRotation(controllerEle) {
         if (this.video) {
+            const videoContainer = this.video.parentElement;
+            if (videoContainer) {
+                videoContainer.classList.add('sm-container-video');
+            }
             this.video.classList.remove('sm-rotate-90');
             if (controllerEle) {
                 controllerEle.classList.remove('sm-control-rotate-90');
