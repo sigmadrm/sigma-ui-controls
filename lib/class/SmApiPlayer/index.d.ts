@@ -44,8 +44,8 @@ export default class SmApiPlayer {
     enterFullScreen(): void;
     exitFullScreen(): void;
     isEnded(): boolean;
-    rotateVideo(): void;
-    resetRotation(): void;
+    rotateVideo(controllerEle: HTMLElement | null | undefined): void;
+    resetRotation(controllerEle: HTMLElement | null | undefined): void;
     set playbackRate(value: number);
     get playbackRate(): number;
     updateVolume(value: number): number | undefined;

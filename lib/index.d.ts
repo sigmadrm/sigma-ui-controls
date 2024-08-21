@@ -6,7 +6,6 @@ declare class SmUIControls implements ISmEventEmitter {
     private apiPlayer;
     private isInit;
     private controllerContainer;
-    private errorContainer;
     private loadingContainer;
     private popupSetting;
     private ids;

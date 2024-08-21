@@ -1,5 +1,13 @@
 
 
+## [0.2.8](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.7...v0.2.8) (2024-08-21)
+
+
+### Features
+
+* implement rotation when full screen ([692740e](https://github.com/sigmadrm/sigma-ui-controls/commit/692740e2c715ad47e4af3e43189bf92e3a2035f9))
+* remove layout error ([9046fce](https://github.com/sigmadrm/sigma-ui-controls/commit/9046fce97fb32df24364465b36ba1b67a708dde9))
+
 ## [0.2.7](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.6...v0.2.7) (2024-08-19)
 
 

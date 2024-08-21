@@ -3,5 +3,6 @@ export declare const createElementFromHTML: (htmlString: string) => ChildNode | 
 export declare const generateIIds: () => IIds;
 export declare const detectDevice: () => EDeviceType;
 export declare const detectDeviceMobile: (deviceType: EDeviceType) => boolean;
+export declare const detectDeviceDesktop: (deviceType: EDeviceType) => boolean;
 export declare const checkHasTouch: () => boolean;
 //# sourceMappingURL=services.d.ts.map

@@ -4915,6 +4915,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const type_1 = __webpack_require__(/*! ../../../../../type */ "./src/type.ts");
+const services_1 = __webpack_require__(/*! ../../../../../services */ "./src/services.ts");
 class SeekBarController extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
@@ -4940,6 +4941,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         const { classes, apiPlayer, ids } = props;
         super(props);
         this.duration = 0;
+        this.orientation = type_1.EOrientation.HORIZONTAL;
         this.progressBuffer = new ProgressBuffer({
             id: ids.smProgressBuffer,
             classes,
@@ -4958,6 +4960,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
+        // this.handelWindowResize();
     }
     render() {
         if (this.containerElement) {
@@ -4974,6 +4977,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
         if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = (e) => {
                 this.handleEventClick(e);
@@ -4989,14 +4993,17 @@ class ProgressBarContainer extends BaseComponent_1.default {
                 let x;
                 if (e.type === 'mousemove') {
                     const mouseEvent = e;
-                    x = mouseEvent.clientX;
+                    x = this.orientation === type_1.EOrientation.HORIZONTAL ? mouseEvent.clientX : mouseEvent.clientY;
                 }
                 else {
                     const touchEvent = e;
-                    x = touchEvent.touches[0].clientX;
+                    x =
+                        this.orientation === type_1.EOrientation.HORIZONTAL
+                            ? touchEvent.touches[0].clientX
+                            : touchEvent.touches[0].clientY;
                 }
                 const rect = progressBarEle.getBoundingClientRect();
-                const offsetX = x - rect.left;
+                const offsetX = x - (this.orientation === type_1.EOrientation.HORIZONTAL ? rect.left : rect.top);
                 const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
                 const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
                 let timeStep;
@@ -5029,9 +5036,9 @@ class ProgressBarContainer extends BaseComponent_1.default {
             if (this.containerElement) {
                 this.containerElement.addEventListener('touchmove', (e) => {
                     e.preventDefault();
-                    const x = e.touches[0].clientX;
+                    const x = this.orientation === type_1.EOrientation.HORIZONTAL ? e.touches[0].clientX : e.touches[0].clientY;
                     const rect = progressBarEle.getBoundingClientRect();
-                    const offsetX = x - rect.left;
+                    const offsetX = x - (this.orientation === type_1.EOrientation.HORIZONTAL ? rect.left : rect.top);
                     const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
                     const percentage = widthContainer ? (offsetX / widthContainer) * 100 : 0;
                     let timeStep;
@@ -5099,6 +5106,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.TIME_UPDATE, this.handleEventTimeUpdate, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.LOADED, this.handleEventLoaded, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
         if (this === null || this === void 0 ? void 0 : this.containerElement) {
             this.containerElement.onclick = () => { };
         }
@@ -5114,6 +5122,26 @@ class ProgressBarContainer extends BaseComponent_1.default {
             this.containerElement.ontouchstart = () => { };
             this.containerElement.ontouchend = () => { };
         }
+        self.onresize = () => { };
+    }
+    handleEvtFullScreenChange() {
+        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType)) {
+            this.orientation = type_1.EOrientation.HORIZONTAL;
+        }
+        else {
+            const width = self.innerWidth;
+            const height = self.innerHeight;
+            if (this.apiPlayer.isFullScreen()) {
+                if (width < height) {
+                    this.orientation = type_1.EOrientation.VERTICAL;
+                }
+            }
+            else {
+                if (width < height) {
+                    this.orientation = type_1.EOrientation.HORIZONTAL;
+                }
+            }
+        }
     }
     handleEventClick(e) {
         e.preventDefault();
@@ -5121,7 +5149,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         const progressThumbContainer = document.getElementById(this.ids.smProgressThumb);
         if (progressBarbContainer) {
             const rect = progressBarbContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
+            const x = this.orientation === type_1.EOrientation.HORIZONTAL ? e.clientX - rect.left : e.clientY - rect.top;
             const widthContainer = this.containerElement ? this.containerElement.offsetWidth : 0;
             const percentage = widthContainer ? (x / widthContainer) * 100 : 0;
             const timeStep = (percentage / 100) * this.duration;
@@ -5947,6 +5975,7 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.PLAY, this.handleEventPlay, this);
     }
     unregisterListener() {
         if (this.containerElement) {
@@ -5965,26 +5994,18 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SCRUBBING, this.handleEvtScrubbing, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEventSeekBarSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
     }
     handleEvtFullScreenChange() {
-        const width = document.body.clientWidth;
-        const height = document.body.clientHeight;
+        var _a;
+        const containerEle = (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
         if (this.apiPlayer.isFullScreen()) {
-            if (width < height) {
-                this.apiPlayer.rotateVideo();
-                if (this.containerElement) {
-                    this.containerElement.classList.add('sm-control-rotate-90');
-                }
-            }
+            this.apiPlayer.rotateVideo(containerEle);
         }
         else {
-            this.apiPlayer.resetRotation();
-            if (this.containerElement) {
-                this.containerElement.classList.remove('sm-control-rotate-90');
-            }
+            this.apiPlayer.resetRotation(containerEle);
         }
     }
     handleEventEnded() {
@@ -6242,69 +6263,6 @@ class ControllerContainer extends BaseComponent_1.default {
     }
 }
 exports["default"] = ControllerContainer;
-
-
-/***/ }),
-
-/***/ "./src/class/Containers/ErrorContainer/index.ts":
-/*!******************************************************!*\
-  !*** ./src/class/Containers/ErrorContainer/index.ts ***!
-  \******************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
-const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
-class ErrorContainer extends BaseComponent_1.default {
-    constructor(props) {
-        super(props);
-        this.show = (data) => {
-            if (this.containerElement) {
-                this.containerElement.classList.add(this.classes.errorContainerEnable);
-                const htmlString = this.generateHtml(data);
-                this.containerElement.innerHTML = htmlString;
-            }
-        };
-        this.generateHtml = (dataEvent) => {
-            const htmlString = `<div class="${this.classes.errorIconWrap}">
-        ${icons_1.infoIcon}
-    </div>
-    <div class="${this.classes.flexColumnStartCenter}">
-      <h2 style="margin:0px">${dataEvent.data.errorCode}</h2>
-      <h3 style="margin:0px">${dataEvent.data.message}</h3>
-    </div>
-    `;
-            return htmlString;
-        };
-    }
-    registerListener() {
-        // this.apiPlayer.eventemitter.on(EEVentName.LOADED, this.handelEventLoaded, this);
-        // this.apiPlayer.eventemitter.on(EEVentName.ERROR, this.handelEventError, this);
-    }
-    unregisterListener() {
-        // this.apiPlayer.eventemitter.off(EEVentName.LOADED, this.handelEventLoaded, this);
-        // this.apiPlayer.eventemitter.off(EEVentName.ERROR, this.handelEventError, this);
-    }
-    handelEventLoaded() {
-        this.hide();
-    }
-    handelEventError(event, data) {
-        if (data) {
-            this.show(data);
-        }
-    }
-    hide() {
-        if (this.containerElement) {
-            this.containerElement.className = this.classes.errorContainer;
-        }
-    }
-}
-exports["default"] = ErrorContainer;
 
 
 /***/ }),
@@ -6607,7 +6565,6 @@ class SmApiPlayer {
                 else {
                     requestFullScreen(videoContainer);
                 }
-                this.resetRotation();
                 return; // Đã thực hiện chế độ toàn màn hình cho phần tử cha
             }
         }
@@ -6628,14 +6585,12 @@ class SmApiPlayer {
             else {
                 requestFullScreen(videoEle);
             }
-            this.resetRotation();
         }
         else {
             console.warn('Fullscreen API is not supported for video element.');
         }
     }
     exitFullScreen() {
-        this.resetRotation();
         // Hàm để thoát chế độ toàn màn hình
         const doc = document;
         const exitFullScreenMode = () => {
@@ -6661,7 +6616,6 @@ class SmApiPlayer {
         if (doc) {
             if (doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement || doc.msFullscreenElement) {
                 exitFullScreenMode();
-                this.resetRotation();
             }
             else {
                 console.warn('No element is currently in fullscreen mode.');
@@ -6679,18 +6633,24 @@ class SmApiPlayer {
         }
         return false;
     }
-    rotateVideo() {
-        const width = document.body.clientWidth;
-        const height = document.body.clientHeight;
+    rotateVideo(controllerEle) {
         if (this.video) {
+            const width = document.body.clientWidth;
+            const height = document.body.clientHeight;
             if (width < height) {
                 this.video.classList.add('sm-rotate-90');
+                if (controllerEle) {
+                    controllerEle.classList.add('sm-control-rotate-90');
+                }
             }
         }
     }
-    resetRotation() {
+    resetRotation(controllerEle) {
         if (this.video) {
             this.video.classList.remove('sm-rotate-90');
+            if (controllerEle) {
+                controllerEle.classList.remove('sm-control-rotate-90');
+            }
         }
     }
     set playbackRate(value) {
@@ -9034,7 +8994,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deviceType = void 0;
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
-const ErrorContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ErrorContainer */ "./src/class/Containers/ErrorContainer/index.ts"));
 const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
 const PopupSetting_1 = __importDefault(__webpack_require__(/*! ./class/Components/PopupSetting */ "./src/class/Components/PopupSetting/index.ts"));
 const services_1 = __webpack_require__(/*! ./services */ "./src/services.ts");
@@ -9077,7 +9036,7 @@ class SmUIControls {
                     apiPlayer,
                     ids: this.ids,
                 });
-                this.errorContainer = new ErrorContainer_1.default({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
+                // this.errorContainer = new ErrorContainer({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
                 this.loadingContainer = new LoadingContainer_1.default({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
                 this.popupSetting = new PopupSetting_1.default({ id: this.ids.smPopupSettings, classes, apiPlayer, ids: this.ids });
             }
@@ -9124,10 +9083,10 @@ class SmUIControls {
         return 0;
     }
     destroy() {
-        var _a, _b, _c;
+        var _a, _b;
         (_a = this.controllerContainer) === null || _a === void 0 ? void 0 : _a.destroy();
-        (_b = this.errorContainer) === null || _b === void 0 ? void 0 : _b.destroy();
-        (_c = this.loadingContainer) === null || _c === void 0 ? void 0 : _c.destroy();
+        // this.errorContainer?.destroy();
+        (_b = this.loadingContainer) === null || _b === void 0 ? void 0 : _b.destroy();
         this.apiPlayer = null;
         this.isInit = false;
     }
@@ -9146,7 +9105,7 @@ exports["default"] = SmUIControls;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkHasTouch = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+exports.checkHasTouch = exports.detectDeviceDesktop = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
 const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
@@ -9243,6 +9202,10 @@ const detectDeviceMobile = (deviceType) => {
     return deviceType === type_1.EDeviceType.MOBILE;
 };
 exports.detectDeviceMobile = detectDeviceMobile;
+const detectDeviceDesktop = (deviceType) => {
+    return !(deviceType === type_1.EDeviceType.TABLET || deviceType === type_1.EDeviceType.MOBILE);
+};
+exports.detectDeviceDesktop = detectDeviceDesktop;
 const checkHasTouch = () => {
     return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
 };
@@ -9260,7 +9223,7 @@ exports.checkHasTouch = checkHasTouch;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EBreakpoint = exports.EDeviceType = exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = exports.ETypeScrubbing = void 0;
+exports.EOrientation = exports.EBreakpoint = exports.EDeviceType = exports.RESOLUTION_LABEL = exports.EEVentName = exports.ESettingPanelDataState = exports.ETypeScrubbing = void 0;
 var ETypeScrubbing;
 (function (ETypeScrubbing) {
     ETypeScrubbing["FORWARD"] = "forward";
@@ -9326,6 +9289,11 @@ var EBreakpoint;
     EBreakpoint[EBreakpoint["LG"] = 1280] = "LG";
     EBreakpoint[EBreakpoint["XL"] = 1441] = "XL";
 })(EBreakpoint || (exports.EBreakpoint = EBreakpoint = {}));
+var EOrientation;
+(function (EOrientation) {
+    EOrientation["VERTICAL"] = "vertical";
+    EOrientation["HORIZONTAL"] = "horizontal";
+})(EOrientation || (exports.EOrientation = EOrientation = {}));
 
 
 /***/ }),

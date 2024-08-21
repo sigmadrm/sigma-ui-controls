@@ -250,5 +250,9 @@ export declare enum EBreakpoint {
     XL = 1441
 }
 export type TTabName = 'default' | 'playbackRate' | 'quality';
+export declare enum EOrientation {
+    'VERTICAL' = "vertical",
+    'HORIZONTAL' = "horizontal"
+}
 export {};
 //# sourceMappingURL=type.d.ts.map
