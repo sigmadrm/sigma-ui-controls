@@ -6516,7 +6516,8 @@ class SmApiPlayer {
         return false;
     }
     isFullScreen() {
-        const isFullscreen = document.fullscreenElement;
+        const videoEle = this === null || this === void 0 ? void 0 : this.video;
+        const isFullscreen = document.fullscreenElement || (videoEle === null || videoEle === void 0 ? void 0 : videoEle.webkitDisplayingFullscreen);
         if (isFullscreen) {
             return true;
         }
