@@ -5,6 +5,7 @@ body {
 .sm-rotate-90 {
   transform: rotate(90deg) !important;
   width: 100vh !important;
+  position: relative !important;
 }
 .sm-control-rotate-90 {
   position: fixed !important;
@@ -17,7 +18,17 @@ body {
   transform: rotate(90deg) !important;
   transition: transform 0.3s ease;
 }
-
+.sm-container-video {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 32px !important;
+  box-sizing: border-box !important;
+}
 .no-scroll {
   overflow: hidden;
 }
