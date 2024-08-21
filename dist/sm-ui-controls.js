@@ -6554,7 +6554,7 @@ class SmApiPlayer {
         };
         // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
         if (videoContainer) {
-            videoContainer.class.add('sm-container-video');
+            videoContainer.classList.add('sm-container-video');
             if (videoContainer.requestFullscreen ||
                 videoContainer.mozRequestFullScreen ||
                 videoContainer.webkitRequestFullscreen ||
@@ -6595,7 +6595,7 @@ class SmApiPlayer {
         if (this.video) {
             const videoContainer = this.video.parentElement;
             if (videoContainer) {
-                videoContainer.class.remove('sm-container-video');
+                videoContainer.classList.remove('sm-container-video');
             }
         }
         // Hàm để thoát chế độ toàn màn hình
