@@ -200,7 +200,9 @@ export default class SmApiPlayer {
     return false;
   }
   isFullScreen() {
-    const isFullscreen = document.fullscreenElement;
+    const videoEle = this?.video as any;
+
+    const isFullscreen = document.fullscreenElement || videoEle?.webkitDisplayingFullscreen;
 
     if (isFullscreen) {
       return true;
