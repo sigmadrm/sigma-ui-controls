@@ -344,7 +344,7 @@ export default class SmApiPlayer {
     if (this.video) {
       const videoContainer = this.video.parentElement as any;
       if (videoContainer) {
-        videoContainer.classList.add('sm-container-video');
+        videoContainer.classList.remove('sm-container-video');
       }
       this.video.classList.remove('sm-rotate-90');
       if (controllerEle) {
