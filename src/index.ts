@@ -23,7 +23,7 @@ class SmUIControls implements ISmEventEmitter {
   private apiPlayer: SmApiPlayer | null;
   private isInit: boolean = false;
   private controllerContainer: ControllerContainer | undefined;
-  private errorContainer: ErrorContainer | undefined;
+  // private errorContainer: ErrorContainer | undefined;
   private loadingContainer: LoadingContainer | undefined;
   private popupSetting: PopupSetting | undefined;
   private ids: IIds;
@@ -57,7 +57,7 @@ class SmUIControls implements ISmEventEmitter {
           apiPlayer,
           ids: this.ids,
         });
-        this.errorContainer = new ErrorContainer({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
+        // this.errorContainer = new ErrorContainer({ id: this.ids.smError, classes, apiPlayer, ids: this.ids });
         this.loadingContainer = new LoadingContainer({ id: this.ids.smLoading, classes, apiPlayer, ids: this.ids });
         this.popupSetting = new PopupSetting({ id: this.ids.smPopupSettings, classes, apiPlayer, ids: this.ids });
       }
@@ -103,7 +103,7 @@ class SmUIControls implements ISmEventEmitter {
 
   destroy() {
     this.controllerContainer?.destroy();
-    this.errorContainer?.destroy();
+    // this.errorContainer?.destroy();
     this.loadingContainer?.destroy();
     this.apiPlayer = null;
     this.isInit = false;
