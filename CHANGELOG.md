@@ -1,5 +1,12 @@
 
 
+## [0.2.12](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.11...v0.2.12) (2024-08-21)
+
+
+### Features
+
+* update css for full screen ([bede704](https://github.com/sigmadrm/sigma-ui-controls/commit/bede704bf32e2d2c90fde414904460ea4cb4f55a))
+
 ## [0.2.11](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.10...v0.2.11) (2024-08-21)
 
 
