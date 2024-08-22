@@ -4,6 +4,7 @@ import FooterController from './FooterController';
 
 import { EEVentName, ESettingPanelDataState, IConfigureUIPlayerProps, IConstructorBaseProps } from '../../../type';
 import BaseComponent from '../../BaseComponent';
+import { detectDeviceDesktop } from '../../../services';
 
 interface IConstructorProps extends IConstructorBaseProps {
   videoInfo: IConfigureUIPlayerProps['videoInfo'];
@@ -78,10 +79,9 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
   }
   handleEvtFullScreenChange(e, data) {
-    console.log({ e, data });
     const containerEle = this?.containerElement?.parentElement;
     if (this.apiPlayer.isFullScreen()) {
-      this.apiPlayer.rotateVideo(containerEle);
+      !detectDeviceDesktop(this.apiPlayer.deviceType) && this.apiPlayer.rotateVideo(containerEle);
     } else {
       this.apiPlayer.resetRotation(containerEle);
     }

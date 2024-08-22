@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-properties */
 // import NoSleep from 'nosleep.js';
 import { ETypePlayer } from '../../constants';
+import { detectDeviceDesktop } from '../../services';
 import { EDeviceType, EEVentName, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
@@ -202,7 +203,6 @@ export default class SmApiPlayer {
   }
   isFullScreen() {
     const videoEle = this?.video as any;
-    console.log(document.fullscreenElement, videoEle?.webkitDisplayingFullscreen);
     const isFullscreen = document.fullscreenElement || videoEle?.webkitDisplayingFullscreen;
 
     if (isFullscreen) {
@@ -242,7 +242,7 @@ export default class SmApiPlayer {
 
     // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
     if (videoContainer) {
-      videoContainer.classList.add('sm-container-video');
+      !detectDeviceDesktop(this.deviceType) && videoContainer.classList.add('sm-container-video');
       if (
         videoContainer.requestFullscreen ||
         videoContainer.mozRequestFullScreen ||
@@ -329,15 +329,15 @@ export default class SmApiPlayer {
     if (this.video) {
       const videoContainer = this.video.parentElement as any;
       if (videoContainer) {
-        videoContainer.classList.add('sm-container-video');
+        !detectDeviceDesktop(this.deviceType) && videoContainer.classList.add('sm-container-video');
       }
 
       const width = document.body.clientWidth;
       const height = document.body.clientHeight;
       if (width < height) {
-        this.video.classList.add('sm-rotate-90');
+        !detectDeviceDesktop(this.deviceType) && this.video.classList.add('sm-rotate-90');
         if (controllerEle) {
-          controllerEle.classList.add('sm-control-rotate-90');
+          !detectDeviceDesktop(this.deviceType) && controllerEle.classList.add('sm-control-rotate-90');
         }
       }
     }
