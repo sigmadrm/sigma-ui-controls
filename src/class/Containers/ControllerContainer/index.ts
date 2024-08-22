@@ -288,9 +288,9 @@ class ControllerContainer extends BaseComponent {
     }
   }
   handleEvtError() {
-    if (this.containerElement) {
-      this.containerElement.className = this.classes.controllerContent;
-    }
+    // if (this.containerElement) {
+    //   this.containerElement.className = this.classes.controllerContent;
+    // }
   }
   handleEvtSeeking(e, data) {
     if (data.seeking === false) {

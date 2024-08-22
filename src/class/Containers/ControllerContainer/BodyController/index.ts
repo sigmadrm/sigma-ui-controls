@@ -103,8 +103,8 @@ class BodyController extends BaseComponent {
     if (this.buttonReplayPrimary) {
       this.buttonReplayPrimary.hide();
     }
-    if (this.buttonReplayPrimary) {
-      this.buttonReplayPrimary.hide();
+    if (this.buttonPausePrimary) {
+      this.buttonPausePrimary.hide();
     }
   }
   handleEventPause(): void {
@@ -130,7 +130,6 @@ class BodyController extends BaseComponent {
     }
   }
   handleEvtSeeking(e, data) {
-    console.log(data);
     if (data.seeking === true) {
       this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
       this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
