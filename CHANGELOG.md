@@ -1,5 +1,12 @@
 
 
+## [0.2.16](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.15...v0.2.16) (2024-08-22)
+
+
+### Bug Fixes
+
+* click btn pause not working ([fe62f19](https://github.com/sigmadrm/sigma-ui-controls/commit/fe62f19bf4e02b36916e9c5ea9505d914dcc7477))
+
 ## [0.2.15](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.14...v0.2.15) (2024-08-22)
 
 

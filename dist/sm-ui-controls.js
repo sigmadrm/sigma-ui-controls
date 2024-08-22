@@ -3004,6 +3004,7 @@ class ButtonPausePrimary extends BaseComponent_1.default {
     handleContainerClick(event) {
         const { apiPlayer } = this;
         event.preventDefault();
+        event.stopPropagation();
         if (apiPlayer.isPlay()) {
             apiPlayer.pause();
         }
@@ -4794,8 +4795,8 @@ class BodyController extends BaseComponent_1.default {
         if (this.buttonReplayPrimary) {
             this.buttonReplayPrimary.hide();
         }
-        if (this.buttonReplayPrimary) {
-            this.buttonReplayPrimary.hide();
+        if (this.buttonPausePrimary) {
+            this.buttonPausePrimary.hide();
         }
     }
     handleEventPause() {
@@ -4821,7 +4822,6 @@ class BodyController extends BaseComponent_1.default {
         }
     }
     handleEvtSeeking(e, data) {
-        console.log(data);
         if (data.seeking === true) {
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
             this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
@@ -6239,9 +6239,9 @@ class ControllerContainer extends BaseComponent_1.default {
         }
     }
     handleEvtError() {
-        if (this.containerElement) {
-            this.containerElement.className = this.classes.controllerContent;
-        }
+        // if (this.containerElement) {
+        //   this.containerElement.className = this.classes.controllerContent;
+        // }
     }
     handleEvtSeeking(e, data) {
         if (data.seeking === false) {
