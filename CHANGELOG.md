@@ -1,5 +1,12 @@
 
 
+## [0.2.15](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.14...v0.2.15) (2024-08-22)
+
+
+### Features
+
+* update rotation only in tablet, mobile ([0c12b4d](https://github.com/sigmadrm/sigma-ui-controls/commit/0c12b4d9227109a815356bf374ddc066265df4a8))
+
 ## [0.2.14](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.13...v0.2.14) (2024-08-22)
 
 

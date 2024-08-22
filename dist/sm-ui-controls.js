@@ -5962,6 +5962,7 @@ const BodyController_1 = __importDefault(__webpack_require__(/*! ./BodyControlle
 const FooterController_1 = __importDefault(__webpack_require__(/*! ./FooterController */ "./src/class/Containers/ControllerContainer/FooterController/index.ts"));
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
+const services_1 = __webpack_require__(/*! ../../../services */ "./src/services.ts");
 class ControllerContainer extends BaseComponent_1.default {
     constructor(props) {
         const { classes, apiPlayer, ids } = props;
@@ -6025,10 +6026,9 @@ class ControllerContainer extends BaseComponent_1.default {
     }
     handleEvtFullScreenChange(e, data) {
         var _a;
-        console.log({ e, data });
         const containerEle = (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
         if (this.apiPlayer.isFullScreen()) {
-            this.apiPlayer.rotateVideo(containerEle);
+            !(0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType) && this.apiPlayer.rotateVideo(containerEle);
         }
         else {
             this.apiPlayer.resetRotation(containerEle);
@@ -6363,6 +6363,7 @@ exports.convertDataEventPlaying = exports.convertDataEventWaiting = exports.conv
 /* eslint-disable no-restricted-properties */
 // import NoSleep from 'nosleep.js';
 const constants_1 = __webpack_require__(/*! ../../constants */ "./src/constants.ts");
+const services_1 = __webpack_require__(/*! ../../services */ "./src/services.ts");
 const type_1 = __webpack_require__(/*! ../../type */ "./src/type.ts");
 const SmEventEmitter_1 = __importDefault(__webpack_require__(/*! ../SmEventEmitter/SmEventEmitter */ "./src/class/SmEventEmitter/SmEventEmitter.ts"));
 // const noSleep = new NoSleep();
@@ -6543,7 +6544,6 @@ class SmApiPlayer {
     }
     isFullScreen() {
         const videoEle = this === null || this === void 0 ? void 0 : this.video;
-        console.log(document.fullscreenElement, videoEle === null || videoEle === void 0 ? void 0 : videoEle.webkitDisplayingFullscreen);
         const isFullscreen = document.fullscreenElement || (videoEle === null || videoEle === void 0 ? void 0 : videoEle.webkitDisplayingFullscreen);
         if (isFullscreen) {
             return true;
@@ -6582,7 +6582,7 @@ class SmApiPlayer {
         };
         // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
         if (videoContainer) {
-            videoContainer.classList.add('sm-container-video');
+            !(0, services_1.detectDeviceDesktop)(this.deviceType) && videoContainer.classList.add('sm-container-video');
             if (videoContainer.requestFullscreen ||
                 videoContainer.mozRequestFullScreen ||
                 videoContainer.webkitRequestFullscreen ||
@@ -6672,14 +6672,14 @@ class SmApiPlayer {
         if (this.video) {
             const videoContainer = this.video.parentElement;
             if (videoContainer) {
-                videoContainer.classList.add('sm-container-video');
+                !(0, services_1.detectDeviceDesktop)(this.deviceType) && videoContainer.classList.add('sm-container-video');
             }
             const width = document.body.clientWidth;
             const height = document.body.clientHeight;
             if (width < height) {
-                this.video.classList.add('sm-rotate-90');
+                !(0, services_1.detectDeviceDesktop)(this.deviceType) && this.video.classList.add('sm-rotate-90');
                 if (controllerEle) {
-                    controllerEle.classList.add('sm-control-rotate-90');
+                    !(0, services_1.detectDeviceDesktop)(this.deviceType) && controllerEle.classList.add('sm-control-rotate-90');
                 }
             }
         }
