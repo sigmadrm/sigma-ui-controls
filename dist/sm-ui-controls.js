@@ -4728,12 +4728,6 @@ class BodyController extends BaseComponent_1.default {
             apiPlayer,
             ids,
         });
-        this.buttonReplayPrimary = new ButtonReplayPrimary_1.default({
-            id: ids.smButtonReplayPrimary,
-            classes,
-            apiPlayer,
-            ids,
-        });
         this.settingsController = new SettingsController_1.default({
             id: ids.smSettingsContainer,
             classes,
@@ -4779,14 +4773,14 @@ class BodyController extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.on(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.ENDED, this.handleEventEnded, this);
         this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
-        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     unregisterListener() {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PAUSE, this.handleEventPause, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEvtSeeking, this);
-        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
     }
     handleEventPlay() {
         if (this.buttonPlayPrimary) {
@@ -6126,6 +6120,9 @@ class ControllerContainer extends BaseComponent_1.default {
                         if (this.footerController) {
                             this.footerController.hidden();
                         }
+                        if (this.bodyController) {
+                            this.bodyController.hidden();
+                        }
                         if (this.headController) {
                             this.headController.hidden();
                         }
@@ -6138,50 +6135,54 @@ class ControllerContainer extends BaseComponent_1.default {
         }
     }
     handleOnMouseover(e) {
-        if (e.type === 'mouseover') {
-            if (this.timerId) {
-                clearTimeout(this.timerId);
-                this.timerId = null;
-            }
-            if (this.footerController) {
-                this.footerController.show();
-            }
-            if (this.headController) {
-                this.headController.show();
-            }
-            this.timerId = self.setTimeout(() => {
-                var _a;
-                if (this.footerController) {
-                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
-                        if (this.footerController) {
-                            this.footerController.hidden();
-                        }
-                    }
-                }
-                if (this.headController) {
-                    this.headController.hidden();
-                }
-            }, 3000);
+        // if (e.type === 'mouseover') {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
         }
-    }
-    handleOnMouseout(e) {
-        if (e.type === 'mouseout') {
-            if (this.timerId) {
-                clearTimeout(this.timerId);
-                this.timerId = null;
-            }
-            this.timerId = self.setTimeout(() => {
-                var _a;
+        if (this.footerController) {
+            this.footerController.show();
+        }
+        if (this.headController) {
+            this.headController.show();
+        }
+        this.timerId = self.setTimeout(() => {
+            var _a;
+            if (this.footerController) {
                 if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
                     if (this.footerController) {
                         this.footerController.hidden();
                     }
                 }
-                if (this.headController) {
-                    this.headController.hidden();
-                }
-            }, 3000);
+            }
+            if (this.bodyController) {
+                this.bodyController.hidden();
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+        }, 3000);
+        // }
+    }
+    handleOnMouseout(e) {
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
         }
+        this.timerId = self.setTimeout(() => {
+            var _a;
+            if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                if (this.footerController) {
+                    this.footerController.hidden();
+                }
+            }
+            if (this.bodyController) {
+                this.bodyController.hidden();
+            }
+            if (this.headController) {
+                this.headController.hidden();
+            }
+        }, 3000);
     }
     handleClickContainer(event) {
         var _a;

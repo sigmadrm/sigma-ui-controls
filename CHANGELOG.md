@@ -1,5 +1,12 @@
 
 
+## [0.2.17](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.16...v0.2.17) (2024-08-22)
+
+
+### Bug Fixes
+
+* update hidden anh show controler ([030fd3b](https://github.com/sigmadrm/sigma-ui-controls/commit/030fd3b9837d0363674530b234ff19666f2cea97))
+
 ## [0.2.16](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.15...v0.2.16) (2024-08-22)
 
 
