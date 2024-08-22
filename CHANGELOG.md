@@ -1,5 +1,12 @@
 
 
+## [0.2.14](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.13...v0.2.14) (2024-08-22)
+
+
+### Features
+
+* update event full screen change for ios ([7a7cea8](https://github.com/sigmadrm/sigma-ui-controls/commit/7a7cea8c26536e617aa418ace83a776f76531b66))
+
 ## [0.2.13](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.12...v0.2.13) (2024-08-21)
 
 

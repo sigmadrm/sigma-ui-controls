@@ -12,7 +12,7 @@ declare class ControllerContainer extends BaseComponent {
     render(): void;
     registerListener(): void;
     unregisterListener(): void;
-    handleEvtFullScreenChange(): void;
+    handleEvtFullScreenChange(e: any, data: any): void;
     handleEventEnded(): void;
     handleEventPlay(): void;
     handleEventSeekBarSeeking(e: any, data: any): void;

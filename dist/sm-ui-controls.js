@@ -3534,6 +3534,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const constants_1 = __webpack_require__(/*! ../../../constants */ "./src/constants.ts");
 const icons_1 = __webpack_require__(/*! ../../../icons */ "./src/icons.ts");
+const services_1 = __webpack_require__(/*! ../../../services */ "./src/services.ts");
 const type_1 = __webpack_require__(/*! ../../../type */ "./src/type.ts");
 const BaseComponent_1 = __importDefault(__webpack_require__(/*! ../../BaseComponent */ "./src/class/BaseComponent/index.ts"));
 const initState = {
@@ -3595,6 +3596,7 @@ class PopupSetting extends BaseComponent_1.default {
 class PopupSettingContent extends BaseComponent_1.default {
     constructor(props) {
         super(props, initState);
+        this.orientation = type_1.EOrientation.HORIZONTAL;
     }
     generatePlaybackItemId(index) {
         return `${this.ids.smSettingPlaybackSpeedItemPrefix}-${index}`;
@@ -3666,12 +3668,14 @@ class PopupSettingContent extends BaseComponent_1.default {
         apiPlayer.eventemitter.on(type_1.EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
         apiPlayer.eventemitter.on(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
         apiPlayer.eventemitter.on(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+        this.apiPlayer.eventemitter.on(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     }
     unregisterListener() {
         const { apiPlayer } = this;
         apiPlayer.eventemitter.off(type_1.EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
         apiPlayer.eventemitter.off(type_1.EEVentName.RATE_CHANGE, this.handleRateChange, this);
         apiPlayer.eventemitter.off(type_1.EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+        this.apiPlayer.eventemitter.off(type_1.EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
     }
     goToPlaybackSpeedTab(event) {
         this.state = Object.assign(Object.assign({}, this.state), { currentTab: 'playbackRate' });
@@ -3700,6 +3704,27 @@ class PopupSettingContent extends BaseComponent_1.default {
             }
         }
         this.state = Object.assign(Object.assign({}, this.state), { tracks, activeTrack });
+    }
+    handleEvtFullScreenChange() {
+        var _a, _b, _c;
+        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType)) {
+            this.orientation = type_1.EOrientation.HORIZONTAL;
+            (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.remove(this.classes.popupSettingsContentVertical);
+        }
+        else {
+            const width = self.innerWidth;
+            const height = self.innerHeight;
+            if (this.apiPlayer.isFullScreen()) {
+                if (width < height) {
+                    (_b = this.containerElement) === null || _b === void 0 ? void 0 : _b.classList.add(this.classes.popupSettingsContentVertical);
+                }
+            }
+            else {
+                if (width < height) {
+                    (_c = this.containerElement) === null || _c === void 0 ? void 0 : _c.classList.remove(this.classes.popupSettingsContentVertical);
+                }
+            }
+        }
     }
     changePlaybackRate(value) {
         this.apiPlayer.playbackRate = value;
@@ -5998,8 +6023,9 @@ class ControllerContainer extends BaseComponent_1.default {
         this.apiPlayer.eventemitter.off(type_1.EEVentName.ENDED, this.handleEventEnded, this);
         this.apiPlayer.eventemitter.off(type_1.EEVentName.PLAY, this.handleEventPlay, this);
     }
-    handleEvtFullScreenChange() {
+    handleEvtFullScreenChange(e, data) {
         var _a;
+        console.log({ e, data });
         const containerEle = (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
         if (this.apiPlayer.isFullScreen()) {
             this.apiPlayer.rotateVideo(containerEle);
@@ -6424,7 +6450,7 @@ class SmApiPlayer {
         this.eventemitter.trigger(type_1.EEVentName.PAUSE, data);
     }
     emitFullScreenChange(data) {
-        // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+        console.log('addEventListener', type_1.EEVentName.FULL_SCREEN_CHANGE, data);
         this.eventemitter.trigger(type_1.EEVentName.FULL_SCREEN_CHANGE, data);
     }
     emitVolumeChange(data) {
@@ -6517,6 +6543,7 @@ class SmApiPlayer {
     }
     isFullScreen() {
         const videoEle = this === null || this === void 0 ? void 0 : this.video;
+        console.log(document.fullscreenElement, videoEle === null || videoEle === void 0 ? void 0 : videoEle.webkitDisplayingFullscreen);
         const isFullscreen = document.fullscreenElement || (videoEle === null || videoEle === void 0 ? void 0 : videoEle.webkitDisplayingFullscreen);
         if (isFullscreen) {
             return true;
@@ -6767,11 +6794,20 @@ class SmApiPlayer {
                     });
                     break;
                 case type_1.EEVentName.FULL_SCREEN_CHANGE:
-                    document.addEventListener(evtName, (data) => {
+                    document.addEventListener(type_1.EEVentName.FULL_SCREEN_CHANGE, (data) => {
+                        const dataConvert = (0, exports.convertDataEventFullScreenChange)(data);
+                        clb.call(context, dataConvert);
+                    });
+                    video === null || video === void 0 ? void 0 : video.addEventListener(type_1.EEVentName.WEBKIT_BEGIN_FULL_SCREEN, function (data) {
+                        const dataConvert = (0, exports.convertDataEventFullScreenChange)(data);
+                        clb.call(context, dataConvert);
+                    });
+                    video === null || video === void 0 ? void 0 : video.addEventListener(type_1.EEVentName.WEBKIT_END_FULL_SCREEN, function (data) {
                         const dataConvert = (0, exports.convertDataEventFullScreenChange)(data);
                         clb.call(context, dataConvert);
                     });
                     break;
+                //   break;
                 case type_1.EEVentName.ADAPTATION:
                 case type_1.EEVentName.TRACKS_CHANGED:
                 case type_1.EEVentName.ABR_STATUS_CHANGED:
@@ -7802,6 +7838,9 @@ const generateStylesDesktop = (props) => {
       color: black;
       overflow: hidden;
     `,
+        popupSettingsContentVertical: (0, css_1.css) `
+      max-height: 80vw;
+    `,
         popupSettingsHeader: (0, css_1.css) `
       margin-top: 12px;
       width: 48px;
@@ -8636,6 +8675,9 @@ const generateStylesMobile = (props) => {
       color: black;
       overflow: hidden;
     `,
+        popupSettingsContentVertical: (0, css_1.css) `
+      max-height: 80vw;
+    `,
         popupSettingsHeader: (0, css_1.css) `
       margin-top: 12px;
       width: 48px;
@@ -9258,6 +9300,8 @@ var EEVentName;
     EEVentName["PLAY"] = "play";
     EEVentName["PAUSE"] = "pause";
     EEVentName["FULL_SCREEN_CHANGE"] = "fullscreenchange";
+    EEVentName["WEBKIT_BEGIN_FULL_SCREEN"] = "webkitbeginfullscreen";
+    EEVentName["WEBKIT_END_FULL_SCREEN"] = "webkitendfullscreen";
     EEVentName["LOADING"] = "loading";
     EEVentName["TRACKS_CHANGED"] = "trackschanged";
     EEVentName["ADAPTATION"] = "adaptation";

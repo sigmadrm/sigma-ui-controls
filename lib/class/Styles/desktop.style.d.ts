@@ -69,6 +69,7 @@ declare const generateStylesDesktop: (props?: TGenerateStylesProps) => {
     popupSettings: string;
     popupSettingsEnable: string;
     popupSettingsContent: string;
+    popupSettingsContentVertical: string;
     popupSettingsHeader: string;
     popupSettingsItem: string;
     popupSettingsItemIcon: string;
