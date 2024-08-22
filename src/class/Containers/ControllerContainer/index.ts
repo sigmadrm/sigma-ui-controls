@@ -178,6 +178,9 @@ class ControllerContainer extends BaseComponent {
             if (this.footerController) {
               this.footerController.hidden();
             }
+            if (this.bodyController) {
+              this.bodyController.hidden();
+            }
             if (this.headController) {
               this.headController.hidden();
             }
@@ -190,48 +193,52 @@ class ControllerContainer extends BaseComponent {
     }
   }
   handleOnMouseover(e: MouseEvent | TouchEvent) {
-    if (e.type === 'mouseover') {
-      if (this.timerId) {
-        clearTimeout(this.timerId);
-        this.timerId = null;
-      }
-      if (this.footerController) {
-        this.footerController.show();
-      }
-      if (this.headController) {
-        this.headController.show();
-      }
-      this.timerId = self.setTimeout(() => {
-        if (this.footerController) {
-          if (!this.footerController?.getIsInside()) {
-            if (this.footerController) {
-              this.footerController.hidden();
-            }
-          }
-        }
-        if (this.headController) {
-          this.headController.hidden();
-        }
-      }, 3000);
+    // if (e.type === 'mouseover') {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
     }
-  }
-  handleOnMouseout(e: MouseEvent | TouchEvent) {
-    if (e.type === 'mouseout') {
-      if (this.timerId) {
-        clearTimeout(this.timerId);
-        this.timerId = null;
-      }
-      this.timerId = self.setTimeout(() => {
+    if (this.footerController) {
+      this.footerController.show();
+    }
+    if (this.headController) {
+      this.headController.show();
+    }
+    this.timerId = self.setTimeout(() => {
+      if (this.footerController) {
         if (!this.footerController?.getIsInside()) {
           if (this.footerController) {
             this.footerController.hidden();
           }
         }
-        if (this.headController) {
-          this.headController.hidden();
-        }
-      }, 3000);
+      }
+      if (this.bodyController) {
+        this.bodyController.hidden();
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+    }, 3000);
+    // }
+  }
+  handleOnMouseout(e: MouseEvent | TouchEvent) {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
     }
+    this.timerId = self.setTimeout(() => {
+      if (!this.footerController?.getIsInside()) {
+        if (this.footerController) {
+          this.footerController.hidden();
+        }
+      }
+      if (this.bodyController) {
+        this.bodyController.hidden();
+      }
+      if (this.headController) {
+        this.headController.hidden();
+      }
+    }, 3000);
   }
   handleClickContainer(event: MouseEvent) {
     const evt = event as PointerEvent;

@@ -35,12 +35,6 @@ class BodyController extends BaseComponent {
       apiPlayer,
       ids,
     });
-    this.buttonReplayPrimary = new ButtonReplyPrimary({
-      id: ids.smButtonReplayPrimary,
-      classes,
-      apiPlayer,
-      ids,
-    });
     this.settingsController = new SettingsController({
       id: ids.smSettingsContainer,
       classes,
@@ -87,14 +81,14 @@ class BodyController extends BaseComponent {
     this.apiPlayer.eventemitter.on(EEVentName.PAUSE, this.handleEventPause, this);
     this.apiPlayer.eventemitter.on(EEVentName.ENDED, this.handleEventEnded, this);
     this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEvtSeeking, this);
-    this.apiPlayer.eventemitter.on(EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
+    this.apiPlayer.eventemitter.on(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
   unregisterListener(): void {
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
     this.apiPlayer.eventemitter.off(EEVentName.PAUSE, this.handleEventPause, this);
     this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
     this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEvtSeeking, this);
-    this.apiPlayer.eventemitter.off(EEVentName.SEEKING, this.handleEventSeekBarSeeking, this);
+    this.apiPlayer.eventemitter.off(EEVentName.SEEK_BAR_SEEKING, this.handleEventSeekBarSeeking, this);
   }
   handleEventPlay(): void {
     if (this.buttonPlayPrimary) {
