@@ -105,9 +105,10 @@ export default class SmApiPlayer {
     this.eventemitter.trigger(EEVentName.PAUSE, data);
   }
   emitFullScreenChange(data: any) {
-    // console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
+    console.log('addEventListener', EEVentName.FULL_SCREEN_CHANGE, data);
     this.eventemitter.trigger(EEVentName.FULL_SCREEN_CHANGE, data);
   }
+
   emitVolumeChange(data: any) {
     // console.log('addEventListener', EEVentName.VOLUME_CHANGE, data);
     this.eventemitter.trigger(EEVentName.VOLUME_CHANGE, data);
@@ -201,7 +202,7 @@ export default class SmApiPlayer {
   }
   isFullScreen() {
     const videoEle = this?.video as any;
-
+    console.log(document.fullscreenElement, videoEle?.webkitDisplayingFullscreen);
     const isFullscreen = document.fullscreenElement || videoEle?.webkitDisplayingFullscreen;
 
     if (isFullscreen) {
@@ -456,11 +457,22 @@ export default class SmApiPlayer {
           });
           break;
         case EEVentName.FULL_SCREEN_CHANGE:
-          document.addEventListener(evtName, (data: any) => {
+          document.addEventListener(EEVentName.FULL_SCREEN_CHANGE, (data: any) => {
+            const dataConvert = convertDataEventFullScreenChange(data);
+            clb.call(context, dataConvert);
+          });
+
+          video?.addEventListener(EEVentName.WEBKIT_BEGIN_FULL_SCREEN, function (data: any) {
+            const dataConvert = convertDataEventFullScreenChange(data);
+            clb.call(context, dataConvert);
+          });
+
+          video?.addEventListener(EEVentName.WEBKIT_END_FULL_SCREEN, function (data: any) {
             const dataConvert = convertDataEventFullScreenChange(data);
             clb.call(context, dataConvert);
           });
           break;
+        //   break;
         case EEVentName.ADAPTATION:
         case EEVentName.TRACKS_CHANGED:
         case EEVentName.ABR_STATUS_CHANGED:

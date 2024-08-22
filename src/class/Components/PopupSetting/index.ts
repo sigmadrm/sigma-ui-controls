@@ -1,6 +1,7 @@
 import { autoTrack, PLAYBACK_SPEEDS } from '../../../constants';
 import { checkedIcon, chevronLeftIcon, chevronRightIcon, playbackSpeedIcon, qualityIcon } from '../../../icons';
-import { EEVentName, IConstructorBaseProps, Track, TTabName } from '../../../type';
+import { detectDeviceDesktop } from '../../../services';
+import { EEVentName, EOrientation, IConstructorBaseProps, Track, TTabName } from '../../../type';
 import BaseComponent from '../../BaseComponent';
 
 type TSettingState = {
@@ -68,6 +69,7 @@ class PopupSetting extends BaseComponent {
   }
 }
 class PopupSettingContent extends BaseComponent<TSettingState> {
+  private orientation: EOrientation = EOrientation.HORIZONTAL;
   constructor(props: IConstructorBaseProps) {
     super(props, initState);
   }
@@ -149,6 +151,7 @@ class PopupSettingContent extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.on(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.on(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.on(EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+    this.apiPlayer.eventemitter.on(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
   }
 
   unregisterListener() {
@@ -157,6 +160,7 @@ class PopupSettingContent extends BaseComponent<TSettingState> {
     apiPlayer.eventemitter.off(EEVentName.TRACKS_CHANGED, this.handleQualityChange, this);
     apiPlayer.eventemitter.off(EEVentName.RATE_CHANGE, this.handleRateChange, this);
     apiPlayer.eventemitter.off(EEVentName.POPUP_SETTING, this.handleEvtPopupSetting, this);
+    this.apiPlayer.eventemitter.off(EEVentName.FULL_SCREEN_CHANGE, this.handleEvtFullScreenChange, this);
   }
 
   goToPlaybackSpeedTab(event: MouseEvent | TouchEvent) {
@@ -192,7 +196,24 @@ class PopupSettingContent extends BaseComponent<TSettingState> {
 
     this.state = { ...this.state, tracks, activeTrack };
   }
-
+  handleEvtFullScreenChange() {
+    if (detectDeviceDesktop(this.apiPlayer.deviceType)) {
+      this.orientation = EOrientation.HORIZONTAL;
+      this.containerElement?.classList.remove(this.classes.popupSettingsContentVertical);
+    } else {
+      const width = self.innerWidth;
+      const height = self.innerHeight;
+      if (this.apiPlayer.isFullScreen()) {
+        if (width < height) {
+          this.containerElement?.classList.add(this.classes.popupSettingsContentVertical);
+        }
+      } else {
+        if (width < height) {
+          this.containerElement?.classList.remove(this.classes.popupSettingsContentVertical);
+        }
+      }
+    }
+  }
   changePlaybackRate(value: number) {
     this.apiPlayer.playbackRate = value;
     this.goToTab('default');

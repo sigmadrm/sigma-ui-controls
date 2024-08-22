@@ -34,6 +34,8 @@ export enum EEVentName {
   PLAY = 'play',
   PAUSE = 'pause',
   FULL_SCREEN_CHANGE = 'fullscreenchange',
+  WEBKIT_BEGIN_FULL_SCREEN = 'webkitbeginfullscreen',
+  WEBKIT_END_FULL_SCREEN = 'webkitendfullscreen',
   LOADING = 'loading',
   TRACKS_CHANGED = 'trackschanged',
   ADAPTATION = 'adaptation',

@@ -2,7 +2,6 @@ import { typePlayerDef, versionDef } from './constants';
 import { IConfigureUIPlayerProps, IIds, ISmEventEmitter, SmListeners } from './type';
 
 import ControllerContainer from './class/Containers/ControllerContainer';
-import ErrorContainer from './class/Containers/ErrorContainer';
 import LoadingContainer from './class/Containers/LoadingContainer';
 import PopupSetting from './class/Components/PopupSetting';
 

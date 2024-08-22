@@ -77,7 +77,8 @@ class ControllerContainer extends BaseComponent {
     this.apiPlayer.eventemitter.off(EEVentName.ENDED, this.handleEventEnded, this);
     this.apiPlayer.eventemitter.off(EEVentName.PLAY, this.handleEventPlay, this);
   }
-  handleEvtFullScreenChange() {
+  handleEvtFullScreenChange(e, data) {
+    console.log({ e, data });
     const containerEle = this?.containerElement?.parentElement;
     if (this.apiPlayer.isFullScreen()) {
       this.apiPlayer.rotateVideo(containerEle);

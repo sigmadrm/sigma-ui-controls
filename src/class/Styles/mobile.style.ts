@@ -704,6 +704,9 @@ const generateStylesMobile = (props?: TGenerateStylesProps) => {
       color: black;
       overflow: hidden;
     `,
+    popupSettingsContentVertical: css`
+      max-height: 80vw;
+    `,
     popupSettingsHeader: css`
       margin-top: 12px;
       width: 48px;
