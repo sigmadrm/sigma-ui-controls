@@ -1,5 +1,12 @@
 
 
+## [0.2.18](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.17...v0.2.18) (2024-08-23)
+
+
+### Features
+
+* check device os ([b4ad767](https://github.com/sigmadrm/sigma-ui-controls/commit/b4ad767df29fe24067b6a36b41546dc0a4b2c6cb))
+
 ## [0.2.17](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.16...v0.2.17) (2024-08-22)
 
 

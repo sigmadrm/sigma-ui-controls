@@ -3708,7 +3708,7 @@ class PopupSettingContent extends BaseComponent_1.default {
     }
     handleEvtFullScreenChange() {
         var _a, _b, _c;
-        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType)) {
+        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceInfo.type)) {
             this.orientation = type_1.EOrientation.HORIZONTAL;
             (_a = this.containerElement) === null || _a === void 0 ? void 0 : _a.classList.remove(this.classes.popupSettingsContentVertical);
         }
@@ -5144,7 +5144,7 @@ class ProgressBarContainer extends BaseComponent_1.default {
         self.onresize = () => { };
     }
     handleEvtFullScreenChange() {
-        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType)) {
+        if ((0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceInfo.type)) {
             this.orientation = type_1.EOrientation.HORIZONTAL;
         }
         else {
@@ -6022,7 +6022,7 @@ class ControllerContainer extends BaseComponent_1.default {
         var _a;
         const containerEle = (_a = this === null || this === void 0 ? void 0 : this.containerElement) === null || _a === void 0 ? void 0 : _a.parentElement;
         if (this.apiPlayer.isFullScreen()) {
-            !(0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceType) && this.apiPlayer.rotateVideo(containerEle);
+            !(0, services_1.detectDeviceDesktop)(this.apiPlayer.deviceInfo.type) && this.apiPlayer.rotateVideo(containerEle);
         }
         else {
             this.apiPlayer.resetRotation(containerEle);
@@ -6370,7 +6370,7 @@ const SmEventEmitter_1 = __importDefault(__webpack_require__(/*! ../SmEventEmitt
 // const noSleep = new NoSleep();
 class SmApiPlayer {
     constructor(props) {
-        this.deviceType = props.deviceType;
+        this.deviceInfo = props.deviceInfo;
         this.hasTouch = props.hasTouch;
         this.player = props.player;
         this.video = props.video;
@@ -6583,7 +6583,9 @@ class SmApiPlayer {
         };
         // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
         if (videoContainer) {
-            !(0, services_1.detectDeviceDesktop)(this.deviceType) && videoContainer.classList.add('sm-container-video');
+            !(0, services_1.detectDeviceDesktop)(this.deviceInfo.type) &&
+                !(0, services_1.isIOS)(this.deviceInfo.os.name) &&
+                videoContainer.classList.add('sm-container-video');
             if (videoContainer.requestFullscreen ||
                 videoContainer.mozRequestFullScreen ||
                 videoContainer.webkitRequestFullscreen ||
@@ -6673,14 +6675,20 @@ class SmApiPlayer {
         if (this.video) {
             const videoContainer = this.video.parentElement;
             if (videoContainer) {
-                !(0, services_1.detectDeviceDesktop)(this.deviceType) && videoContainer.classList.add('sm-container-video');
+                !(0, services_1.detectDeviceDesktop)(this.deviceInfo.type) &&
+                    !(0, services_1.isIOS)(this.deviceInfo.os.name) &&
+                    videoContainer.classList.add('sm-container-video');
             }
             const width = document.body.clientWidth;
             const height = document.body.clientHeight;
             if (width < height) {
-                !(0, services_1.detectDeviceDesktop)(this.deviceType) && this.video.classList.add('sm-rotate-90');
+                !(0, services_1.detectDeviceDesktop)(this.deviceInfo.type) &&
+                    !(0, services_1.isIOS)(this.deviceInfo.os.name) &&
+                    this.video.classList.add('sm-rotate-90');
                 if (controllerEle) {
-                    !(0, services_1.detectDeviceDesktop)(this.deviceType) && controllerEle.classList.add('sm-control-rotate-90');
+                    !(0, services_1.detectDeviceDesktop)(this.deviceInfo.type) &&
+                        !(0, services_1.isIOS)(this.deviceInfo.os.name) &&
+                        controllerEle.classList.add('sm-control-rotate-90');
                 }
             }
         }
@@ -9050,7 +9058,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deviceType = void 0;
+exports.deviceInfo = void 0;
 const constants_1 = __webpack_require__(/*! ./constants */ "./src/constants.ts");
 const ControllerContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/ControllerContainer */ "./src/class/Containers/ControllerContainer/index.ts"));
 const LoadingContainer_1 = __importDefault(__webpack_require__(/*! ./class/Containers/LoadingContainer */ "./src/class/Containers/LoadingContainer/index.ts"));
@@ -9060,17 +9068,17 @@ const style_1 = __importDefault(__webpack_require__(/*! ./class/Styles/style */ 
 const SmApiPlayer_1 = __importDefault(__webpack_require__(/*! ./class/SmApiPlayer */ "./src/class/SmApiPlayer/index.ts"));
 __webpack_require__(/*! animate.css */ "./node_modules/animate.css/animate.css");
 __webpack_require__(/*! ./index.css */ "./src/index.css");
-const deviceType = (0, services_1.detectDevice)();
-exports.deviceType = deviceType;
+const deviceInfo = (0, services_1.detectDevice)();
+exports.deviceInfo = deviceInfo;
 const hasTouch = (0, services_1.checkHasTouch)();
 const classes = (0, style_1.default)({
-    deviceType,
+    deviceType: deviceInfo.type,
 });
 class SmUIControls {
     constructor(props) {
         this.isInit = false;
         const { player, video, idVideoContainer, typePlayer = constants_1.typePlayerDef, version = constants_1.versionDef, videoInfo } = props;
-        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, deviceType, hasTouch }));
+        const apiPlayer = (this.apiPlayer = new SmApiPlayer_1.default({ player, video, typePlayer, version, hasTouch, deviceInfo }));
         const VideoContainerElement = document.getElementById(idVideoContainer);
         this.ids = (0, services_1.generateIIds)();
         if (!this.isInit) {
@@ -9164,7 +9172,7 @@ exports["default"] = SmUIControls;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkHasTouch = exports.detectDeviceDesktop = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
+exports.checkHasTouch = exports.isIOS = exports.detectDeviceDesktop = exports.detectDeviceMobile = exports.detectDevice = exports.generateIIds = exports.createElementFromHTML = void 0;
 const ua_parser_js_1 = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 const nanoid_1 = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 const type_1 = __webpack_require__(/*! ./type */ "./src/type.ts");
@@ -9235,25 +9243,33 @@ const generateIIds = () => {
 };
 exports.generateIIds = generateIIds;
 const detectDevice = () => {
+    const deviceInfo = {
+        type: type_1.EDeviceType.DESKTOP,
+        os: { name: '', version: '' },
+    };
     try {
         const parser = new ua_parser_js_1.UAParser();
         const result = parser.getResult();
         const deviceType = result.device.type;
+        const os = parser.getOS();
+        if (os) {
+            deviceInfo.os = os;
+        }
         if (deviceType) {
             if (deviceType.toLowerCase() === type_1.EDeviceType.MOBILE) {
-                return type_1.EDeviceType.MOBILE;
+                deviceInfo.type = type_1.EDeviceType.MOBILE;
             }
             else if (deviceType.toLowerCase() === type_1.EDeviceType.TABLET) {
-                return type_1.EDeviceType.TABLET;
+                deviceInfo.type = type_1.EDeviceType.TABLET;
             }
             else {
-                return type_1.EDeviceType.DESKTOP;
+                deviceInfo.type = type_1.EDeviceType.DESKTOP;
             }
         }
-        return type_1.EDeviceType.DESKTOP;
+        return deviceInfo;
     }
     catch (error) {
-        return type_1.EDeviceType.DESKTOP;
+        return deviceInfo;
     }
 };
 exports.detectDevice = detectDevice;
@@ -9265,6 +9281,15 @@ const detectDeviceDesktop = (deviceType) => {
     return !(deviceType === type_1.EDeviceType.TABLET || deviceType === type_1.EDeviceType.MOBILE);
 };
 exports.detectDeviceDesktop = detectDeviceDesktop;
+const isIOS = (value) => {
+    try {
+        return value.toLowerCase() === 'ios';
+    }
+    catch (error) {
+        return false;
+    }
+};
+exports.isIOS = isIOS;
 const checkHasTouch = () => {
     return 'ontouchstart' in self || navigator.maxTouchPoints > 0;
 };

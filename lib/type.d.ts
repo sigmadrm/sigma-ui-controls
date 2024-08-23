@@ -256,5 +256,13 @@ export declare enum EOrientation {
     'VERTICAL' = "vertical",
     'HORIZONTAL' = "horizontal"
 }
+export interface IOsDevice {
+    name: string;
+    version: string;
+}
+export interface IDeviceInfo {
+    type: EDeviceType;
+    os: IOsDevice;
+}
 export {};
 //# sourceMappingURL=type.d.ts.map
