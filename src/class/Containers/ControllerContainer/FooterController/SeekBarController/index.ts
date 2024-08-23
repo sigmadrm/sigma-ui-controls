@@ -227,7 +227,7 @@ class ProgressBarContainer extends BaseComponent {
     self.onresize = () => {};
   }
   handleEvtFullScreenChange() {
-    if (detectDeviceDesktop(this.apiPlayer.deviceType)) {
+    if (detectDeviceDesktop(this.apiPlayer.deviceInfo.type)) {
       this.orientation = EOrientation.HORIZONTAL;
     } else {
       const width = self.innerWidth;

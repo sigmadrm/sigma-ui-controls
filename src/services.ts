@@ -1,7 +1,7 @@
 import { UAParser } from 'ua-parser-js';
 
 import { nanoid } from 'nanoid';
-import { EDeviceType, IIds } from './type';
+import { EDeviceType, IDeviceInfo, IIds } from './type';
 
 export const createElementFromHTML = (htmlString: string) => {
   const tempDiv = document.createElement('div');
@@ -69,24 +69,32 @@ export const generateIIds = (): IIds => {
   };
 };
 
-export const detectDevice = (): EDeviceType => {
+export const detectDevice = (): IDeviceInfo => {
+  const deviceInfo: IDeviceInfo = {
+    type: EDeviceType.DESKTOP,
+    os: { name: '', version: '' },
+  };
   try {
     const parser = new UAParser();
     const result = parser.getResult();
     const deviceType = result.device.type;
+    const os = parser.getOS();
 
+    if (os) {
+      deviceInfo.os = os;
+    }
     if (deviceType) {
       if (deviceType.toLowerCase() === EDeviceType.MOBILE) {
-        return EDeviceType.MOBILE;
+        deviceInfo.type = EDeviceType.MOBILE;
       } else if (deviceType.toLowerCase() === EDeviceType.TABLET) {
-        return EDeviceType.TABLET;
+        deviceInfo.type = EDeviceType.TABLET;
       } else {
-        return EDeviceType.DESKTOP;
+        deviceInfo.type = EDeviceType.DESKTOP;
       }
     }
-    return EDeviceType.DESKTOP;
+    return deviceInfo;
   } catch (error) {
-    return EDeviceType.DESKTOP;
+    return deviceInfo;
   }
 };
 export const detectDeviceMobile = (deviceType: EDeviceType): boolean => {
@@ -95,6 +103,13 @@ export const detectDeviceMobile = (deviceType: EDeviceType): boolean => {
 
 export const detectDeviceDesktop = (deviceType: EDeviceType): boolean => {
   return !(deviceType === EDeviceType.TABLET || deviceType === EDeviceType.MOBILE);
+};
+export const isIOS = (value: string): boolean => {
+  try {
+    return value.toLowerCase() === 'ios';
+  } catch (error) {
+    return false;
+  }
 };
 export const checkHasTouch = (): boolean => {
   return 'ontouchstart' in self || navigator.maxTouchPoints > 0;

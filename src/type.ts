@@ -230,3 +230,11 @@ export enum EOrientation {
   'VERTICAL' = 'vertical',
   'HORIZONTAL' = 'horizontal',
 }
+export interface IOsDevice {
+  name: string;
+  version: string;
+}
+export interface IDeviceInfo {
+  type: EDeviceType;
+  os: IOsDevice;
+}

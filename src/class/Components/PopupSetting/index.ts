@@ -197,7 +197,7 @@ class PopupSettingContent extends BaseComponent<TSettingState> {
     this.state = { ...this.state, tracks, activeTrack };
   }
   handleEvtFullScreenChange() {
-    if (detectDeviceDesktop(this.apiPlayer.deviceType)) {
+    if (detectDeviceDesktop(this.apiPlayer.deviceInfo.type)) {
       this.orientation = EOrientation.HORIZONTAL;
       this.containerElement?.classList.remove(this.classes.popupSettingsContentVertical);
     } else {

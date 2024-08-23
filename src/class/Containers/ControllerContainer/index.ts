@@ -81,7 +81,7 @@ class ControllerContainer extends BaseComponent {
   handleEvtFullScreenChange(e, data) {
     const containerEle = this?.containerElement?.parentElement;
     if (this.apiPlayer.isFullScreen()) {
-      !detectDeviceDesktop(this.apiPlayer.deviceType) && this.apiPlayer.rotateVideo(containerEle);
+      !detectDeviceDesktop(this.apiPlayer.deviceInfo.type) && this.apiPlayer.rotateVideo(containerEle);
     } else {
       this.apiPlayer.resetRotation(containerEle);
     }

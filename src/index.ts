@@ -12,10 +12,10 @@ import SmApiPlayer from './class/SmApiPlayer';
 import 'animate.css';
 import './index.css';
 
-const deviceType = detectDevice();
+const deviceInfo = detectDevice();
 const hasTouch = checkHasTouch();
 const classes = generateStyles({
-  deviceType,
+  deviceType: deviceInfo.type,
 });
 
 class SmUIControls implements ISmEventEmitter {
@@ -30,7 +30,7 @@ class SmUIControls implements ISmEventEmitter {
   constructor(props: IConfigureUIPlayerProps) {
     const { player, video, idVideoContainer, typePlayer = typePlayerDef, version = versionDef, videoInfo } = props;
 
-    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version, deviceType, hasTouch }));
+    const apiPlayer = (this.apiPlayer = new SmApiPlayer({ player, video, typePlayer, version, hasTouch, deviceInfo }));
     const VideoContainerElement = document.getElementById(idVideoContainer);
     this.ids = generateIIds();
     if (!this.isInit) {
@@ -109,5 +109,5 @@ class SmUIControls implements ISmEventEmitter {
   }
 }
 
-export { SmListeners, deviceType };
+export { SmListeners, deviceInfo };
 export default SmUIControls;

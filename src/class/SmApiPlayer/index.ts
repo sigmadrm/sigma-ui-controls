@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-properties */
 // import NoSleep from 'nosleep.js';
 import { ETypePlayer } from '../../constants';
-import { detectDeviceDesktop } from '../../services';
-import { EDeviceType, EEVentName, Track } from '../../type';
+import { detectDeviceDesktop, isIOS } from '../../services';
+import { EEVentName, IDeviceInfo, Track } from '../../type';
 import SmEventEmitter from '../SmEventEmitter/SmEventEmitter';
 
 // const noSleep = new NoSleep();
@@ -13,7 +13,7 @@ export default class SmApiPlayer {
   public typePlayer: ETypePlayer;
   public version?: string;
   public eventemitter: SmEventEmitter;
-  public deviceType: EDeviceType;
+  public deviceInfo: IDeviceInfo;
   public hasTouch: boolean;
 
   constructor(props: {
@@ -21,10 +21,10 @@ export default class SmApiPlayer {
     video?: HTMLVideoElement;
     typePlayer: ETypePlayer;
     version?: string;
-    deviceType: EDeviceType;
     hasTouch: boolean;
+    deviceInfo: IDeviceInfo;
   }) {
-    this.deviceType = props.deviceType;
+    this.deviceInfo = props.deviceInfo;
     this.hasTouch = props.hasTouch;
     this.player = props.player;
     this.video = props.video;
@@ -242,7 +242,9 @@ export default class SmApiPlayer {
 
     // Kiểm tra phần tử cha và thực hiện chế độ toàn màn hình nếu có hỗ trợ
     if (videoContainer) {
-      !detectDeviceDesktop(this.deviceType) && videoContainer.classList.add('sm-container-video');
+      !detectDeviceDesktop(this.deviceInfo.type) &&
+        !isIOS(this.deviceInfo.os.name) &&
+        videoContainer.classList.add('sm-container-video');
       if (
         videoContainer.requestFullscreen ||
         videoContainer.mozRequestFullScreen ||
@@ -329,15 +331,21 @@ export default class SmApiPlayer {
     if (this.video) {
       const videoContainer = this.video.parentElement as any;
       if (videoContainer) {
-        !detectDeviceDesktop(this.deviceType) && videoContainer.classList.add('sm-container-video');
+        !detectDeviceDesktop(this.deviceInfo.type) &&
+          !isIOS(this.deviceInfo.os.name) &&
+          videoContainer.classList.add('sm-container-video');
       }
 
       const width = document.body.clientWidth;
       const height = document.body.clientHeight;
       if (width < height) {
-        !detectDeviceDesktop(this.deviceType) && this.video.classList.add('sm-rotate-90');
+        !detectDeviceDesktop(this.deviceInfo.type) &&
+          !isIOS(this.deviceInfo.os.name) &&
+          this.video.classList.add('sm-rotate-90');
         if (controllerEle) {
-          !detectDeviceDesktop(this.deviceType) && controllerEle.classList.add('sm-control-rotate-90');
+          !detectDeviceDesktop(this.deviceInfo.type) &&
+            !isIOS(this.deviceInfo.os.name) &&
+            controllerEle.classList.add('sm-control-rotate-90');
         }
       }
     }
