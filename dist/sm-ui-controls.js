@@ -6135,54 +6135,50 @@ class ControllerContainer extends BaseComponent_1.default {
         }
     }
     handleOnMouseover(e) {
-        // if (e.type === 'mouseover') {
-        if (this.timerId) {
-            clearTimeout(this.timerId);
-            this.timerId = null;
-        }
-        if (this.footerController) {
-            this.footerController.show();
-        }
-        if (this.headController) {
-            this.headController.show();
-        }
-        this.timerId = self.setTimeout(() => {
-            var _a;
+        if (e.type === 'mouseover') {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+            }
             if (this.footerController) {
+                this.footerController.show();
+            }
+            if (this.headController) {
+                this.headController.show();
+            }
+            this.timerId = self.setTimeout(() => {
+                var _a;
+                if (this.footerController) {
+                    if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
+                        if (this.footerController) {
+                            this.footerController.hidden();
+                        }
+                    }
+                }
+                if (this.headController) {
+                    this.headController.hidden();
+                }
+            }, 3000);
+        }
+    }
+    handleOnMouseout(e) {
+        if (e.type === 'mouseout') {
+            if (this.timerId) {
+                clearTimeout(this.timerId);
+                this.timerId = null;
+            }
+            this.timerId = self.setTimeout(() => {
+                var _a;
                 if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
                     if (this.footerController) {
                         this.footerController.hidden();
                     }
                 }
-            }
-            if (this.bodyController) {
-                this.bodyController.hidden();
-            }
-            if (this.headController) {
-                this.headController.hidden();
-            }
-        }, 3000);
-        // }
-    }
-    handleOnMouseout(e) {
-        if (this.timerId) {
-            clearTimeout(this.timerId);
-            this.timerId = null;
-        }
-        this.timerId = self.setTimeout(() => {
-            var _a;
-            if (!((_a = this.footerController) === null || _a === void 0 ? void 0 : _a.getIsInside())) {
-                if (this.footerController) {
-                    this.footerController.hidden();
+                if (this.headController) {
+                    this.headController.hidden();
                 }
-            }
-            if (this.bodyController) {
-                this.bodyController.hidden();
-            }
-            if (this.headController) {
-                this.headController.hidden();
-            }
-        }, 3000);
+            }, 3000);
+        }
     }
     handleClickContainer(event) {
         var _a;

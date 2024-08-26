@@ -1,5 +1,12 @@
 
 
+## [0.2.19](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.18...v0.2.19) (2024-08-26)
+
+
+### Bug Fixes
+
+* rotate video in mobile ([0f8cd39](https://github.com/sigmadrm/sigma-ui-controls/commit/0f8cd3906855609d6a6f5a6b405cbae2faab3177))
+
 ## [0.2.18](https://github.com/sigmadrm/sigma-ui-controls/compare/v0.2.17...v0.2.18) (2024-08-23)
 
 
